@@ -1,0 +1,127 @@
+1001 {
+type=build
+shownname=Build Village Center
+reference=B1001
+cooldown=0.0
+duration=15000
+depends=B1
+e1tex=img/buildings/undead_main_e1.png
+e2tex=img/buildings/undead_main_e2.png
+e3tex=img/buildings/undead_main_e3.png
+e4tex=img/buildings/undead_main_e3.png
+cost2=300
+}
+
+1002 {
+type=build
+shownname=Build Grave
+reference=B1002
+cooldown=0.0
+duration=5000
+e1tex=img/buildings/undead_house_e1.png
+e2tex=img/buildings/undead_house_e2.png
+e3tex=img/buildings/undead_house_e3.png
+e4tex=img/buildings/undead_house_e4.png
+cost2=100
+}
+
+1003 {
+type=build
+shownname=Build Barracks
+reference=B1003
+cooldown=0.0
+duration=8000
+e1tex=img/buildings/undead_barracks_e1.png
+e2tex=img/buildings/undead_barracks_e2.png
+e3tex=img/buildings/undead_barracks_e3.png
+e4tex=img/buildings/undead_barracks_e3.png
+cost2=200
+}
+
+1004 {
+type=build
+shownname=Build Storage
+reference=B1004
+cooldown=0.0
+duration=6000
+e1tex=img/buildings/undead_storage_e1.png
+e2tex=img/buildings/undead_storage_e2.png
+e3tex=img/buildings/undead_storage_e3.png
+e4tex=img/buildings/undead_storage_e3.png
+cost2=150
+}
+
+1005 {
+type=build
+shownname=Build Watchtower
+reference=B1005
+cooldown=0.0
+duration=15000
+e1tex=img/buildings/undead_tower_e1.png
+e2tex=img/buildings/undead_tower_e2.png
+e3tex=img/buildings/undead_tower_e3.png
+e4tex=img/buildings/undead_tower_e3.png
+cost2=125
+}
+
+1006 {
+type=build
+shownname=Build Stable
+reference=B1006
+cooldown=0.0
+duration=10000
+e2tex=img/buildings/human_stable_e2.png
+e3tex=img/buildings/human_stable_e3.png
+e4tex=img/buildings/human_stable_e3.png
+cost2=200
+locked=true
+}
+
+1007 {
+type=build
+shownname=Build Farm
+reference=B1007
+cooldown=0.0
+duration=8000
+e0tex=img/buildings/undead_farm_e2.png
+e2tex=img/buildings/undead_farm_e2.png
+e3tex=img/buildings/undead_farm_e3.png
+e4tex=img/buildings/undead_farm_e4.png
+cost2=200
+locked=true
+}
+
+1008 {
+type=build
+shownname=Build Forge
+reference=B1008
+cooldown=0.0
+duration=9000
+e2tex=img/buildings/undead_forge_e2.png
+e3tex=img/buildings/undead_forge_e3.png
+e4tex=img/buildings/undead_forge_e3.png
+cost2=225
+locked=true
+}
+
+1009 {
+type=build
+shownname=Build Workshop
+reference=B1009
+cooldown=0.0
+duration=9000
+e0tex=img/buildings/undead_workshop_e3.png
+cost2=250
+locked=true
+}
+
+1010 {
+type=build
+shownname=Build Sacrificial Altar
+reference=B1010
+cooldown=0.0
+duration=9000
+e0tex=img/buildings/undead_sacrificial_e3.png
+cost2=300
+locked=true
+}

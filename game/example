@@ -1,0 +1,198 @@
+# Kommentare beginnen mit #.
+# Diese Datei enthält alle Einstellungen zu Einheiten und Gebäuden.
+# Konkret sind das Settings für Vordefinierte Einheiten, hier wird dann alles eingelesen, es muessen nicht immer alle Attribute neu eingelesen werden.
+#
+## Beispiel-Konfiguration für eine Einheit
+## Zuerst das U für Unit, dann die eindeutige ID. Klammer auf
+#U 1 {
+#speed=5 /Geschwindigkeit
+#name=Mosch-Ork /Name der Einheit
+#defaultTexture=img/creeps/orc1.png /Textur der Einheit
+#hitpoints=100 /Lebenspunkte
+#range=3 /Reichweite
+#atkdelay=300 /NUR NAHKAMPF: Delay zwischen Beginn der Angriffs-Animation und abziehen der Energie. Im Regelfall 1/2 der Laufzeit der Animation
+#harvester=true /Einheit kann Rohstoffe sammeln
+#damage=25 /Schaden, den die Einheit mit jedem Schlag macht
+#cooldownmax=250 /Schlaggeschwindigkeit im ms
+#Gdesc=Schwacher, aber schneller Ork. Ideal zum Arbeiter killen oder den Gegner zu nerven. /Beschreibung beim Ausbilden
+#Gpro=Arbeiter, Fernkampf
+#Gcon=Kavallerie
+#Gimg=img/creeps/orc1big.png /Bild, das beim Ausbilden angezeigt wird
+#ability=1 / Fähigkeiten der Einheit
+#ability=2
+#limit=1 / Truppenlimit, positive Werte bedeuten, dass die Einheit soviele Einheiten Truppenlimit beim Bau benötigt. Negative Werte werden nicht "verbraucht", sondern erhöhen das Limit!
+#}
+#
+# (Extra für DESC-Gebäude):
+#maxIntra=2 # Es dürften 2 Einheiten das Gebäude betreten
+#harvRate=1.5 # Einheiten pro Sekunde pro Einheit
+#harvests=2 # Welche Ressource
+#accepts=all # Standardmäßig werden nur Ernter akzeptiert. Mit diesem hier alle. (Alle Einheiten, die drin sind ernten (!))
+##Beispiel für eine Ability
+# 1 {
+# type=build
+## Der Type wird als String ausgeweret, es gibt derzeit "build", "recruit", und "move"
+## Das (type) muss als ERSTES KOMMEN!
+# shownname=Baue Testfabrik
+## Alles hinter einem = gehört zum Namen - es sind alle Zeichen ausser abbruchzeichen \0, \n etc. erlaubt
+# reference=B1
+## Die Zugehörige DESC-Nummer (Einheit oder Gebäude) Hier: Das Gebäude das gebaut werden soll
+## Wird bei move nicht benötigt (und deshalb ignoriert)
+# cooldown=0.0
+## Muss als Double-Wert mit(!) PUNKT angegeben werden, kein KOMMA.
+## Gibt die Zeit an, die nach dem einmaligen Einsetzen der Fähigkeit gewartet werden muss, bis sie wieder verfügbar ist.
+## Muss nicht angegeben werden, wird als 0.0 angenommen, wenn nicht gesetzt
+# duration=10000
+## Muss ein gültiger Integer, also ganzzahlig und positiv sein.
+## Gibt die Zeit an, die das Bauvorhaben verschlingt. (Nicht bei move)
+# depends=B2
+# depends=B3
+## Gibt an, von der Existenz welcher Gebäude/Einheiten/Fähigkeiten es abhängt, dass die Fähigkeit ausgeführt werden kann.
+## Mehrfachnennung möglich. Wird nichts angegeben ist die Fähigkeit sofort verfügbar
+# epoche=1
+## Gibt an, in welcher Epoche die Fähigkeit überhaupt angezeigt wird.
+## Weglassen aktiviert die Fähigkeit in allen Epochen
+# }
+#
+#
+## Beispiel für ein Upgrade komplett auf eine andere DESC
+#
+# 2 {
+# type=upgrade # Muss als erstes kommen, macht diese Ability zu einem Upgrade
+# shownname=Superupgrade
+# Gdesc=Macht diese Einheit 5 mal so stark. # *kurze* Beschreibung des Upgrades, nicht zu lang
+# uptype=upgrade # Für "reguläre" Upgrades
+# reference=B1 # Nur bei normalen Upgrades, welches Gebäude wird geupgraded?
+# reference=U1 # Nur bei normalen Upgrades, welche Einheit wird geupgraded?
+# affects=self # Upgrade wirkt nur auf die Einheit, die es ausführt
+# affects=fresh # Upgrade wird in DESC geschrieben und wirkt erst für Zukünftige (neu gebaute) Einheiten dieses Typs
+# affects=old # Upgrade wirkt auf alle derzeit existenten Einheiten, aber nicht auf zukünftige
+# affects=all # Upgrade wirkt auf alle existierenden & zukünfitgen (Eintrag in DESC)
+# duration=1000 # Dauer des Upgrades in Millisekunden
+# transformTo=3 # Der wichtigste Parameter. (reguläre) Upgrades wirken immer dadurch, dass Einheiten durch andere ersetzt werden...
+# # .. die oben angegebene Einheit/das Gebäude wird so zu was anderem/stärkerem etc. Dort (bei dieser Einheit im DESC-Eintrag wird dann definiert, wie stark die Einheit ist, HP, range, speed, etc..
+# #depends=U1 # Hängt von Existenz der Einheit 1 ab.
+# #depends=B1 # Hängt von Existenz des Gebäudes 1 ab
+# #depends=A1 # Hängt von mindestens einmaliger Ausführung des Upgrades. (Nicht für andere Abilities benutzen - das Ausführen wird nur bei Upgrades richtig registriert.)
+# epoche=1 Fähigkeiten werden nur in ihren zugeordneten Epochen angezeigt, Weglassen diese Eintrags aktivert die Fähigkeit in allen Epochen
+# e0tex=bla.png #Allgemeines Fähigkeiten-Bildchen, wird nur verwendet, wenn kein spezielles Angegeben (vollständigen Pfad angeben)
+# e1tex=bla.png #Bilchen nur für diese Epoche (vollständigen Pfad angeben)
+# cost1=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Nahrung
+# cost2=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Holz
+# cost3=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Metall
+# cost4=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Gold
+# cost5=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Öl
+# }
+#
+## Beispiel für ein Delta-Upgrade, bei dem einzelne Parameter erhöht (oder gesenkt) werden
+#
+# 2 {
+# type=upgrade # Muss als erstes kommen, macht diese Ability zu einem Upgrade
+# shownname=Superupgrade
+# Gdesc=Macht diese Einheit 5 mal so stark. # *kurze* Beschreibung des Upgrades, nicht zu lang
+# uptype=deltaupgrade # Für "reguläre" Upgrades
+# reference=B1 # Welches Gebäude wird geupgraded? - Nicht benötigt bei affects=self
+# reference=U1 # Welche Einheit wird geupgraded? - Nicht benötigt bei affects=self
+# affects=self # Upgrade wirkt nur auf die Einheit, die es ausführt - self Upgrades wirken als einzige auf alle selektieren Einheiten, nicht nur auf eine)
+# affects=fresh # Upgrade wird in DESC geschrieben und wirkt erst für Zukünftige (neu gebaute) Einheiten dieses Typs
+# affects=old # Upgrade wirkt auf alle derzeit existenten Einheiten, aber nicht auf zukünftige
+# affects=all # Upgrade wirkt auf alle existierenden & zukünfitgen (Eintrag in DESC)
+# duration=1000 # Dauer des Erforschen des Upgrades in Millisekunden
+# #depends=U1 # Hängt von Existenz der Einheit 1 ab.
+# #depends=B1 # Hängt von Existenz des Gebäudes 1 ab
+# #depends=A1 # Hängt von mindestens einmaliger Ausführung des Upgrades. (Nicht für andere Abilities benutzen - das Ausführen wird nur bei Upgrades richtig registriert.)
+# epoche=1 Fähigkeiten werden nur in ihren zugeordneten Epochen angezeigt, Weglassen diese Eintrags aktivert die Fähigkeit in allen Epochen
+# e0tex=bla.png #Allgemeines Fähigkeiten-Bildchen, wird nur verwendet, wenn kein spezielles Angegeben (vollständigen Pfad angeben)
+# e1tex=bla.png #Bilchen nur für diese Epoche (vollständigen Pfad angeben)
+# cost1=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Nahrung
+# cost2=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Holz
+# cost3=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Metall
+# cost4=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Gold
+# cost5=100 # Kosten für das einmalige Ausführen dieser Fähigkeit - Öl
+#
+## Eigentliche Upgrade-Parameter
+## Man kann soviele Angeben, wie man will, man muss keine Angeben (für reine Freischaltungs-Upgrades)
+## Alle int-Parameter sind delta-Parameter, wenn man sie setzt, wird der original-Wert den angegebenen Erhöht. (zum verkleinern negative Werte nehmen)
+##
+## Allgemeine Parameter (alle GameObjects, außer Ressourcen)
+##
+# newTex=img/bl/a.png // Neue Default-Texture (sollte in Verwendung mit toAnimDesc verwendet werden, mehr Infos siehe dort)
+# maxhitpointsup=100     // Wieviele Hitpoints hoch/runter (Verschiebt die Maximale Grenze, die tatsächlichen Hitpoints werden prozentual miterhöht (100% gesunde einheiten sind danach immernoch 100% gesunde, halbe danach immernoch halb usw..)
+# hitpointsup=10        // Nicht über Maximum erhöhbar - Für Heilfähigkeiten, normalerweise wird das Maximum verschoben
+# newarmortype=bla    //Geänderte Rüstungsklasse der Einheit
+# antiheavyinfup=1
+#antilightinfup=1
+#antikavup=1
+#antivehicleup=1
+#antitankup=1
+#antiairup=1
+#antibuildingup=1
+#toAnimDesc=123 # Gibt der Einheit den Animator einer anderen Einheiten-desc (auch für Gebäude) - ist bei animierten/richtungs einheiten notwendig, da die defaultTexture nicht verwendet wirde, wenn ein animator da ist.
+##
+## Parameter nur für Einheiten
+##
+#speedup=1
+#harv=true # VORSICHT! Dieser Wert muss (als einziger) immer gesetzt werden, wenn die geupgradete Einheit ernten können soll, isHarvester wird einfach mit diesem Überschrieben (das System kann keinen Unterschied zwischen Ändere auf false und nicht angegeben (=false) feststellen!!!))
+#damageup=10
+#rangeup=2
+##
+##
+## Optionale Parameter für Delta-Upgrades
+##
+#allowMultipleUses=true # Normalerweise lassen sich Delta-Upgrades nur einmal pro Einheit ausführen. Wenn mehrfaches Ausführen trotzdem erlaubt sein soll, dann das auf true setzen, sonst false oder weglassen
+#
+#
+#
+## Parameter, die die Zugriffe steueren:
+#
+#locked=true # Parameter: Die Fähigkeit ist erstmal gesperrt und wird gar nicht angezeigt.
+#unlock=5 # Ability Nr.5 unlocken. (Mehrfachnennung möglich)
+#lock=4 # Ability Nr.4 (wieder) locken.
+# }
+#
+#
+#
+#
+#
+## Beispiel für ein Epochenupgrade
+## (Kann auch für Multi-Delta-Upgrades verwendet werden, dann einfach den toEpoche-Parameter weglassen!)
+#
+#
+# 4 {
+#type=upgrade
+#uptype=epoche
+#shownname=Epoche 3
+#duration=180000
+#
+## Locking-Parameter (gültig für alle Arten von Abilitys und alle Upgradetypen)
+#unlock=6 # Fähigkeiten, die Freigeschaltet werden sollen, Mehrfachnennung möglich
+#unlock=7
+#lock=8 # Fähigkeiten, die gesperrt werden
+#locked=true # Diese Fähigkeit steht zum Spielbeginn erstmal NICHT zur Verfügung
+#
+## Epochen-Spezifische Upgradedetails
+#
+#toEpoche=3 # Diese Epoche wird nach Ausführen des Upgrades aktiv sein
+#
+## Parameter, die zusätzlich noch verändert werden sollen:
+#
+#
+#U23.speedup=10 #Einheit mit desc23 um 10 beschleunigen
+#
+#B24.newTex=img/building/bla.png # Neue Textur des Gebäudes (sollte mit toAnimDesc kombiniert werden
+#B24.toAnimDesc=37 # Neuen Animator für das Gebäude, übernehmen von dieser DescTypeId - sollte in der Regel mit newTex kombiniert werden
+#
+## (Alle für Delta-Upgrades zulässigen Parameter sind auch für Epochenupgrades nach obiger Syntax erlaubt:
+#[U,B]DESCID.PARAMETER=AENDERUNG
+#}
+
+
+
+Weitere Parameter:
+
+B123.harvrateup=0.5 # Ändert die Ressourcen-Ernterate dieses Gebäudes.                         Parameter in Einheiten pro SEKUNDE !!!
+G.harvrate1up=120 # Ändert die Globale-Ernterate für Einheiten-Ernten der Ressource 1 (Essen). Parameter in Einheitem pro MINUTE  !!!
+G.limitup=10 # Erhöht das Truppenlimit um 10
+G.res2up=616 #Gibt dem Spieler 616 Holz
+
+Die globalen Parameter funktionieren nur als Teil eines Multidelta/Epochen-Upgrades.

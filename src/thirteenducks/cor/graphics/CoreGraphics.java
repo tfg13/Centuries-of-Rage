@@ -1,0 +1,1883 @@
+/*
+ *  Copyright 2008, 2009, 2010:
+ *   Tobias Fleig (tfg[AT]online[DOT]de),
+ *   Michael Haas (mekhar[AT]gmx[DOT]de),
+ *   Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de)
+ *
+ *  - All rights reserved -
+ *
+ *
+ *  This file is part of Centuries of Rage.
+ *
+ *  Centuries of Rage is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Centuries of Rage is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package thirteenducks.cor.graphics;
+
+import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.Building;
+import thirteenducks.cor.game.GameObject;
+import thirteenducks.cor.game.Unit;
+import thirteenducks.cor.map.CoRMapElement.collision;
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Robot;
+import java.io.*;
+import java.util.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import org.lwjgl.opengl.Display;
+
+import org.newdawn.slick.*;
+import org.newdawn.slick.opengl.renderer.Renderer;
+import thirteenducks.cor.game.Pauseable;
+import thirteenducks.cor.graphics.input.CoRInput;
+import thirteenducks.cor.map.CoRMapElement;
+
+/**
+ *
+ * @author tfg
+ */
+public class CoreGraphics extends AppGameContainer implements Pauseable {
+
+    ClientCore.InnerClient rgi;
+    public GraphicsContent content;
+    Dimension displaySize;
+    // RogGraphicsComponent content;
+    HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
+    HashMap imgInput;
+    int imgInputNumber = 0;
+    List<Unit> unitList; //Alle Einheiten
+    List<Building> buildingList; // Alle Gebäude
+    boolean showFrameRate = false;
+    public CoRInput inputM; // InputModul
+    public boolean miniMapScrolling = false;
+    public boolean dragSelectionBox = false;
+    public int dSBX = 0;
+    public int dSBY = 0;
+    private HashMap<Integer, Unit> descAnimUnit;
+    // Das folgene nicht permanent (hier im Code) ändern!
+    // Wer das unbedingt Testen will kann im configfile die option
+    // benchmark=true
+    // einsetzen
+    private boolean nolimits = false; // Keine Framerate-Begrenzung/Nur Benchmark
+    long starttime;             // Wann die Grafikengine gestartet wurde
+    private boolean pauseMod = false;   // Für den Pausemodus
+    private boolean statisticsMod = false;   // Für den Pausemodus
+    private long pauseTime;           // Zeitpunkt des Pausierenes
+    private boolean fowtrigger = false; // Trigger für flackerfreies-Fow-Updaten
+    boolean fullScreenMode;
+    public boolean slickReady = false;
+    int framerate;
+    long lastFowCalc;
+    boolean seenPause = false;
+    Thread slickGraphics;
+    final List<GraphicsBullet> newBullets;
+    public boolean rightScrollingEnabled = false;
+    public boolean rightScrolling = false;
+    public long rightScrollStart;
+    int rightX;
+    int rightY;
+    double rightDX;
+    double rightDY;
+    int rightInitX;
+    int rightInitY;
+    double rightScrollSpeed = 0.5;
+    Robot robot;
+    int imgLoadCounter = 0;
+
+    // Konstruktor für erweiternde Klasse RogAISurrogateGraphics
+    public CoreGraphics(ClientCore.InnerClient inner) throws SlickException {
+        super(new BasicGame("surrogategraphics") {
+
+            @Override
+            public void init(GameContainer container) throws SlickException {
+            }
+
+            @Override
+            public void update(GameContainer container, int delta) throws SlickException {
+            }
+
+            public void render(GameContainer container, Graphics g) throws SlickException {
+            }
+
+            @Override
+            public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
+            }
+
+            @Override
+            public void inputStarted() {
+            }
+        });
+
+        newBullets = null;
+        content = new GraphicsContent();
+        inputM = new CoRInput(this.rgi, this.getInput());
+        rgi = inner; // Die Innere Klasse übernehmen
+    }
+
+    public CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
+        super(new GraphicsContent(), size.width, size.height, fullScreen);
+        content = (GraphicsContent) super.game;
+        rgi = inner; // Die Innere Klasse übernehmen
+        displaySize = size;
+        newBullets = Collections.synchronizedList(new ArrayList<GraphicsBullet>());
+    }
+
+    /**
+     * Blendet den Ladebildschirm ein.
+     * Muss VOR initModule aufgerufen werden.
+     */
+    public void preStart() {
+        rgi.logger("[Graphics]: Preparing window...");
+        slickGraphics = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    CoreGraphics.this.start();
+                } catch (SlickException ex) {
+                    rgi.logger(ex);
+                    JOptionPane.showMessageDialog(new JFrame(), "Impossible resolution", "CoR: ERROR", JOptionPane.ERROR_MESSAGE);
+                    System.exit(10);
+                }
+            }
+        });
+        // SaveMode übernehmen
+        if ("true".equals(rgi.configs.get("safegraphics").toString())) {
+            content.saveMode = true;
+        }
+        slickGraphics.setName("Graphics-2");
+        slickGraphics.start();
+
+    }
+
+    public void preStart2() {
+        if (!content.saveMode) {
+            try {
+                // Ladegrafik lesen
+                content.loading_backblur = new Image("img/game/loading_back_blur.png");
+                content.loading_backnoblur = new Image("img/game/loading_back_noblur.png");
+                content.loading_frontnoblur = new Image("img/game/loading_front_noblur.png");
+                content.loading_frontblur = new Image("img/game/loading_front_blur.png");
+                content.loading_sun_blur = new Image("img/game/loading_sun_blur.png");
+
+            } catch (org.newdawn.slick.SlickException ex) {
+                rgi.logger("[Graphics][ERROR]: Can't load loadingscreen!");
+            }
+        }
+        content.byPass = true;
+        content.realPixX = displaySize.width;
+        content.realPixY = displaySize.height;
+        content.setVisibleArea((displaySize.width / 20), (displaySize.height / 15));
+        content.modi = -1;
+    }
+
+    public void initModule() {
+        this.setLoadStatus(4);
+        // Init-Code
+        // MUSS AUFGERUFEN WERDEN, SONST FUNKTIONIERT DAS MODUL NICHT!!!!
+        // MUSS NACH DEM INIT DES MAPMODULS AUFGERUFEN WERDEN, SONST FUNKTIONIEREN DIE ANIMATIONEN NICHT!
+        rgi.logger("[Graphics] Loading graphics...");
+        // Bilder reinladen
+        inputM = new CoRInput(rgi, this.getInput());
+        rgi.logger("[Graphics] Loading images...");
+        // Bilder aus dem /img ordner laden
+        // Haupt-Zuordnungsdatei öffnen (types.list)
+        File imgtypes = new File("img/types.list");
+        imgInput = new HashMap();
+        File f3 = null;
+        try {
+            FileReader imgtypereader = new FileReader(imgtypes);
+            BufferedReader itr = new BufferedReader(imgtypereader);
+            String inputv;
+            while ((inputv = itr.readLine()) != null) {
+                // Zeile für Zeile lesen
+                // Verifizieren, dass Datei da ist:
+                inputv = "img/" + inputv;
+                File f = new File(inputv);
+                if (f.isDirectory()) {
+                    // Ok, ist da hinzufügen
+                    imgInput.put(imgInputNumber, inputv);
+                    imgInputNumber++;
+                } else {
+                    // Datei nicht da, ignorieren, könnte ein Kommentar sein
+                }
+            }
+            imgtypereader.close();
+
+            final ArrayList<String> blackList = new ArrayList<String>();
+            // Blacklist einlesen
+            itr = new BufferedReader(new FileReader(new File("img/blacklist")));
+            inputv = null;
+            while ((inputv = itr.readLine()) != null) {
+                if (!inputv.startsWith("#")) {
+                    blackList.add(inputv);
+                }
+            }
+
+            // Anzahl der Bilder berechnen:
+            int total = 0;
+            ArrayList<File[]> folders = new ArrayList<File[]>();
+            for (int i = 0; i < imgInputNumber; i++) {
+                String temp = imgInput.get(i).toString();
+                File folder = new File(temp);
+                if (folder.isDirectory()) {
+                    File[] images = folder.listFiles(new FileFilter() {
+
+                        public boolean accept(File pathname) {
+                            if (pathname.getName().endsWith(".png")) {
+                                return !blackList.contains(pathname.getPath());
+                            }
+                            return false;
+                        }
+                    });
+                    folders.add(images);
+                    total += images.length;
+                }
+            }
+
+            initImageLoadStatus(total);
+
+
+            // Tatsächlich einlesen
+            int counter = 0;
+            int gcCounter = 0;
+
+            imgMap = new HashMap();
+
+            for (File[] list : folders) {
+                for (File image : list) {
+                    if (image.exists() && image.isFile()) { // Datei vorhanden?
+                        imgLoadCounter++;
+                        counter++;
+                        gcCounter++;
+                        setImageLoadStatus(counter);
+                        // Ok, hinzufügen
+                        // Als Image reinladen, dann wird es direkt in den Ram geladen
+                        Image img = new org.newdawn.slick.Image(image.getPath());
+                        GraphicsImage tempImage = new GraphicsImage(img);
+                        tempImage.setImageName(image.getPath());
+                        // Auf jeden Fall für das Grafikmodul behalten
+                        imgMap.put(image.getPath(), tempImage); // Dazu machen
+                        if (tempImage.getImageName().contains("/")) {
+                            tempImage = new GraphicsImage(img);
+                            tempImage.setImageName(image.getPath().replace('/', '\\'));
+                            imgMap.put(tempImage.getImageName(), tempImage);
+                        } else {
+                            tempImage = new GraphicsImage(img);
+                            tempImage.setImageName(image.getPath().replace('\\', '/'));
+                            imgMap.put(tempImage.getImageName(), tempImage);
+                        }
+                        rgi.logger("[Graphics][LoadImage]: " + tempImage.getImageName());
+                        // Eventuell GC abhandeln
+                        if (gcCounter >= 50) {
+                            System.gc();
+                            gcCounter = 0;
+                        }
+                    }
+                }
+
+            }
+
+        } catch (FileNotFoundException ex) {
+            // Datei nicht gefunden!
+            rgi.logger("[Graphics][ERROR]File not found! Reason:");
+            rgi.logger(ex);
+        } catch (IOException ex) {
+            // Sollte nicht auftreten...
+            rgi.logger("[Graphics][ERROR]I/O ERROR, Reason:");
+            rgi.logger(ex);
+            rgi.logger("infile:");
+            rgi.logger(f3.toString());
+        } catch (SlickException ex) {
+            // Sollte nicht auftreten...
+            rgi.logger("[Graphics][ERROR]I/O ERROR, Reason:");
+            rgi.logger(ex);
+            rgi.logger("infile:");
+            rgi.logger(f3.toString());
+        }
+        // Grafiken laden abgeschlossen
+        if ("true".equals(rgi.configs.get("showframerate")) || rgi.isInDebugMode()) {
+            // Framerate an
+            this.setShowFPS(true);
+        } else {
+            this.setShowFPS(false);
+        }
+        if ("true".equals(rgi.configs.get("rightKlickScrolling"))) {
+            this.rightScrollingEnabled = true;
+        }
+        content.setImageMap(imgMap);
+        importSelectionMarkers();
+        try {
+            content.colModeImage = new GraphicsImage(new Image("img/notinlist/editor/colmode.png"));
+        } catch (SlickException ex) {
+            rgi.logger(ex);
+        }
+        content.appendCoreInner(rgi);
+
+
+        importHuds();
+        rgi.logger("[Graphics]: Importing bullets");
+        importBullets();
+        content.setFogofwar(true);
+        // Will der User etwa den total Verrückten Benchmark laufen lassen?
+        if ("true".equals(rgi.configs.get("rightKlickScrolling"))) {
+            // Vermerken
+            rgi.logger("[Graphics][Init]: Launching benchmark...");
+            // Jetzt setzen
+            this.setShowFPS(true);
+            nolimits = true;
+        }
+        this.setLoadStatus(5);
+        readAnimations();
+        rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
+        this.triggerStatusWaiting();
+        // LOAD abgeschlossen, dem Server mitteilen
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 7, 0, 0, 0, 0));
+
+    }
+
+    public void setLoadStatus(int status) {
+        content.loadStatus = status;
+        content.loadWait = false;
+        if (status == 5) {
+            content.loadZoom1StartTime = System.currentTimeMillis();
+        }
+        if (status > 2 && Thread.currentThread().equals(slickGraphics)) {
+            content.paintComponent(this.getGraphics());
+            Renderer.get().flush();
+            Display.update();
+        }
+    }
+
+    /**
+     * Zählt nach jedem geladenen Bild hoch.
+     * Ermöglicht ein flüssiges Animieren des Ladebalkens
+     * @param imageNr
+     */
+    private void setImageLoadStatus(int imageNr) {
+        content.imgLoadCount = imageNr;
+        content.paintComponent(this.getGraphics());
+        Renderer.get().flush();
+        Display.update();
+    }
+
+    private void initImageLoadStatus(int total) {
+        content.imgLoadTotal = total;
+    }
+
+    public void triggerLaunchError(int type) {
+        content.lEtype = type;
+        content.launchError = true;
+        Input inputr = this.getInput();
+        inputr.removeAllListeners();
+        inputr.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseWheelMoved(int change) {
+            }
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                int xmin = (content.realPixX / 5);      // Startposition des Balkens
+                int ymin = (int) ((content.realPixY / 10 * 2) + (content.realPixY / 2 * 0.9));
+                int xmax = (content.realPixX / 5) + (content.realPixX / 5 * 3);      // Länge des Balkens
+                int ymax = (content.realPixY / 10 * 2) + (content.realPixY / 2);
+                if (x > xmin && x < xmax && y > ymin && y < ymax) {
+                    // Ende
+                    System.exit(4);
+                }
+            }
+
+            @Override
+            public void mousePressed(int button, int x, int y) {
+            }
+
+            @Override
+            public void mouseReleased(int button, int x, int y) {
+            }
+
+            @Override
+            public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+            }
+
+            @Override
+            public void setInput(Input input) {
+            }
+
+            @Override
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            @Override
+            public void inputEnded() {
+            }
+
+            public void mouseDragged(int i, int i1, int i2, int i3) {
+            }
+
+            public void inputStarted() {
+            }
+        });
+
+        inputr.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyPressed(int key, char c) {
+                if (key == Input.KEY_ENTER || key == Input.KEY_NUMPADENTER) {
+                    System.exit(4);
+                }
+            }
+
+            @Override
+            public void keyReleased(int key, char c) {
+            }
+
+            @Override
+            public void setInput(Input input) {
+            }
+
+            @Override
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            @Override
+            public void inputEnded() {
+            }
+
+            public void inputStarted() {
+            }
+        });
+        inputr.resume();
+    }
+
+    public void triggerStatusWaiting() {
+        // Wir warten auf andere
+        content.loadWait = true;
+        content.repaint();
+    }
+
+    // Fügt gescheduelete Bullets jetzt ein
+    private void manageBullets() {
+        synchronized (newBullets) {
+            content.allList.addAll(newBullets);
+            newBullets.clear();
+        }
+    }
+
+    /**
+     * Liest alle Geschoss-Bildchen ein
+     */
+    private void importBullets() {
+        File bulletfolder = new File("img/bullets");
+        File[] bulletFiles = bulletfolder.listFiles(new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                File testFile = new File(dir.getPath() + "/" + name);
+                return testFile.isFile() && (testFile.getName().endsWith(".png") || testFile.getName().endsWith(".PNG"));
+            }
+        });
+        for (File bulletFile : bulletFiles) {
+            try {
+                // Einlesen:
+                Image bullet = new Image(bulletFile.getPath());
+                // Größe checken:
+                if (bullet.getHeight() != 160 || bullet.getWidth() != 160) {
+                    // Ungültig
+                    System.out.println("Invalid bullet (wrong size): " + bulletFile);
+                    rgi.logger("[Graphics][Error]: Invalid bullet (wrong size): " + bulletFile);
+                    continue;
+                }
+                // 16 Einzelbilder rausschneiden
+                for (int i = 0; i < 16; i++) {
+                    Image frame = new Image(40, 40);
+                    Graphics g2 = frame.getGraphics();
+                    // Wir brauchen die aktuelle Reihe/Spalte
+                    int b = i;
+                    int s = 0;
+                    while (b > 3) {
+                        s++;
+                        b -= 4;
+                    }
+                    g2.drawImage(bullet, 0, 0, 39, 39, b * 40, s * 40, (b * 40) + 40, (s * 40) + 40);
+                    String key = bulletFile.getPath() + i;
+                    imgMap.put(key.replaceAll("\\\\", "/"), new GraphicsImage(frame));
+                    imgMap.put(key.replaceAll("/", "\\\\"), new GraphicsImage(frame));
+
+                }
+            } catch (SlickException ex) {
+                System.out.println("Error reading bullet: " + bulletFile);
+                rgi.logger("[Graphics][Error]: Error reading bullet: " + bulletFile);
+            }
+        }
+    }
+
+    private void importSelectionMarkers() {
+        // Liest die Selektionsmarkierungen ein
+        try {
+            GraphicsImage ti1 = new GraphicsImage(new Image("img/game/ground.png"));
+            ti1.setImageName("img/game/ground.png");
+            content.coloredImgMap.put("img/game/ground.png", ti1);
+            GraphicsImage ti2 = new GraphicsImage(new Image("img/game/sel_s1.png"));
+            ti2.setImageName("img/game/sel_s1.png");
+            content.coloredImgMap.put("img/game/sel_s1.png", ti2);
+            GraphicsImage ti3 = new GraphicsImage(new Image("img/game/building_defaulttarget.png"));
+            ti3.setImageName("img/game/building_defaulttarget.png");
+            content.coloredImgMap.put("img/game/building_defaulttarget.png", ti3);
+        } catch (SlickException ex) {
+            rgi.logger("[Graphics][Critical]: Error importing selection markers.");
+            System.out.println("[Graphics][Critical]: Error importing selection markers.");
+        }
+    }
+
+    private void importHuds() {
+        try {
+            // Liest alle Huds aus img/hud/ ein und schickt sie an RogGraphicsComponent
+            // Epochennummer ist Bildname
+            Image ep1 = new Image("img/hud/e1.png");
+            Image ep2 = new Image("img/hud/e2.png");
+            Image ep3 = new Image("img/hud/e3.png");
+            // Bilder geladen in Array packen und ab
+            content.huds = new Image[10];
+            content.huds[1] = ep1;
+            content.huds[2] = ep2;
+            content.huds[3] = ep3;
+        } catch (SlickException ex) {
+            System.out.println("ERROR: Can't load Huds!");
+            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
+            rgi.logger(ex);
+        }
+
+    }
+
+    /**
+     * Erzwingt ein Frame-Rendern.
+     * Kehrt erst zurück, nachdem der Frame auf den Bildschrim gezeichnet wurde.
+     * Benötigt z.B. um während dem Animationen-Laden die Grafik flüssig arbeiten zu lassen.
+     */
+    private void forceFrame() {
+        content.paintComponent(this.getGraphics());
+        Renderer.get().flush();
+        Display.update();
+    }
+
+    private void readAnimations() {
+        // Animationsdaten einlesen
+        rgi.logger("[Graphics][LoadAnim]: Start reading animations...");
+        File f = new File("img/anim");
+        if (f.exists() && f.isDirectory()) {
+            // Ok, der Ordner ist schonmal da...
+            // Hier trennt es sich nach Units U und Buildings B
+            // TODO: Implement animations for buildings
+            File u = new File("img/anim/U");
+            if (u.exists() && u.isDirectory()) {
+                // Gut, der Ordner ist da, jetzt die Inhalte (Ordner) einlesen
+                File[] units = u.listFiles();
+                for (File unit : units) {
+                    if (!unit.isDirectory() || unit.getName().equals(".svn")) { // Gehört nicht dazu
+                        continue;
+                    }
+                    System.gc();
+                    // Ist es eine Nummer?
+                    int desc;
+                    try {
+                        desc = Integer.parseInt(unit.getName());
+                        // Ist das eine gültige DESC?
+                        if (rgi.mapModule.isValidUnitDesc(desc)) {
+                            // Ja, einlesen und eintragen
+                            UnitAnimator amanager = new UnitAnimator();
+                            // Inhalt genauer bestimmen:
+                            ArrayList<File> contents = new ArrayList<File>(Arrays.asList(unit.listFiles()));
+                            // Texturen für Idle?
+                            File idleFolder = new File(unit.getPath() + "/idle");
+                            if (contents.contains(idleFolder)) {
+                                Image[][] tlist = new Image[10][];
+                                // Richtungs-Unterordner?
+                                // N
+                                File nFold = new File(idleFolder.getPath() + "/N");
+                                if (nFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(nFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[1] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // NO
+                                File noFold = new File(idleFolder.getPath() + "/NO");
+                                if (noFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(noFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[2] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // O
+                                File oFold = new File(idleFolder.getPath() + "/O");
+                                if (oFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(oFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[3] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // SO
+                                File soFold = new File(idleFolder.getPath() + "/SO");
+                                if (soFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(soFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[4] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // S
+                                File sFold = new File(idleFolder.getPath() + "/S");
+                                if (sFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(sFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[5] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // Standard einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(idleFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                tlist[0] = imglist.toArray(new Image[imglist.size()]);
+                                // Restliches Array füllen
+                                if (fillAnimArray(tlist)) {
+                                    int animframerate = readFrameRate(new File(idleFolder.getPath() + "/anim.properties"));
+                                    amanager.addIdle(animframerate, tlist);
+                                    rgi.logger("[Graphics][LoadAnim]: U-DESC:" + desc + "-IDLE-animation with " + tlist[0].length + " frames loaded.");
+                                }
+                            }
+                            // Texturen für Bewegung?
+                            File movingFolder = new File(unit.getPath() + "/moving");
+                            if (contents.contains(movingFolder)) {
+                                Image[][] tlist = new Image[10][];
+                                // Richtungs-Unterordner?
+                                // N
+                                File nFold = new File(movingFolder.getPath() + "/N");
+                                if (nFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(nFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[1] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // NO
+                                File noFold = new File(movingFolder.getPath() + "/NO");
+                                if (noFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(noFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[2] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // O
+                                File oFold = new File(movingFolder.getPath() + "/O");
+                                if (oFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(oFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[3] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // SO
+                                File soFold = new File(movingFolder.getPath() + "/SO");
+                                if (soFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(soFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[4] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // S
+                                File sFold = new File(movingFolder.getPath() + "/S");
+                                if (sFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(sFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[5] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // Standard einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(movingFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                tlist[0] = imglist.toArray(new Image[imglist.size()]);
+                                if (fillAnimArray(tlist)) {
+                                    int animframerate = readFrameRate(new File(movingFolder.getPath() + "/anim.properties"));
+                                    amanager.addMoving(animframerate, tlist);
+                                    rgi.logger("[Graphics][LoadAnim]: U-DESC:" + desc + "-MOVING-animation with " + tlist[0].length + " frames loaded.");
+                                }
+                            }
+                            // Texturen für Bewegung?
+                            File harvFolder = new File(unit.getPath() + "/harvesting");
+                            if (contents.contains(harvFolder)) {
+                                Image[][] tlist = new Image[10][];
+                                // Richtungs-Unterordner?
+                                // N
+                                File nFold = new File(harvFolder.getPath() + "/N");
+                                if (nFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(nFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[1] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // NO
+                                File noFold = new File(harvFolder.getPath() + "/NO");
+                                if (noFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(noFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[2] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // O
+                                File oFold = new File(harvFolder.getPath() + "/O");
+                                if (oFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(oFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[3] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // SO
+                                File soFold = new File(harvFolder.getPath() + "/SO");
+                                if (soFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(soFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[4] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // S
+                                File sFold = new File(harvFolder.getPath() + "/S");
+                                if (sFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(sFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[5] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // Standard einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(harvFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                tlist[0] = imglist.toArray(new Image[imglist.size()]);
+                                if (fillAnimArray(tlist)) {
+                                    int animframerate = readFrameRate(new File(harvFolder.getPath() + "/anim.properties"));
+                                    amanager.addHarvesting(animframerate, tlist);
+                                    rgi.logger("[Graphics][LoadAnim]: U-DESC:" + desc + "-HARVESTING-animation with " + tlist[0].length + " frames loaded.");
+                                }
+                            }
+                            // Texturen für Angriff?
+                            File attackingFolder = new File(unit.getPath() + "/attacking");
+                            if (contents.contains(attackingFolder)) {
+                                Image[][] tlist = new Image[10][];
+                                // Richtungs-Unterordner?
+                                // N
+                                File nFold = new File(attackingFolder.getPath() + "/N");
+                                if (nFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(nFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[1] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // NO
+                                File noFold = new File(attackingFolder.getPath() + "/NO");
+                                if (noFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(noFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[2] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // O
+                                File oFold = new File(attackingFolder.getPath() + "/O");
+                                if (oFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(oFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[3] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // SO
+                                File soFold = new File(attackingFolder.getPath() + "/SO");
+                                if (soFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(soFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[4] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // S
+                                File sFold = new File(attackingFolder.getPath() + "/S");
+                                if (sFold.isDirectory()) {
+                                    // Ja! - Einlesen
+                                    ArrayList<Image> imglist = new ArrayList<Image>();
+                                    int count = 0;
+                                    while (true) {
+                                        try {
+                                            imglist.add(new Image(sFold.getPath() + "/" + count + ".png"));
+                                            count++;
+                                            forceFrame();
+                                        } catch (Exception ex) {
+                                            // Bild gibts nicht, dann wars das, abbrechen
+                                            break;
+                                        }
+                                    }
+                                    tlist[5] = imglist.toArray(new Image[imglist.size()]);
+                                }
+                                // Standard einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(attackingFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                tlist[0] = imglist.toArray(new Image[imglist.size()]);
+                                if (fillAnimArray(tlist)) {
+                                    int animframerate = readFrameRate(new File(attackingFolder.getPath() + "/anim.properties"));
+                                    amanager.addAttacking(animframerate, tlist);
+                                    rgi.logger("[Graphics][LoadAnim]: U-DESC:" + desc + "-ATTACKING-animation with " + tlist[0].length + " frames loaded.");
+                                }
+                            }
+                            // Texturen fürs Sterben?
+                            File dieingFolder = new File(unit.getPath() + "/dieing");
+                            if (contents.contains(dieingFolder)) {
+                                // Ja! - Einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(dieingFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                if (imglist.size() > 0) {
+                                    int animframerate = readFrameRate(new File(dieingFolder.getPath() + "/anim.properties"));
+                                    amanager.addDieing(animframerate, imglist.toArray(new Image[imglist.size()]));
+                                    rgi.logger("[Graphics][LoadAnim]: U-DESC:" + desc + "-DIEING-animation with " + count + " frames loaded.");
+                                }
+                            }
+                            // Fertig mit einlesen - speichern
+                            rgi.mapModule.insertUnitAnimator(desc, amanager);
+                        }
+                        // Nein
+                        continue;
+                    } catch (NumberFormatException ex) {
+                        // Irgendwie keine Zahl
+                        continue;
+                    }
+                }
+            }
+
+            // Buildings
+            File b = new File("img/anim/B");
+            if (b.exists() && b.isDirectory()) {
+                // Gut, der Ordner ist da, jetzt die Inhalte (Ordner) einlesen
+                File[] buildings = b.listFiles();
+                for (File building : buildings) {
+                    if (!building.isDirectory() || building.getName().equals(".svn")) { // Gehört nicht dazu
+                        continue;
+                    }
+                    // Ist es eine Nummer?
+                    int desc;
+                    try {
+                        desc = Integer.parseInt(building.getName());
+                        // Ist das eine gültige DESC?
+                        if (rgi.mapModule.isValidBuildingDesc(desc)) {
+                            // Ja, einlesen und eintragen
+                            BuildingAnimator amanager = new BuildingAnimator();
+                            // Inhalt genauer bestimmen:
+                            ArrayList<File> contents = new ArrayList<File>(Arrays.asList(building.listFiles()));
+                            // Texturen für Idle?
+                            File idleFolder = new File(building.getPath() + "/idle");
+                            if (contents.contains(idleFolder)) {
+                                // Ja! - Einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(idleFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                if (imglist.size() > 0) {
+                                    int animframerate = readFrameRate(new File(idleFolder.getPath() + "/anim.properties"));
+                                    amanager.addIdle(animframerate, imglist.toArray(new Image[imglist.size()]));
+                                    rgi.logger("[Graphics][LoadAnim]: B-DESC:" + desc + "-IDLE-animation mit " + count + " frames loaded.");
+                                }
+                            }
+                            // Texturen für Working?
+                            File workingFolder = new File(building.getPath() + "/working");
+                            if (contents.contains(workingFolder)) {
+                                // Ja! - Einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(workingFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                if (imglist.size() > 0) {
+                                    int animframerate = readFrameRate(new File(workingFolder.getPath() + "/anim.properties"));
+                                    amanager.addWorking(animframerate, imglist.toArray(new Image[imglist.size()]));
+                                    rgi.logger("[Graphics][LoadAnim]: B-DESC:" + desc + "-WORKING-animation with " + count + " frames loaded.");
+                                }
+                            }
+                            // Texturen fürs sterben?
+                            File dieingFolder = new File(building.getPath() + "/dieing");
+                            if (contents.contains(dieingFolder)) {
+                                // Ja! - Einlesen
+                                ArrayList<Image> imglist = new ArrayList<Image>();
+                                int count = 0;
+                                while (true) {
+                                    try {
+                                        imglist.add(new Image(dieingFolder.getPath() + "/" + count + ".png"));
+                                        count++;
+                                        forceFrame();
+                                    } catch (Exception ex) {
+                                        // Bild gibts nicht, dann wars das, abbrechen
+                                        break;
+                                    }
+                                }
+                                if (imglist.size() > 0) {
+                                    int animframerate = readFrameRate(new File(dieingFolder.getPath() + "/anim.properties"));
+                                    amanager.addDieing(animframerate, imglist.toArray(new Image[imglist.size()]));
+                                    rgi.logger("[Graphics][LoadAnim]: B-DESC:" + desc + "-DIEING-animation with " + count + " frames loaded.");
+                                }
+                            }
+                            // Fertig mit einlesen - speichern
+                            rgi.mapModule.insertBuildingAnimator(desc, amanager);
+                        }
+                        // Nein
+                        continue;
+                    } catch (NumberFormatException ex) {
+                        // Irgendwie keine Zahl
+                        continue;
+                    }
+                }
+            }
+        }
+        rgi.logger("[Graphics][LoadAnim]: Finished reading animations.");
+    }
+
+    private boolean fillAnimArray(Image[][] arr) {
+        // Ist überhaupt irgendetwas da?
+        boolean ok = false;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != null) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok) {
+            // Abbrechen, es ist gar nix da
+            return false;
+        }
+        // Füllt das AnimationArray so weit wie möglich auf
+        // Muss 0 Erstellt werden?
+        if (arr[0] == null || arr[0].length == 0) {
+            // 0 Erstellen, versuche dafür 3,4,5,2,1
+            if (arr[3] != null && arr[3][0] != null) {
+                arr[0] = arr[3];
+            } else if (arr[4] != null && arr[4][0] != null) {
+                arr[0] = arr[4];
+            } else if (arr[5] != null && arr[5][0] != null) {
+                arr[0] = arr[5];
+            } else if (arr[2] != null && arr[2][0] != null) {
+                arr[0] = arr[2];
+            } else if (arr[1] != null && arr[1][0] != null) {
+                arr[0] = arr[1];
+            }
+        }
+        // 0 Ist jetzt da, jetzt noch die vorhandenen Spiegeln
+        // 2 Da?
+        if (arr[2] != null && arr[2].length > 0 && arr[2][0] != null) {
+            // Spiegeln nach 8
+            Image[] narr = new Image[arr[2].length];
+            for (int i = 0; i < arr[2].length; i++) {
+                Image img = arr[2][i];
+                Image newimg = img.getFlippedCopy(true, false);
+                /*int lx = img.getWidth();
+                for (int x = 0; x < img.getWidth(); x++) {
+                for (int y = 0; y < img.getHeight(); y++) {
+                // Einfach Pixel rumkopieren
+                newimg.setRGB(lx - x - 1, y, img.getRGB(x, y));
+                }
+                } */
+                narr[i] = newimg;
+            }
+            arr[8] = narr;
+        }
+        // 3 Da?
+        if (arr[3] != null && arr[3].length > 0 && arr[3][0] != null) {
+            // Spiegeln nach 7
+            Image[] narr = new Image[arr[3].length];
+            for (int i = 0; i < arr[3].length; i++) {
+                Image img = arr[3][i];
+                Image newimg = img.getFlippedCopy(true, false);
+                /*int lx = img.getWidth();
+                for (int x = 0; x < img.getWidth(); x++) {
+                for (int y = 0; y < img.getHeight(); y++) {
+                // Einfach Pixel rumkopieren
+                newimg.setRGB(lx - x - 1, y, img.getRGB(x, y));
+                }
+                } */
+                narr[i] = newimg;
+            }
+            arr[7] = narr;
+        }
+        // 4 Da?
+        if (arr[4] != null && arr[4].length > 0 && arr[4][0] != null) {
+            // Spiegeln nach 6
+            Image[] narr = new Image[arr[4].length];
+            for (int i = 0; i < arr[4].length; i++) {
+                Image img = arr[4][i];
+                Image newimg = img.getFlippedCopy(true, false);
+                /*int lx = img.getWidth();
+                for (int x = 0; x < img.getWidth(); x++) {
+                for (int y = 0; y < img.getHeight(); y++) {
+                // Einfach Pixel rumkopieren
+                newimg.setRGB(lx - x - 1, y, img.getRGB(x, y));
+                }
+                } */
+                narr[i] = newimg;
+            }
+            arr[6] = narr;
+        }
+        // Fertig.
+        return true;
+    }
+
+    private int readFrameRate(File properties) {
+        try {
+            // Liest die Framerate aus einem gegebenen Properties-File ein.
+            FileReader reader = new FileReader(properties);
+            BufferedReader breader = new BufferedReader(reader);
+            String zeile = null;
+            while ((zeile = breader.readLine()) != null) {
+                if (zeile.contains("framerate")) {
+                    return Integer.parseInt(zeile.substring(zeile.indexOf("=") + 1));
+                }
+            }
+            // Nicht gefunden, defaulting
+            return 25;
+        } catch (IOException ex) {
+            return 25;
+        } catch (NumberFormatException ex) {
+            return 25;
+        }
+    }
+
+    protected void initSubs() {
+        // Läd die Submodule
+        // Inputmodul
+        rgi.logger("[Graphics]: Init Sub: RogInput...");
+        inputM.initAsSub(this);
+    }
+
+    public void activateMap(CoRMapElement[][] newVisMap) {
+        content.setVisMap(newVisMap, rgi.mapModule.getMapSizeX(), rgi.mapModule.getMapSizeY());
+        content.setPosition(0, 0);
+    }
+
+    /**
+     * Schält den Fog of War ab, deckt also die komplette Karte auf
+     */
+    public void disableFoW() {
+        // Nicht nochmal
+        if (!content.fowDisabled) {
+            content.fowDisabled = true;
+            content.renderFogOfWar = false;
+            // FoW-Array komplett aufdecken
+            content.freeFogOfWar();
+        }
+    }
+
+    public void defeated() {
+        // Dieser Spieler hat verloren, das soll eingeblendet werden
+        content.gameDone = 3;
+        // Jetzt kann der Spieler ja ruhig alles sehen
+        disableFoW();
+        content.endTime = System.currentTimeMillis();
+    }
+
+    public void win() {
+        // Dieser Spieler hat gewonnen, das soll eingeblendet werden
+        content.gameDone = 1;
+        // Jetzt kann der Spieler ja ruhig alles sehen
+        disableFoW();
+        content.endTime = System.currentTimeMillis();
+    }
+
+    public void done() {
+        // Verloren und Ende
+        disableFoW();
+        content.gameDone = 2;
+    }
+
+    public boolean clickedInSel(final int button, final int x, final int y, int clickCount) {
+        // Überprüft, ob ein Aufruf in die Einheiten-Selektions-Zone fiel
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 3 / 7 + content.realPixY * 2 / 7 * 0.2) && y < (content.realPixY * 5 / 7)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean clickedInOpt(int x, int y) {
+        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+        // Auf Geschwindigkeit optimiert
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 0.742714) && y < (content.realPixY * 0.9712857)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean clickedInOpt(final int button, final int x, final int y, final int clickCount) {
+        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+        // Auf Geschwindigkeit optimiert
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 0.1248285) && y < (content.realPixY * 0.9712857)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Fügt ein Bullet zur Grafikengine hinzu.
+     * Mehr muss nicht getan werden, Animation und Schaden werden automatisch berechnet, solange die Grafik läuft.
+     * Nur scheduling, wird erst eingefügt, wenn gerade kein Frame gerendert wird.
+     */
+    public void addBullet(GraphicsBullet b) {
+        synchronized (newBullets) {
+            try {
+                content.allListLock.lock();
+                content.allList.add(b);
+            } finally {
+                content.allListLock.unlock();
+            }
+        }
+        // Zum Gegner hindrehen, falls wir gerade net laufen
+        if (!b.attacker.isMoving() && b.attacker.anim != null) {
+            b.attacker.anim.dir = b.getTargetPos().subtract(b.sourcePos).transformToIntVector();
+        }
+    }
+
+    public void addBulletB(GraphicsBullet b) {
+        synchronized (newBullets) {
+            try {
+                content.allListLock.lock();
+                content.allList.add(b);
+            } finally {
+                content.allListLock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Trifft letzte Vorbereitungen.
+     * Benötigt ein ansonsten praktisch zu 100% geladenes Spiel
+     */
+    public void finalPrepare() {
+        // Input-Select syncen
+        content.selectedObjects = this.inputM.selected;
+        // Grafikausgabe einrichten
+        content.byPass = true; // Game-rendering darf das
+        content.epoche = 1;
+
+        // Jetzt ist die Größe gesetzt, scalefaktor fürs Hud bestimmen und Bildchen skalieren lassen
+        double scalefactorX = (content.hudSizeX * 0.8) / (content.sizeX * 20);
+        double scalefactorY = (content.realPixY / 7 * 2 * 0.8) / (content.sizeY * 15);
+        content.preCalcMiniMapElements(scalefactorX, scalefactorY);
+
+        rgi.logger("[Graphics]: Calcing selection markers...");
+        Color[] playercolors = new Color[rgi.game.playerList.size()];
+        playercolors[0] = Color.black;
+        for (int i = 1; i < playercolors.length; i++) {
+            playercolors[i] = rgi.game.playerList.get(i).color;
+        }
+        content.calcColoredMaps(playercolors);
+        // Nötige Variablen syncronisieren
+        content.allList = rgi.mapModule.allList;
+
+        try {
+            content.interactivehud = new Image(content.hudSizeX, content.realPixY / 7 * 4);
+        } catch (org.newdawn.slick.SlickException ex) {
+            rgi.logger(ex);
+        }
+        content.buildingsChanged();
+        //content.renderBackgroundChanged(); // Für MiniMaperstellung etc..
+        content.initMiniMap();
+        // Ansicht zum Hauptgebäude des Spielers scrollen (1. Gebäude mit seiner playerId in der Liste)
+        for (Building b : buildingList) {
+            if (b.playerId == rgi.game.getOwnPlayer().playerId) {
+                rgi.rogGraphics.jumpTo((b.position.X + 6) - (rgi.rogGraphics.content.viewX / 2), b.position.Y - (rgi.rogGraphics.content.viewY / 2));
+                break;
+            }
+        }
+    }
+
+    public void startRendering() {
+        // Startet das Rendern, muss nach loadMap aufgerufen werden
+
+        rgi.logger("[Graphics]: Starting renderer...");
+        // Kantenglättung
+        if ("true".equals(rgi.configs.get("antialising"))) {
+            content.enableAntialising();
+            rgi.logger("[Graphics]: Antialising active.");
+        }
+
+        // Thread für Mainloop starten
+        content.startRender();
+        content.modi = 3;
+        try {
+            // Maus mittig auf den Bildschirm setzen (funktioniert nur im Vollbild, oder wenn das Fenster noch nicht bewegt wurde..)
+            robot = new Robot();
+            robot.mouseMove(this.getScreenWidth() / 2, this.getScreenHeight() / 2);
+        } catch (AWTException ex) {
+        }
+
+        rgi.rogGraphics.initSubs();
+
+        starttime = new Date().getTime();
+        seenPause = false;
+        content.loadZoom2StartTime = System.currentTimeMillis();
+        content.zoomInGame = true; // Ein epischer - live-ins-Spiel-spring-Effekt
+    }
+
+    public void jumpTo(int scrollX, int scrollY) {
+        // Lässt die Ansicht zur Position springen, alles was größere Koordinaten hat ist drin, die angegebene Position ist links oben
+        // Achtung: Garantiert nicht, dass die Position links oben auch eingestellt wird, die Map wird nicht über den Rand hinaus gescrollt....
+        if ((scrollX + content.viewX) > content.sizeX) {
+            scrollX = content.sizeX - content.viewX;
+        }
+        if ((scrollY + content.viewY) > content.sizeY) {
+            scrollY = content.sizeY - content.viewY;
+        }
+        if (scrollX < 0) {
+            scrollX = 0;
+        }
+        if (scrollY < 0) {
+            scrollY = 0;
+        }
+        // Nur in 2er-Schritten scollen:
+        if (scrollX % 2 == 1) {
+            // Beim Rechtsklickscrollen ist die Behandlung etwas unterschiedlich, weil ints doof gerundet werden und die Ansicht dann immer nach links oben scrollen würde
+            if (this.rightScrolling) {
+                if (scrollX > content.positionX) {
+                    scrollX++;
+                } else {
+                    scrollX--;
+                }
+                // Nicht über den Rand raus
+                if (scrollX < 0) {
+                    scrollX = 0;
+                } else if ((scrollX + content.viewX) > content.sizeX) {
+                    scrollX = content.sizeX - content.viewX;
+                }
+            } else {
+                scrollX--;
+                if (scrollX < 0) {
+                    scrollX = 0;
+                }
+            }
+        }
+        if (scrollY % 2 == 1) {
+            if (this.rightScrolling) {
+                if (scrollY > content.positionY) {
+                    scrollY++;
+                } else {
+                    scrollY--;
+                }
+                // Nicht über den Rand raus
+                if (scrollY < 0) {
+                    scrollY = 0;
+                } else if ((scrollY + content.viewY) > content.sizeY) {
+                    scrollY = content.sizeY - content.viewY;
+                }
+            } else {
+                scrollY--;
+                if (scrollY < 0) {
+                    scrollY = 0;
+                }
+            }
+
+        }
+        content.setPosition(scrollX, scrollY);
+    }
+
+    public Dimension getPosition() {
+        // Liefert die Koordinaten des OBEREN, LINKEN Feldes zurück, alles was Korrdinaten größer als das hat, ist sichtbar...
+        return new Dimension(content.positionX, content.positionY);
+    }
+
+    public boolean isInSight(int vX, int vY) {
+        // Prüft, ob der Benutzer das angegebene Feld gerade sehen kann
+        if (vX >= content.positionX && vX < content.positionX + content.viewX) {
+            if (vY >= content.positionY && vY < content.positionY + content.viewY) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void refreshMap() {
+    }
+
+    public void updateUnits(List<Unit> nL) {
+        unitList = nL;
+        content.updateUnits(unitList);
+    }
+
+    public void updateBuildings(List<Building> nL) {
+        buildingList = nL;
+        content.updateBuildings(nL);
+    }
+
+    public void showCalculatedRoute(ArrayList<Position> path) {
+        // Zeigt den von der Wegfindung berechneten Weg an, zum Wegfindung-DEBUGGEN
+        content.enableWayPointHighlighting(path);
+    }
+
+    public void displayError(String s) {
+        // Zeigt eine Fehlermeldung grafisch an, zum Wegklicken mit OK
+        JOptionPane.showMessageDialog(new JFrame().getComponent(0),
+                s,
+                "Critical Error!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void displayWarning(String s) {
+        // Zeigt eine Warnmeldung grafisch an, zum Wegklicken mit OK
+        JOptionPane.showMessageDialog(new JFrame().getComponent(0),
+                s,
+                "Warning!",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    public ArrayList<Unit> getBoxSelected(final int button, final int x, final int y) {
+        // Holt alle derzeit in der Box selektieren Einheiten
+        if (content.dragSelectionBox) {
+            return content.getBoxSelected(button, x, y);
+        } else {
+            return null;
+        }
+    }
+
+    public void startSelectionBox(int button, int x, int y) {
+        content.dragSelectionBox = true;
+        content.boxselectionstart = new Dimension(x, y);
+    }
+
+    public void stopSelectionBox() {
+        content.dragSelectionBox = false;
+    }
+
+    public void startRightScrolling() {
+        rightScrollStart = System.currentTimeMillis();
+        this.setMouseGrabbed(true);
+        rightX = input.getAbsoluteMouseX();
+        rightY = input.getAbsoluteMouseY();
+        this.rightScrolling = true;
+    }
+
+    public void stopRightScrolling() {
+        this.rightScrolling = false;
+        this.setMouseGrabbed(false);
+    }
+
+    private void manageRightScrolling() {
+        rightDX += (input.getAbsoluteMouseX() - rightX) * rightScrollSpeed;
+        rightDY += (input.getAbsoluteMouseY() - rightY) * rightScrollSpeed;
+        rightX = input.getAbsoluteMouseX();
+        rightY = input.getAbsoluteMouseY();
+        if ((int) (rightDX) != 0 || (int) (rightDY) != 0) {
+            this.jumpTo(((int) rightDX) + content.positionX, ((int) rightDY) + content.positionY);
+            rightDX = 0;
+            rightDY = 0;
+            // Maus mittig setzen
+            //robot.mouseMove(rightInitX, rightInitY);
+        }
+    }
+
+    public void builingsChanged() {
+        content.buildingsChanged = true;
+    }
+
+    /*
+     * Setzt das Dauerhaft anzeigen der Energiebalken, wie man es aus Warcraft kennt
+     * @param boolean b Balken anzeigen (true) oder nicht (false)
+     */
+    public void setAlwaysShowEnergyBars(boolean b) {
+        content.alwaysshowenergybars = b;
+    }
+
+    /**
+     * Zeigt Infos über Einheiten / Gebäude / Ressourcen an, die einem nicht gehören.
+     * Funktioniert nur, solange selected leer ist.
+     * Ansonsten wird dieses hier sofort gelöscht.
+     * @param das zu zeigende Objekt.
+     */
+    public void triggerTempStatus(GameObject obj) {
+        content.tempInfoObj = obj;
+        triggerUpdateHud();
+    }
+
+    public void notifyUnitDieing(final Unit unit) {
+        // Muss aufgerufen werden, damit eine Einheit korrekt entfernt, aber davor noch eine Todesanimation abgespielt wird.
+        if (unit.anim != null && unit.anim.isDieingAnimated()) {
+            // Unit klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
+            unit.alive = false;
+            /*    for (RogUnitBehaviour behaviour : unit.behaviours) {
+            behaviour.active = false;
+            } */
+            unit.movingtarget = null;
+            unit.isSelected = false;
+            unit.playerId = 0;
+
+            rgi.mapModule.setCollision(unit.position, collision.free);
+            rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
+            new Timer().schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    try {
+                        content.allListLock.lock();
+                        content.allList.remove(unit);
+                    } finally {
+                        content.allListLock.unlock();
+                    }
+                }
+            }, unit.anim.getDieingDuration());
+        } else {
+            rgi.mapModule.setCollision(unit.position, collision.free);
+            rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
+            try {
+                content.allListLock.lock();
+                content.allList.remove(unit);
+            } finally {
+                content.allListLock.unlock();
+            }
+        }
+    }
+
+    public void notifyBuildingDieing(final Building building) {
+        // Muss aufgerufen werden, damit ein Gebäude korrekt entfernt, aber davor noch eine Todesanimation abgespielt wird.
+        if (building.anim != null && building.anim.isDieingAnimated()) {
+            // Gebäude klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
+            building.alive = false;
+            /* for (RogUnitBehaviour behaviour : building.behaviours) {
+            behaviour.active = false;
+            } */
+            building.ready = false;
+            building.isSelected = false;
+            building.playerId = 0;
+            this.builingsChanged();
+            new Timer().schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    try {
+                        content.allListLock.lock();
+                        content.allList.remove(building);
+                    } finally {
+                        content.allListLock.unlock();
+                    }
+                    // Kollsion entfernen
+                    for (int z1 = 0; z1 < building.z1; z1++) {
+                        for (int z2 = 0; z2 < building.z2; z2++) {
+                            rgi.mapModule.setCollision(building.position.X + z1 + z2, building.position.Y - z1 + z2, collision.free);
+                        }
+                    }
+                }
+            }, building.anim.getDieingDuration());
+        } else {
+            // Kollsion entfernen
+            for (int z1 = 0; z1 < building.z1; z1++) {
+                for (int z2 = 0; z2 < building.z2; z2++) {
+                    rgi.mapModule.setCollision(building.position.X + z1 + z2, building.position.Y - z1 + z2, collision.free);
+                }
+            }
+            try {
+                content.allListLock.lock();
+                content.allList.remove(building);
+            } finally {
+                content.allListLock.unlock();
+            }
+            this.builingsChanged();
+        }
+
+    }
+
+    /**
+     * Lässt die Grafik den interaktiven Teil des Huds neu zeichnen
+     * Geschieht sofort mit dem nächsten Frame
+     *
+     */
+    public void triggerUpdateHud() {
+        content.updateInterHud = true;
+    }
+
+    public void triggerRefreshFow() {
+        fowtrigger = true;
+    }
+
+    /**
+     * Aufrufen, wenn sich die Epoche geändert hat.
+     */
+    public void epocheChanged() {
+        content.epocheChanged = true;
+        this.triggerUpdateHud();
+        builingsChanged();
+        // Feuer neu auf den Gebäuden verteilen
+        content.fireMan.epocheChanged(content.epoche, content.buildingList);
+        // Allen mitteilen
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 45, -2, content.epoche, 0, 0));
+    }
+
+    /*
+     * Setzt das Dauerhaft anzeigen der Energiebalken, wie man es aus Warcraft kennt
+     * @return boolean Balken anzeigen (true) oder nicht (false)
+     */
+    public boolean getAlwaysShowEnergyBars() {
+        return content.alwaysshowenergybars;
+    }
+
+    public void renderAndCalc(GameContainer c, Graphics g) {
+
+        // Mainloop - Frames limitieren, dazu Zeit nehmen
+        Date startTime = new Date();
+        if (pauseMod) {
+            // Ok, habs gsehen
+            content.paintComponent(g);
+            seenPause = true;
+        }
+        if (!content.fowDisabled && (fowtrigger || startTime.getTime() - lastFowCalc > 250)) {
+            content.calcFogOfWar();
+            lastFowCalc = startTime.getTime();
+            fowtrigger = false;
+        }
+        if (!seenPause) {
+            content.paintComponent(g);
+        }
+        if (miniMapScrolling) {
+            // Wie klick auf MiniMap behandeln
+            content.klickedOnMiniMap(content.mouseX, content.mouseY);
+        }
+        // Eventuell neue Bullets adden:
+        manageBullets();
+        if (!this.rightScrolling) {
+            // Maus-Scrollen abhandeln
+            if (content.mouseX < 3) {
+                content.scrollLeft();
+            } else if (content.mouseX > content.realPixX - 4) {
+                content.scrollRight();
+            }
+            if (content.mouseY < 3) {
+                content.scrollUp();
+            } else if (content.mouseY > content.realPixY - 4) {
+                content.scrollDown();
+            }
+            // Rechtsklick-Scrollen
+        } else {
+            manageRightScrolling();
+        }
+        // Tastatur-Scrollen abhandeln
+        if (inputM.scroll[0]) {
+            content.scrollUp();
+        }
+        if (inputM.scroll[1]) {
+            content.scrollLeft();
+        }
+        if (inputM.scroll[2]) {
+            content.scrollDown();
+        }
+        if (inputM.scroll[3]) {
+            content.scrollRight();
+        }
+        // Hatten wir das Pause gsehen?
+        if (seenPause) {
+            if (!pauseMod) {
+                seenPause = false;
+            }
+        }
+    }
+
+    @Override
+    public void pause() {
+        pauseMod = true;
+        content.pauseMode = true;
+        //rgf.setIgnoreRepaint(false);
+        for (int i = 0; i < content.allList.size(); i++) {
+            GraphicsRenderable r = content.allList.get(i);
+            if (r.getClass().equals(GraphicsBullet.class)) {
+                ((GraphicsBullet) r).pause();
+            }
+        }
+    }
+
+    @Override
+    public void unpause() {
+        pauseMod = false;
+        content.pauseMode = false;
+        for (int i = 0; i < content.allList.size(); i++) {
+            GraphicsRenderable r = content.allList.get(i);
+            if (r.getClass().equals(GraphicsBullet.class)) {
+                ((GraphicsBullet) r).unpause();
+            }
+        }
+    }
+
+    public long getPauseTime() {
+        return pauseTime;
+    }
+
+    public void showstatistics() {
+        statisticsMod = true;
+        content.statisticsMode = true;
+        content.gameDone = 0;
+    }
+}

@@ -1,0 +1,92 @@
+Bug-Requests:
+TODO:
+
+
+Einheiten porten sich, wenn man extrem viel rumklickt.
+Beim Gebäude betreten gibt immer noch dasselbe Problem wie bei R469 (Einheit läuft sinnlos)
+Wenn eine Einheit ohne Ernteanimation ernten will, stürzt die Grafik teilweise ab.
+Einheitenbauen - Ressourcen und Limit-Bugs (Server/Client-Timing)
+Hauptmenü öffnet sich häufig nicht richtig (ganz kleines, leeres Fenster)
+Verbeleibende Ressourcen stimmen nur bei eigenen (behaviour auch für fremde mitlaufen lassen)
+Lobby: Kein Ändern mehr, wenn man schon ready ist
+Doppelter Baubefehl (tobi): Was war das nochmal?
+Arbeiter in Gebäuden werden eventuell nicht mit geupgraded
+Fehler in der Server-Kollision (Besonders auffällig eng um Gebäude) - (Tobi): Hab nen neuen Debug-Modus eingebaut, einfach einschalten, wenn das nächste mal spinnt. Ich hab hier auf die schnelle keine Fehler gefunden....
+Beim Spectator müssen Bau-Behaviour mitlaufen
+Sichtbereich-Ändern bei Verbündeten / Ehemaligen Verbündeten immernoch komisch
+Statistik muss zu lange Spielernamen abschneiden
+
+DONE:
+
+[R431]: Ruckler bei Gebäudebaubefehl
+[R432]: Starteinheiten haben teilweise 2 Verhaltensbuttons
+[R433]: Fog of War flackert beim Epochenupgrade (eventuell noch wann anders)
+[R434]: Rechtsklick beim Einheiten rekrutieren funktioniert nicht (wird wie Linksklick behandelt)
+[R435]: CooldownMax funktioniert nicht (Schussfrequenz)
+[R436]: Nachträglich gebaute Kasernen/Arbeiter haben die durch das Epochenupgrade hinzugekommenen Fähigkeiten nicht
+[R438]: Einheitenlimit-Vergrößerung ist immernoch global
+[R441]: Minimap-Rechtsklick unzuverlässig
+[R444]: Baueinheiten können über sich selbst und andere Einheiten bauen - diese bleiben dann im Gebäude hängen. (Geht z.B. wenn eine Einheit gerade läuft)
+[R445]: Einheiten müssen zum Bauen nicht neben dem Gebäude stehen - das sollte nochmal überprüft werden
+[R446]: Gestorbene Gebäude hinterlassen FoW unerkundet
+[R447]: Lobby überträgt Nachrichten/Daten teilweise durcheinander
+[R453]: NullPointer beim Gebäudebau und Server-Reaktionszeiten über 10ms lassen Spiel abstürzen
+[R454]: Man kann im Pause-Modus Befehle geben - dann passieren ganz schlimme Sachen
+[R455]: "FPS:" Wird in der geupdateten Minimap und dem geänderten Hud angezeigt
+[R460]: Läuft auf manchen Windows-Systemen immernoch nicht
+[R465]: Richtiger Kick-Support für die Lobby
+[R468]: Globale Sammelgeschwindigkeiten funktionieren nur mit durch 60 teilbaren Werten, alles andere wird weggerundet (ClientBehaviourHarvest, Zeile 95)
+[R469,R471]Wenn man einen Arbeiter auf eine Ressource schickt, neben der er schon steht, bleibt er nicht stehen und fängt an zu sammeln, sondern sucht sich erst ein anderes Feld (beim Bauen genauso)
+[R482]: Eigene Einheiten können manchmal nicht durcheinander durch laufen
+[R483]: Man kann Sachen auswählen, die vom Fog of War verdeckt sind
+[R485]: REinheiten suchen in einem größerem Radius nach Feinden, als sie selber sehen können
+[R486]: Verhaltensbuttons generell unnütz bis kontraproduktiv (weglaufen nach kampf)
+[R487]: Calcopt - Bereichserkennung (Fähigkeiten) versagt teilweise
+[R497]: Ressource-ID-Mismatch
+[R508]: Einheitenausbildung nimmt keine Mehrfachklicks
+[R514]: Gebäuderahmen, Bullets im Fog of War
+[R519]: Einheitengeschwindigkeit mit Kommazahlen
+[R541]: Gebäude-Selektionsbug (gelegentlich)
+[R549]: Einheiten suchen sich während dem Kämpfen neue Angriffsziele, wenn sie von einem zusätzlichen Gegner angegriffen werden (-> Nahkämpfer laufen rum statt zu kämpfen)
+[R560]: Wenn Fernkämpfer geupgradet werden, funktionieren Bullets nicht mehr (sicher bei damageup, antibuildingup; warscheinlich bei allen Parametern)
+[R559]: Gebäude-Selektionsbug (Hases Bug)
+|R575,R576]: Manchmal können einzelne Arbeiter nicht mehr sammeln und bauen
+[R607]: Fps-Anzeige in der Minimap
+[R609]: Gebäude bauen, abbrechen, weiter --> ist sofort fertig. (timer?)
+[R606]: Chat-Performance
+[R611]: Bei Epochenupgrade wird das Einheitenlimit falsch neuberechnet, Einheiten in Bauschleife zählen nicht mit, Häuser-Baustellen werden zweimal berechnet
+[R612]: Gebäude werden nicht angezeigt, obwohl sie da sind
+[R612]: Gebäude werden angezeigt, die schon weg sind = Gebäude wird nach dem Abreißen immer noch angezeigt, ist aber nicht mehr anwählbar und unterstützt kein Truppenlimit mehr
+[R612]: Leichen bleiben liegen
+[R624]: IAL muss mit mehr Einheiten klarkommen = Position für Gebäudeangriff richtig berechnen
+[R640]: Einheiten sterben oft nicht, wenn sie 0 HP erreichen, sondern erst beim nächsten treffer
+[R641]: Wenn ein Arbeiter während dem Bauen stirbt, kann kein anderer weiterbauen
+[R649]: Große Ressourcen bleiben
+[R650]: Aufbauende Gebäude ignorieren Schaden
+[R651]: Gewinner leavt --> nochmal GameOver
+[R652]: Untote Einheiten (0HP)
+[R653]: Einheiten mit zu vielen Hitpoints
+[R654]: Richtungen von Gegnerischen Einheiten schauen in die falsche Richtungen (wohl vor allem Ernten)
+[R654]: Arbeitsanimation von feindlichen Gebäuden
+[R656]: Idle fälschlicherweise aus
+[R671]: Man hat kurz sicht von sterbenden Gebäuden (fremde)
+[R672]: Selektion von links unten nach rechts oben geht nicht
+[R681]: Stopmoving wieder einbauen, sonst rennen Einheiten sinnlos aneinander vorbei
+[R659]: Nur eine Einheit pro Feld (vor allem Angriff)
+[R673]: Loadscreen-Enter reagiert nicht auf NumEnter
+[R689]: 0HP-Einheiten.
+[R692]: bessere position suchen beim jumpen (bau-algo)
+[R691]: Selten frieren Einheiten komplett ein und akzeptieren dann keine Befehle mehr, lassen sich nichtmehr Angreiffen.
+[R695,R696]: Limituprade und Res+ global, sollte aber nicht sein
+[R699]: Path with only one Position
+[R724]: Fern-Ernten
+[R725]: nicht idlen während man baut
+[R729]: Bei Mehrfachbewegungen wird die Kollision nicht korrekt aufgehoben (im Server)
+[R737]: Manchmal bekommt man kein Team zugewiesen (oder null?) Dann kann man nichts machen
+[R736]: Stürzt unter Windows wieder beim Laden ab (OutOfMemory)
+[R737,R738]: Lobby: Name manchmal "null"
+[R755]: Fortschrittsbalken wartender Rekrutierungen zeigt teilweise ~80% an
+[R756]: Zig mal "Unknown Command: -1" beim Disconnect
+[R757]: Manchmal läuft Arbeiter nicht neben das Gebäude, dass er bauen soll, und muss manuell auf ein Nachbarfeld geschickt werden = Einheit rennt nicht zur Baustelle (server, client-timing)
+[R758]: Einheitenlimit wird nicht niedriger, wenn ein rekrutiernedes Gebäude zerstört wird
+[R764]: Fern-Ernter, wenn zugewiesenes Feld frei, aber nicht erreichbar ist

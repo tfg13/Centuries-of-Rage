@@ -1,0 +1,6 @@
+#The System loads all images from all folders named in types.list except the ones named here (full path)
+img/game/loading_front_blur.png
+img/game/loading_front_noblur.png
+img/game/loading_back_blur.png
+img/game/loading_back_noblur.png
+img/game/loading_sun_blur.png

@@ -1,0 +1,12 @@
+// Diese Datei enthält Ideen zur Verbesserung der Code-Lesbarkeit
+// Durch eine stärkere Abstraktion des Programmcodes verringert sich der Wartungsaufwand und vereinfacht sich das Hinzufügen neuer Features
+
+TODO:
+
+Listener/Eventsystem für Behaviourrelevante Ereignisse einbauen, damit Behaviours sich z.B. selber abschalten könne, wenn sich die Einheit bewegt etc.
+Unlogische Paketbenennung fixen: Server-Behavoiur liegen unter thirteenducks.cor.game.server.behaviour.impl , client-behaviours aber unter thirteenducks.cor.networks.client.behaviour.impl
+
+
+DONE:
+
+[R700]: Netzwerk-Kommandos in eigene Klassen mit einheitlicher Schnittstelle

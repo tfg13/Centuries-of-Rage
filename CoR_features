@@ -1,0 +1,58 @@
+Feature-Requests:
+TODO:
+
+Hauptmenü sollte wieder auftauchen, wenn man gekickt wird / das Spiel verlässt
+Ubuntu/Debian-Installationspacket für Linux, damit die Packetverwaltung Abhängigkeiten (OpenGl etc) automatisch auflösen kann.
+Schriftgröße mit Auflösung anpassen (v.a. für Fullscreen)
+Gebäude reparieren
+Zufallsstartposition
+Map-Funktionen für die Lobby (Map / Startpositionen auswählen + Nicht zu viele Spieler auf einmal) [Textdatei mit metadaten in Map-zipfile)
+CoR-Logo fürs Game-Fenster
+Hintergrundmusik wieder anschalten
+Lobby: Liste soll scrollen
+Lobby: Leere Krone
+Ability-Parameter "epoche" ändern: "ab dieser epoche" statt "nur diese epoche"
+Neue Musik nach ogg konvertieren (rechtliche aspekte wegen Instrumentenset klären) und einbauen
+Anzeige nichtbeschäftigter Arbeiter
+Map erkunden für Kundschafter (Mage?)
+Chatten mit Team-Membern
+Sieg als Team
+Aufgeben-Funktion (für Server auch Beenden) - dann soll die Statistik erscheinen (eventuell InGame-Menü?)
+Alle Truppen auswählen
+
+DONE:
+
+[R461]:      Soundsystem
+[R463]:      Upgradebare Ressourcen-Ernteraten
+[R484]:      Truppenlimit sollte durch Upgrade veränderbar sein (global)
+[R488]:      Bei Gebäudeselektion auch Grundriss im ADV beachten
+[R489]:      Grafische Fehlermeldung einbauen, wenn Map nicht geladen werden kann.
+[R490]:      Zufallsvolk
+[R512]:      Entf-Taste soll eigene Einheiten/Gebäude löschen
+[R525-R527]: Einheitenlimit-Erhöhung für Gebäude
+[R517]:      Hauptmenü soll verschwinden, wenn die Lobby startet
+[R500+R506]: Lobby sollte mit doppelten Namen klarkommen
+[R534]:      Server-Stop button überarbeiten
+[R493+R501]: Scrollen mit Rechtsklick-Halten
+[R538]:      Sieg/Niederlage, wenn Spieler gewinnt/verliert
+[R543]:      Bei Wegpunkt auf Ressource/Ressorcengebäude sollen Arbeiter sammeln und nicht nur neben Ressource/Gebäude stehen
+[R548]:      Ingame-Chat
+[R549]:      Metall soll erst in Epoche 2 gesammelt werden können, Gold in Epoche 3
+[R561]:      Client-Leave soll besser behandelt werden
+[BETA]:      Installer für Windows, der die dlls automatisch installiert
+[R570]:      Grafische Fehlermeldung einbauen, wenn Bibliotheken fehlen (.ddl's / .so's)
+[R588]:      Statistiken :)
+[R584+R587]: Lobby: Host anzeigen
+[R628]:      Baustellen sollten nicht volle Hp haben & Energiebalken anzeigen
+[R621,622,623,626,629]: Schießende Gebäude einbauen
+[R618]:      Icon für Einheitenlimit
+[R608]:      Maximales Truppenlimit (100) einbauen
+[R644+R645]: Einheiten heilen (mit Gebäuden)
+[R697]:      Echte Teams einbauen (und derzeitige teamId in playerId umbenennen)
+[R644+R645]: Einheiten heilen
+[R698]:      Ingame-Chat soll während Pause funktionieren
+[R752]:      Rot-Grün Verschiebung der Energiebalken zu lange Grün
+[R753]:      Ressourcen, die man noch nicht ernten kann auch im Hud Grau färben
+[R754]:      Tür aus Antike-Hud rausschmeißen
+[R760]:      Kompatibilitätsmodus, der keine Großen Bilder verwendet (Ladescreen etc)
+

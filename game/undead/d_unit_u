@@ -1,0 +1,227 @@
+U 1401 {
+speed=4
+name=Worker
+armortype=lightinf
+defaultTexture=img/creeps/testundead6.png
+hitpoints=75
+maxhitpoints=75
+range=2
+idlerange=5
+harvester
+damage=2
+atkdelay=250 # Treffer optisch beim 3. Bild - bei 12 Bildern pro Sekunde: (1000/12)*3 = 250
+cooldownmax=1000
+harvester=true
+Gdesc=Collects Ressources
+Gpro=?
+Gcon=?
+Gimg=img/creeps/testundead6.png
+visrange=5
+limit=1
+}
+
+U 14013 {
+name=Worker Epoch III
+}
+
+U 1402 {
+speed=4
+name=Mage
+armortype=lightinf
+defaultTexture=img/creeps/testundead1.png
+hitpoints=100
+maxhitpoints=100
+range=7
+idlerange=7
+damage=5
+bulletspeed=15
+bullettexture=img/bullets/magicbullet.png
+antiheavyinf=150
+antibuilding=300
+cooldownmax=1000
+Gdesc=Constructs Buildings
+Gpro=?
+Gcon=?
+Gimg=img/creeps/testundead1.png
+ability=1002 #Hut
+ability=1003 #Barracks
+ability=1004 #Storage
+ability=1005 #Watchtower
+#ability=1006 #Stable
+ability=1007 #Farm
+ability=1008 #Forge
+ability=1009 #Workshop
+ability=1010 #Sacrificial Altar
+visrange=8
+limit=1
+}
+
+U 1403 {
+speed=3
+name=Zombie
+armortype=heavyinf
+defaultTexture=img/creeps/testundead2.png
+hitpoints=100
+maxhitpoints=100
+range=2
+idlerange=5
+damage=10
+antikav=200
+cooldownmax=1250
+Gdesc=Basic Fight Unit
+Gpro=Cavalry
+Gcon=Light Infantry
+Gimg=img/creeps/testundead2.png
+visrange=6
+limit=1
+}
+
+U 1404 {
+speed=6
+name=Undead Wolf
+armortype=kav
+defaultTexture=img/creeps/testundead5.png
+hitpoints=150
+maxhitpoints=150
+range=2
+idlerange=5
+damage=7
+antilightinf=300
+antivehicle=200
+cooldownmax=1000
+Gdesc=Fast Cavalry
+Gpro=Light Infantry,
+Gcon=Heavy Infantry
+Gimg=img/creeps/testundead5.png
+visrange=7
+limit=1
+}
+
+U 1405 {
+speed=4
+name=Archer
+armortype=lightinf
+defaultTexture=img/creeps/testundead3.png
+hitpoints=80
+maxhitpoints=80
+range=10
+idlerange=8
+damage=8
+bulletspeed=15
+bullettexture=img/bullets/firearrow.png
+antikav=75
+antiheavyinf=150
+cooldownmax=1000
+Gdesc=Range
+Gpro=Heavy Infantry
+Gcon=Cavalry
+Gimg=img/creeps/testundead3.png
+visrange=6
+limit=1
+}
+
+U 1406 {
+speed=4
+name=Sword Fighter
+armortype=heavyinf
+defaultTexture=img/creeps/testundead4.png
+hitpoints=180
+maxhitpoints=180
+range=2
+idlerange=5
+damage=11
+antikav=150
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=?
+Gcon=Light Infantry
+Gimg=img/creeps/testundead4.png
+visrange=6
+limit=1
+}
+
+U 1407 {
+speed=4.5
+name=Torch Skeleton
+armortype=heavyinf
+defaultTexture=img/creeps/testundead7.png
+hitpoints=170
+maxhitpoints=170
+range=2
+idlerange=5
+damage=8
+antibuilding=300
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=Buildings
+Gcon=Light Infantry
+Gimg=img/creeps/testundead7.png
+visrange=8
+limit=1
+}
+
+U 1408 {
+speed=4.5
+name=Possessed
+armortype=heavyinf
+defaultTexture=img/creeps/u_possessed.png
+hitpoints=180
+maxhitpoints=180
+range=2
+idlerange=5
+damage=10
+antikav=300
+cooldownmax=1250
+Gdesc=Strong Melee Unit
+Gpro=Cavalry
+Gcon=Light Infantry
+Gimg=img/creeps/u_possessed.png
+visrange=6
+limit=1
+}
+
+U 1409 {
+speed=4
+name=Crossbow Skeleton
+armortype=lightinf
+defaultTexture=img/creeps/u_xbow.png
+hitpoints=120
+maxhitpoints=120
+range=10
+idlerange=8
+damage=17
+bulletspeed=15
+bullettexture=img/bullets/genericarrow.png
+antikav=70
+antiheavyinf=200
+cooldownmax=1300
+Gdesc=Range
+Gpro=Heavy Infantry
+Gcon=Cavalry
+Gimg=img/creeps/u_xbow.png
+visrange=6
+limit=1
+}
+
+U 1411 {
+speed=3
+name=Catapult
+armortype=vehicle
+defaultTexture=img/creeps/testcatapult.png
+hitpoints=200
+maxhitpoints=200
+range=15
+idlerange=8
+damage=40
+bulletspeed=15
+bullettexture=img/bullets/catapult_stone.png
+antilightinf=200
+antibuilding=250
+antikav=60
+cooldownmax=2500
+Gdesc=Artillery
+Gpro=Light Infantry and Buildings
+Gcon=Cavalry
+Gimg=img/creeps/testcatapult.png
+limit=3
+}

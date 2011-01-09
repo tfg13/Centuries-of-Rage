@@ -1,0 +1,168 @@
+B 1001 {
+name=Village Center
+defaultTexture=img/buildings/undead_main_e1.png
+hitpoints=5000
+maxhitpoints=5000
+Gdesc=Main Building
+offsetY=6
+z1=6
+z2=6
+ability=1401 #Worker
+ability=1402 #Mage
+ability=1800 #Age 2
+ability=1801 #Age 3
+ability=1802 #Age 4
+limit=-10
+}
+
+B 1002 {
+name=Grave
+defaultTexture=img/buildings/undead_house_e1.png
+hitpoints=1000
+maxhitpoints=1000
+Gdesc=Increases Unit Limit
+offsetY=4
+z1=3
+z2=3
+limit=-5
+ability=1820 #Limit Upgrade
+ability=1821 #Limit Upgrade
+ability=1826 #Healing Upgrade
+}
+
+B 1003 {
+name=Barracks
+defaultTexture=img/buildings/undead_barracks_e1.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Infantry
+offsetY=8
+z1=5
+z2=5
+ability=1403 #Zombie
+ability=1405 #Archer
+ability=1404 #Undead Wolf
+ability=1406 #Sword Fighter
+ability=1407 #Torch Skeleton
+ability=1408 #Possessed
+ability=1409 #Xbow
+}
+
+B 1004 {
+name=Storage
+defaultTexture=img/buildings/undead_storage_e1.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=Improves Ressource-gaining
+offsetY=4
+z1=4
+z2=3
+ability=1810 #Food Upgrade
+ability=1811 #Wood Upgrade
+ability=1812 #Metal Upgrade
+ability=1813 #Gold Upgrade
+}
+
+B 1005 {
+name=Watchtower
+defaultTexture=img/buildings/undead_tower_e1.png
+hitpoints=800
+maxhitpoints=800
+damage=6
+range=13
+bulletspeed=25
+bullettexture=img/bullets/undeadspike.png
+antikav=150
+Gdesc=Defence
+offsetY=4
+z1=2
+z2=2
+visrange=10
+limit=1
+ability=1827 #Tower Upg
+ability=1828 #Tower Upg
+}
+
+B 1006 {
+name=Stable
+defaultTexture=img/buildings/human_stable_e2.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Cavalry
+offsetY=4
+z1=4
+z2=4
+ability=1404 #undead wolf
+}
+
+B 1007 {
+name=Farm
+defaultTexture=img/buildings/undead_farm_e2.png
+hitpoints=1000
+maxhitpoints=1000
+Gdesc=Produces Food
+offsetY=8
+z1=5
+z2=5
+maxIntra=4
+harvRate=0.8
+harvests=1
+}
+
+B 1008 {
+name=Forge
+defaultTexture=img/buildings/undead_forge_e2.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=Improves Mining and Weapons
+offsetY=4
+z1=3
+z2=5
+ability=1807 # Zombie Upg
+ability=1814 # Range Upg
+ability=1816 # Melee Skeleton Upg
+ability=1818 # Wolf Upg
+ability=1819 #All Unit Upgrade
+maxIntra=2
+harvRate=0.8
+harvests=3
+}
+
+B 1009 {
+name=Workshop
+defaultTexture=img/buildings/undead_workshop_e3.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=?
+offsetY=6
+z1=5
+z2=5
+ability=1411 #Catapult
+ability=1809 #Burning Arrows
+}
+
+B 1010 {
+name=Sacrificial Altar
+defaultTexture=img/buildings/undead_sacrificial_e3.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=?
+offsetY=6
+z1=4
+z2=4
+maxIntra=2
+harvRate=0.8
+harvests=4
+ability=1822 #Receive Food
+ability=1823 #Receive Wood
+ability=1824 #Receive Metal
+ability=1825 #Receive Gold
+}
+
+B 8882 {
+name=Farm Epoch III
+}
+
+B 8883 {
+name=Forge Epoch III
+}
