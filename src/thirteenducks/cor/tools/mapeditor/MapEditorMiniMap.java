@@ -1,6 +1,26 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2008, 2009, 2010, 2011:
+ *   Tobias Fleig (tfg@online.de),
+ *   Michael Haas (mekhar@gmx.de),
+ *   Johannes Kattinger (johanneskattinger@gmx.de)
+ *  - All rights reserved -
+ *
+ *
+ *  This file is part of Reign of Godwars.
+ *
+ *  Reign of Godwars is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Reign of Godwars is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Reign of Godwars.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 package thirteenducks.cor.tools.mapeditor;
 

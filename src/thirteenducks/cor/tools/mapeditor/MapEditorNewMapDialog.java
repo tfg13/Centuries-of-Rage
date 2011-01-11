@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008, 2009, 2010:
+ *  Copyright 2008, 2009, 2010, 2011:
  *   Tobias Fleig (tfg@online.de),
  *   Michael Haas (mekhar@gmx.de),
  *   Johannes Kattinger (johanneskattinger@gmx.de)
