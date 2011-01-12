@@ -221,7 +221,7 @@ public abstract class GameObject implements Serializable {
     /**
      * Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
      */
-    public boolean atkAnim = false;
+    private boolean atkAnim = false;
 
     public GameObject(int newNetId) {
         netID = newNetId;
