@@ -26,75 +26,202 @@
 package thirteenducks.cor.game;
 
 import java.io.Serializable;
-//import java.util.ArrayList;
-//import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
-import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import thirteenducks.cor.graphics.GraphicsRenderable;
 import thirteenducks.cor.game.ability.Ability;
-import thirteenducks.cor.game.ability.AbilityBuild;
-import thirteenducks.cor.game.ability.AbilityIntraManager;
-import thirteenducks.cor.game.ability.AbilityRecruit;
-import thirteenducks.cor.game.ability.AbilityUpgrade;
-import thirteenducks.cor.graphics.BuildingAnimator;
-import thirteenducks.cor.graphics.UnitAnimator;
-import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourHeal;
-import thirteenducks.cor.game.server.ServerCore;
 
 /**
+ * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
  *
- * @author tfg
  */
-public class GameObject implements Serializable {
-    // Superklasse für RogUnit und RogBuilding
+public abstract class GameObject implements Serializable {
 
-    // Gibts bei beiden:
-    public String name;                         // Name, sollte gesetzt sein
-    public boolean isSelected = false;
-    public int playerId = 0;                             // 0 = Neutral; 1 - 8 = Spieler/KI;
-    public Position position;
-    public String armortype;				//Rüstungsklasse der Einheit
-    public int antiheavyinf;                           //Extraschaden gegen schwere Infanterie
-    public int antilightinf;                           //Extraschaden gegen leichte Infanterie
-    public int antikav;                                //Extraschaden gegen Kavallerie
-    public int antivehicle;							//Extraschaden gegen Fahrzeuge
-    public int antitank;								//Extraschaden gegen Panzer
-    public int antiair;								//Extraschaden gegen Flugzeuge
-    public int antibuilding;                           //Extraschaden gegen Gebäude
-    public int hitpoints;                              // Lebensenergie - bei 0 stirbt die Einheit
-    public int maxhitpoints;                           // Maximale Lebensenergie
-    public int descTypeId;                             // Definiert den Gebäudetyp, wird verwendet für Bauen, Mehrfachselektion etc. Wird eingelesen aus data/descTypes
-    public List<Ability> abilitys;        // Die Fähigkeiten des Objekts, die im Hud anklickbar sind. Nur für den Client von Bedeutung
-    public List<ServerBehaviour> sbehaviours;// Die Server-Behaviour des Objekts
-    public List<ClientBehaviour> cbehaviours;// Die Server-Behaviour des Objekts
-    public Position waypoint;                       // Standard-Ziel für neue Einheiten
-    public Building wayBuilding;                    // Ernte-Gebäude Ziel
-    public Ressource wayRessource;                  // Ressource - Ziel
-    public boolean ready = true;                       // Ist die Einheit ok / das Gebäude fertig gebaut?
-    public boolean alive = true;                       // Lebts noch?
-    public int visrange = 4;                           // Sichtweite
-    // Netzwerk-Sachen
-    public final int netID;                     // Eine im Netzwerk einmalige ID gültig für fast alles
-    // Truppenlimit
-    public int limit = 0;
+    /**
+     * Dieses Objekt lebt noch nicht.
+     * z.B. ein Gebäude als Baustelle
+     */
+    public static final int LIFESTATUS_UNBORN = 0;
+    /**
+     * Dieses Objekt lebt. (Normalzustand)
+     */
+    public static final int LIFESTATUS_ALIVE = 1;
+    /**
+     * Dieses Objekt ist gestorben.
+     */
+    public static final int LIFESTATUS_DEAD = 2;
 
-    public int cooldown;                               // Aktueller cooldown, wenn 0 kann angegriffen werden
-    public int cooldownmax;                            // Bestimmt, wie schnell die Einheit angreift: kleine zahl -> schneller angriff
-    public int damage;                                 // soviel damage macht die einheit
-    public GameObject attacktarget;                 // Die Einheit die angegriffen wird
-    public double range;                               // Reichweite des Angriffs. Wenn 2, dann ist es eine Nahkampf-Einheit... naja^^
-    public int bulletspeed = 15;                       // Geschossgeschwindigkeit in Felder / Sekunde (nur Fernkampf, also range > 2)
-    public String bullettexture;                       // Geschosstextur (nur Fernkampf, also range > 2)
-    public int atkdelay = 0;                         // Delay in Millisekunden zwischen dem Beginn eines Angriffs ("ausholen") und dem "zuschlagen". In dieser Zeit wird die Angriffsanimation abgespielt und die Einheit von der Grafikengine etwas vor bewegt. (nur Nahkampf)
-    public long atkStart = 0;                          // Zeitpunkt, bei dem mit draufhauen begonnen wird (automatisch verwaltet vom Kampfsystem)
-    public boolean atkAnim = false;                    // Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
+    /**
+     * Dieses Objekt tut gerade nichts. (Normalzustand)
+     */
+    public static final int STATUS_IDLE = 0;
+    /**
+     * Dieses Objekt bewegt sich gerade.
+     */
+    public static final int STATUS_MOVING = 1;
+    /**
+     * Dieses Objekt arbeitet gerade.
+     */
+    public static final int STATUS_WORKING = 2;
+    /**
+     * Agressive Bewegung zum Ziel. Ziele in Reichweite werden während der Bewegung angegriffen,
+     * das Objekt bliebt notfalls auch stehen.
+     * Default-Bewegungsmodus bei Rechtsklick auf den Boden.
+     */
+    public static final int MOVE_AGGRESSIVE = 0;
+    /**
+     * Direkte Bewegung ("fliehen").
+     * Das Objekt wird auf dem Weg nicht stehen bleiben um Feinde zu bekämpfen,
+     * außer das Ziel wird durch eine vollständige Blockade unerreichbar.
+     * Wird durch einen doppel-Rechtsklick (Boden) aktiviert.
+     */
+    public static final int MOVE_DIRECT = 1;
+    /**
+     * Agressive Bewegung zum Ziel / anschließend wird es angegriffen.
+     * Auf dem Weg werden Feinde bekämpft, eventuell bleibt das Objekt auch stehen.
+     * Das hat zur Folge, dass auch andere Objekte angegriffen werden, wenn man so eine ganze
+     * Gruppe anklickt.
+     * Default-Angriffsmodus beim Rechtsklick auf Feinde.
+     */
+    public static final int ATK_AGGRESSIVE = 2;
+    /**
+     * Das Objekt versucht nah genug an das Ziel heranzukommen, damit es angegriffen werden kann.
+     * Das Objekt wird keine anderen Einheiten angreiffen, solange noch die Möglichkeit besteht,
+     * das gesetzte Ziel zu erreichen.
+     * Dieses "Focus-Fire" kann mit einem Doppel-Rechtsklick auf Feinde aktiviert werden.
+     */
+    public static final int ATK_FOCUS = 3;
+
+    /**
+     * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
+     * z.B. "Bogenschütze"
+     */
+    private String desc_name;
+    /**
+     * Zeigt, ob das Objekt derzeit selektier ist. Wird vom Selektionssystem gesetzt.
+     */
+    private boolean isSelected = false;
+    /**
+     * Die PlayerID des Spielers, der dieses Objekt aktuell kontrolliert
+     * Die PlayerID's beginnen mit 1, 0 bedeutet neutral
+     */
+    private int playerId = 0;
+    /**
+     * Die derzeitige Zuordnungsposition des Objekts.
+     * Die Zuordnungsposition ist die Position ganz links.
+     */
+    private Position mainPosition;
+    /**
+     * Die Rüstungsklasse diese Objekts
+     */
+    private int armorType;
+    /**
+     * Schaden gegen andere Rüstungsklassen in Prozent.
+     * Default ist 100
+     */
+    private int[] damageFactors;
+    /**
+     * Aktuelle Lebensenergie dieses Objekts.
+     * Normalerweise stirbt das Objekt bei <=0
+     */
+    protected int hitpoints;
+    /**
+     * Maximale Lebensenergie dieses Objekts.
+     */
+    protected int maxhitpoints;
+    /**
+     * Der Typ der folgenden descTypeId.
+     * Derzeit werden vor allem B für Gebäude und U für Einheiten genutzt.
+     */
+    private char descTypeType;
+    /**
+     * Die ID-Nummer dieser Einheit.
+     * Wird für Zuordnungen mehrerer Einheiten des gleichen Typs verwendet.
+     */
+    private int descTypeId;
+    /**
+     * Die Liste mit den Abilitys dieses Objekts.
+     * Abilitys werden im Hud als anklickbare Knöpfe dargestellt.
+     */
+    private List<Ability> abilitys;
+    /**
+     * Die Server-Behaviour dieses Objekts.
+     * Werden regelmäßig vom GameLogic-Thread aufgerufen.
+     */
+    private List<ServerBehaviour> sbehaviours;
+    /**
+     * Die Client-Behaviour dieses Objekts.
+     * Werden regelmäßig vom GameLogic-Thread aufgerufen.
+     */
+    private List<ClientBehaviour> cbehaviours;
+    /**
+     * Default-Wegpunkt.
+     * Derzeit verwendet für das erste Laufziel neu erzeugter Einheiten
+     */
+    private Position waypoint;
+    /**
+     * Der derzeitige Lebens-Zustand dieses Objekts.
+     * Kann soetwas wie "am Leben" oder "schon gestorben" sein.
+     */
+    private int lifeStatus;
+    /**
+     * Bewegungs/Angriffszustand dieses Objekts.
+     * z.B. Aggressive Bewegung, FocusFire
+     */
+    private int moveAtkMode;
+    /**
+     * Was die Einheit gerade tut.
+     * z.B. "nichts" "gehen" "arbeiten"
+     */
+    private int status;
+    /**
+     * Die Sichtweite dieses Objekts im FoW.
+     * Gemessen in eckigen Kreisen um das Zentrum, (sogut es ganzzahlig geht)
+     */
+    private int visrange;
+    /**
+     * Die dieses Objekt in der derzeit laufenden Spielpartie netzwerkweit eindeutig identifizierende Id.
+     */
+    public final int netID;
+    /**
+     * Diese Anzahl von Millisekunden müssen mindestens zwischen 2 Schlägen/Schüssen vergehen.
+     */
+    private int fireDelay;
+    /**
+     * Basis-Schaden dieses Objekts.
+     */
+    private int damage;
+    /**
+     * Aktuelles Angriffsziel dieses Objekts
+     */
+    private GameObject attackTarget;
+    /**
+     * Die Reichweite dieser Einheit.
+     * Echte Entfernungsmessung zwischen(!) den Einheiten.
+     * Nahkämpfer haben also etwa 0
+     */
+    private double range;
+    /**
+     * Geschossgeschwindigkeit.
+     * 0 ist für Nahkämpfer, also Instant-Hit.
+     */
+    private int bulletspeed = 15;
+    /**
+     * Geschosstextur. Nahkämpfer haben keine.
+     */
+    private String bullettexture;
+    /**
+     * Delay in Millisekunden zwischen dem Beginn eines Angriffs ("ausholen") und dem "zuschlagen". In dieser Zeit wird die Angriffsanimation abgespielt und die Einheit von der Grafikengine etwas vor bewegt. (nur Nahkampf)
+     */
+    private int atkdelay = 0;
+    /**
+     * Zeitpunkt, bei dem mit draufhauen begonnen wird (automatisch verwaltet vom Kampfsystem)
+     */
+    private long atkStart = 0;
+    /**
+     * Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
+     */
+    public boolean atkAnim = false;
 
     public GameObject(int newNetId) {
         netID = newNetId;
