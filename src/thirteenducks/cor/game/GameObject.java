@@ -25,7 +25,6 @@
  */
 package thirteenducks.cor.game;
 
-import thirteenducks.cor.game.Unit;
 import java.io.Serializable;
 //import java.util.ArrayList;
 //import java.util.Collections;
