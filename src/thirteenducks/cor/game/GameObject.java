@@ -52,7 +52,7 @@ import thirteenducks.cor.game.server.ServerCore;
  *
  * @author tfg
  */
-public class GameObject implements Serializable, Comparable<GraphicsRenderable>, Cloneable, GraphicsRenderable {
+public class GameObject implements Serializable {
     // Superklasse für RogUnit und RogBuilding
 
     // Gibts bei beiden:
@@ -108,71 +108,7 @@ public class GameObject implements Serializable, Comparable<GraphicsRenderable>,
     }
 
     public GameObject(int newNetId) {
-        abilitys = Collections.synchronizedList(new ArrayList<Ability>());
-        sbehaviours = Collections.synchronizedList(new ArrayList<ServerBehaviour>());
-        cbehaviours = Collections.synchronizedList(new ArrayList<ClientBehaviour>());
         netID = newNetId;
-	antiheavyinf = 100;
-        antilightinf = 100;
-        antikav = 100;
-        antivehicle = 100;
-        antitank = 100;
-        antiair = 0;
-        antibuilding = 100;
-    }
-
-    public GameObject(boolean forRessource, int newNetId) {
-        // Ressourcen die Listen nicht - spart Speicher
-        if (!forRessource) {
-            abilitys = Collections.synchronizedList(new ArrayList<Ability>());
-            sbehaviours = Collections.synchronizedList(new ArrayList<ServerBehaviour>());
-            cbehaviours = Collections.synchronizedList(new ArrayList<ClientBehaviour>());
-        } else {
-            descTypeId = -1; //Keine Id
-        }
-        netID = newNetId;
-    }
-
-    /* @Override
-    public RogGameObject clone() throws CloneNotSupportedException {
-    RogGameObject nob = (RogGameObject) super.clone();
-    nob.abilitys = Collections.synchronizedList(new ArrayList<RogGameObjectAbility>());
-    for (RogGameObjectAbility ab : this.abilitys) {
-    nob.abilitys.add(ab.clone());
-    }
-    nob.behaviours = Collections.synchronizedList(new ArrayList<RogUnitBehaviour>());
-    /*for (RogUnitBehaviour rub : this.behaviours) {
-    nob.behaviours.add(rub.clone());
-    } * /
-    if (position != null) {
-    nob.position = (RogPosition) this.position.clone();
-    }
-    return nob;
-    }*/
-    public GameObject clone(int newNetID) throws CloneNotSupportedException {
-        GameObject nob = new GameObject(newNetID);
-        nob.name = this.name;
-        nob.playerId = this.playerId;
-        nob.hitpoints = this.hitpoints;
-        nob.armortype = this.armortype;
-        nob.antiheavyinf = this.antiheavyinf;
-        nob.antilightinf = this.antilightinf;
-        nob.antikav = this.antikav;
-        nob.antivehicle = this.antivehicle;
-        nob.antitank = this.antitank;
-        nob.antiair = this.antiair;
-        nob.antibuilding = this.antibuilding;
-        nob.maxhitpoints = this.maxhitpoints;
-        nob.descTypeId = this.descTypeId;
-        nob.visrange = this.visrange;
-        nob.limit = this.limit;
-        for (Ability ab : this.abilitys) {
-            nob.abilitys.add(ab.clone());
-        }
-        if (position != null) {
-            nob.position = (Position) this.position.clone();
-        }
-        return nob;
     }
 
     /**
