@@ -29,7 +29,16 @@ package thirteenducks.cor.graphics;
 
 import java.io.*;
 
-public class UnitGraphicsData implements Serializable, Cloneable {
+public class GOGraphicsData implements Serializable, Cloneable {
+
+    /**
+     * Zeitpunkt, bei dem mit draufhauen begonnen wird (automatisch verwaltet vom Kampfsystem)
+     */
+    private long atkStart = 0;
+    /**
+     * Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
+     */
+    private boolean atkAnim = false;
 
     public String defaultTexture = null;
     public String hudTexture = null;
@@ -43,11 +52,11 @@ public class UnitGraphicsData implements Serializable, Cloneable {
     }
 
     @Override
-    public UnitGraphicsData clone() {
+    public GOGraphicsData clone() {
         try {
-            return (UnitGraphicsData) super.clone();
+            return (GOGraphicsData) super.clone();
         } catch (CloneNotSupportedException ex) { // Passiert im Läbe net..
             return null;
         }
     }
-}//Klassenende
+}
