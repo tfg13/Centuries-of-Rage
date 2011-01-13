@@ -34,7 +34,7 @@ import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.map.CoRMapElement;
-import thirteenducks.cor.graphics.UnitGraphicsData;
+import thirteenducks.cor.graphics.GOGraphicsData;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.game.server.ServerCore;
@@ -51,7 +51,6 @@ public class Unit extends GameObject implements Serializable, Cloneable, Pauseab
      * Allgemeines
      */
     //ClientCore.RogCoreInner inner;                 // Referenz auf inner
-    public UnitGraphicsData graphicsdata;    // Die Grafikinformationen der RogUnit
     public double speed;                               // Geschwindigkeit der Einhet in Felder/s
     public int selectionShadow = 1;                    // Zum Einheiten präziser selektieren. Je größer die Zahl, desto größerdie Einheit
     public boolean canHarvest = false;                 // Kann die Einheit Ressourcen ernten?
@@ -126,7 +125,7 @@ public class Unit extends GameObject implements Serializable, Cloneable, Pauseab
     public Unit(int x, int y, int newNetId) {
         super(newNetId);
         action = actions.nothing;       // Einheit macht noch gar nix
-        graphicsdata = new UnitGraphicsData();
+        graphicsdata = new GOGraphicsData();
         position = new Position(x, y);
         // Dieser Konstruktor setzt Standardwerte für hitpoints etc, da beim erstellen keine angegeben wurden und die Einheit unbedingt welche braucht, sonst gibt nullpointer
         hitpoints = 100;
@@ -148,7 +147,7 @@ public class Unit extends GameObject implements Serializable, Cloneable, Pauseab
      */
     public Unit(int x, int y, int maxHp, int newNetId) {
         super(newNetId);
-        graphicsdata = new UnitGraphicsData();
+        graphicsdata = new GOGraphicsData();
         position = new Position(x, y);
         // Einheiten sind beim erstellen gesund, also Gesundheit voll
         hitpoints = maxHp;
