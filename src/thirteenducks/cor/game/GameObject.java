@@ -30,6 +30,7 @@ import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.graphics.GOGraphicsData;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 
@@ -216,14 +217,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Delay in Millisekunden zwischen dem Beginn eines Angriffs ("ausholen") und dem "zuschlagen". In dieser Zeit wird die Angriffsanimation abgespielt und die Einheit von der Grafikengine etwas vor bewegt. (nur Nahkampf)
      */
     private int atkdelay = 0;
+    
     /**
-     * Zeitpunkt, bei dem mit draufhauen begonnen wird (automatisch verwaltet vom Kampfsystem)
+     * Enthält alle Grafik- & Animationsdaten
      */
-    private long atkStart = 0;
-    /**
-     * Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
-     */
-    private boolean atkAnim = false;
+    private GOGraphicsData graphicsData;
 
     public GameObject(int newNetId) {
         netID = newNetId;
