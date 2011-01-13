@@ -99,7 +99,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
      * z.B. "Bogenschütze"
      */
-    private String desc_name;
+    private String descName;
     /**
      * Zeigt, ob das Objekt derzeit selektier ist. Wird vom Selektionssystem gesetzt.
      */
@@ -217,11 +217,29 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Delay in Millisekunden zwischen dem Beginn eines Angriffs ("ausholen") und dem "zuschlagen". In dieser Zeit wird die Angriffsanimation abgespielt und die Einheit von der Grafikengine etwas vor bewegt. (nur Nahkampf)
      */
     private int atkdelay = 0;
-    
     /**
      * Enthält alle Grafik- & Animationsdaten
      */
     private GOGraphicsData graphicsData;
+    /**
+     * Ein beschreibender String für GUI-Infos.
+     * z.B. "Ein langsamer aber zäher Kämpfer"
+     */
+    private String descDescription;
+    /**
+     * Ein beschreibender String für GUI-Infos.
+     * Sagt, gegen was dieses Objekt besonders stark ist.
+     * Optional
+     * z.B. "Light Infantry"
+     */
+    private String descPro;
+    /**
+     * Ein beschreibender String für GUI-Infos.
+     * Sagt, gegen was dieses Objekt besonders schwach ist.
+     * Optional
+     * z.B. "Heavy Infantry"
+     */
+    private String descCon;
 
     public GameObject(int newNetId) {
         netID = newNetId;
