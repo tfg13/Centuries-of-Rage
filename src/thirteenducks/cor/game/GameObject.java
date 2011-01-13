@@ -31,12 +31,13 @@ import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.Sprite;
+import thirteenducks.cor.graphics.input.InteractableGameElement;
 
 /**
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
  *
  */
-public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor {
+public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement {
 
     /**
      * Dieses Objekt lebt noch nicht.
