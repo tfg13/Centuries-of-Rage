@@ -39,6 +39,18 @@ public class GOGraphicsData implements Serializable, Cloneable {
      * Läuft gerade eine Angriffsanimation? (automatisch verwaltet vom Kampfsystem)
      */
     private boolean atkAnim = false;
+    /**
+     * Abstand vom tatsächlichen Zeichenursprung der großen Textur zum originalen Ursprung des Zuordnungsfeldes.
+     * Angabe in Feldern, muss durch 2 teilbar sein.
+     * X-Richtung (nach oben)
+     */
+    private int offsetX = 0;
+    /**
+     * Abstand vom tatsächlichen Zeichenursprung der großen Textur zum originalen Ursprung des Zuordnungsfeldes.
+     * Angabe in Feldern, muss durch 2 teilbar sein.
+     * Y-Richtung (nach links)
+     */
+    private int offsetY = 0;
 
     public String defaultTexture = null;
     public String hudTexture = null;
