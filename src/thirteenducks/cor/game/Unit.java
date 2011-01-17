@@ -55,10 +55,7 @@ public class Unit extends GameObject implements Serializable, Cloneable, Pauseab
     public int selectionShadow = 1;                    // Zum Einheiten präziser selektieren. Je größer die Zahl, desto größerdie Einheit
     public boolean canHarvest = false;                 // Kann die Einheit Ressourcen ernten?
     public boolean isCompletelyActivated = true;       // Einheiten müssen in 2 Schritten aktiviert werden, das wird false, damit die Einheit nicht vorher irgendwelche Sachen macht.
-    public String Gdesc;                               // Für Grafikmodul/Baumenü, wird vom Typesmanager verwaltet und eingetragen
-    public String Gpro;                                // Für Grafikmodul/Baumenü, wird vom Typesmanager verwaltet und eingetragen
-    public String Gcon;                                // Für Grafikmodul/Baumenü, wird vom Typesmanager verwaltet und eingetragen
-    public String Gimg;                                // Für Grafikmodul/Baumenü, wird vom Typesmanager verwaltet und eingetragen
+    
 
     /**
      * Kollision & Bewegung
