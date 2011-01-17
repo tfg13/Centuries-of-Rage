@@ -246,7 +246,20 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     private int healRate = 0;
 
-    public GameObject(int newNetId) {
+    /**
+     * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
+     * @param newNetId Die netId dieses Objekts
+     * @param mainPos Die Haupt-Zuordnungsposition
+     */
+    protected GameObject(int newNetId, Position mainPos) {
         netID = newNetId;
+        mainPosition = mainPos;
+    }
+    /**
+     * Erzeugt ein Platzhalter-GameObject, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
+     * Attribute und Fähigkeiten dient.
+     */
+    protected GameObject() {
+        netID = -1;
     }
 }
