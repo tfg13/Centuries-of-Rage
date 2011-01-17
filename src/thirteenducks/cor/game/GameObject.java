@@ -38,7 +38,7 @@ import thirteenducks.cor.graphics.input.InteractableGameElement;
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
  *
  */
-public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement {
+public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement, Hideable {
 
     /**
      * Dieses Objekt lebt noch nicht.
