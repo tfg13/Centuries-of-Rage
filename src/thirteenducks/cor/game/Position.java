@@ -39,12 +39,12 @@ import java.io.*;
 
 public class Position implements Comparable<Position>, Serializable, Cloneable {
 
-    public int X;                                    //X-Koodrinate
-    public int Y;                                    //Y-Koordinate
-    public int cost;
-    public int heuristic;
-    public int valF;
-    public Position parent;                          //Das Feld von dem man kommt
+    private int X;                                    //X-Koodrinate
+    private int Y;                                    //Y-Koordinate
+    private int cost;
+    private int heuristic;
+    private int valF;
+    private Position parent;                          //Das Feld von dem man kommt
 
     //Konstruktor
     public Position(int x, int y) {
@@ -778,5 +778,33 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
     @Override
     public Position clone() throws CloneNotSupportedException {
         return (Position) super.clone();
+    }
+
+    /**
+     * @return the X
+     */
+    public int getX() {
+        return X;
+    }
+
+    /**
+     * @param X the X to set
+     */
+    public void setX(int X) {
+        this.X = X;
+    }
+
+    /**
+     * @return the Y
+     */
+    public int getY() {
+        return Y;
+    }
+
+    /**
+     * @param Y the Y to set
+     */
+    public void setY(int Y) {
+        this.Y = Y;
     }
 }
