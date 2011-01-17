@@ -52,14 +52,4 @@ public interface Sprite {
      * @return alle Positionen, auf denen sich etwas sichbares (wichtiges) diese Objekts befindet.
      */
     public Position[] getVisisbilityPositions();
-    /**
-     * Findet heraus, ob dieses Sprite auch im vollen 100% dunklen FoW gezeichnet werden soll.
-     * @return true, wenn im 100% FoW zeichnen
-     */
-    public boolean renderInFullFog();
-    /**
-     * Findet heraus, ob dieses Sprite auch im halben 50% grauen FoW gezeichnet werden soll.
-     * @return true, wenn im 50% FoW zeichnen
-     */
-    public boolean renderInHalfFog();
 }
