@@ -27,6 +27,8 @@ package thirteenducks.cor.game;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
@@ -261,5 +263,39 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     protected GameObject() {
         netID = -1;
+    }
+
+    /**
+     * @return the visrange
+     */
+    public int getVisrange() {
+        return visrange;
+    }
+
+    /**
+     * @param visrange the visrange to set
+     */
+    public void setVisrange(int visrange) {
+        this.visrange = visrange;
+    }
+
+    /**
+     * Überprüft, ob die Angegebene Position zur Zeit ein direktes Nachbarfeld dieses Objekts ist.
+     * Ecken zählen dazu, innen liegende Felder nicht.
+     * @param pos die zu prüfende Position
+     * @return true, wenn die Position ein direktes Nachbarfeld, sonst false
+     */
+    public abstract boolean isAroundMe(Position pos);
+
+    /**
+     * Returns the MainPosition
+     * @return the MainPosition
+     */
+    public Position getMainPosition() {
+        try {
+            return mainPosition.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new RuntimeException("Error cloning Position!", ex);
+        }
     }
 }
