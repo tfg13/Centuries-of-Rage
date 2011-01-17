@@ -40,12 +40,14 @@ import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.game.server.ServerCore;
 
 /**
- * RogUnit.java
- * @author tfg, hase
+ * Superklasse für Einheiten
  *
- * Beschreibt eine Einheit.
+ * Einheiten sind GO's, die sich bewegen können.
+ * Im Gegensatz zu Gebäuden ermöglicht diese Implementierung keine flexiblen Größen
+ * Einheiten dieser Implementierung spawnen sofort.
+ * Unterklassen können Gebäude (Building) betreten (falls das Gebäude dies anbietet)
  */
-public class Unit extends GameObject implements Serializable, Cloneable, Pauseable {
+public abstract class Unit extends GameObject implements Serializable, Cloneable, Pauseable {
 
     /**
      * Allgemeines
