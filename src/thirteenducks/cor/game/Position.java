@@ -24,11 +24,8 @@
  *
  */
 /**
- * RogPosition.java
- * by hase
- *
- * Diese Klasse stellt ein Feld im zweidimensionalen Raum
- * durch zwei Koordinaten dar.
+ * Repräsentiert ein Feld im 2-Dimensionalen Raum.
+ * Arbeitet mit dem bekannten Rauten-nur jedes zweite Feld-System.
  *
  **/
 package thirteenducks.cor.game;
@@ -50,10 +47,18 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
     public Position parent;                          //Das Feld von dem man kommt
 
     //Konstruktor
-    public Position(int x, int y) //Konstruktor
-    {
+    public Position(int x, int y) {
         X = x;
         Y = y;
+    }
+
+    /**
+     * Überprüft, ob eine Position erlaubt ist, also legal Koordinaten hat.
+     * Checkt nur ob die Position überhaupt legal ist, Fragen bezüglich der Mapgrenzen beantwortet das Mapmodul
+     * @return
+     */
+    public boolean valid() {
+        return (X % 2 == Y % 2);
     }
 
     //Gibt die 8 direkten Nachbarfelder zurück:
