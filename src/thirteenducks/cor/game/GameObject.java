@@ -240,6 +240,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * z.B. "Heavy Infantry"
      */
     private String descCon;
+    /**
+     * Heilrate dieses Objekts.
+     * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
+     */
+    private int healRate = 0;
 
     public GameObject(int newNetId) {
         netID = newNetId;
