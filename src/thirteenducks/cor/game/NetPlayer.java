@@ -137,13 +137,13 @@ public class NetPlayer {
      */
     public void initLists(List<Unit> unitList, List<Building> buildingList) {
         for (Building building : buildingList) {
-            if (!bList.contains(new Integer(building.descTypeId))) {
-                bList.add(new Integer(building.descTypeId));
+            if (!bList.contains(new Integer(building.getDescTypeId()))) {
+                bList.add(new Integer(building.getDescTypeId()));
             }
         }
         for (Unit unit : unitList) {
-            if (!uList.contains(new Integer(unit.descTypeId))) {
-                uList.add(new Integer(unit.descTypeId));
+            if (!uList.contains(new Integer(unit.getDescTypeId()))) {
+                uList.add(new Integer(unit.getDescTypeId()));
             }
         }
     }
@@ -178,7 +178,7 @@ public class NetPlayer {
             if (!bList.contains(i)) {
                 // Adden
                 try {
-                    list.add(descBuilding.get(i).name);
+                    list.add(descBuilding.get(i).getName());
                 } catch (Exception ex) {
                     System.out.println("FixMe: MissDep-AddB");
                 }
@@ -187,7 +187,7 @@ public class NetPlayer {
         for (Integer i : depU) {
             if (!uList.contains(i)) {
                 try {
-                    list.add(descUnit.get(i).name);
+                    list.add(descUnit.get(i).getName());
                 } catch (Exception ex) {
                     System.out.println("FixMe: MissDep-AddU");
                 }
