@@ -96,6 +96,34 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Dieses "Focus-Fire" kann mit einem Doppel-Rechtsklick auf Feinde aktiviert werden.
      */
     public static final int ATK_FOCUS = 3;
+    /**
+     * Leichte Infantrie
+     */
+    public static final int ARMORTYPE_LIGHTINF = 0;
+    /**
+     * Schwere Infantrie
+     */
+    public static final int ARMORTYPE_HEAVYINF = 1;
+    /**
+     * Kavallerie
+     */
+    public static final int ARMORTYPE_KAV = 2;
+    /**
+     * Leichte Fahrzeuge / Kriegsmaschinen a la Katapult
+     */
+    public static final int ARMORTYPE_VEHICLE = 3;
+    /**
+     * Schwere Fahrzeuge / Panzer
+     */
+    public static final int ARMORTYPE_TANK = 4;
+    /**
+     * Lufteinheiten
+     */
+    public static final int ARMORTYPE_AIR = 5;
+    /**
+     * Gebäude
+     */
+    public static final int ARMORTYPE_BUILDING = 6;
 
     /**
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
@@ -119,7 +147,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     /**
      * Die Rüstungsklasse diese Objekts
      */
-    private int armorType;
+    protected int armorType;
     /**
      * Schaden gegen andere Rüstungsklassen in Prozent.
      * Default ist 100
