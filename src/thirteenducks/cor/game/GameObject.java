@@ -328,4 +328,25 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
             throw new RuntimeException("Error cloning Position!", ex);
         }
     }
+
+    /**
+     * @return the descTypeType
+     */
+    public char getDescTypeType() {
+        return descTypeType;
+    }
+
+    /**
+     * @return the descTypeId
+     */
+    public int getDescTypeId() {
+        return descTypeId;
+    }
+
+    /**
+     * @return the descName
+     */
+    public String getName() {
+        return descName;
+    }
 }
