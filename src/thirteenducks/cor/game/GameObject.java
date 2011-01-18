@@ -307,6 +307,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.visrange = visrange;
     }
 
+    public abstract Position freeDirectAroundMe();
+
     /**
      * Überprüft, ob die Angegebene Position zur Zeit ein direktes Nachbarfeld dieses Objekts ist.
      * Ecken zählen dazu, innen liegende Felder nicht.
