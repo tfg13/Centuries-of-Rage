@@ -77,6 +77,10 @@ public class Path {
      */
     private int lastWayPoint;
     /**
+     * Die Strecke bis zum nächsten Wegpunkt
+     */
+    private double nextWayPointDist;
+    /**
      * Der eigentliche Weg.
      * Muss erst berechnet werden, steht zur Verfügung, wenn pathLengthCalced = true
      */
@@ -100,6 +104,20 @@ public class Path {
             length = length + abschnitt;
             path.add(new PathElement(pos, length, vec));
         }
+    }
+
+    /**
+     * @return the startPos
+     */
+    public Position getStartPos() {
+        return startPos;
+    }
+
+    /**
+     * @return the targetPos
+     */
+    public Position getTargetPos() {
+        return targetPos;
     }
 
     /**
