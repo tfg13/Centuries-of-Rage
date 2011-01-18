@@ -68,7 +68,7 @@ public abstract class Ability implements Serializable, Cloneable {
 
     public boolean isAvailable() {      // Kann die Fähigkeit derzeit verwendet (angeklickt) werden - sonst wird sie "ausgegraut"
         boolean result = (rgi.game.getOwnPlayer().checkAvailability(dependsB, dependsU, dependsA) && rgi.game.getOwnPlayer().res1 >= costs[0] && rgi.game.getOwnPlayer().res2 >= costs[1] && rgi.game.getOwnPlayer().res3 >= costs[2] && rgi.game.getOwnPlayer().res4 >= costs[3] && rgi.game.getOwnPlayer().res5 >= costs[4]);
-        if (this.type == Ability.ABILITY_BUILD) {
+       /* if (this.type == Ability.ABILITY_BUILD) {
             AbilityBuild abb = (AbilityBuild) this;
             Building building = rgi.mapModule.getDescBuilding(abb.descTypeId, -1, rgi.game.getOwnPlayer().playerId);
             if (building.limit > 0) {
@@ -85,7 +85,7 @@ public abstract class Ability implements Serializable, Cloneable {
                     return false;
                 }
             }
-        }
+        } */
         return result;
     }
 
@@ -210,7 +210,7 @@ public abstract class Ability implements Serializable, Cloneable {
         if (rgi.game.getOwnPlayer().res5 < costs[4]) {
             r++;
         }
-        if (this.type == Ability.ABILITY_BUILD) {
+    /*    if (this.type == Ability.ABILITY_BUILD) {
             AbilityBuild abb = (AbilityBuild) this;
             Building building = rgi.mapModule.getDescBuilding(abb.descTypeId, -1, rgi.game.getOwnPlayer().playerId);
             if (rgi.game.getOwnPlayer().freeLimit() < building.limit) {
@@ -222,7 +222,7 @@ public abstract class Ability implements Serializable, Cloneable {
             if (rgi.game.getOwnPlayer().freeLimit() < unit.limit) {
                 r++;
             }
-        }
+        } */
         return r;
     }
 
