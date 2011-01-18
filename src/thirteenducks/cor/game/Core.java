@@ -25,7 +25,6 @@
  */
 package thirteenducks.cor.game;
 
-import thirteenducks.cor.game.Position;
 import java.util.*;
 
 /**
@@ -283,19 +282,19 @@ public abstract class Core {
                     // Abstand prüfen
                     Position diff = currentPos.subtract(lastPos);
                     // Felder adden?, Richtung?
-                    if (((diff.X > 2 || diff.X < -2) && diff.Y == 0) || ((diff.Y > 2 || diff.Y < -2) && diff.X == 0) || ((diff.X > 1 || diff.X < -1) && (diff.Y > 1 || diff.Y < -1))) {
+                    if (((diff.getX() > 2 || diff.getX() < -2) && diff.getY() == 0) || ((diff.getY() > 2 || diff.getY() < -2) && diff.getX() == 0) || ((diff.getX() > 1 || diff.getX() < -1) && (diff.getY() > 1 || diff.getY() < -1))) {
                         // Es ist kein gültiger Schritt, Richtung rausfinden, in der Geadded werden muss
                         // Vektordarstellung, zum Addieren
                         diff = diff.transformToVector();
                         // Umformen, damit mans addieren kann (die geraden müssen doppelt sein)
-                        if (diff.X == 1 && diff.Y == 0) {
-                            diff.X++;
-                        } else if (diff.X == 0 && diff.Y == 1) {
-                            diff.Y++;
-                        } else if (diff.X == -1 && diff.Y == 0) {
-                            diff.X--;
-                        } else if (diff.Y == -1 && diff.X == 0) {
-                            diff.Y--;
+                        if (diff.getX() == 1 && diff.getY() == 0) {
+                            diff.setX(diff.getX() + 1);
+                        } else if (diff.getX() == 0 && diff.getY() == 1) {
+                            diff.setY(diff.getY() + 1);
+                        } else if (diff.getX() == -1 && diff.getY() == 0) {
+                            diff.setX(diff.getX() - 1);
+                        } else if (diff.getY() == -1 && diff.getX() == 0) {
+                            diff.setY(diff.getY() - 1);
                         }
                         // Adden
                         diff = lastPos.add(diff);
