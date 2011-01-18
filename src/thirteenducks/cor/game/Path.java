@@ -62,7 +62,7 @@ public class Path {
      * Wurde die Weglänge bereits berechnet?
      * Wenn true steht auch path zur Verfügung
      */
-    private boolean pathLengthCalced;
+    private boolean pathComputed;
     /**
      * Die Einheit soll am Ende des Weges in ein Gebäude springen
      */
@@ -91,6 +91,7 @@ public class Path {
      * Die berechnete Weglänge wird in length gespeichert.
      */
     private synchronized void computePath(List<Position> newPath) {
+        pathComputed = false;
         length = 0;
         path = new ArrayList<PathElement>();
         path.add(new PathElement(newPath.get(0)));
@@ -104,6 +105,7 @@ public class Path {
             length = length + abschnitt;
             path.add(new PathElement(pos, length, vec));
         }
+        pathComputed = true;
     }
 
     /**
@@ -118,6 +120,40 @@ public class Path {
      */
     public Position getTargetPos() {
         return targetPos;
+    }
+
+    /**
+     * Überschreibt den Pfad und lässt die Einheit vom Beginn loslaufen
+     * @param newPath der neue Weg
+     */
+    public synchronized void overwritePath(List<Position> newPath) {
+        startPos = newPath.get(0);
+        targetPos = newPath.get(newPath.size() - 1);
+        lastWayPoint = 0;
+        computePath(newPath);
+        this.nextWayPointDist = path.get(1).getDistance();
+        moveStartTime = System.currentTimeMillis();
+    }
+
+    /**
+     * Versucht, den Weg "seamless" zu ändern.
+     * Da diese Änderung während der Bewegung erfolgt, kann es sein, dass die Einheit noch bis zum nächsten Feld weiter läuft
+     * @param newPath
+     */
+    public synchronized void switchPath(ArrayList<Position> newPath) {
+        targetPos = newPath.get(newPath.size() - 1);
+        computePath(newPath);
+        try {
+            if (lastWayPoint + 1 > path.size() - 1) {
+                // Automatisch zurückstellen, falls Überschreitung festgestellt.
+                lastWayPoint = path.size() - 2;
+                System.out.println("WARNING: Setting unit back on Path-Switch, probably causes Pfusch");
+            }
+        } catch (Exception ex) {
+            System.out.println("ERROR: Problems switching Path:");
+            ex.printStackTrace();
+        }
+        nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
     }
 
     /**
