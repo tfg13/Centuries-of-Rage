@@ -143,7 +143,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die derzeitige Zuordnungsposition des Objekts.
      * Die Zuordnungsposition ist die Position ganz links.
      */
-    private Position mainPosition;
+    protected Position mainPosition;
     /**
      * Die Rüstungsklasse diese Objekts
      */
