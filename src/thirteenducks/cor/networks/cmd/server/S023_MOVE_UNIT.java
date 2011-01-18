@@ -42,6 +42,7 @@ public class S023_MOVE_UNIT extends ServerCommand {
         Unit unit23 = rgi.netmap.getUnitviaID(rgi.readInt(data, 1));
         if (unit23 != null) {
             if (System.currentTimeMillis() - unit23.jumpSetTime > 150) {
+                System.out.println("WARNING: Using old sync mechanism for jumps, probably will fail.");
                 unit23.jumpTo = 0;
             }
             Position pos23 = rgi.readPosition(data, 2);
