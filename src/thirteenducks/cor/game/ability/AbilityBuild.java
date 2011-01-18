@@ -87,7 +87,8 @@ public class AbilityBuild extends Ability {
                         // Felder frei? - Position holen
                         Dimension pos = rgi.rogGraphics.content.getSelectedField(x, y);
                         // Das ist noch nicht das Ursprungsfeld des Gebäudecursors, Ursprungsfeld berechnen:
-                        Position basePos = new Position(pos.width + building.offsetX, pos.height + building.offsetY);
+                        System.out.println("AddMe: Calc Building-Pos correctly");
+                        Position basePos = new Position(pos.width, pos.height);
                         // Ist das alles zum Bauen frei?
                         boolean free = true;
                         for (int z1 = 0; z1 < building.z1; z1++) {
