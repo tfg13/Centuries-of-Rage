@@ -27,8 +27,6 @@ package thirteenducks.cor.game;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
