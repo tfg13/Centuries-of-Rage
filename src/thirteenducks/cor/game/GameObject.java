@@ -138,7 +138,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die PlayerID des Spielers, der dieses Objekt aktuell kontrolliert
      * Die PlayerID's beginnen mit 1, 0 bedeutet neutral
      */
-    private int playerId = 0;
+    protected int playerId = 0;
     /**
      * Die derzeitige Zuordnungsposition des Objekts.
      * Die Zuordnungsposition ist die Position ganz links.
@@ -233,7 +233,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Echte Entfernungsmessung zwischen(!) den Einheiten.
      * Nahkämpfer haben also etwa 0
      */
-    private double range;
+    protected double range;
     /**
      * Geschossgeschwindigkeit.
      * 0 ist für Nahkämpfer, also Instant-Hit.
