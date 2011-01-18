@@ -560,7 +560,7 @@ public class ServerMoveManager {
             unit.order = orders.move;
             unit.lastwaypoint = 0;
             unit.calcWayLength();
-            unit.nextwaypoint = unit.pathOrder.get(1);
+            unit.nextWayPointDist = unit.pathOrder.get(1);
             unit.startTime = System.currentTimeMillis();
 
             this.reserveTarget(unit, (long) (1000.0 * unit.length / unit.speed), unit.movingtarget);

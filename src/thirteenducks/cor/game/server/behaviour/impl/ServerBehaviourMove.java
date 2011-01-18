@@ -115,7 +115,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         return;
                     }
                     // Zuletzt erreichten Wegpunkt finden
-                    if (passedWay >= caster2.nextwaypoint) {
+                    if (passedWay >= caster2.nextWayPointDist) {
                         // Sind wir einen weiter oder mehrere
                         int weiter = 1;
                         while (passedWay > caster2.pathOrder.get(caster2.lastwaypoint + 1 + weiter)) {
@@ -133,7 +133,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                             caster2.startTime = System.currentTimeMillis();
                             caster2.calcWayLength();
                         }
-                        caster2.nextwaypoint = caster2.pathOrder.get(caster2.lastwaypoint + 1);
+                        caster2.nextWayPointDist = caster2.pathOrder.get(caster2.lastwaypoint + 1);
                         caster2.position = caster2.path.get(caster2.lastwaypoint);
 
                         // Ziel in Reichweite? (für Anhalten)
