@@ -33,7 +33,7 @@ import thirteenducks.cor.game.client.ClientCore;
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
  * Enthält Variablen und Mechanismen, um die aktuelle Position der Einheit auf dem Weg zu bestimmen/speichern
  */
-public class Path {
+public class Path implements Pauseable {
 
     /**
      * Die Position auf der die Bewegung begonnen hat.
@@ -241,6 +241,18 @@ public class Path {
             ex.printStackTrace();
             return new Position(-1, -1);
         }
+    }
+
+    @Override
+    public void pause() {
+        movePaused = true;
+        movePauseTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void unpause() {
+        movePaused = false;
+        moveStartTime = System.currentTimeMillis() - (movePauseTime - moveStartTime);
     }
 
     /**

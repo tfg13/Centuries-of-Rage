@@ -87,7 +87,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             return;
         }
         // Sind wir schon da, oder gehen wir da hin?
-        if (!target.equals(mainPosition) && !(target.equals(path.getTargetPos()))) {
+        if (!target.equals(getMainPosition()) && !(target.equals(path.getTargetPos()))) {
             // Da hin schicken
             rgi.netctrl.broadcastMove(this.netID, target, aggressive);
         } else if (target.equals(getMainPosition())) {
@@ -206,14 +206,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             }
             // Ist dieses Feld NICHT geeignet?
             try {
-                if (rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), playerId) == null) {
+                if (rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), getPlayerId()) == null) {
                     i++;
                 }
             } catch (Exception ex) {
             }
         }
 
-        return rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), playerId);
+        return rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), getPlayerId());
     }
 
     /**
@@ -268,7 +268,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             }
             // Ist dieses Feld NICHT geeignet?
             try {
-                Unit unit = rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), playerId);
+                Unit unit = rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), getPlayerId());
                 if (unit != null) {
                     Position potpos = unit.freeDirectAroundMe();
                     if (potpos != null) {
@@ -292,11 +292,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
 
-
-    }
-
-    @Override
-    public Unit clone(int newNetID) throws CloneNotSupportedException {
+  /*  public Unit clone(int newNetID) throws CloneNotSupportedException {
         // Dies ist kein echtes Klonen mehr, es wird viel mehr eine neue Einheit mit den gleichen Eigenschaften erzeugt.
         // Es werden NICHT (!) alle Eigenschaften übernommen, da die ursprungseinheiten des Klonvorgangs kaum Inhalte haben
         Unit retUnit = new Unit(this.position.X, this.position.Y, newNetID);
@@ -326,7 +322,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         retUnit.range = this.range;
         retUnit.selectionShadow = this.selectionShadow;
         retUnit.speed = this.speed;
-        retUnit.setPlayerId(this.playerId);
+        retUnit.setgetPlayerId()(this.getPlayerId());
         retUnit.bullettexture = this.bullettexture;
         retUnit.bulletspeed = this.bulletspeed;
         retUnit.visrange = this.visrange;
@@ -352,22 +348,20 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         retUnit.graphicsdata = this.graphicsdata.clone();
 
         return retUnit;
-    }
+    } */
 
     @Override
     public void pause() {
-        movePaused = true;
-        pauseTime = System.currentTimeMillis();
+        path.pause();
     }
 
     @Override
     public void unpause() {
-        movePaused = false;
-        startTime = System.currentTimeMillis() - (pauseTime - startTime);
+        path.unpause();
     }
 
     @Override
     public String toString() {
-        return ("Unit \"" + this.name + "\" ID: " + this.netID);
+        return ("Unit \"" + this.getName() + "\" ID: " + this.netID);
     }
 }
