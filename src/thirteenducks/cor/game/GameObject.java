@@ -367,4 +367,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void setMainPosition(Position mainPosition) {
         this.mainPosition = mainPosition;
     }
+
+    /**
+     * @return the playerId
+     */
+    public int getPlayerId() {
+        return playerId;
+    }
 }
