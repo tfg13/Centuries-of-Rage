@@ -269,6 +269,6 @@ public abstract class Building extends GameObject {
      * Platziert das Gebäude als Baustelle
      */
     public void placeSite(Position mainPos) {
-        mainPosition = mainPos;
+        setMainPosition(mainPos);
     }
 }

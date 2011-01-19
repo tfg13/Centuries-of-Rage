@@ -141,7 +141,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die derzeitige Zuordnungsposition des Objekts.
      * Die Zuordnungsposition ist die Position ganz links.
      */
-    protected Position mainPosition;
+    private Position mainPosition;
     /**
      * Die Rüstungsklasse diese Objekts
      */
@@ -360,4 +360,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @return
      */
     public abstract Position[] getPositions();
+
+    /**
+     * @param mainPosition the mainPosition to set
+     */
+    public void setMainPosition(Position mainPosition) {
+        this.mainPosition = mainPosition;
+    }
 }
