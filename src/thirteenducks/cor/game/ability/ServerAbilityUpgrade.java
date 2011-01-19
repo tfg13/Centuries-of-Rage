@@ -100,41 +100,41 @@ public class ServerAbilityUpgrade implements Serializable, Cloneable {
             } else if (affects == upgradeaffects.old) {
                 if (this.descTypeIdU != 0) {
                     for (Unit unit : rgi.netmap.unitList) {
-                        if (unit.descTypeId == this.descTypeIdU) {
+                        if (unit.getDescTypeId() == this.descTypeIdU) {
                             unit.performDeltaUpgrade(rgi, this);
                         }
                     }
                 } else {
                     for (Building building : rgi.netmap.buildingList) {
-                        if (building.descTypeId == this.descTypeIdB) {
+                        if (building.getDescTypeId() == this.descTypeIdB) {
                             building.performDeltaUpgrade(rgi, this);
                         }
                     }
                 }
             } else if (affects == upgradeaffects.fresh) {
                 if (this.descTypeIdU != 0) {
-                    rgi.game.getPlayer(caster.playerId).descUnit.get(descTypeIdU).performDeltaUpgrade(rgi, this);
+                    rgi.game.getPlayer(caster.getPlayerId()).descUnit.get(descTypeIdU).performDeltaUpgrade(rgi, this);
                 } else {
-                    rgi.game.getPlayer(caster.playerId).descBuilding.get(descTypeIdB).performDeltaUpgrade(rgi, this);
+                    rgi.game.getPlayer(caster.getPlayerId()).descBuilding.get(descTypeIdB).performDeltaUpgrade(rgi, this);
                 }
             } else if (affects == upgradeaffects.all) {
                 if (this.descTypeIdU != 0) {
                     for (Unit unit : rgi.netmap.unitList) {
-                        if (unit.descTypeId == this.descTypeIdU) {
+                        if (unit.getDescTypeId() == this.descTypeIdU) {
                             unit.performDeltaUpgrade(rgi, this);
                         }
                     }
                 } else {
                     for (Building building : rgi.netmap.buildingList) {
-                        if (building.descTypeId == this.descTypeIdB) {
+                        if (building.getDescTypeId() == this.descTypeIdB) {
                             building.performDeltaUpgrade(rgi, this);
                         }
                     }
                 }
                 if (this.descTypeIdU != 0) {
-                    rgi.game.getPlayer(caster.playerId).descUnit.get(descTypeIdU).performDeltaUpgrade(rgi, this);
+                    rgi.game.getPlayer(caster.getPlayerId()).descUnit.get(descTypeIdU).performDeltaUpgrade(rgi, this);
                 } else {
-                    rgi.game.getPlayer(caster.playerId).descBuilding.get(descTypeIdB).performDeltaUpgrade(rgi, this);
+                    rgi.game.getPlayer(caster.getPlayerId()).descBuilding.get(descTypeIdB).performDeltaUpgrade(rgi, this);
                 }
             }
         } else {
@@ -145,18 +145,18 @@ public class ServerAbilityUpgrade implements Serializable, Cloneable {
                 if (para.modunit) {
                     // Vorhandene Units patchen
                     for (Unit unit : rgi.netmap.unitList) {
-                        if (unit.descTypeId == para.moddesc && unit.playerId == caster.playerId) {
+                        if (unit.getDescTypeId() == para.moddesc && unit.getPlayerId() == caster.getPlayerId()) {
                             unit.performDeltaUpgrade(rgi, para);
                         }
                     }
-                    rgi.game.getPlayer(caster.playerId).descUnit.get(para.moddesc).performDeltaUpgrade(rgi, para);
+                    rgi.game.getPlayer(caster.getPlayerId()).descUnit.get(para.moddesc).performDeltaUpgrade(rgi, para);
                 } else {
                     for (Building building : rgi.netmap.buildingList) {
-                        if (building.descTypeId == para.moddesc && building.playerId == caster.playerId) {
+                        if (building.getDescTypeId() == para.moddesc && building.getPlayerId() == caster.getPlayerId()) {
                             building.performDeltaUpgrade(rgi, para);
                         }
                     }
-                    rgi.game.getPlayer(caster.playerId).descBuilding.get(para.moddesc).performDeltaUpgrade(rgi, para);
+                    rgi.game.getPlayer(caster.getPlayerId()).descBuilding.get(para.moddesc).performDeltaUpgrade(rgi, para);
                 }
             }
 
