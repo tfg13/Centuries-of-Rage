@@ -264,4 +264,11 @@ public abstract class Building extends GameObject {
     public int getZ2() {
         return z2;
     }
+
+    /**
+     * Platziert das Gebäude als Baustelle
+     */
+    public void placeSite(Position mainPos) {
+        mainPosition = mainPos;
+    }
 }
