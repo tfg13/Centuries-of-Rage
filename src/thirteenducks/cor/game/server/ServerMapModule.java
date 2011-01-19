@@ -1110,7 +1110,7 @@ public class ServerMapModule {
         // Broadcasten
 
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 18, b.netID, b.descTypeId, b.position.X, b.position.Y));
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, b.netID, b.playerId, b.hitpoints, 0));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, b.netID, b.playerId, b.getHitpoints(), 0));
     }
 
     /**
@@ -1142,7 +1142,7 @@ public class ServerMapModule {
         // Broadcasten
 
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 21, u.netID, u.descTypeId, u.position.X, u.position.Y));
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, u.netID, u.playerId, u.hitpoints, 0));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, u.netID, u.playerId, u.getHitpoints(), 0));
     }
 
     /**

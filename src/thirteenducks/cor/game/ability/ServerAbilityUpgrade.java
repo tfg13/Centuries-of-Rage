@@ -93,7 +93,7 @@ public class ServerAbilityUpgrade implements Serializable, Cloneable {
     }
 
     public void perform(GameObject caster) {
-    /*    if (!epocheUpgrade) {
+        if (!epocheUpgrade) {
             // Jetzt performen:
             if (affects == upgradeaffects.self) {
                 caster.performDeltaUpgrade(rgi, this);
@@ -160,7 +160,7 @@ public class ServerAbilityUpgrade implements Serializable, Cloneable {
                 }
             }
 
-        } */
+        }
         System.out.println("AddMe: Implement Upgrades for Server!");
     }
 

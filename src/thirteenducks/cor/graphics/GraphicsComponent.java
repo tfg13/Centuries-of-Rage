@@ -730,7 +730,7 @@ public class GraphicsComponent extends JLabel {
                     g2.setFont(fonts[0]);
                     g2.drawString(building.Gdesc, hovX + 2, hovY + 58);
                     // HP
-                    g2.drawString("HP: " + building.maxhitpoints, hovX + 2, hovY + 70);
+                    g2.drawString("HP: " + building.getMaxhitpoints(), hovX + 2, hovY + 70);
                     // Absatz
                     g2.drawLine(hovX, hovY + 73, mouseX, hovY + 73);
                     // Verfügbar?
@@ -866,7 +866,7 @@ public class GraphicsComponent extends JLabel {
                     g2.setFont(fonts[0]);
                     g2.drawString(unit.Gdesc, hovX + 2, hovY + 58);
                     // HP
-                    g2.drawString("HP: " + unit.maxhitpoints, hovX + 2, hovY + 70);
+                    g2.drawString("HP: " + unit.getMaxhitpoints(), hovX + 2, hovY + 70);
                     // Stark / Schwach gegen...
                     g2.drawString("Strong vs: " + unit.Gpro, hovX + 2, hovY + 82);
                     g2.drawString("Weak vs: " + unit.Gcon, hovX + 2, hovY + 94);
@@ -1140,8 +1140,8 @@ public class GraphicsComponent extends JLabel {
                                 int bx = (int) (unit.position.X * 20 * maxminscaleX);
                                 int by = (int) (unit.position.Y * 15 * maxminscaleY);
                                 // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                                int vrangeX = (int) (unit.visrange * 20 * maxminscaleX * 2);
-                                int vrangeY = (int) (unit.visrange * 15 * maxminscaleY * 2);
+                                int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
+                                int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
                                 fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                                 fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                             }
@@ -1162,8 +1162,8 @@ public class GraphicsComponent extends JLabel {
                     int bx = (int) ((building.position.X + ((building.z1 + building.z2 - 2) * 1.0 / 2)) * 20 * maxminscaleX);
                     int by = (int) (building.position.Y * 15 * maxminscaleY);
                     // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                    int vrangeX = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
-                    int vrangeY = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
+                    int vrangeX = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
+                    int vrangeY = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
                     fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                 }
             }
@@ -1276,7 +1276,7 @@ public class GraphicsComponent extends JLabel {
                 g2.drawString(unit.name, (int) (hudSizeX * 0.4), dy1 + 12);
                 // Energie:
                 g2.setFont(fonts[2]);
-                g2.drawString("HP:  " + unit.hitpoints + " / " + unit.maxhitpoints, (int) (hudSizeX * 0.41), (int) ((dy2 - dy1) * 0.7) + dy1);
+                g2.drawString("HP:  " + unit.getHitpoints() + " / " + unit.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) ((dy2 - dy1) * 0.7) + dy1);
                 // Rüstung
                 g2.setFont(fonts[0]);
                 g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1));
@@ -1300,14 +1300,14 @@ public class GraphicsComponent extends JLabel {
                 g2.drawString(String.valueOf(unit.speed), (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.25));
                 //Reichweite
                 g2.drawString("Range: ", dx1, (int) (dy2 * 1.4));
-                if (unit.range == 2) {
+                if (unit.getRange() == 2) {
                     g2.drawString("Melee", (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.4));
                 } else {
-                    g2.drawString(String.valueOf(unit.range), (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.4));
+                    g2.drawString(String.valueOf(unit.getRange()), (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.4));
                 }
                 // Schaden:
                 g2.drawString("Damage: ", dx1, (int) (dy2 * 1.60));
-                g2.drawString(String.valueOf(unit.damage), (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.60));
+                g2.drawString(String.valueOf(unit.getDamage()), (int) ((dx2 - dx1) * 4.7), (int) (dy2 * 1.60));
                 // Special-Schaden gegen Rüstungsklassen:
                 float yposition = 1.75f;
                 if (unit.antilightinf != 100) {
@@ -1364,7 +1364,7 @@ public class GraphicsComponent extends JLabel {
                 g2.drawString(building.name, (int) (hudSizeX * 0.4), dy1 + 12);
                 // Energie:
                 g2.setFont(fonts[2]);
-                g2.drawString("HP:  " + building.hitpoints + " / " + building.maxhitpoints, (int) (hudSizeX * 0.41), (int) ((dy2 - dy1) * 0.7) + dy1);
+                g2.drawString("HP:  " + building.getHitpoints() + " / " + building.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) ((dy2 - dy1) * 0.7) + dy1);
                 // Rüstung
                 g2.setFont(fonts[0]);
                 g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1));
@@ -1922,7 +1922,7 @@ public class GraphicsComponent extends JLabel {
                 g2.fillRect(dX + 9, dY - 5, 22, 5);
             }
             // Farbe bestimmen
-            int percent = rU.hitpoints * 100 / rU.maxhitpoints;
+            int percent = rU.getHitpoints() * 100 / rU.getMaxhitpoints();
             if (percent > 65) {
                 g2.setColor(Color.GREEN);
             } else if (percent > 32) {
@@ -1949,7 +1949,7 @@ public class GraphicsComponent extends JLabel {
                 g2.setColor(Color.BLACK);
                 g2.fillRect(dX + cpX, dY - cpY, (lf / 2) + 2, 5);
                 // Farbe bestimmen
-                int percent = rB.hitpoints * 100 / rB.maxhitpoints;
+                int percent = rB.getHitpoints() * 100 / rB.getMaxhitpoints();
                 if (percent > 65) {
                     g2.setColor(Color.GREEN);
                 } else if (percent > 32) {
@@ -3034,7 +3034,7 @@ public class GraphicsComponent extends JLabel {
         }
         // Dieses Feld selber auch ausschneiden
         fowmap[x][y] = 2;
-        cutCircleFast(b.visrange + ((b.z1 + b.z2) / 4), new Position(x, y), true);
+        cutCircleFast(b.getVisrange() + ((b.z1 + b.z2) / 4), new Position(x, y), true);
     }
 
     private void cutSight(Unit unit) {
@@ -3046,7 +3046,7 @@ public class GraphicsComponent extends JLabel {
         if (val == 0 || val == 1) {
             fowmap[x][y] = 3;
         }
-        cutCircleFast(unit.visrange, unit.position, false);
+        cutCircleFast(unit.getVisrange(),unit.position, false);
     }
 
     /**

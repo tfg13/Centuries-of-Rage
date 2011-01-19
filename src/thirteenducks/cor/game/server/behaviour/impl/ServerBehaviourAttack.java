@@ -82,7 +82,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     } else {
                         lastdistance = caster2.position.getDistance(workingAtk.position);
                     }
-                    if (lastdistance <= caster2.range) {
+                    if (lastdistance <= caster2.getRange()) {
                         // Einheit muss sich wehren - Falls es ne Unit ist
                         // Units wehren sich nur, wenn sie nicht im Flie-Modus sind
                         int damage = 0;
@@ -96,41 +96,41 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                             }
                             // Damage dealen, dabei Rüstungstyp und Extraschaden beachten
                             if (workingAtk.armortype.equals("lightinf")) {
-                                damage = caster2.damage * caster2.antilightinf / 100;
+                                damage = caster2.getDamage() * caster2.antilightinf / 100;
                             } else if (workingAtk.armortype.equals("heavyinf")) {
-                                damage = caster2.damage * caster2.antiheavyinf / 100;
+                                damage = caster2.getDamage() * caster2.antiheavyinf / 100;
                             } else if (workingAtk.armortype.equals("kav")) {
-                                damage = caster2.damage * caster2.antikav / 100;
+                                damage = caster2.getDamage() * caster2.antikav / 100;
                             } else if (workingAtk.armortype.equals("vehicle")) {
-                                damage = caster2.damage * Math.max(caster2.antivehicle, caster2.antitank) / 100;
+                                damage = caster2.getDamage() * Math.max(caster2.antivehicle, caster2.antitank) / 100;
                             } else if (workingAtk.armortype.equals("tank")) {
-                                damage = caster2.damage * caster2.antitank / 100;
+                                damage = caster2.getDamage() * caster2.antitank / 100;
                             } else if (workingAtk.armortype.equals("air")) {
-                                damage = caster2.damage * caster2.antiair / 100;
+                                damage = caster2.getDamage() * caster2.antiair / 100;
                             } else {
-                                damage = caster2.damage;
+                                damage = caster2.getDamage();
                             }
                             // Flugzeit des Geschosses in ms
                             int atkdelay = 0;
                             // Fernkampf?
-                            if (caster2.range > 2) {
+                            if (caster2.getRange() > 2) {
                                 if (useNP) {
-                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.bulletspeed);
+                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.getBulletspeed());
                                 } else {
-                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.bulletspeed);
+                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.getBulletspeed());
                                 }
                             } else {
                                 // Nahkampf
-                                atkdelay = caster2.atkdelay;
+                                atkdelay = caster2.getAtkdelay();
                             }
                             // Damage dealen
                             if (atkdelay == 0) {
                                 workingAtk.hitpoints -= damage;
-                                if (workingAtk.hitpoints <= 0) {
+                                if (workingAtk.getHitpoints() <= 0) {
                                     // Tot
                                     rgi.netmap.killUnit((Unit) workingAtk, caster2.playerId);
                                     // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                    if (caster2.range <= 2) {
+                                    if (caster2.getRange() <= 2) {
                                         rgi.moveMan.searchNewAtkPosForMeele(caster2);
                                     } else {
                                         rgi.moveMan.searchNewAtkPosForRange(caster2);
@@ -145,11 +145,11 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                                     @Override
                                     public void run() {
                                         victim2.hitpoints -= dmg;
-                                        if (victim2.hitpoints <= 0) {
+                                        if (victim2.getHitpoints() <= 0) {
                                             // Tot
                                             rgi.netmap.killUnit((Unit) victim2, caster2.playerId);
                                             // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                            if (caster2.range <= 2) {
+                                            if (caster2.getRange() <= 2) {
                                                 rgi.moveMan.searchNewAtkPosForMeele(caster2);
                                             } else {
                                                 rgi.moveMan.searchNewAtkPosForRange(caster2);
@@ -160,19 +160,19 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                             }
                             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 39, caster2.netID, workingAtk.netID, damage, atkdelay));
                         } else {
-                            damage = caster2.damage * caster2.antibuilding / 100;
+                            damage = caster2.getDamage() * caster2.antibuilding / 100;
                             // Flugzeit des Geschosses in ms
                             int atkdelay = 0;
                             // Fernkampf?
-                            if (caster2.range > 2) {
+                            if (caster2.getRange() > 2) {
                                 if (useNP) {
-                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.bulletspeed);
+                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.getBulletspeed());
                                 } else {
-                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.bulletspeed);
+                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.getBulletspeed());
                                 }
                             } else {
                                 // Nahkampf
-                                atkdelay = caster2.atkdelay;
+                                atkdelay = caster2.getAtkdelay();
                             }
                             // Damage dealen
                             if (atkdelay == 0) {
@@ -180,11 +180,11 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                                 if (!workingAtk.ready) {
                                     ((Building) workingAtk).damageWhileContruction += damage;
                                 }
-                                if (workingAtk.hitpoints <= 0) {
+                                if (workingAtk.getHitpoints() <= 0) {
                                     // Tot
                                     rgi.netmap.killBuilding((Building) workingAtk, caster2.playerId);
                                     // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                    if (caster2.range <= 2) {
+                                    if (caster2.getRange() <= 2) {
                                         rgi.moveMan.searchNewAtkPosForMeele(caster2);
                                     } else {
                                         rgi.moveMan.searchNewAtkPosForRange(caster2);
@@ -202,11 +202,11 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                                         if (!victim.ready) {
                                             ((Building) victim).damageWhileContruction += dmg;
                                         }
-                                        if (victim.hitpoints <= 0) {
+                                        if (victim.getHitpoints() <= 0) {
                                             // Tot
                                             rgi.netmap.killBuilding((Building) victim, caster2.playerId);
                                             // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                            if (caster2.range <= 2) {
+                                            if (caster2.getRange() <= 2) {
                                                 rgi.moveMan.searchNewAtkPosForMeele(caster2);
                                             } else {
                                                 rgi.moveMan.searchNewAtkPosForRange(caster2);
@@ -220,7 +220,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                         }
                     } else {
                         // Zu weit weg
-                        if (caster2.range <= 2) { // Nur Nahkampf
+                        if (caster2.getRange() <= 2) { // Nur Nahkampf
                             rgi.moveMan.searchNewAtkPosForMeele(caster2);
                             // Hier sofort aufhören, denn es könnte:
                             // 1. Eine andere Position zugewiesen worden sein, zu der wir schon hinlaufen
@@ -240,7 +240,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, 0, 0, 0));
                     }
                     // Server soll eine neues suchen, der kann das besser:
-                    if (caster2.range <= 2) {
+                    if (caster2.getRange() <= 2) {
                         rgi.moveMan.searchNewAtkPosForMeele(caster2);
                     } else {
                         rgi.moveMan.searchNewAtkPosForRange(caster2);

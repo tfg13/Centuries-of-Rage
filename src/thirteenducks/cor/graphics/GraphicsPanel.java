@@ -151,7 +151,7 @@ public class GraphicsPanel extends javax.swing.JLabel {
                             // Beschreibung
                             g.drawString(tempStr, 2, renderY + 19);
                         }
-                        tempStr = "HP: " + descBuildings.get(countImage).hitpoints + "/" + descBuildings.get(countImage).maxhitpoints;
+                        tempStr = "HP: " + descBuildings.get(countImage).getHitpoints() + "/" + descBuildings.get(countImage).getMaxhitpoints();
                         if (tempStr != null) {
                             // Hitpoints
                             g.drawString(tempStr, 2, renderY + 28);
@@ -174,7 +174,7 @@ public class GraphicsPanel extends javax.swing.JLabel {
                         if (countImage == 0) { // Die Löschen-Funktion braucht das net
                             tempStr = null;
                         } else {
-                            tempStr = "HP: " + descUnits.get(countImage).hitpoints + "/" + descUnits.get(countImage).maxhitpoints;
+                            tempStr = "HP: " + descUnits.get(countImage).getHitpoints() + "/" + descUnits.get(countImage).getMaxhitpoints();
                         }
                         if (tempStr != null) {
                             g.drawString(tempStr, 2, renderY + 28);
@@ -190,7 +190,7 @@ public class GraphicsPanel extends javax.swing.JLabel {
                         }
                         // Reichweite
                         if (countImage != 0) {
-                            if (descUnits.get(countImage).range == 2.0) {
+                            if (descUnits.get(countImage).getRange() == 2.0) {
                                 tempStr = "NAH";
                             } else {
                                 tempStr = "FERN";

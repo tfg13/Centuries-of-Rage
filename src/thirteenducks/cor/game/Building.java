@@ -82,7 +82,7 @@ public abstract class Building extends GameObject {
     /**
      * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
      */
-    private int maxIntra = 0;
+    protected int maxIntra = 0;
     /**
      * Gibt die  Ernterate pro interner Einheit an
      */
@@ -90,7 +90,7 @@ public abstract class Building extends GameObject {
     /**
      * Gibt an, welche Einheiten akzeptiert werden.
      */
-    private int accepts = Building.ACCEPTS_HARVESTERS_ONLY;
+    protected int accepts = Building.ACCEPTS_HARVESTERS_ONLY;
     /**
      * Speichert den genommenen Schaden während der Bauphase
      */

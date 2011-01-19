@@ -43,7 +43,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * Die Geschwindigkeit der Einheit in Feldern pro Sekunde.
      */
-    private double speed;
+    protected double speed;
     /**
      * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
      */
@@ -164,7 +164,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @return
      */
     public Unit enemyInRangeAroundMe(ServerCore.InnerServer rgi) {
-        int searchRange = (int) (range / 1.41);
+        int searchRange = (int) (getRange() / 1.41);
         int i = 1;
         int kreis = 1;
         // Startfeld des Kreises:

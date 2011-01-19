@@ -75,7 +75,7 @@ public class GraphicsBullet implements Pauseable, GraphicsRenderable {
 	startTime = System.currentTimeMillis();
 	attacker.atkStart = startTime;
 	attacker.atkAnim = true;
-	texture = attacker.bullettexture;
+	texture = attacker.getBullettexture();
 	if (victim.getClass().equals(Unit.class)) {
 	    positionCanChange = true;
 	} else {
@@ -100,7 +100,7 @@ public class GraphicsBullet implements Pauseable, GraphicsRenderable {
 	startTime = System.currentTimeMillis();
 	attackerB.atkStart = startTime;
 	attackerB.atkAnim = true;
-	texture = attackerB.bullettexture;
+	texture = attackerB.getBullettexture();
 	if (victim.getClass().equals(Unit.class)) {
 	    positionCanChange = true;
 	} else {

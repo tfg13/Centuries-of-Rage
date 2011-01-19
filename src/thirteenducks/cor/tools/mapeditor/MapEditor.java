@@ -1997,11 +1997,11 @@ public class MapEditor {
         rmegui.jTextField1.setText(currentUnit.graphicsdata.getTexture());
         rmegui.jSpinner3.setValue(currentUnit.playerId);
         rmegui.jTextField2.setText(String.valueOf(currentUnit.speed));
-        rmegui.jTextField3.setText(String.valueOf(currentUnit.maxhitpoints));
-        rmegui.jTextField4.setText(String.valueOf(currentUnit.hitpoints));
-        rmegui.jTextField12.setText(String.valueOf(currentUnit.damage));
+        rmegui.jTextField3.setText(String.valueOf(currentUnit.getMaxhitpoints()));
+        rmegui.jTextField4.setText(String.valueOf(currentUnit.getHitpoints()));
+        rmegui.jTextField12.setText(String.valueOf(currentUnit.getDamage()));
         rmegui.jTextField13.setText(String.valueOf(currentUnit.cooldownmax));
-        rmegui.jTextField14.setText(String.valueOf(currentUnit.range));
+        rmegui.jTextField14.setText(String.valueOf(currentUnit.getRange()));
         rmegui.jTextField15.setText(String.valueOf(currentUnit.idlerange));
         rmegui.jButton1.setEnabled(true);
         rmegui.content.repaint();
@@ -2011,8 +2011,8 @@ public class MapEditor {
         // Läd die Einstellungen neu in den Gebäudeeditor rein.
         rmegui.jTextField5.setText(currentBuilding.defaultTexture);
         rmegui.jSpinner4.setValue(currentBuilding.playerId);
-        rmegui.jTextField6.setText(String.valueOf(currentBuilding.maxhitpoints));
-        rmegui.jTextField7.setText(String.valueOf(currentBuilding.hitpoints));
+        rmegui.jTextField6.setText(String.valueOf(currentBuilding.getMaxhitpoints()));
+        rmegui.jTextField7.setText(String.valueOf(currentBuilding.getHitpoints()));
         rmegui.jTextField8.setText(String.valueOf(currentBuilding.z1));
         rmegui.jTextField9.setText(String.valueOf(currentBuilding.z2));
         rmegui.jTextField10.setText(String.valueOf(currentBuilding.offsetX));

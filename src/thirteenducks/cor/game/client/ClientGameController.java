@@ -45,7 +45,6 @@ import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityIntraManager;
-import thirteenducks.cor.game.Ressource;
 
 /**
  *
@@ -57,7 +56,6 @@ public class ClientGameController implements Runnable {
     private NetPlayer myself;
     private List<Unit> unitList;             // Die Liste mit den Einheiten
     private List<Building> buildingList;     // Die Liste mit den Gebäuden
-    private List<Ressource> resList;         // Die Liste mit den Ressourcen
     Thread t;                                   // Der Thread, in dem die Mainloop läuft
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)

@@ -1053,7 +1053,7 @@ public class CoRInput implements Pauseable {
                                 }
                             }
                             // Kann das Gebäude angreifen?
-                            if (selected.get(0).damage != 0) {
+                            if (selected.get(0).getDamage() != 0) {
                                 // Eigene Position berechnen
                                 Building bui = (Building) selected.get(0);
                                 float bx = 0;
@@ -1066,7 +1066,7 @@ public class CoRInput implements Pauseable {
                                 // Feindliche Einheit angeklickt?
                                 if (selUnit != null && selUnit.playerId != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId))) {
                                     // In Reichweite?
-                                    if (selUnit.position.getDistance(Omg) <= bui.range) {
+                                    if (selUnit.position.getDistance(Omg) <= bui.getRange()) {
                                         // Idle deaktivieren
                                         bui.getbehaviourC(10).deactivate();
                                         // Angriff an Server senden
@@ -1095,7 +1095,7 @@ public class CoRInput implements Pauseable {
                                         } else {
                                             break;
                                         }
-                                        if (Omg.getDistance(Test) <= bui.range) {
+                                        if (Omg.getDistance(Test) <= bui.getRange()) {
                                             inreichweite = true;
                                             break;
                                         }

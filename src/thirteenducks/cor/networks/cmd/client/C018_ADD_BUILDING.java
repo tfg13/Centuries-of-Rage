@@ -43,7 +43,7 @@ public class C018_ADD_BUILDING extends ClientCommand {
         if (b != null) {
             b.position = rgi.readPosition(data, 2);
             b.ready = false;
-            b.hitpoints = b.maxhitpoints / 4;
+            b.hitpoints = b.getMaxhitpoints() / 4;
 
             rgi.mapModule.addBuilding(b);
         } else {

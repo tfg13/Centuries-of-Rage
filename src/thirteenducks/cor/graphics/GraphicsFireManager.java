@@ -62,7 +62,7 @@ public class GraphicsFireManager {
     public void buildingHit(Building b, int epoche) {
 
         // Natürlich nicht für gestorbene
-        if (b.hitpoints > 0) {
+        if (b.getHitpoints() > 0) {
 
             ParticleSettings settings = fireSettings.get(b.descTypeId);
             if (settings != null) {
@@ -76,15 +76,15 @@ public class GraphicsFireManager {
                 int fires = sys.getEmitterCount();
                 int targetFires = settings.getMaxFires(epoche);
 
-                int useDamage = b.hitpoints;
+                int useDamage = b.getHitpoints();
                 if (!b.ready) { // Gebäude, die gerade Gebäud werden, haben ein anderes Schadenslevel
-                    useDamage = b.hitpoints - b.damageWhileContruction;
+                    useDamage = b.getHitpoints() - b.damageWhileContruction;
                 }
 
                 // Berechnen, wie viele Feuer wir beim derzeitigen Gesundheitszustand haben sollten
                 // Feuer-Erhöhungen werden gleichmäßig über die Energispanne von 10-80% veteilt.
-                int fireStart = (int) (0.8 * b.maxhitpoints);
-                int fireAddIntervall = (int) (0.7 * b.maxhitpoints / targetFires);
+                int fireStart = (int) (0.8 * b.getMaxhitpoints());
+                int fireAddIntervall = (int) (0.7 * b.getMaxhitpoints() / targetFires);
                 int setFires = (fireStart - useDamage) / fireAddIntervall;
 
                 // Wenn wir weniger haben, als wir sollten, müssen wir welche hinzufügen

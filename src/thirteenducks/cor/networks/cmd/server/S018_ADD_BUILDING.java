@@ -44,7 +44,7 @@ public class S018_ADD_BUILDING extends ServerCommand {
             b.ready = false;
             b.position = rgi.readPosition(data, 2);
             b.setPlayerId(handler.client.playerId);
-            b.hitpoints = b.maxhitpoints / 4;
+            b.hitpoints = b.getMaxhitpoints() / 4;
             rgi.netmap.addBuildingAsSite(b);
         } else {
             System.out.println("FixMe: Invalid ID'S (cmd18)");

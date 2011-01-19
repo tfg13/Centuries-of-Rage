@@ -1040,7 +1040,7 @@ public class GraphicsContent extends BasicGame {
                     g2.setFont(fonts[0]);
                     g2.drawString(building.Gdesc, hovX + 2, hovY + 48);
                     // HP
-                    g2.drawString("HP: " + building.maxhitpoints, hovX + 2, hovY + 60);
+                    g2.drawString("HP: " + building.getMaxhitpoints(), hovX + 2, hovY + 60);
                     // Absatz
                     g2.drawLine(hovX, hovY + 73, mouseX, hovY + 73);
                     // Verfügbar?
@@ -1177,7 +1177,7 @@ public class GraphicsContent extends BasicGame {
                     g2.setFont(fonts[0]);
                     g2.drawString(unit.Gdesc, hovX + 2, hovY + 48);
                     // HP
-                    g2.drawString("HP: " + unit.maxhitpoints, hovX + 2, hovY + 60);
+                    g2.drawString("HP: " + unit.getMaxhitpoints(), hovX + 2, hovY + 60);
                     // Stark / Schwach gegen...
                     g2.drawString("Strong vs: " + unit.Gpro, hovX + 2, hovY + 72);
                     g2.drawString("Weak vs: " + unit.Gcon, hovX + 2, hovY + 84);
@@ -1453,8 +1453,8 @@ public class GraphicsContent extends BasicGame {
                             // Beim Angriff die Position der Einheit ein bissle verschieben: (Nur Nahkampf)
                             int maxX = 0;
                             int maxY = 0;
-                            if (unit.anim != null && unit.atkStart != 0 && unit.range == 2) {
-                                int del = unit.atkdelay != 0 ? unit.atkdelay : 250;
+                            if (unit.anim != null && unit.atkStart != 0 && unit.getRange() == 2) {
+                                int del = unit.getAtkdelay() != 0 ? unit.getAtkdelay() : 250;
                                 // Solange wie del sagt vorschieben, danach gleich lang zurück
                                 switch (unit.anim.dir) {
                                     case 1:
@@ -1813,8 +1813,8 @@ public class GraphicsContent extends BasicGame {
                                         // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
                                         int bx = (int) (unit.position.X * 20 * maxminscaleX);
                                         int by = (int) (unit.position.Y * 15 * maxminscaleY);
-                                        int vrangeX = (int) (unit.visrange * 20 * maxminscaleX * 2);
-                                        int vrangeY = (int) (unit.visrange * 15 * maxminscaleY * 2);
+                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
+                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
 //                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
 //                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
                                         fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
@@ -1836,8 +1836,8 @@ public class GraphicsContent extends BasicGame {
                                         // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
                                         int bx = (int) (unit.position.X * 20 * maxminscaleX);
                                         int by = (int) (unit.position.Y * 15 * maxminscaleY);
-                                        int vrangeX = (int) (unit.visrange * 20 * maxminscaleX * 2);
-                                        int vrangeY = (int) (unit.visrange * 15 * maxminscaleY * 2);
+                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
+                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
 //                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
 //                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
                                         fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
@@ -1862,8 +1862,8 @@ public class GraphicsContent extends BasicGame {
                             int bx = (int) ((building.position.X + ((building.z1 + building.z2 - 2) * 1.0 / 2)) * 20 * maxminscaleX);
                             int by = (int) (building.position.Y * 15 * maxminscaleY);
                             // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
+                            int vrangeX = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
+                            int vrangeY = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
                             fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                         }
                     }
@@ -1878,8 +1878,8 @@ public class GraphicsContent extends BasicGame {
                             int bx = (int) ((building.position.X + ((building.z1 + building.z2 - 2) * 1.0 / 2)) * 20 * maxminscaleX);
                             int by = (int) (building.position.Y * 15 * maxminscaleY);
                             // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.visrange + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
+                            int vrangeX = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
+                            int vrangeY = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
                             fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                         }
                     }
@@ -1993,7 +1993,7 @@ public class GraphicsContent extends BasicGame {
                     g2.drawString(unit.name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
                     // HP
                     g2.setFont(fonts[2]);
-                    g2.drawString("HP:  " + unit.hitpoints + " / " + unit.maxhitpoints, (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+                    g2.drawString("HP:  " + unit.getHitpoints() + " / " + unit.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
                     // Rüstung
                     g2.setFont(fonts[0]);
                     g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
@@ -2017,14 +2017,14 @@ public class GraphicsContent extends BasicGame {
                     g2.drawString(String.valueOf(unit.speed), (int) (dx1 * 4.1), (int) (dy2 * 1.25) - 10);
                     //Reichweite
                     g2.drawString("Range: ", dx1, (int) (dy2 * 1.4) - 10);
-                    if (unit.range == 2) {
+                    if (unit.getRange() == 2) {
                         g2.drawString("Melee", (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
                     } else {
-                        g2.drawString(String.valueOf(unit.range), (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
+                        g2.drawString(String.valueOf(unit.getRange()), (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
                     }
                     // Schaden:
                     g2.drawString("Damage: ", dx1, (int) (dy2 * 1.60) - 10);
-                    g2.drawString(String.valueOf(unit.damage), (int) (dx1 * 4.1), (int) (dy2 * 1.60) - 10);
+                    g2.drawString(String.valueOf(unit.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * 1.60) - 10);
                     // Special-Schaden gegen Rüstungsklassen:
                     float yposition = 1.75f;
                     if (unit.antilightinf != 100) {
@@ -2084,7 +2084,7 @@ public class GraphicsContent extends BasicGame {
                     g2.drawString(building.name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
                     // HP
                     g2.setFont(fonts[2]);
-                    g2.drawString("HP:  " + building.hitpoints + " / " + building.maxhitpoints, (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+                    g2.drawString("HP:  " + building.getHitpoints() + " / " + building.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
                     // Rüstung
                     g2.setFont(fonts[0]);
                     g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
@@ -2112,12 +2112,12 @@ public class GraphicsContent extends BasicGame {
                             g2.drawString(String.valueOf(building.heal), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
                             movedown += 0.2;
                         }
-                        if (building.damage != 0) {
+                        if (building.getDamage() != 0) {
                             g2.drawString("Range: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(String.valueOf(building.range), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+                            g2.drawString(String.valueOf(building.getRange()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
                             movedown += 0.15;
                             g2.drawString("Damage: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(String.valueOf(building.damage), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+                            g2.drawString(String.valueOf(building.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
                             movedown += 0.15;
                         }
                         if (building.antilightinf != 100) {
@@ -2670,7 +2670,7 @@ public class GraphicsContent extends BasicGame {
                 g2.fillRect(dX + 9, dY - 1, 7, 7);
             }
             // Farbe bestimmen
-            double percent = 1.0 * rU.hitpoints / rU.maxhitpoints;
+            double percent = 1.0 * rU.getHitpoints() / rU.getMaxhitpoints();
             if (percent >= 0.3) {
                 g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
             } else {
@@ -2693,7 +2693,7 @@ public class GraphicsContent extends BasicGame {
                 g2.setColor(Color.black);
                 g2.fillRect(dX + cpX, dY - cpY, (lf / 2) + 2, 5);
                 // Farbe bestimmen
-                double percent = 1.0 * rB.hitpoints / rB.maxhitpoints;
+                double percent = 1.0 * rB.getHitpoints() / rB.getMaxhitpoints();
                 if (percent >= 0.5) {
                     g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
                 }
@@ -3501,7 +3501,7 @@ public class GraphicsContent extends BasicGame {
         }
         // Dieses Feld selber auch ausschneiden
         fowmap[x][y] = 2;
-        cutCircleFast(b.visrange + ((b.z1 + b.z2) / 4), new Position(x, y), true);
+        cutCircleFast(b.getVisrange() + ((b.z1 + b.z2) / 4), new Position(x, y), true);
     }
 
     /**
@@ -3519,7 +3519,7 @@ public class GraphicsContent extends BasicGame {
         // Dieses Feld selber auch ausschneiden
         fowmap[x][y] = 3;
         // Schablone holen
-        boolean[][] pattern = fowpatmgr.getPattern(b.visrange + ((b.z1 + b.z2) / 4));
+        boolean[][] pattern = fowpatmgr.getPattern(b.getVisrange() + ((b.z1 + b.z2) / 4));
         // Schablone anwenden
         int sx = x - 40;
         int sy = y - 40;
@@ -3545,7 +3545,7 @@ public class GraphicsContent extends BasicGame {
         if (val == 0 || val == 1) {
             fowmap[x][y] = 3;
         }
-        cutCircleFast(unit.visrange, unit.position, false);
+        cutCircleFast(unit.getVisrange(),unit.position, false);
     }
 
     /**

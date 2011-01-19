@@ -71,7 +71,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
                 by += ((caster2.z2 - 1) * 1.0f / 2);
                 Position Mitte1 = new Position((int) bx, (int) by);
                 distance = workingAtk.position.getDistance(Mitte1);
-                if (distance <= caster2.range) {
+                if (distance <= caster2.getRange()) {
                     // Einheit muss sich wehren - Falls es ne Unit ist
                     // Units wehren sich nur, wenn sie nicht im Flie-Modus sind
                     int damage = 0;
@@ -86,27 +86,27 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
                         }
                         // Damage dealen, dabei Rüstungstyp und Extraschaden beachten
                         if (workingAtk.armortype.equals("lightinf")) {
-                            damage = caster2.damage * caster2.antilightinf / 100;
+                            damage = caster2.getDamage() * caster2.antilightinf / 100;
                         } else if (workingAtk.armortype.equals("heavyinf")) {
-                            damage = caster2.damage * caster2.antiheavyinf / 100;
+                            damage = caster2.getDamage() * caster2.antiheavyinf / 100;
                         } else if (workingAtk.armortype.equals("kav")) {
-                            damage = caster2.damage * caster2.antikav / 100;
+                            damage = caster2.getDamage() * caster2.antikav / 100;
                         } else if (workingAtk.armortype.equals("vehicle")) {
-                            damage = caster2.damage * Math.max(caster2.antivehicle, caster2.antitank) / 100;
+                            damage = caster2.getDamage() * Math.max(caster2.antivehicle, caster2.antitank) / 100;
                         } else if (workingAtk.armortype.equals("tank")) {
-                            damage = caster2.damage * caster2.antitank / 100;
+                            damage = caster2.getDamage() * caster2.antitank / 100;
                         } else if (workingAtk.armortype.equals("air")) {
-                            damage = caster2.damage * caster2.antiair / 100;
+                            damage = caster2.getDamage() * caster2.antiair / 100;
                         } else {
-                            damage = caster2.damage;
+                            damage = caster2.getDamage();
                         }
                         // Flugzeit des Geschosses in ms
-                        int atkdelay = (int) (Mitte1.getDistance(workingAtk.position) * 1000 / caster2.bulletspeed);
+                        int atkdelay = (int) (Mitte1.getDistance(workingAtk.position) * 1000 / caster2.getBulletspeed());
 
                         // Damage dealen
                         if (atkdelay == 0) {
                             workingAtk.hitpoints -= damage;
-                            if (workingAtk.hitpoints <= 0) {
+                            if (workingAtk.getHitpoints() <= 0) {
                                 // Ja, Tod
                                 rgi.netmap.killUnit((Unit) workingAtk, caster2.playerId);
                             }
@@ -119,7 +119,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
                                 @Override
                                 public void run() {
                                     victim2.hitpoints -= dmg;
-                                    if (victim2.hitpoints <= 0) {
+                                    if (victim2.getHitpoints() <= 0) {
                                         // Ja, Tod 
                                         rgi.netmap.killUnit((Unit) victim2, caster2.playerId);
                                     }
@@ -136,20 +136,20 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
                         mx += ((Geb.z2 - 1) * 1.0f / 2);
                         my += ((Geb.z2 - 1) * 1.0f / 2);
                         Position Mitte2 = new Position((int) mx, (int) my);
-                        damage = caster2.damage * caster2.antibuilding / 100;
+                        damage = caster2.getDamage() * caster2.antibuilding / 100;
 
                         // Flugzeit des Geschosses in ms
                         int atkdelay = 0;
                         //if (useNP) {
                         //    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.bulletspeed);
                         //} else {
-                        atkdelay = (int) (Mitte1.getDistance(Mitte2) * 1000 / caster2.bulletspeed);
+                        atkdelay = (int) (Mitte1.getDistance(Mitte2) * 1000 / caster2.getBulletspeed());
                         //}
 
                         // Damage dealen
                         if (atkdelay == 0) {
                             workingAtk.hitpoints -= damage;
-                            if (workingAtk.hitpoints <= 0) {
+                            if (workingAtk.getHitpoints() <= 0) {
                                 // Ja, Tod
                                 rgi.netmap.killBuilding((Building) workingAtk, caster2.playerId);
                             }
@@ -162,7 +162,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
                                 @Override
                                 public void run() {
                                     victim.hitpoints -= dmg;
-                                    if (victim.hitpoints <= 0) {
+                                    if (victim.getHitpoints() <= 0) {
                                         // Ja, Tod
                                         rgi.netmap.killBuilding((Building) victim, caster2.playerId);
                                     }

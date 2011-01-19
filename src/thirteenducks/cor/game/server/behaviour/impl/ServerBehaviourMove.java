@@ -147,7 +147,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                             } else {
                                 caster2.attackManager.lastdistance = caster2.position.getDistance(caster2.attacktarget.position);
                             }
-                            if (caster2.attackManager.lastdistance <= caster2.range) {
+                            if (caster2.attackManager.lastdistance <= caster2.getRange()) {
                                 // Anhalten
                                 rgi.moveMan.autoMoveStop(caster2);
                             }

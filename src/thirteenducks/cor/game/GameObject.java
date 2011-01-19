@@ -29,10 +29,18 @@ import java.io.Serializable;
 import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
+import thirteenducks.cor.game.ability.AbilityIntraManager;
+import thirteenducks.cor.game.ability.AbilityUpgrade;
+import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
+import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourHeal;
 import thirteenducks.cor.graphics.GOGraphicsData;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
+import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
+import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
 
 /**
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
@@ -53,7 +61,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Dieses Objekt ist gestorben.
      */
     public static final int LIFESTATUS_DEAD = 2;
-
     /**
      * Dieses Objekt tut gerade nichts. (Normalzustand)
      */
@@ -122,7 +129,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Gebäude
      */
     public static final int ARMORTYPE_BUILDING = 6;
-
     /**
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
      * z.B. "Bogenschütze"
@@ -141,7 +147,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die derzeitige Zuordnungsposition des Objekts.
      * Die Zuordnungsposition ist die Position ganz links.
      */
-    private Position mainPosition;
+    protected Position mainPosition;
     /**
      * Die Rüstungsklasse diese Objekts
      */
@@ -174,7 +180,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die Liste mit den Abilitys dieses Objekts.
      * Abilitys werden im Hud als anklickbare Knöpfe dargestellt.
      */
-    private List<Ability> abilitys;
+    protected List<Ability> abilitys;
     /**
      * Die Server-Behaviour dieses Objekts.
      * Werden regelmäßig vom GameLogic-Thread aufgerufen.
@@ -283,6 +289,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         netID = newNetId;
         mainPosition = mainPos;
     }
+
     /**
      * Erzeugt ein Platzhalter-GameObject, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
@@ -377,5 +384,563 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
 
     public void addClientBehaviour(ClientBehaviour b) {
         cbehaviours.add(b);
+    }
+
+    /**
+     * Sucht ein UpgradeBehaviour anhand der descTypeId der zugehörigen Ability
+     * @param searchDESC Die Desc-Id
+     * @return RogGameObjectAbiliyUpgrade, falls gefunden, sonst null
+     */
+    public ClientBehaviourUpgrade getUpgradeBehaviour(int searchDESC) {
+        for (ClientBehaviour b : this.cbehaviours) {
+            if (b.getId() == 8) {
+                // Das ist ein Upgrade, richtige Desc?
+                ClientBehaviourUpgrade up = (ClientBehaviourUpgrade) b;
+                if (up.ability.myId == searchDESC) {
+                    // Das ist es
+                    return up;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Ändert alle Parameter dieses GO auf die der angegebenen
+     * DescTypeId (Führt ein Upgrade dieses GO auf ein anderes aus)
+     *
+     * Funktioniert nur auf Units und Buildings
+     *
+     * Client Version
+     * @param toDesc Dieses GO erhält alle Parameter der toDesc.
+     */
+    public void performUpgrade(ClientCore.InnerClient rgi, int toDesc) {
+        if (this.getClass().equals(Building.class)) {
+            Building building = rgi.mapModule.getDescBuilding(toDesc, -1, this.playerId);
+            if (building == null) {
+                // Abbrechen, das wird nichts.
+                return;
+            }
+            copyPropertiesFrom(building);
+            this.abilitys.add(new AbilityIntraManager((Building) this, rgi));
+            /*   BuildingAnimator rgba = rgi.game.getPlayer(this.playerId).descBuilding.get(toDesc).anim;
+            if (rgba != null) {
+            rgba = rgba.clone();
+            } 
+            ((Building) this).anim = rgba; */
+            System.out.println("AddMe: Upgrade GraphicsData & Animator");
+            // Fertig
+        } else if (this.getClass().equals(Unit.class)) {
+            Unit unit = rgi.mapModule.getDescUnit(toDesc, -1, this.playerId);
+            if (unit == null) {
+                // Abbrechen, das wird nichts.
+                return;
+            }
+            // Eigenschaften übernehmen
+            copyPropertiesFrom(unit);
+
+            /* UnitAnimator rgua = rgi.game.getPlayer(this.playerId).descUnit.get(toDesc).anim;
+            if (rgua != null) {
+            rgua = rgua.clone();
+            }
+            ((Unit) this).anim = rgua; */
+            System.out.println("AddMe: Upgrade GraphicsData & Animator");
+        }
+        rgi.rogGraphics.triggerUpdateHud();
+    }
+
+    /**
+     * Ändert alle Parameter dieses GO auf die der angegebenen
+     * DescTypeId (Führt ein Upgrade dieses GO auf ein anderes aus)
+     *
+     * Funktioniert nur auf Units und Buildings
+     *
+     * Server-Version
+     * @param toDesc Dieses GO erhält alle Parameter der toDesc.
+     */
+    public void performUpgrade(ServerCore.InnerServer rgi, int toDesc) {
+        if (this.getClass().equals(Building.class)) {
+            Building building = rgi.netmap.getDescBuilding(this.playerId, toDesc);
+            if (building == null) {
+                // Abbrechen, das wird nichts.
+                return;
+            }
+            copyPropertiesFrom(building);
+            // Fertig
+        } else if (this.getClass().equals(Unit.class)) {
+            Unit unit = rgi.netmap.getDescUnit(this.playerId, toDesc);
+            if (unit == null) {
+                // Abbrechen, das wird nichts.
+                return;
+            }
+            // Eigenschaften übernehmen
+            copyPropertiesFrom(unit);
+        }
+    }
+
+    public void copyPropertiesFrom(Unit unit) {
+        // Eigenschaften übernehmen
+        this.damageFactors = unit.getDamageFactors();
+        this.descTypeId = unit.getDescTypeId();
+        this.armorType = unit.getArmorType();
+        // Gesundheit prozentual erhöhen
+        float perc = 1.0f * this.hitpoints / this.maxhitpoints;
+        this.maxhitpoints = unit.maxhitpoints;
+        this.hitpoints = (int) (1.0f * this.maxhitpoints * perc);
+        this.descName = unit.getName();
+        this.visrange = unit.getVisrange();
+        this.descCon = unit.getDescCon();
+        this.descDescription = unit.getDescDescription();
+        this.descPro = unit.getDescPro();
+        this.damage = unit.getDamage();
+        this.bulletspeed = unit.getBulletspeed();
+        this.bullettexture = unit.getBullettexture();
+        this.range = unit.getRange();
+        this.atkdelay = unit.getAtkdelay();
+        this.abilitys.clear();
+        for (Ability ab : unit.abilitys) {
+            try {
+                this.abilitys.add(ab.clone());
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Unit-Eigenschaften
+        Unit here = (Unit) this;
+        System.out.println("AddMe: Copy animator & Graphics Data!");
+        here.speed = unit.getSpeed();
+    }
+
+    public void copyPropertiesFrom(Building building) {
+        // Eigenschaften übernehmen
+        this.damageFactors = building.getDamageFactors();
+        this.descTypeId = building.getDescTypeId();
+        this.armorType = building.getArmorType();
+        // Gesundheit prozentual erhöhen
+        float perc = 1.0f * this.hitpoints / this.maxhitpoints;
+        this.maxhitpoints = building.maxhitpoints;
+        this.hitpoints = (int) (1.0f * this.maxhitpoints * perc);
+        this.descName = building.getName();
+        this.visrange = building.getVisrange();
+        this.descCon = building.getDescCon();
+        this.descDescription = building.getDescDescription();
+        this.descPro = building.getDescPro();
+        this.damage = building.getDamage();
+        this.bulletspeed = building.getBulletspeed();
+        this.bullettexture = building.getBullettexture();
+        this.range = building.getRange();
+        this.atkdelay = building.getAtkdelay();
+        this.abilitys.clear();
+        for (Ability ab : building.abilitys) {
+            try {
+                this.abilitys.add(ab.clone());
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Building-Eigenschaften
+        Building here = (Building) this;
+        here.accepts = building.accepts;
+        here.maxIntra = building.maxIntra;
+        // Fertig
+    }
+
+    public void performDeltaUpgrade(ServerCore.InnerServer rgi, ServerAbilityUpgrade up) {
+        // Allgemeine Upgrades durchführen:
+
+        /*   if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
+        }
+        } */
+        System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
+
+        this.maxhitpoints += up.maxhitpointsup;
+        if (up.maxhitpointsup > 0) {
+            this.hitpoints += up.maxhitpointsup;
+        }
+        this.hitpoints += up.hitpointsup;
+        if (up.newarmortype != null) {
+            System.out.println("AddMe: Upgrade Armortypes!");
+            // this.armorType = up.newarmortype;
+        }
+
+        this.damageFactors[ARMORTYPE_HEAVYINF] += up.antiheavyinfup;
+        this.damageFactors[ARMORTYPE_LIGHTINF] += up.antilightinfup;
+        this.damageFactors[ARMORTYPE_KAV] += up.antikavup;
+        this.damageFactors[ARMORTYPE_VEHICLE] += up.antivehicleup;
+        this.damageFactors[ARMORTYPE_TANK] += up.antitankup;
+        this.damageFactors[ARMORTYPE_AIR] += up.antiairup;
+        this.damageFactors[ARMORTYPE_BUILDING] += up.antibuildingup;
+        this.damage += up.damageup;
+
+        /*  if (up.toAnimDesc != 0) {
+        // Animator suchen und einsetzen
+        if (this.getClass().equals(Unit.class)) {
+        UnitAnimator rgua = rgi.game.getPlayer(playerId).descUnit.get(up.toAnimDesc).anim;
+        if (rgua != null) {
+        ((Unit) this).anim = rgua;
+        }
+        } else if (this.getClass().equals(Building.class)) {
+        BuildingAnimator rgba = rgi.game.getPlayer(playerId).descBuilding.get(up.toAnimDesc).anim;
+        if (rgba != null) {
+        ((Building) this).anim = rgba;
+        }
+        }
+        } */
+
+
+
+        // Unit only:
+        this.bulletspeed += up.bulletspeedup;
+        if (this.getClass().equals(Unit.class)) {
+            Unit myself = (Unit) this;
+            myself.speed += up.speedup;
+            myself.range += up.rangeup;
+        }
+    }
+
+    public void performDeltaUpgrade(ClientCore.InnerClient rgi, AbilityUpgrade up) {
+        // Allgemeine Upgrades durchführen:
+    /*    if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
+        }
+        } */
+        System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
+
+        this.maxhitpoints += up.maxhitpointsup;
+        if (up.maxhitpointsup > 0) {
+            this.hitpoints += up.maxhitpointsup;
+        }
+        this.hitpoints += up.hitpointsup;
+        if (up.newarmortype != null) {
+            System.out.println("AddMe: Upgrade Armortypes!");
+            //this.armortype = up.newarmortype;
+        }
+
+        this.damageFactors[ARMORTYPE_HEAVYINF] += up.antiheavyinfup;
+        this.damageFactors[ARMORTYPE_LIGHTINF] += up.antilightinfup;
+        this.damageFactors[ARMORTYPE_KAV] += up.antikavup;
+        this.damageFactors[ARMORTYPE_VEHICLE] += up.antivehicleup;
+        this.damageFactors[ARMORTYPE_TANK] += up.antitankup;
+        this.damageFactors[ARMORTYPE_AIR] += up.antiairup;
+        this.damageFactors[ARMORTYPE_BUILDING] += up.antibuildingup;
+        this.visrange += up.visrangeup;
+        this.damage += up.damageup;
+        this.bulletspeed += up.bulletspeedup;
+        if (up.newBulletTex != null) {
+            this.bullettexture = up.newBulletTex;
+        }
+        this.range += up.rangeup;
+        System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
+
+        /* if (up.toAnimDesc != 0) {
+        // Animator suchen und einsetzen
+        if (this.getClass().equals(Unit.class)) {
+        int direction = ((Unit) this).anim.dir;
+        UnitAnimator rgua = rgi.game.getPlayer(this.playerId).descUnit.get(up.toAnimDesc).anim.clone();
+        if (rgua != null) {
+        rgua.dir = direction;
+        ((Unit) this).anim = rgua;
+        }
+        } else if (this.getClass().equals(Building.class)) {
+        BuildingAnimator rgba = rgi.game.getPlayer(this.playerId).descBuilding.get(up.toAnimDesc).anim;
+        if (rgba != null) {
+        ((Building) this).anim = rgba;
+        }
+        }
+        } */
+
+        // Unit only:
+        if (this.getClass().equals(Unit.class)) {
+            Unit myself = (Unit) this;
+            // Speed ist eine kritische Änderung, wenn die Einheit grad läuft:
+            myself.speed += up.speedup;
+        }
+        // Gebäude only
+        if (this.getClass().equals(Building.class)) {
+            Building myself = (Building) this;
+            /*if (up.changeOffsetX) {
+            myself.offsetX = up.newOffsetX;
+            }
+            if (up.changeOffsetY) {
+            myself.offsetY = up.newOffsetY;
+            } */
+            System.out.println("AddMe: Check for Offset-Changes");
+            myself.maxIntra += up.maxIntraup;
+        }
+    }
+
+    /**
+     * Sucht eine Ability Anhand ihrere Eigenen DescTypeId.
+     * Findet nur Abilitys, die auch eine haben, also zum beispiel nicht den HuntSelector!
+     *
+     *
+     * @param desc Die Ablity, nach der wir suchen
+     * @return RogGameObjectAbility, wenn gefunden, sonst null
+     */
+    public Ability getAbility(int desc) {
+        for (Ability ab : abilitys) {
+            if (ab.myId == desc) {
+                return ab;
+            }
+        }
+        return null;
+    }
+
+    public void performDeltaUpgrade(ServerCore.InnerServer rgi, DeltaUpgradeParameter up) {
+        // Allgemeine Upgrades durchführen:
+
+        /* if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
+        }
+        } */
+
+        System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
+
+        this.maxhitpoints += up.maxhitpointsup;
+        if (up.maxhitpointsup > 0) {
+            this.hitpoints += up.maxhitpointsup;
+        }
+        this.hitpoints += up.hitpointsup;
+        if (up.newarmortype != null) {
+            System.out.println("AddMe: Upgrade Armortypes!");
+            // this.armorType = up.newarmortype;
+        }
+
+        this.damageFactors[ARMORTYPE_HEAVYINF] += up.antiheavyinfup;
+        this.damageFactors[ARMORTYPE_LIGHTINF] += up.antilightinfup;
+        this.damageFactors[ARMORTYPE_KAV] += up.antikavup;
+        this.damageFactors[ARMORTYPE_VEHICLE] += up.antivehicleup;
+        this.damageFactors[ARMORTYPE_TANK] += up.antitankup;
+        this.damageFactors[ARMORTYPE_AIR] += up.antiairup;
+        this.damageFactors[ARMORTYPE_BUILDING] += up.antibuildingup;
+        this.damage += up.damageup;
+        this.visrange += up.visrangeup;
+        this.damage += up.damageup;
+        this.bulletspeed += up.bulletspeedup;
+        if (up.newBulletTex != null) {
+            this.bullettexture = up.newBulletTex;
+        }
+        this.range += up.rangeup;
+        if (up.healup > 0) {
+            if (this.healRate > 0) {
+                this.healRate += up.healup;
+            } else {
+                this.healRate = up.healup;
+                ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, this);
+                this.sbehaviours.add(healb);
+            }
+        }
+        /*  if (up.toAnimDesc != 0) {
+        // Animator suchen und einsetzen
+        if (this.getClass().equals(Unit.class)) {
+        try {
+        UnitAnimator rgua = rgi.game.getPlayer(playerId).descUnit.get(up.toAnimDesc).anim;
+        if (rgua != null) {
+        ((Unit) this).anim = rgua;
+        }
+
+        } catch (NullPointerException ex) {
+        // Wenns keinen Animator gibt, dann isses auch egal
+        }
+        } else if (this.getClass().equals(Building.class)) {
+        try {
+        BuildingAnimator rgba = rgi.game.getPlayer(playerId).descBuilding.get(up.toAnimDesc).anim;
+        if (rgba != null) {
+        ((Building) this).anim = rgba;
+        }
+        } catch (NullPointerException ex) {
+        // Wenns keinen Animator gibt, dann isses auch egal
+        }
+        }
+        } */
+
+        // Unit only:
+        if (this.getClass().equals(Unit.class)) {
+            Unit myself = (Unit) this;
+            myself.speed += up.speedup;
+        }
+        if (this.getClass().equals(Building.class)) {
+            Building myself = (Building) this;
+            myself.maxIntra += up.maxIntraup;
+
+        }
+    }
+
+    public void performDeltaUpgrade(ClientCore.InnerClient rgi, DeltaUpgradeParameter up) {
+        // Allgemeine Upgrades durchführen:
+
+        /*  if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
+        }
+        } */
+
+        System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
+
+        this.maxhitpoints += up.maxhitpointsup;
+        if (up.maxhitpointsup > 0) {
+            this.hitpoints += up.maxhitpointsup;
+        }
+        this.hitpoints += up.hitpointsup;
+        if (up.newarmortype != null) {
+            System.out.println("AddMe: Upgrade Armortypes!");
+            //this.armorType = up.newarmortype;
+        }
+
+        this.damageFactors[ARMORTYPE_HEAVYINF] += up.antiheavyinfup;
+        this.damageFactors[ARMORTYPE_LIGHTINF] += up.antilightinfup;
+        this.damageFactors[ARMORTYPE_KAV] += up.antikavup;
+        this.damageFactors[ARMORTYPE_VEHICLE] += up.antivehicleup;
+        this.damageFactors[ARMORTYPE_TANK] += up.antitankup;
+        this.damageFactors[ARMORTYPE_AIR] += up.antiairup;
+        this.damageFactors[ARMORTYPE_BUILDING] += up.antibuildingup;
+        this.visrange += up.visrangeup;
+        this.damage += up.damageup;
+        this.range += up.rangeup;
+        this.bullettexture = up.newBulletTex;
+        this.bulletspeed += up.bulletspeedup;
+        /*   if (up.toAnimDesc != 0) {
+        // Animator suchen und einsetzen
+        if (this.getClass().equals(Unit.class)) {
+        try {
+        int direction = ((Unit) this).anim.dir;
+        UnitAnimator rgua = rgi.game.getPlayer(playerId).descUnit.get(up.toAnimDesc).anim.clone();
+        if (rgua != null) {
+        rgua.dir = direction;
+        ((Unit) this).anim = rgua;
+        }
+        } catch (NullPointerException ex) {
+        }
+        } else if (this.getClass().equals(Building.class)) {
+        try {
+        BuildingAnimator rgba = rgi.game.getPlayer(playerId).descBuilding.get(up.toAnimDesc).anim;
+        if (rgba != null) {
+        ((Building) this).anim = rgba;
+        }
+        } catch (NullPointerException ex) {
+        }
+        }
+        } */
+        // Unit only:
+        if (this.getClass().equals(Unit.class)) {
+            Unit myself = (Unit) this;
+            // Speed ist eine kritische Änderung, wenn die Einheit grad läuft:
+            myself.speed += up.speedup;
+        }
+
+        // Gebäude only
+        if (this.getClass().equals(Building.class)) {
+            Building myself = (Building) this;
+        }
+    }
+
+    /**
+     * @return the damageFactors
+     */
+    public int[] getDamageFactors() {
+        return damageFactors;
+    }
+
+    /**
+     * @return the hitpoints
+     */
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    /**
+     * @return the maxhitpoints
+     */
+    public int getMaxhitpoints() {
+        return maxhitpoints;
+    }
+
+    /**
+     * @return the fireDelay
+     */
+    public int getFireDelay() {
+        return fireDelay;
+    }
+
+    /**
+     * @return the damage
+     */
+    public int getDamage() {
+        return damage;
+    }
+
+    /**
+     * @return the range
+     */
+    public double getRange() {
+        return range;
+    }
+
+    /**
+     * @return the bulletspeed
+     */
+    public int getBulletspeed() {
+        return bulletspeed;
+    }
+
+    /**
+     * @return the bullettexture
+     */
+    public String getBullettexture() {
+        return bullettexture;
+    }
+
+    /**
+     * @return the atkdelay
+     */
+    public int getAtkdelay() {
+        return atkdelay;
+    }
+
+    /**
+     * @return the descDescription
+     */
+    public String getDescDescription() {
+        return descDescription;
+    }
+
+    /**
+     * @return the descPro
+     */
+    public String getDescPro() {
+        return descPro;
+    }
+
+    /**
+     * @return the descCon
+     */
+    public String getDescCon() {
+        return descCon;
+    }
+
+    /**
+     * @return the healRate
+     */
+    public int getHealRate() {
+        return healRate;
+    }
+
+    /**
+     * @return the armorType
+     */
+    public int getArmorType() {
+        return armorType;
     }
 }

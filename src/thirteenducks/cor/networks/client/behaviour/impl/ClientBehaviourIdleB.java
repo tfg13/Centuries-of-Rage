@@ -54,7 +54,7 @@ public class ClientBehaviourIdleB extends ClientBehaviour {
 	//System.out.print(" " + caster2.position.X + " ");
 	if (caster2.playerId == rgi.game.getOwnPlayer().playerId) {
 	    // Idle-Mode, Gegend absuchen
-	    Unit enemy = caster2.enemyAroundMe((int) (caster2.range * 1.41 + 1), Middle, rgi);
+	    Unit enemy = caster2.enemyAroundMe((int) (caster2.getRange() * 1.41 + 1), Middle, rgi);
 	    if (enemy != null) {
 		// Angreifen
 		this.deactivate();

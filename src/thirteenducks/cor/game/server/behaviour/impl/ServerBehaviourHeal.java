@@ -38,7 +38,7 @@ public class ServerBehaviourHeal extends ServerBehaviour {
     Building caster2;
     double distance;
 
-    public ServerBehaviourHeal(ServerCore.InnerServer newinner, Building caster) {
+    public ServerBehaviourHeal(ServerCore.InnerServer newinner, GameObject caster) {
 	super(newinner, caster, 7, 1, true);
 	caster2 = caster;
     }
@@ -110,12 +110,12 @@ public class ServerBehaviourHeal extends ServerBehaviour {
 		Unit Einheit = rgi.netmap.getUnitRef(kreismember, caster2.playerId);
 		if (Einheit == null || !Einheit.alive) {
 		} else {
-		    if (Einheit.hitpoints + caster2.heal <= Einheit.maxhitpoints) {
+		    if (Einheit.getHitpoints() + caster2.heal <= Einheit.getMaxhitpoints()) {
 			Einheit.hitpoints += caster2.heal;
-			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.hitpoints, 0));
-		    } else if (Einheit.hitpoints < Einheit.maxhitpoints){
-			Einheit.hitpoints = Einheit.maxhitpoints;
-			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.hitpoints, 0));
+			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.getHitpoints(), 0));
+		    } else if (Einheit.getHitpoints() < Einheit.getMaxhitpoints()){
+			Einheit.hitpoints = Einheit.getMaxhitpoints();
+			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.getHitpoints(), 0));
 		    }
 		}
 	    } catch (Exception ex) {

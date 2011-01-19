@@ -92,7 +92,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                 building.ready = true;
                 building.isbuilt = false;
                 // Gebäude fertig, jetzt kriegts die volle Sichtweite
-                building.visrange = rgi.mapModule.getDescBuilding(building.descTypeId, -1, building.playerId).visrange;
+                building.visrange = rgi.mapModule.getDescBuilding(building.descTypeId, -1, building.playerId).getVisrange();
                 rgi.rogGraphics.builingsChanged();
                 // Wenn das Gebäude das Truppenlimit erhöht, dann jetzt eintragen
                 // Truppenlimit setzen
@@ -101,7 +101,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                 }
                 // zur Playerliste hinzufügen
                 rgi.game.registerBuilding(caster.playerId, building);
-                if (building.damage != 0) {
+                if (building.getDamage() != 0) {
                     building.cbehaviours.add(new ClientBehaviourIdleB(rgi, building));
                 }
 
@@ -110,7 +110,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                 fortschritt = 1;
             }
             // Soviel Energie adden:
-            building.hitpoints = (int) (fortschritt * building.maxhitpoints / 4 * 3) + building.maxhitpoints / 4 - building.damageWhileContruction;
+            building.hitpoints = (int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.damageWhileContruction;
 
             // Gebäude-Fortschritt einstellen
             building.buildprogress = fortschritt;

@@ -327,8 +327,8 @@ public class ServerMoveManager {
         // Schritt 3: Anderes Ziel (Einheit) suchen
         int searchRange = 5;
         // Die 1.41 ist das umrechnen von Kreisen in Abstände
-        if (unit.range / 1.41 > 5) {
-            searchRange = (int) (unit.range / 1.41);
+        if (unit.getRange() / 1.41 > 5) {
+            searchRange = (int) (unit.getRange() / 1.41);
         }
         Position newtar = unit.meeleAttackableEnemyAroundMe(searchRange, inner);
         if (newtar != null) {
@@ -795,7 +795,7 @@ public class ServerMoveManager {
                 if (unit.isMoving()) {
                     tpos = unit.movingtarget;
                 }
-                if (tpos.getDistance(posG) <= unit.range) {
+                if (tpos.getDistance(posG) <= unit.getRange()) {
                     units.remove(p);
                     p--;
                 }
@@ -810,9 +810,9 @@ public class ServerMoveManager {
 
                 @Override
                 public int compare(Unit o1, Unit o2) {
-                    if (o1.range > o2.range) {
+                    if (o1.getRange() > o2.getRange()) {
                         return 1;
-                    } else if (o1.range < o2.range) {
+                    } else if (o1.getRange() < o2.getRange()) {
                         return -1;
                     } else {
                         return 0;
@@ -820,7 +820,7 @@ public class ServerMoveManager {
                 }
             });
             // Range holen
-            double range = units.get(0).range;
+            double range = units.get(0).getRange();
             Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
             Position posO = null;
             try {
@@ -846,7 +846,7 @@ public class ServerMoveManager {
             }
 
             // Erste Einheit kommt auf die Startposition
-            double lastrange = units.get(0).range;
+            double lastrange = units.get(0).getRange();
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
                 ialSendTo(units.get(0), posO, false);
                 usedFields.add(posO);
@@ -865,8 +865,8 @@ public class ServerMoveManager {
                 counter++;
                 Unit unit = units.get(0);
                 // Wenn sich die Range ändert eventuell neu losrennen
-                if (unit.range != lastrange) {
-                    lastrange = unit.range;
+                if (unit.getRange() != lastrange) {
+                    lastrange = unit.getRange();
                     range = lastrange;
                     try {
                         posO = posG.clone();
@@ -1034,7 +1034,7 @@ public class ServerMoveManager {
                 continue;
             }
             // Range holen
-            double range = units.get(0).range;
+            double range = units.get(0).getRange();
             Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
             Position posO = null;
             try {
@@ -1294,7 +1294,7 @@ public class ServerMoveManager {
                 if (unit.isMoving()) {
                     tpos = unit.movingtarget;
                 }
-                if (tpos.getDistance(posG) <= unit.range) {
+                if (tpos.getDistance(posG) <= unit.getRange()) {
                     units.remove(p);
                     p--;
                 }
@@ -1309,9 +1309,9 @@ public class ServerMoveManager {
 
                 @Override
                 public int compare(Unit o1, Unit o2) {
-                    if (o1.range > o2.range) {
+                    if (o1.getRange() > o2.getRange()) {
                         return 1;
-                    } else if (o1.range < o2.range) {
+                    } else if (o1.getRange() < o2.getRange()) {
                         return -1;
                     } else {
                         return 0;
@@ -1319,7 +1319,7 @@ public class ServerMoveManager {
                 }
             });
             // Range holen
-            double range = units.get(0).range;
+            double range = units.get(0).getRange();
             Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
             Position posO = null;
             try {
@@ -1344,7 +1344,7 @@ public class ServerMoveManager {
                 inner.netmap.setCollision(units.get(a).position, collision.free);
             }
 
-            double lastrange = units.get(0).range;
+            double lastrange = units.get(0).getRange();
             // Erste Einheit kommt auf die Startposition
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
                 ialSendTo(units.get(0), posO, true);
@@ -1364,8 +1364,8 @@ public class ServerMoveManager {
                 counter++;
                 Unit unit = units.get(0);
                 // Wenn sich die Range ändert eventuell neu losrennen
-                if (unit.range != lastrange) {
-                    lastrange = unit.range;
+                if (unit.getRange() != lastrange) {
+                    lastrange = unit.getRange();
                     range = lastrange;
                     try {
                         posO = posG.clone();
@@ -1542,7 +1542,7 @@ public class ServerMoveManager {
                 continue;
             }
             // Range holen
-            double range = units.get(0).range;
+            double range = units.get(0).getRange();
             Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
             Position posO = null;
             try {

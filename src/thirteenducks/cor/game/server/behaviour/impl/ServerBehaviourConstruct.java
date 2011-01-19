@@ -86,7 +86,7 @@ public class ServerBehaviourConstruct extends ServerBehaviour {
 		building.isbuilt = false;
 		// zur Playerliste hinzufügen
 		rgi.game.registerBuilding(caster.playerId, building);
-		if (building.damage != 0) {
+		if (building.getDamage() != 0) {
 		    ServerBehaviourAttackB attb = new ServerBehaviourAttackB(rgi, building);
 		    building.sbehaviours.add(attb);
 		    building.attackManagerB = attb;
@@ -104,7 +104,7 @@ public class ServerBehaviourConstruct extends ServerBehaviour {
                 caster2.attackManager.activate();
 	    }
             // Soviel Energie adden:
-            building.hitpoints = (int) (fortschritt * building.maxhitpoints / 4 * 3) + building.maxhitpoints / 4 - building.damageWhileContruction;
+            building.hitpoints = (int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.damageWhileContruction;
 	    // Gebäude-Fortschritt einstellen
 	    building.buildprogress = fortschritt;
 	}

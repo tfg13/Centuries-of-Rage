@@ -50,8 +50,8 @@ public class ClientBehaviourIdle extends ClientBehaviour {
             if (!caster2.isIntra && !caster2.order.equals(orders.harvest)) {
                 int searchRange = 5;
                 // Die 1.41 ist das umrechnen von Kreisen in Abstände
-                if (caster2.range / 1.41 > 5) {
-                    searchRange = (int) (caster2.range / 1.41);
+                if (caster2.getRange() / 1.41 > 5) {
+                    searchRange = (int) (caster2.getRange() / 1.41);
                 }
                 Unit enemy = caster2.enemyAroundMe(searchRange, rgi);
                 if (enemy != null) {

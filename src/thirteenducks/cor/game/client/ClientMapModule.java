@@ -1581,7 +1581,7 @@ public class ClientMapModule {
      */
     public void dealDamage(GameObject victim, int damage) {
         victim.hitpoints -= damage;
-        if (victim.hitpoints < 0) {
+        if (victim.getHitpoints() < 0) {
             victim.hitpoints = 0;
         }
         if (victim.getClass().equals(Building.class)) {
