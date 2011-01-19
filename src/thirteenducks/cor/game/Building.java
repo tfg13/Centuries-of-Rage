@@ -250,4 +250,18 @@ public abstract class Building extends GameObject {
         }
         return false;
     }
+
+    /**
+     * @return the z1
+     */
+    public int getZ1() {
+        return z1;
+    }
+
+    /**
+     * @return the z2
+     */
+    public int getZ2() {
+        return z2;
+    }
 }
