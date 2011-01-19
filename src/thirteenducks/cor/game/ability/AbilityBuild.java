@@ -91,13 +91,13 @@ public class AbilityBuild extends Ability {
                         Position basePos = new Position(pos.width, pos.height);
                         // Ist das alles zum Bauen frei?
                         boolean free = true;
-                        for (int z1 = 0; z1 < building.z1; z1++) {
-                            for (int z2 = 0; z2 < building.z2; z2++) {
-                                if (rgi.mapModule.getCollision(basePos.X + z1 + z2, basePos.Y - z1 + z2) != collision.free) {
+                        for (int z1 = 0; z1 < building.getZ1(); z1++) {
+                            for (int z2 = 0; z2 < building.getZ2(); z2++) {
+                                if (rgi.mapModule.getCollision(basePos.getX() + z1 + z2, basePos.getY() - z1 + z2) != collision.free) {
                                     free = false;
                                     break;
                                 }
-                                if (rgi.mapModule.hasUnitRef(basePos.X + z1 + z2, basePos.Y - z1 + z2)) {
+                                if (rgi.mapModule.hasUnitRef(basePos.getX() + z1 + z2, basePos.getY() - z1 + z2)) {
                                     free = false;
                                     break;
                                 }
@@ -108,8 +108,7 @@ public class AbilityBuild extends Ability {
                         }
                         // Und... frei?
                         if (free) {
-                            // Hinlaufen - bzw auf das nächste erreichbare Feld - Wenns eine Unit ist
-                            building.position = basePos;
+                            // Dort hinstellen
                             // Ja, jetzt da hin bauen
                             // Ressourcen abziehen
                             rgi.game.getOwnPlayer().res1 -= costs[0];
@@ -119,21 +118,18 @@ public class AbilityBuild extends Ability {
                             rgi.game.getOwnPlayer().res5 -= costs[4];
                             // Truppenlimit
                             // Truppenlimit setzen
-                            if (building.limit > 0) {
+                         /*   if (building.limit > 0) {
                                 rgi.game.getOwnPlayer().currentlimit += building.limit;
-                            }
-                            building.playerId = invoker.playerId;
-                            building.ready = false;
-                            building.isbuilt = true;
+                            } */
                             //rgi.mapModule.addBuilding(building);
                             // Gebäude adden:
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 18, 0, building.descTypeId, building.position.X, building.position.Y));
+                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 18, 0, building.getDescTypeId(), basePos.getX(), basePos.getY()));
                             // Fertig - dieses Verhalten wieder entfernen
                             rgi.rogGraphics.inputM.removeSpecialMode();
                             Unit unit = (Unit) invoker;
                             // Warten, bis das Gebäude vom Server hinzugefügt wurde:
                             int trys = 0;
-                            Position bpos = building.position;
+                            Position bpos = basePos;
                             while (true) {
                                 trys++;
                                 building = rgi.mapModule.findBuilingViaPosition(bpos);
@@ -153,7 +149,7 @@ public class AbilityBuild extends Ability {
                             }
                             if (building != null) {
                                 // Hinlaufen - falls noch nicht in der nähe
-                                if (!building.isAroundMe(unit, rgi)) {
+                                if (!rgi.mapModule.directNeighbor(building, unit)) {
                                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 26, unit.netID, building.netID, 0, 0));
 
                                 }
@@ -177,7 +173,8 @@ public class AbilityBuild extends Ability {
             public void startMode() {
                 Building building = rgi.mapModule.getDescBuilding(descTypeId, -1, rgi.game.getOwnPlayer().playerId);
                 // Starten, Cursor vorbereiten
-                rgi.rogGraphics.content.renderPic = rgi.rogGraphics.content.imgMap.get(building.defaultTexture);
+                System.out.println("AddMe: Set cursor to building's default texture");
+                //rgi.rogGraphics.content.renderPic = rgi.rogGraphics.content.imgMap.get(building.defaultTexture);
             }
 
             @Override

@@ -1795,6 +1795,30 @@ public class ClientMapModule {
     }
 
     /**
+     * Berechnet, ob 2 GOs sich derzeit direkt berühren.
+     * @param obj1 Das erste Objekt
+     * @param obj2 Das zweite Objekt
+     * @return true, wenn sie direkt benachbart sind (ecken zählen)
+     */
+    public boolean directNeighbor(GameObject obj1, GameObject obj2) {
+        final Position[] pos1 = obj1.getPositions();
+        final Position[] pos2 = obj2.getPositions();
+
+        // Diese Methode ist nicht sehr schön, aber es sollte funktionieren:
+        for (Position from : pos1) {
+            for (Position to : pos2) {
+                int dx = from.getX() - to.getX();
+                int dy = from.getY() - to.getY();
+                if ((dx >= -1 && dx <= 1 && dy >= -1 && dy <= 1) || (dx >= -2 && dx <= 2 && dy == 0) || (dx == 0 && dy >= -2 && dy <= 2)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Entsperrt eine Ability
      * @param ability Die Ability, die entsperrt werden soll
      */
