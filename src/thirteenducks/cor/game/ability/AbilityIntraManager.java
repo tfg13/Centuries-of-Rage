@@ -25,7 +25,6 @@
  */
 package thirteenducks.cor.game.ability;
 
-import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
@@ -49,14 +48,16 @@ public class AbilityIntraManager extends Ability implements ShowsProgress {
         caster2 = caster2n;
         this.symbols = new String[9];
         this.name = "Evacuate Unit(s)";
+        System.out.println("WARN: Possible Leak! (AbilityIntraManager)");
         this.behaviour = this;
         rgi = newinner;
     }
 
     public void updateIntra() {
-        if (caster2.intraUnits.size() > 0) {
+   /*     if (caster2.intraUnits.size() > 0) {
             this.symbols[0] = caster2.intraUnits.get(0).graphicsdata.defaultTexture;
-        }
+        } */
+        System.out.println("AddMe: Update Intra-Symbol");
     }
 
     @Override
@@ -71,7 +72,9 @@ public class AbilityIntraManager extends Ability implements ShowsProgress {
 
     @Override
     public boolean isVisible() {
-        return (caster2.intraUnits.size() > 0);
+        // Check
+        //return (caster2.intraUnits.size() > 0);
+        return true;
     }
 
     @Override
@@ -96,6 +99,7 @@ public class AbilityIntraManager extends Ability implements ShowsProgress {
 
     @Override
     public int getNumber(int descTypeId) {
-        return caster2.intraUnits.size();
+        //return caster2.intraUnits.size();
+        return 0;
     }
 }
