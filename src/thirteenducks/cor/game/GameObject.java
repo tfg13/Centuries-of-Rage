@@ -374,4 +374,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public int getPlayerId() {
         return playerId;
     }
+
+    public void addClientBehaviour(ClientBehaviour b) {
+        cbehaviours.add(b);
+    }
 }
