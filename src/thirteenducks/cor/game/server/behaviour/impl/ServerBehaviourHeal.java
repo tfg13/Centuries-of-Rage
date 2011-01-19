@@ -30,12 +30,12 @@ package thirteenducks.cor.game.server.behaviour.impl;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.game.Building;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 
 public class ServerBehaviourHeal extends ServerBehaviour {
 
-    Building caster2;
+    GameObject caster2;
     double distance;
 
     public ServerBehaviourHeal(ServerCore.InnerServer newinner, GameObject caster) {
@@ -57,19 +57,13 @@ public class ServerBehaviourHeal extends ServerBehaviour {
     public void execute() {
 
 	// Gebäudemitte suchen
-	float bx = 0;
-	float by = 0;
-	bx = caster2.position.X + ((caster2.z1 - 1) * 1.0f / 2);
-	by = caster2.position.Y - ((caster2.z1 - 1) * 1.0f / 2);
-	bx += ((caster2.z2 - 1) * 1.0f / 2);
-	by += ((caster2.z2 - 1) * 1.0f / 2);
-	Position Mitte1 = new Position((int) bx, (int) by);
+	Position Mitte1 = caster2.getCentralPosition();
 
 	int kreis = 2;
 	// Startfeld des Kreises:
 	Position kreismember = Mitte1;
-	if (Mitte1.X % 2 != Mitte1.Y % 2) {
-	    kreismember.Y--;
+	if (Mitte1.getX() % 2 != Mitte1.getY() % 2) {
+            kreismember.setY(kreismember.getY() - 1);
 	    kreis = 3;
 	}
 	// Jetzt im Kreis herum gehen
@@ -77,45 +71,45 @@ public class ServerBehaviourHeal extends ServerBehaviour {
 	    // Es gibt vier Schritte, welcher ist als nächster dran?
 	    if (k == 0) {
 		// Zum allerersten Feld springen
-		kreismember.Y -= 2;
+		kreismember.setY(kreismember.getY() - 2);
 	    } else if (k <= (kreis)) {
 		// Der nach links unten
-		kreismember.X--;
-		kreismember.Y++;
+		kreismember.setX(kreismember.getX() - 1);
+		kreismember.setY(kreismember.getY() + 1);
 	    } else if (k <= (kreis * 2)) {
 		// rechts unten
-		kreismember.X++;
-		kreismember.Y++;
+		kreismember.setX(kreismember.getX() + 1);
+		kreismember.setY(kreismember.getY() + 1);
 	    } else if (k <= (kreis * 3)) {
 		// rechts oben
-		kreismember.X++;
-		kreismember.Y--;
+		kreismember.setX(kreismember.getX() + 1);
+		kreismember.setY(kreismember.getY() - 1);
 	    } else if (k <= ((kreis * 4) - 1)) {
 		// links oben
-		kreismember.X--;
-		kreismember.Y--;
+		kreismember.setX(kreismember.getX() - 1);
+		kreismember.setY(kreismember.getY() - 1);
 	    } else {
 		// Sprung in den nächsten Kreis
-		kreismember.X--;
-		kreismember.Y -= 3;
+		kreismember.setX(kreismember.getX() - 1);
+		kreismember.setY(kreismember.getY() - 3);
 		k = 0;
 		kreis += 2;
 		// Suchende Erreicht?
-		if (kreis > 7 + caster2.z2) {
+		if (kreis > 8) {
 		    break;
 		}
 	    }
 	    // Ist dieses Feld NICHT geeignet?
 	    try {
-		Unit Einheit = rgi.netmap.getUnitRef(kreismember, caster2.playerId);
-		if (Einheit == null || !Einheit.alive) {
+		Unit Einheit = rgi.netmap.getUnitRef(kreismember, caster2.getPlayerId());
+		if (Einheit == null || Einheit.getLifeStatus() != GameObject.LIFESTATUS_ALIVE) {
 		} else {
-		    if (Einheit.getHitpoints() + caster2.heal <= Einheit.getMaxhitpoints()) {
-			Einheit.hitpoints += caster2.heal;
-			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.getHitpoints(), 0));
+		    if (Einheit.getHitpoints() + caster2.getHealRate() <= Einheit.getMaxhitpoints()) {
+                        Einheit.healTo(Einheit.getHitpoints() + Einheit.getHealRate());
+			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.getPlayerId(), Einheit.getHitpoints(), 0));
 		    } else if (Einheit.getHitpoints() < Einheit.getMaxhitpoints()){
-			Einheit.hitpoints = Einheit.getMaxhitpoints();
-			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.playerId, Einheit.getHitpoints(), 0));
+                        Einheit.healTo(Einheit.getMaxhitpoints());
+			rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Einheit.netID, Einheit.getPlayerId(), Einheit.getHitpoints(), 0));
 		    }
 		}
 	    } catch (Exception ex) {
