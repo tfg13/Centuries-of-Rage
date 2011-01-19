@@ -25,12 +25,9 @@
  */
 package thirteenducks.cor.game;
 
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.io.*;
 import java.util.*;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourHarvest;
 import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.server.ServerCore;
 
 /**
