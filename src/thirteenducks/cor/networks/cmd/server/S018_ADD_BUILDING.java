@@ -43,7 +43,7 @@ public class S018_ADD_BUILDING extends ServerCommand {
         if (b != null) {
             b.ready = false;
             b.position = rgi.readPosition(data, 2);
-            b.playerId = handler.client.playerId;
+            b.setPlayerId(handler.client.playerId);
             b.hitpoints = b.maxhitpoints / 4;
             rgi.netmap.addBuildingAsSite(b);
         } else {

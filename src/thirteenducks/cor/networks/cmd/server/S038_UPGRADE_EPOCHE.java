@@ -43,7 +43,7 @@ public class S038_UPGRADE_EPOCHE extends ServerCommand {
         ServerAbilityUpgrade up = rgi.game.getPlayer(rgi.readInt(data, 2)).serverDescAbilities.get(rgi.readInt(data, 1));
         if (up != null) {
             GameObject obj = new GameObject(-1);
-            obj.playerId = handler.client.playerId;
+            obj.setPlayerId(handler.client.playerId);
             up.perform(obj);
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 38, up.myId, rgi.readInt(data, 2), 0, 0));
         } else {

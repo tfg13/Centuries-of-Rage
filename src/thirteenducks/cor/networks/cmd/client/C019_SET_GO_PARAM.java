@@ -47,7 +47,7 @@ public class C019_SET_GO_PARAM extends ClientCommand {
         if (o != null) {
             int newPlayerId = rgi.readInt(data, 2);
             if (newPlayerId != o.playerId) {
-                o.playerId = newPlayerId;
+                o.setPlayerId(newPlayerId);
                 // Nach der playerId-Änderung wird ein Upgrade durchgeführt:
                 o.performUpgrade(rgi, o.descTypeId);
                 if (o.getClass().equals(Building.class)) {

@@ -699,7 +699,7 @@ public class MapConverter extends javax.swing.JFrame {
                 } catch (CloneNotSupportedException ex) {
                     ex.printStackTrace();
                 }
-                unit.playerId = playerId;
+                unit.setPlayerId(playerId);
                 unit.position = new Position(x, y);
                 unitList.add(unit);
             }
@@ -720,7 +720,7 @@ public class MapConverter extends javax.swing.JFrame {
                 } catch (CloneNotSupportedException ex) {
                     ex.printStackTrace();
                 }
-                b.playerId = playerId;
+                b.setPlayerId(playerId);
                 b.position = new Position(x, y);
                 buildingList.add(b);
             }

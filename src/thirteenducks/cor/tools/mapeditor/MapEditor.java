@@ -1032,7 +1032,7 @@ public class MapEditor {
                                                                         try {
                                                                             int trans = Integer.parseInt(rmegui.jSpinner5.getValue().toString());
                                                                             if (trans >= 0 && trans <= 8) {
-                                                                                kUnit.playerId = trans;
+                                                                                kUnit.setPlayerId(trans);
                                                                             }
                                                                         } catch (java.lang.NumberFormatException exx) {
                                                                         }
@@ -1175,7 +1175,7 @@ public class MapEditor {
                                                                         try {
                                                                             int trans = Integer.parseInt(rmegui.jSpinner6.getValue().toString());
                                                                             if (trans >= 0 && trans <= 8) {
-                                                                                tempB.playerId = trans;
+                                                                                tempB.setPlayerId(trans);
                                                                             }
                                                                         } catch (java.lang.NumberFormatException exx) {
                                                                         }
@@ -2126,7 +2126,7 @@ public class MapEditor {
         // Ferig, values ok?
         if (valuesOK) {
             // Einheiten reinschreiben
-            currentUnit.playerId = Integer.parseInt(rmegui.jSpinner3.getValue().toString());
+            currentUnit.setPlayerId(Integer.parseInt(rmegui.jSpinner3.getValue().toString()));
             currentUnit.graphicsdata.defaultTexture = rmegui.jTextField1.getText();
             currentUnit.speed = Double.parseDouble(rmegui.jTextField2.getText());
             currentUnit.maxhitpoints = Integer.parseInt(rmegui.jTextField3.getText());
@@ -2222,7 +2222,7 @@ public class MapEditor {
         // War alles ok?
         if (valuesOK) {
             // Werte schreiben
-            currentBuilding.playerId = Integer.parseInt(rmegui.jSpinner4.getValue().toString());
+            currentBuilding.setPlayerId(Integer.parseInt(rmegui.jSpinner4.getValue().toString()));
             currentBuilding.defaultTexture = rmegui.jTextField5.getText();
             currentBuilding.maxhitpoints = Integer.parseInt(rmegui.jTextField6.getText());
             currentBuilding.hitpoints = Integer.parseInt(rmegui.jTextField7.getText());

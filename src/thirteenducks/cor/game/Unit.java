@@ -444,7 +444,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         retUnit.range = this.range;
         retUnit.selectionShadow = this.selectionShadow;
         retUnit.speed = this.speed;
-        retUnit.playerId = this.playerId;
+        retUnit.setPlayerId(this.playerId);
         retUnit.bullettexture = this.bullettexture;
         retUnit.bulletspeed = this.bulletspeed;
         retUnit.visrange = this.visrange;

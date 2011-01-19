@@ -92,7 +92,7 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                 // Neue Unit Adden
                 Unit unit = rgi.netmap.getDescUnit(caster.playerId, loop.get(0));
                 if (unit != null) {
-                    unit.playerId = caster.playerId;
+                    unit.setPlayerId(caster.playerId);
 		    rgi.serverstats.trackUnitrecruit(unit.playerId);
                     // Auf der Richtigen Seite vom Gebäude spawnen
                     if (caster.waypoint != null) {

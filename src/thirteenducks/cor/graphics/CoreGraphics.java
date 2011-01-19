@@ -1676,7 +1676,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             } */
             unit.movingtarget = null;
             unit.isSelected = false;
-            unit.playerId = 0;
+            unit.setPlayerId(0);
 
             rgi.mapModule.setCollision(unit.position, collision.free);
             rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
@@ -1714,7 +1714,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             } */
             building.ready = false;
             building.isSelected = false;
-            building.playerId = 0;
+            building.setPlayerId(0);
             this.builingsChanged();
             new Timer().schedule(new TimerTask() {
 

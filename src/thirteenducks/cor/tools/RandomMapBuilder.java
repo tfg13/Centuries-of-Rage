@@ -1172,7 +1172,7 @@ public class RandomMapBuilder {
             Haus.descTypeId = 1;
             Haus.defaultTexture = "img/buildings/human_main_e1.png";
 
-            Haus.playerId = i;
+            Haus.setPlayerId(i);
             Haus.anim = new BuildingAnimator();
             Haus.name = "Village Center";
             Haus.hitpoints = 2000;
@@ -1804,35 +1804,35 @@ public class RandomMapBuilder {
 
             Unit Einheit = new Unit(StartG.get(i).getX() + 4, StartG.get(i).getY() + 6, getNewNetID());
             Einheit.descTypeId = 401;
-            Einheit.playerId = i + 1;
+            Einheit.setPlayerId(i + 1);
             Einheit.anim = new UnitAnimator();
             StartU.add(Einheit);
             RandomRogMap.visMap[Einheit.position.X][Einheit.position.Y].setCollision(collision.occupied);
 
             Unit Einheit2 = new Unit(StartG.get(i).getX() + 5, StartG.get(i).getY() + 7, getNewNetID());
             Einheit2.descTypeId = 401;
-            Einheit2.playerId = i + 1;
+            Einheit2.setPlayerId(i + 1);
             Einheit2.anim = new UnitAnimator();
             StartU.add(Einheit2);
             RandomRogMap.visMap[Einheit2.position.X][Einheit2.position.Y].setCollision(collision.occupied);
 
             Unit Einheit3 = new Unit(StartG.get(i).getX() + 6, StartG.get(i).getY() + 6, getNewNetID());
             Einheit3.descTypeId = 401;
-            Einheit3.playerId = i + 1;
+            Einheit3.setPlayerId(i + 1);
             Einheit3.anim = new UnitAnimator();
             StartU.add(Einheit3);
             RandomRogMap.visMap[Einheit3.position.X][Einheit3.position.Y].setCollision(collision.occupied);
 
             Unit Einheit4 = new Unit(StartG.get(i).getX() + 3, StartG.get(i).getY() + 5, getNewNetID());
             Einheit4.descTypeId = 401;
-            Einheit4.playerId = i + 1;
+            Einheit4.setPlayerId(i + 1);
             Einheit4.anim = new UnitAnimator();
             StartU.add(Einheit4);
             RandomRogMap.visMap[Einheit4.position.X][Einheit4.position.Y].setCollision(collision.occupied);
 
             Unit Einheit5 = new Unit(StartG.get(i).getX() + 8, StartG.get(i).getY() + 4, getNewNetID());
             Einheit5.descTypeId = 402;
-            Einheit5.playerId = i + 1;
+            Einheit5.setPlayerId(i + 1);
             Einheit5.anim = new UnitAnimator();
             StartU.add(Einheit5);
             RandomRogMap.visMap[Einheit5.position.X][Einheit5.position.Y].setCollision(collision.occupied);

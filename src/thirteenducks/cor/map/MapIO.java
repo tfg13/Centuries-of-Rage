@@ -416,7 +416,7 @@ public class MapIO {
                     } catch (CloneNotSupportedException cnse) {
                         cnse.printStackTrace();
                     }
-                    unit.playerId = playerId;
+                    unit.setPlayerId(playerId);
                     unit.position = new Position(x, y);
                     unitList.add(unit);
                 }
@@ -437,7 +437,7 @@ public class MapIO {
                     } catch (CloneNotSupportedException cnse) {
                         cnse.printStackTrace();
                     }
-                    b.playerId = playerId;
+                    b.setPlayerId(playerId);
                     b.position = new Position(x, y);
                     buildingList.add(b);
                 }

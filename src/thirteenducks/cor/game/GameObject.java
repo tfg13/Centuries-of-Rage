@@ -136,7 +136,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Die PlayerID des Spielers, der dieses Objekt aktuell kontrolliert
      * Die PlayerID's beginnen mit 1, 0 bedeutet neutral
      */
-    protected int playerId = 0;
+    private int playerId = 0;
     /**
      * Die derzeitige Zuordnungsposition des Objekts.
      * Die Zuordnungsposition ist die Position ganz links.
@@ -347,4 +347,17 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public String getName() {
         return descName;
     }
+
+    /**
+     * @param playerId the playerId to set
+     */
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    /**
+     * Liefert alle Positionen, auf denen ein GO derzeit steht.
+     * @return
+     */
+    public abstract Position[] getPositions();
 }
