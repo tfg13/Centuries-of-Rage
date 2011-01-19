@@ -119,24 +119,26 @@ public class AbilityUpgrade extends Ability {
     @Override
     public void perform(GameObject caster) {
         // Nur ausführen, wenns nicht schon läuft:
-        ClientBehaviourUpgrade old = (ClientBehaviourUpgrade) caster.getUpgradeBehaviour(this.myId);
-        if (old == null) {
+        System.out.println("AddMe: Check against double usage!");
+       /* ClientBehaviourUpgrade old = (ClientBehaviourUpgrade) caster.getUpgradeBehaviour(this.myId);
+        if (old == null) { */
             rgi.game.getOwnPlayer().res1 -= costs[0];
             rgi.game.getOwnPlayer().res2 -= costs[1];
             rgi.game.getOwnPlayer().res3 -= costs[2];
             rgi.game.getOwnPlayer().res4 -= costs[3];
             rgi.game.getOwnPlayer().res5 -= costs[4];
             ClientBehaviourUpgrade up = new ClientBehaviourUpgrade(rgi, caster, this);
-            caster.cbehaviours.add(up);
+            caster.addClientBehaviour(up);
             this.behaviour = up;
             rgi.rogGraphics.triggerUpdateHud();
-        }
+       // }
     }
 
     @Override
     public void antiperform(GameObject caster) {
         // Abbrechen, falls es läuft
-        ClientBehaviourUpgrade old = (ClientBehaviourUpgrade) caster.getUpgradeBehaviour(this.myId);
+        System.out.println("AddMe: Kill running task");
+    /*    ClientBehaviourUpgrade old = (ClientBehaviourUpgrade) caster.getUpgradeBehaviour(this.myId);
         if (old != null) {
             rgi.game.getOwnPlayer().res1 += costs[0];
             rgi.game.getOwnPlayer().res2 += costs[1];
@@ -145,7 +147,7 @@ public class AbilityUpgrade extends Ability {
             rgi.game.getOwnPlayer().res5 += costs[4];
             caster.cbehaviours.remove(old);
             this.behaviour = null;
-        }
+        } */
     }
 
     @Override
