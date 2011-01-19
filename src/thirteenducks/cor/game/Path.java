@@ -27,6 +27,7 @@ package thirteenducks.cor.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import thirteenducks.cor.game.client.ClientCore;
 
 /**
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
@@ -154,6 +155,92 @@ public class Path {
             ex.printStackTrace();
         }
         nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
+    }
+
+    /**
+     * Liefert die aktuelle Position bewegter Einheiten in Pixeln zurück
+     * Hat auch Gametechnische Aufgaben, wie z.B. Kollisionsverwaltung
+     * Es gibt dazu kein eigenes Behaviour, das erzeugt nur unnötig viel Overhead
+     *
+     * Diese Methode ist Teil der Grafikengine des Clients und darf nicht vom Server aufgerufen werden.
+     * Richtungen werden automatisch angepasst.
+     *
+     * @param posX X-Anpassung, für Grafik
+     * @param posY Y-Anpassung, für Grafik
+     * @return Die Position, aber speziell für die Grafikengine
+     */
+    public synchronized Position calcAndManagePosition(ClientCore.InnerClient rgi, int posX, int posY, Unit mySelf) { // ugly
+        try {
+            long passedTime = 0;
+            if (movePaused) {
+                passedTime = movePauseTime - moveStartTime;
+            } else {
+                passedTime = System.currentTimeMillis() - moveStartTime;
+            }
+            double passedWay = passedTime * mySelf.getSpeed() / 1000;
+            // Schon fertig?
+            if (passedWay >= length) {
+                // Fertig, Bewegung stoppen
+                this.targetPos = null;
+                this.pathComputed = false;
+                mySelf.setMainPosition(path.get(path.size() - 1).getPos());
+                this.path = null;
+                System.out.println("AddMe: Moving finished, set Unit status.");
+                return new Position((int) ((mySelf.getMainPosition().getX() - posX) * 20), (int) ((mySelf.getMainPosition().getX() - posY) * 15));
+            }
+            // Zuletzt erreichten Wegpunkt finden
+            if (passedWay >= this.nextWayPointDist) {
+
+                // Sind wir einen weiter oder mehrere
+                int weiter = 1;
+                while (passedWay > path.get(lastWayPoint + 1 + weiter).getDistance()) {
+                    weiter++;
+                }
+                lastWayPoint += weiter;
+                // Hat sich die Geschwindigkeit geändert
+              /*  if (this. != 0) {
+                    // Ja, alte Felder löschen & neu berechnen
+                    for (; lastwaypoint > 0; lastwaypoint--) {
+                        this.path.remove(0);
+                    }
+                    speed = changespeedto;
+                    changespeedto = 0;
+                    lastwaypoint = 0;
+                    startTime = System.currentTimeMillis();
+                    this.calcWayLength();
+                } */
+
+                nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
+               /* if (this.anim != null) {
+                    try {
+                        this.anim.dir = pathDirection.get(lastwaypoint + 1);
+                    } catch (Exception ex) {
+                    }
+                } */
+                mySelf.setMainPosition(path.get(lastWayPoint).getPos());
+            }
+            // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
+            // Daher erst checken und ggf. reduzieren:
+            if (lastWayPoint >= path.size() - 1) {
+                System.out.println("WARNING: Lastwaypoint-Error, setting back. May causes jumps!?");
+                lastWayPoint = path.size() - 2;
+            }
+            double diffLength = passedWay - path.get(lastWayPoint).getDistance();
+            // Wir haben jetzt den letzten Punkt der Route, der bereits erreicht wurde, und die Strecke, die danach noch gefahren wurde...
+            // Jetzt noch die Richtung
+            int diffX = path.get(lastWayPoint + 1).getPos().getX() - path.get(lastWayPoint).getPos().getX();
+            int diffY = path.get(lastWayPoint + 1).getPos().getY() - path.get(lastWayPoint).getPos().getY();
+            // Prozentanteil der Stecke, die zurückgelegt wurde
+            double potPathWay = Math.sqrt(Math.pow(Math.abs(diffX), 2) + Math.pow(Math.abs(diffY), 2));
+            double faktor = diffLength / potPathWay * 100;
+            double lDiffX = diffX * faktor / 100;
+            double lDiffY = diffY * faktor / 100;
+            Position pos = new Position((int) ((path.get(lastWayPoint).getPos().getX() + lDiffX - posX) * 20), (int) ((path.get(lastWayPoint).getPos().getY() + lDiffY - posY) * 15));
+            return pos;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new Position(-1, -1);
+        }
     }
 
     /**

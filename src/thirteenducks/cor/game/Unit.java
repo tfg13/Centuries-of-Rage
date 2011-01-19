@@ -93,7 +93,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         if (!target.equals(mainPosition) && !(target.equals(path.getTargetPos()))) {
             // Da hin schicken
             rgi.netctrl.broadcastMove(this.netID, target, aggressive);
-        } else if (target.equals(mainPosition)) {
+        } else if (target.equals(getMainPosition())) {
             System.out.println("AddMe: Check for MoveMode-Change");
         }
     }
@@ -287,130 +287,15 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return null;
     }
 
-
     /**
-     * Liefert die aktuelle Position bewegter Einheiten in Pixeln zurück
-     * Hat auch Gametechnische Aufgaben, wie z.B. Kollisionsverwaltung
-     * Es gibt dazu kein eigenes Behaviour, das erzeugt nur unnötig viel Overhead
-     *
-     * Diese Methode ist Teil der Grafikengine des Clients und darf nicht vom Server aufgerufen werden.
-     * Richtungen werden automatisch angepasst.
-     *
-     * @param posX X-Anpassung, für Grafik
-     * @param posY Y-Anpassung, für Grafik
-     * @return Die Position, aber speziell für die Grafikengine
+     * @return the speed
      */
-    public Position getMovingPosition(ClientCore.InnerClient rgi, int posX, int posY) {
-        synchronized (pathSync) {
-            try {
-                length = getWayLength();
-                long passedTime = 0;
-                if (movePaused) {
-                    passedTime = pauseTime - startTime;
-                } else {
-                    passedTime = System.currentTimeMillis() - startTime;
-                }
-                double passedWay = passedTime * speed / 1000;
-                // Schon fertig?
-                if (passedWay >= length) {
-                    // Fertig, Bewegung stoppen
-                    this.movingtarget = null;
-                    this.pathLengthCalced = false;
-                    this.position = path.get(path.size() - 1);
-                    this.path = null;
-                    if (this.order != orders.harvest) {
-                        // Harvesting bleibt
-                        this.order = orders.idle;
-                    } else {
-                        // In Richtung der Ressource drehen:
-                        // Versuchen, die Position der Ressource zu finden
-                        Ressource res = ((ClientBehaviourHarvest) this.getbehaviourC(7)).res;
-                        if (res != null && this.anim != null) {
-                            this.anim.dir = res.position.subtract(this.position).transformToIntVector();
-                            // Die Infos um das zu Drehen hat nur dieser Client, an alle andern schicken.
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 50, 1, this.netID, this.anim.dir, 0));
-                        }
-                    }
-                    rgi.mapModule.setCollision(this.position, collision.occupied);
-                    // Eventuell alten Wegpunkt löschen
-                    if (lastref != null && lastref.unitref[playerId] == this) {
-                        lastref.unitref[playerId] = null;
-                        lastref = null;
-                    }
-                    rgi.mapModule.setUnitRef(this.position, this, playerId);
-
-                    return new Position((int) ((position.X - posX) * 20), (int) ((position.Y - posY) * 15));
-                }
-                // Zuletzt erreichten Wegpunkt finden
-                if (passedWay >= this.nextWayPointDist) {
-
-                    // Sind wir einen weiter oder mehrere
-                    int weiter = 1;
-                    while (passedWay > pathOrder.get(lastwaypoint + 1 + weiter)) {
-                        weiter++;
-                    }
-                    lastwaypoint += weiter;
-                    // Hat sich die Geschwindigkeit geändert
-                    if (this.changespeedto != 0) {
-                        // Ja, alte Felder löschen & neu berechnen
-                        for (; lastwaypoint > 0; lastwaypoint--) {
-                            this.path.remove(0);
-                        }
-                        speed = changespeedto;
-                        changespeedto = 0;
-                        lastwaypoint = 0;
-                        startTime = System.currentTimeMillis();
-                        this.calcWayLength();
-                    }
-
-                    // Eventuell alte ref löschen
-                    if (lastref != null && lastref.unitref[playerId] == this) {
-                        lastref.unitref[playerId] = null;
-                        lastref = null;
-                    }
-
-                    nextWayPointDist = pathOrder.get(lastwaypoint + 1);
-                    if (this.anim != null) {
-                        try {
-                            this.anim.dir = pathDirection.get(lastwaypoint + 1);
-                        } catch (Exception ex) {
-                        }
-                    }
-                    this.position = path.get(lastwaypoint);
-                    // Neue erzeugen
-                    lastref = rgi.mapModule.theMap.visMap[position.X][position.Y];
-                    // Nur setzen, wenn dort noch nichts ist
-                    if (lastref != null && lastref.unitref[playerId] == null) {
-                        lastref.unitref[playerId] = this;
-                    } else {
-                        lastref = null;
-                    }
-                }
-                // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
-                // Daher erst checken und ggf. reduzieren:
-                if (lastwaypoint >= pathOrder.size() - 1) {
-                    System.out.println("Client: Lastwaypoint-Error, setting back. May causes jumps!?");
-                    lastwaypoint = pathOrder.size() - 2;
-                }
-                double diffLength = passedWay - pathOrder.get(lastwaypoint);
-                // Wir haben jetzt den letzten Punkt der Route, der bereits erreicht wurde, und die Strecke, die danach noch gefahren wurde...
-                // Jetzt noch die Richtung
-                int diffX = path.get(lastwaypoint + 1).X - path.get(lastwaypoint).X;
-                int diffY = path.get(lastwaypoint + 1).Y - path.get(lastwaypoint).Y;
-                // Prozentanteil der Stecke, die zurückgelegt wurde
-                double potPathWay = Math.sqrt(Math.pow(Math.abs(diffX), 2) + Math.pow(Math.abs(diffY), 2));
-                double faktor = diffLength / potPathWay * 100;
-                double lDiffX = diffX * faktor / 100;
-                double lDiffY = diffY * faktor / 100;
-                Position pos = new Position((int) ((path.get(lastwaypoint).X + lDiffX - posX) * 20), (int) ((path.get(lastwaypoint).Y + lDiffY - posY) * 15));
-                return pos;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return new Position(-1, -1);
-            }
+    public double getSpeed() {
+        return speed;
+    }
 
 
-        }
+
     }
 
     @Override
