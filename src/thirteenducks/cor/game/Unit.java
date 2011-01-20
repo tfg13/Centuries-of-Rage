@@ -73,6 +73,19 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
     /**
+     * Erzeugt eine neue Einheit als eigenständige Kopie der Übergebenen.
+     * Wichtige Parameter werden kopiert, Sachen die jede Einheit selber haben sollte nicht.
+     * Wichtig: Die Position muss noch gesetzt werden, die ist Anfangs 0,0
+     * @param newNetId Die netId der neuen Einheit
+     * @param copyFrom Die Einheit, dessen Parameter kopiert werden sollen
+     */
+    protected Unit(int newNetId, Unit copyFrom) {
+        super(newNetId, copyFrom);
+        path = new Path();
+        this.speed = copyFrom.speed;
+    }
+
+    /**
      * Lässt die Einheit zu der angegebenen (Master)-Position laufen.
      *
      * Schickt den Request nach einigen Überprüfungen an den Server

@@ -117,6 +117,21 @@ public abstract class Building extends GameObject {
     }
 
     /**
+     * Erzeugt ein neues Gebäude als eigenständige Kopie des Übergebenen.
+     * Wichtige Parameter werden kopiert, Sachen die jedes Gebäude selber haben sollte nicht.
+     * Wichtig: Die Position muss noch gesetzt werden, die ist Anfangs 0,0
+     * @param newNetId Die netId des neuen Gebäudes
+     * @param copyFrom Das Gebäude, dessen Parameter kopiert werden sollen
+     */
+    protected Building(int newNetId, Building copyFrom) {
+        super(newNetId, copyFrom);
+        this.accepts = copyFrom.accepts;
+        this.maxIntra = copyFrom.maxIntra;
+        this.z1 = copyFrom.z1;
+        this.z2 = copyFrom.z2;
+    }
+
+    /**
      * Liefert die Anzahl freier Slots für Einheiten.
      * @return die Anzahl freier Slots für Einheiten.
      */

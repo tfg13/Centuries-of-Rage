@@ -26,6 +26,7 @@
 package thirteenducks.cor.game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
@@ -229,10 +230,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     private int damage;
     /**
-     * Aktuelles Angriffsziel dieses Objekts
-     */
-    private GameObject attackTarget;
-    /**
      * Die Reichweite dieser Einheit.
      * Echte Entfernungsmessung zwischen(!) den Einheiten.
      * Nahkämpfer haben also etwa 0
@@ -288,6 +285,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     protected GameObject(int newNetId, Position mainPos) {
         netID = newNetId;
         mainPosition = mainPos;
+        this.abilitys = new ArrayList<Ability>();
+        this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
+        this.status = GameObject.STATUS_IDLE;
     }
 
     /**
@@ -296,6 +296,44 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     protected GameObject() {
         netID = -1;
+    }
+
+    /**
+     * Erzeugt ein neues GameObject als eigenständige Kopie des Übergebenen.
+     * Wichtige Parameter werden kopiert, Sachen die jedes Objekt selber haben sollte nicht.
+     * Wichtig: Die Position muss noch gesetzt werden, die ist Anfangs 0,0
+     * @param newNetId Die netId des neuen Objekts
+     * @param copyFrom Das Objekt, dessen Parameter kopiert werden sollen
+     */
+    protected GameObject(int newNetId, GameObject copyFrom) {
+        this(newNetId, new Position(0, 0));
+        for (Ability ab : copyFrom.abilitys) {
+            try {
+                this.abilitys.add(ab.clone());
+            } catch (Exception ex) {
+                System.out.println("NEVEREVER: Cannot clone Ability!");
+            }
+        }
+        this.armorType = copyFrom.armorType;
+        this.atkdelay = copyFrom.atkdelay;
+        this.bulletspeed = copyFrom.bulletspeed;
+        this.bullettexture = copyFrom.bullettexture;
+        this.damage = copyFrom.damage;
+        this.damageFactors = copyFrom.getDamageFactors().clone();
+        this.descCon = copyFrom.descCon;
+        this.descDescription = copyFrom.descDescription;
+        this.descName = copyFrom.descName;
+        this.descPro = copyFrom.descPro;
+        this.descTypeId = copyFrom.descTypeId;
+        this.descTypeType = copyFrom.descTypeType;
+        this.fireDelay = copyFrom.fireDelay;
+        this.graphicsData = copyFrom.graphicsData.clone();
+        this.healRate = copyFrom.healRate;
+        this.hitpoints = copyFrom.hitpoints;
+        this.maxhitpoints = copyFrom.maxhitpoints;
+        this.playerId = copyFrom.playerId;
+        this.range = copyFrom.range;
+        this.visrange = copyFrom.visrange;
     }
 
     /**
@@ -369,6 +407,12 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public abstract Position[] getPositions();
 
     /**
+     * Liefert eine Position, die möglichst der Mitte dieses Objekts entspricht.
+     * @return
+     */
+    public abstract Position getCentralPosition();
+
+    /**
      * @param mainPosition the mainPosition to set
      */
     public void setMainPosition(Position mainPosition) {
@@ -382,8 +426,28 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         return playerId;
     }
 
+    /**
+     * Fügt dieses Behaviour diesem GameObject hinzu
+     * @param b
+     */
     public void addClientBehaviour(ClientBehaviour b) {
         cbehaviours.add(b);
+    }
+
+    /**
+     * Fügt dieses Behaviour diesem GameObject hinzu
+     * @param b
+     */
+    public void addServerBehaviour(ServerBehaviour b) {
+        sbehaviours.add(b);
+    }
+
+    /**
+     * Fügt diese Ability diesem GameObject hinzu
+     * @param b
+     */
+    public void addAbility(Ability a) {
+        abilitys.add(a);
     }
 
     /**
@@ -748,7 +812,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         if (rgua != null) {
         ((Unit) this).anim = rgua;
         }
-
+        
         } catch (NullPointerException ex) {
         // Wenns keinen Animator gibt, dann isses auch egal
         }
@@ -943,4 +1007,25 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public int getArmorType() {
         return armorType;
     }
+
+    /**
+     * @return the lifeStatus
+     */
+    public int getLifeStatus() {
+        return lifeStatus;
+    }
+
+    public void healTo(int energy) {
+        if (energy > 0 && energy <= maxhitpoints) {
+            hitpoints = energy;
+        }
+    }
+
+    /**
+     * Erzeut eine allein Lauffähige Kopie.
+     * Das zurückgegebene Objekt kann sofort auf die Klasse dieses Objekts gecastet werden.
+     * @param newNetId Die neue NetID des kopierten Objekts
+     * @return Das kopierte Objekt
+     */
+    public abstract GameObject getCopy(int newNetId);
 }
