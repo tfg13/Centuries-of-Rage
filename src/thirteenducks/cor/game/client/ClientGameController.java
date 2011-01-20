@@ -109,9 +109,9 @@ public class ClientGameController implements Runnable {
 
         // Upgradesystem initialisieren:
         for (NetPlayer player : playerList) {
-            player.clientDescAbilities = completeCloneAbility(myself.clientDescAbilities);
-            player.descBuilding = completeCloneBuilding(myself.descBuilding);
-            player.descUnit = completeCloneUnit(myself.descUnit);
+            player.clientDescAbilities = completeCloneAbilitys(myself.clientDescAbilities);
+            player.descBuilding = completeCloneBuildings(myself.descBuilding);
+            player.descUnit = completeCloneUnits(myself.descUnit);
         }
 
         // Farben einstellen - falls noch leer
@@ -125,7 +125,7 @@ public class ClientGameController implements Runnable {
         for (NetPlayer player : this.playerList) {
             // Gebäude:
             for (Building building : this.rgi.mapModule.buildingList) {
-                if (building.playerId == player.playerId) {
+                if (building.getPlayerId() == player.playerId) {
                     if (player.lobbyRace == races.undead) {
                         building.performUpgrade(rgi, 1001);
                     } else if (player.lobbyRace == races.human) {
@@ -136,25 +136,25 @@ public class ClientGameController implements Runnable {
 
             // Einheiten:
             for (Unit unit : this.rgi.mapModule.unitList) {
-                if (unit.playerId == player.playerId) {
+                if (unit.getPlayerId() == player.playerId) {
                     if (player.lobbyRace == races.undead) {
                         // 401=human worker, 1401=undead worker
-                        if (unit.descTypeId == 401) {
+                        if (unit.getDescTypeId() == 401) {
                             unit.performUpgrade(rgi, 1401);
                         }
                         // 402=human scout, 1402=undead scout
-                        if (unit.descTypeId == 402) {
+                        if (unit.getDescTypeId() == 402) {
                             unit.performUpgrade(rgi, 1402);
                         }
 
 
                     } else if (player.lobbyRace == races.human) {
                         // 401=human worker, 1401=undead worker
-                        if (unit.descTypeId == 1401) {
+                        if (unit.getDescTypeId() == 1401) {
                             unit.performUpgrade(rgi, 401);
                         }
                         // 402=human scout, 1402=undead mage
-                        if (unit.descTypeId == 1402) {
+                        if (unit.getDescTypeId() == 1402) {
                             unit.performUpgrade(rgi, 402);
                         }
                     }
@@ -168,48 +168,15 @@ public class ClientGameController implements Runnable {
 
         for (Unit unit : unitList) {
             // Behaviours adden
-            ClientBehaviourHarvest harvb = new ClientBehaviourHarvest(rgi, unit);
             ClientBehaviourIdle idleb = new ClientBehaviourIdle(rgi, unit);
-            unit.cbehaviours.add(harvb);
-            unit.cbehaviours.add(idleb);
-
-            rgi.mapModule.setUnitRef(unit.position, unit, unit.playerId);
+            unit.addClientBehaviour(idleb);
         }
 
         for (Building building : buildingList) {
             AbilityIntraManager intram = new AbilityIntraManager(building, rgi);
-            building.abilitys.add(0, intram);
-
-            ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
-            building.cbehaviours.add(prod);
+            building.addAbility(intram);
         }
 
-        // Referenzen einfügen
-        for (Ressource res : resList) {
-            rgi.mapModule.setResRef(res.position, res);
-        }
-
-        // Limits berechnen
-        for (Building b : buildingList) {
-            if (b.playerId == myself.playerId) {
-                // Truppenlimit setzen
-                if (b.limit > 0) {
-                    myself.currentlimit += b.limit;
-                } else if (b.limit < 0) {
-                    myself.maxlimit -= b.limit;
-                }
-            }
-        }
-        for (Unit u : unitList) {
-            if (u.playerId == myself.playerId) {
-                // Truppenlimit setzen
-                if (u.limit > 0) {
-                    myself.currentlimit += u.limit;
-                } else if (u.limit < 0) {
-                    myself.maxlimit -= u.limit;
-                }
-            }
-        }
         // BRSel initialisieren
         if (!rgi.isAIClient) {
             rgi.rogGraphics.content.initBRSel();
@@ -225,35 +192,29 @@ public class ClientGameController implements Runnable {
         rgi.rogGraphics.content.initState = 4;
     }
 
-    private HashMap<Integer, Unit> completeCloneUnit(HashMap<Integer, Unit> map) {
+    private HashMap<Integer, Unit> completeCloneUnits(HashMap<Integer, Unit> map) {
         HashMap<Integer, Unit> newmap = new HashMap<Integer, Unit>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            try {
-                newmap.put(key, map.get(key).clone(-1));
-            } catch (CloneNotSupportedException ex) {
-            }
+            newmap.put(key, (Unit) map.get(key).getCopy(-1));
         }
         return newmap;
     }
 
-    private HashMap<Integer, Building> completeCloneBuilding(HashMap<Integer, Building> map) {
+    private HashMap<Integer, Building> completeCloneBuildings(HashMap<Integer, Building> map) {
         HashMap<Integer, Building> newmap = new HashMap<Integer, Building>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            try {
-                newmap.put(key, map.get(key).clone(-1));
-            } catch (CloneNotSupportedException ex) {
-            }
+            newmap.put(key, (Building) map.get(key).getCopy(-1));
         }
         return newmap;
     }
 
-    private HashMap<Integer, Ability> completeCloneAbility(HashMap<Integer, Ability> map) {
+    private HashMap<Integer, Ability> completeCloneAbilitys(HashMap<Integer, Ability> map) {
         HashMap<Integer, Ability> newmap = new HashMap<Integer, Ability>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
@@ -273,10 +234,6 @@ public class ClientGameController implements Runnable {
 
     public void registerBuildingList(List<Building> bL) {
         buildingList = bL;
-    }
-
-    public void registerRessourceList(List<Ressource> rL) {
-        resList = rL;
     }
 
     public void setPlayer(NetPlayer player) {
@@ -299,8 +256,9 @@ public class ClientGameController implements Runnable {
     public void run() {
         // Mainloop
         rgi.logger("Starting Mainloop...");
+        System.out.println("AddMe: Create & Start GameEngine-Mainloop");
 
-        while (true) {
+      /*  while (true) {
 
             // Alle Behaviour durchgehen
 
@@ -341,13 +299,13 @@ public class ClientGameController implements Runnable {
                 rgi.logger(ex);
             }
 
-        }
+        } */
     }
 
     public void registerBuilding(int playerId, Building building) {
         if (myself != null) {
-            if (!myself.bList.contains(building.descTypeId)) {
-                myself.bList.add(building.descTypeId);
+            if (!myself.bList.contains(building.getDescTypeId())) {
+                myself.bList.add(building.getDescTypeId());
             }
         }
     }
@@ -375,9 +333,9 @@ public class ClientGameController implements Runnable {
      * @return
      */
     public boolean areAllies(GameObject obj1, GameObject obj2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
-            NetPlayer player2 = rgi.game.getPlayer(obj2.playerId);
+            NetPlayer player2 = rgi.game.getPlayer(obj2.getPlayerId());
             return player1.allies.contains(player2);
         }
         return false;
@@ -391,7 +349,7 @@ public class ClientGameController implements Runnable {
      * @return
      */
     public boolean areAllies(GameObject obj1, NetPlayer player2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
             return player1.allies.contains(player2);
         }
@@ -417,9 +375,9 @@ public class ClientGameController implements Runnable {
      * @return
      */
     public boolean shareSight(GameObject obj1, GameObject obj2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
-            NetPlayer player2 = rgi.game.getPlayer(obj2.playerId);
+            NetPlayer player2 = rgi.game.getPlayer(obj2.getPlayerId());
             return player1.visAllies.contains(player2);
         }
         return false;
@@ -433,14 +391,14 @@ public class ClientGameController implements Runnable {
      * @return
      */
     public boolean shareSight(GameObject obj1, NetPlayer player2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
             return player1.visAllies.contains(player2);
         }
         return false;
     }
 
-        /**
+    /**
      * Berechnet, ob diese beiden die Sichtweite teilen.
      * Liefert true zurück, wenn die Spieler auch den Sichtradius des jeweils anderen sehen sollten.
      * @param obj
@@ -450,7 +408,6 @@ public class ClientGameController implements Runnable {
     public boolean shareSight(NetPlayer player1, NetPlayer player2) {
         return player1.visAllies.contains(player2);
     }
-
 
     public boolean wasInvited(NetPlayer player) {
         return myself.invitations.contains(player);
@@ -463,7 +420,8 @@ public class ClientGameController implements Runnable {
      * @param b Boolean, auf Pause stellen (true) oder zurück(false)
      */
     private void managePause(boolean pause) {
-        // Alle Behaviour pausieren
+        System.out.println("AddMe: Call Pause for every Behaviour!");
+    /*    // Alle Behaviour pausieren
         for (int u = 0; u < unitList.size(); u++) {
             Unit unit = unitList.get(u);
             if (pause) {
@@ -496,7 +454,7 @@ public class ClientGameController implements Runnable {
                     }
                 }
             }
-        }
+        } */
     }
 
     /**
