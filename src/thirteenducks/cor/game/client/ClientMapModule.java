@@ -30,7 +30,6 @@ import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.AbilityUpgrade.upgradeaffects;
 import thirteenducks.cor.game.ability.AbilityUpgrade.upgradetype;
 import thirteenducks.cor.map.CoRMapElement.collision;
-import thirteenducks.cor.game.Unit.orders;
 import java.io.*;
 import java.util.*;
 import java.security.*;
@@ -52,7 +51,6 @@ import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.map.MapIO;
 
@@ -70,8 +68,7 @@ public class ClientMapModule {
     boolean syntaxWarned = false; // Ob schon eine Warnung wegen Syntax-Fehlern angezeigt wurde.
     public List<Unit> unitList;
     public List<Building> buildingList;
-    public List<Ressource> resList;
-    public Vector<GraphicsRenderable> allList;
+    public List<GraphicsRenderable> allList;
     HashMap<Integer, GameObject> netIDList;
     public CoRMap theMap;
     public byte[] descSettings;        // Die Settings. Bekommen wir vom Server geschickt.
