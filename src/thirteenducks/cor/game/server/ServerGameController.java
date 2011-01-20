@@ -27,7 +27,6 @@ package thirteenducks.cor.game.server;
 
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit.orders;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import thirteenducks.cor.game.NetPlayer;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
@@ -51,7 +49,6 @@ public class ServerGameController implements Runnable {
 
     private List<Unit> unitList;             // Die Liste mit den Einheiten
     private List<Building> buildingList;     // Die Liste mit den Gebäuden
-    private List<Ressource> resList;         // Die Liste mit den Ressourcen
     List<NetPlayer> playerList;         // Die Liste mit den Spielern VORSICHT- ES DARF NIEMALS JEMAND GELÖSCHT WERDEN!!!
     ServerCore.InnerServer rgi;         // Die Referenz auf logger und alle anderen Module
     Thread t;
@@ -62,48 +59,49 @@ public class ServerGameController implements Runnable {
 
         // Mainloop
         rgi.logger("Starting Mainloop...");
-        while (true) {
+        System.out.println("AddMe: Implement Behaviour-System!");
+        /*   while (true) {
 
-            // Alle Behaviour durchgehen
+        // Alle Behaviour durchgehen
 
-            while (pause) {
-                if (!pause) {
-                    break;
-                }
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException ex) {
-                }
-            }
-
-            for (int u = 0; u < unitList.size(); u++) {
-                Unit unit = unitList.get(u);
-                for (int b = 0; b < unit.sbehaviours.size(); b++) {
-                    ServerBehaviour s = unit.sbehaviours.get(b);
-                    if (s.isActive()) {
-                        s.tryexecute();
-                    }
-                }
-            }
-
-
-            for (int u = 0; u < buildingList.size(); u++) {
-                Building building = buildingList.get(u);
-                for (int b = 0; b < building.sbehaviours.size(); b++) {
-                    ServerBehaviour s = building.sbehaviours.get(b);
-                    if (s.isActive()) {
-                        s.tryexecute();
-                    }
-                }
-            }
-
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException ex) {
-                rgi.logger(ex);
-            }
-
+        while (pause) {
+        if (!pause) {
+        break;
         }
+        try {
+        Thread.sleep(20);
+        } catch (InterruptedException ex) {
+        }
+        }
+
+        for (int u = 0; u < unitList.size(); u++) {
+        Unit unit = unitList.get(u);
+        for (int b = 0; b < unit.sbehaviours.size(); b++) {
+        ServerBehaviour s = unit.sbehaviours.get(b);
+        if (s.isActive()) {
+        s.tryexecute();
+        }
+        }
+        }
+
+
+        for (int u = 0; u < buildingList.size(); u++) {
+        Building building = buildingList.get(u);
+        for (int b = 0; b < building.sbehaviours.size(); b++) {
+        ServerBehaviour s = building.sbehaviours.get(b);
+        if (s.isActive()) {
+        s.tryexecute();
+        }
+        }
+        }
+
+        try {
+        Thread.sleep(20);
+        } catch (InterruptedException ex) {
+        rgi.logger(ex);
+        }
+
+        } */
     }
 
     public void startMainloop() {
@@ -124,14 +122,14 @@ public class ServerGameController implements Runnable {
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
             ServerBehaviourMove smove = new ServerBehaviourMove(rgi, unit);
-            unit.sbehaviours.add(smove);
-            unit.moveManager = smove;
+            unit.addServerBehaviour(smove);
+            //  unit.moveManager = smove;
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
-            unit.sbehaviours.add(amove);
-            unit.attackManager = amove;
-            unit.order = orders.idle;
+            unit.addServerBehaviour(amove);
+            //     unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
-            rgi.netmap.setUnitRef(unit.position, unit, unit.playerId);
+            System.out.println("AddMe: Set UnitRefs for all Positions!");
+            rgi.netmap.setUnitRef(unit.getMainPosition(), unit, unit.getPlayerId());
         }
         // Alle auf fertig setzen
         for (NetPlayer player : playerList) {
@@ -140,7 +138,7 @@ public class ServerGameController implements Runnable {
         // Die die Gebäude haben auf "noch spielend" setzen
         for (Building b : rgi.netmap.buildingList) {
             try {
-                playerList.get(b.playerId).setFinished(false);
+                playerList.get(b.getPlayerId()).setFinished(false);
             } catch (Exception ex) {
             }
         }
@@ -164,10 +162,6 @@ public class ServerGameController implements Runnable {
         buildingList = bL;
     }
 
-    public void registerRessourceList(List<Ressource> rL) {
-        resList = rL;
-    }
-
     public void registerBuilding(int playerId, Building building) {
         NetPlayer player = null;
         try {
@@ -176,8 +170,8 @@ public class ServerGameController implements Runnable {
             System.out.println("FixMe: Trying to add Building to unknown Player");
         }
         if (player != null) {
-            if (!player.bList.contains(building.descTypeId)) {
-                player.bList.add(building.descTypeId);
+            if (!player.bList.contains(building.getDescTypeId())) {
+                player.bList.add(building.getDescTypeId());
             }
         }
     }
@@ -186,9 +180,9 @@ public class ServerGameController implements Runnable {
         NetPlayer newplayer = new NetPlayer(rgi);
         newplayer.playerId = playerList.size();
         System.out.println("New PlayerID for Client: " + newplayer.playerId);
-        newplayer.descUnit = completeCloneUnit(rgi.netmap.descTypeUnit);
-        newplayer.descBuilding = completeCloneBuilding(rgi.netmap.descTypeBuilding);
-        newplayer.serverDescAbilities = completeCloneAbility(rgi.netmap.descTypeAbilities);
+        newplayer.descUnit = completeCloneUnits(rgi.netmap.descTypeUnit);
+        newplayer.descBuilding = completeCloneBuildings(rgi.netmap.descTypeBuilding);
+        newplayer.serverDescAbilities = completeCloneAbilitys(rgi.netmap.descTypeAbilities);
         playerList.add(newplayer);
         return newplayer;
     }
@@ -209,9 +203,9 @@ public class ServerGameController implements Runnable {
      * @return
      */
     public boolean areAllies(GameObject obj1, GameObject obj2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
-            NetPlayer player2 = rgi.game.getPlayer(obj2.playerId);
+            NetPlayer player2 = rgi.game.getPlayer(obj2.getPlayerId());
             return player1.allies.contains(player2);
         }
         return false;
@@ -225,7 +219,7 @@ public class ServerGameController implements Runnable {
      * @return
      */
     public boolean areAllies(GameObject obj1, NetPlayer player2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
             return player1.allies.contains(player2);
         }
@@ -251,9 +245,9 @@ public class ServerGameController implements Runnable {
      * @return
      */
     public boolean shareSight(GameObject obj1, GameObject obj2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
-            NetPlayer player2 = rgi.game.getPlayer(obj2.playerId);
+            NetPlayer player2 = rgi.game.getPlayer(obj2.getPlayerId());
             return player1.visAllies.contains(player2);
         }
         return false;
@@ -267,7 +261,7 @@ public class ServerGameController implements Runnable {
      * @return
      */
     public boolean shareSight(GameObject obj1, NetPlayer player2) {
-        NetPlayer player1 = rgi.game.getPlayer(obj1.playerId);
+        NetPlayer player1 = rgi.game.getPlayer(obj1.getPlayerId());
         if (player1 != null) {
             return player1.visAllies.contains(player2);
         }
@@ -285,35 +279,29 @@ public class ServerGameController implements Runnable {
         return player1.visAllies.contains(player2);
     }
 
-    private HashMap<Integer, Unit> completeCloneUnit(HashMap<Integer, Unit> map) {
+    private HashMap<Integer, Unit> completeCloneUnits(HashMap<Integer, Unit> map) {
         HashMap<Integer, Unit> newmap = new HashMap<Integer, Unit>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            try {
-                newmap.put(key, map.get(key).clone(-1));
-            } catch (CloneNotSupportedException ex) {
-            }
+            newmap.put(key, (Unit) map.get(key).getCopy(-1));
         }
         return newmap;
     }
 
-    private HashMap<Integer, Building> completeCloneBuilding(HashMap<Integer, Building> map) {
+    private HashMap<Integer, Building> completeCloneBuildings(HashMap<Integer, Building> map) {
         HashMap<Integer, Building> newmap = new HashMap<Integer, Building>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            try {
-                newmap.put(key, map.get(key).clone(-1));
-            } catch (CloneNotSupportedException ex) {
-            }
+            newmap.put(key, (Building) map.get(key).getCopy(-1));
         }
         return newmap;
     }
 
-    private HashMap<Integer, ServerAbilityUpgrade> completeCloneAbility(HashMap<Integer, ServerAbilityUpgrade> map) {
+    private HashMap<Integer, ServerAbilityUpgrade> completeCloneAbilitys(HashMap<Integer, ServerAbilityUpgrade> map) {
         HashMap<Integer, ServerAbilityUpgrade> newmap = new HashMap<Integer, ServerAbilityUpgrade>();
         Set<Integer> keys = map.keySet();
         Iterator<Integer> iter = keys.iterator();
@@ -322,6 +310,7 @@ public class ServerGameController implements Runnable {
             try {
                 newmap.put(key, map.get(key).clone());
             } catch (CloneNotSupportedException ex) {
+                System.out.println("NEVEREVER: Cannot clone Ability!");
             }
         }
         return newmap;
@@ -345,7 +334,8 @@ public class ServerGameController implements Runnable {
      */
     private void managePause(boolean pause) {
         // Alle Behaviour pausieren
-        for (int u = 0; u < unitList.size(); u++) {
+        System.out.println("AddMe: Pause all behaviours");
+    /*    for (int u = 0; u < unitList.size(); u++) {
             Unit unit = unitList.get(u);
             for (int b = 0; b < unit.sbehaviours.size(); b++) {
                 ServerBehaviour c = unit.sbehaviours.get(b);
@@ -372,6 +362,6 @@ public class ServerGameController implements Runnable {
                     }
                 }
             }
-        }
+        } */
     }
 }
