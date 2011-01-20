@@ -68,6 +68,7 @@ public class GOGraphicsData implements Serializable, Cloneable {
         try {
             return (GOGraphicsData) super.clone();
         } catch (CloneNotSupportedException ex) { // Passiert im Läbe net..
+            System.out.println("NEVEREVER: Cannot clone GOGraphicsData!");
             return null;
         }
     }
