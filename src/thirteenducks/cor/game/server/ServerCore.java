@@ -31,8 +31,6 @@ import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.game.NetPlayer.races;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import thirteenducks.cor.game.Core;
@@ -201,7 +199,7 @@ public class ServerCore extends Core {
             for (NetPlayer player : this.gamectrl.playerList) {
                 // Gebäude:
                 for (Building building : this.rgi.netmap.buildingList) {
-                    if (building.playerId == player.playerId) {
+                    if (building.getPlayerId() == player.playerId) {
                         if (player.lobbyRace == races.undead) {
                             building.performUpgrade(rgi, 1001);
                         } else if (player.lobbyRace == races.human) {
@@ -212,25 +210,25 @@ public class ServerCore extends Core {
 
                 // Einheiten:
                 for (Unit unit : this.rgi.netmap.unitList) {
-                    if (unit.playerId == player.playerId) {
+                    if (unit.getPlayerId() == player.playerId) {
                         if (player.lobbyRace == races.undead) {
                             // 401=human worker, 1401=undead worker
-                            if (unit.descTypeId == 401) {
+                            if (unit.getDescTypeId() == 401) {
                                 unit.performUpgrade(rgi, 1401);
                             }
                             // 402=human scout, 1402=undead mage
-                            if (unit.descTypeId == 402) {
+                            if (unit.getDescTypeId() == 402) {
                                 unit.performUpgrade(rgi, 1402);
                             }
 
 
                         } else if (player.lobbyRace == races.human) {
                             // 1401=undead worker, 401=human worker
-                            if (unit.descTypeId == 1401) {
+                            if (unit.getDescTypeId() == 1401) {
                                 unit.performUpgrade(rgi, 401);
                             }
                             // 1402=undead mage, 402=human scout
-                            if (unit.descTypeId == 1402) {
+                            if (unit.getDescTypeId() == 1402) {
                                 unit.performUpgrade(rgi, 402);
                             }
                         }
