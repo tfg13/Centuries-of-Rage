@@ -658,9 +658,9 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
 
     @Override
     public int compareTo(Position f) {
-        if (f.valF > this.valF) {
+        if (f.getValF() > this.getValF()) {
             return -1;
-        } else if (f.valF < valF) {
+        } else if (f.getValF() < getValF()) {
             return 1;
         } else {
             return 0;
@@ -806,5 +806,61 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      */
     public void setY(int Y) {
         this.Y = Y;
+    }
+
+    /**
+     * @return the cost
+     */
+    public int getCost() {
+        return cost;
+    }
+
+    /**
+     * @param cost the cost to set
+     */
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    /**
+     * @return the heuristic
+     */
+    public int getHeuristic() {
+        return heuristic;
+    }
+
+    /**
+     * @param heuristic the heuristic to set
+     */
+    public void setHeuristic(int heuristic) {
+        this.heuristic = heuristic;
+    }
+
+    /**
+     * @return the valF
+     */
+    public int getValF() {
+        return valF;
+    }
+
+    /**
+     * @param valF the valF to set
+     */
+    public void setValF(int valF) {
+        this.valF = valF;
+    }
+
+    /**
+     * @return the parent
+     */
+    public Position getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(Position parent) {
+        this.parent = parent;
     }
 }
