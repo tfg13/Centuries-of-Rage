@@ -35,11 +35,7 @@ import java.util.*;
 import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourHarvest;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourIdle;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import thirteenducks.cor.graphics.GraphicsRenderable;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityBuild;
@@ -49,9 +45,9 @@ import thirteenducks.cor.game.ability.AbilityUpgrade;
 import thirteenducks.cor.graphics.BuildingAnimator;
 import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.map.CoRMap;
-import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
+import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.map.MapIO;
 
 /**
@@ -68,7 +64,7 @@ public class ClientMapModule {
     boolean syntaxWarned = false; // Ob schon eine Warnung wegen Syntax-Fehlern angezeigt wurde.
     public List<Unit> unitList;
     public List<Building> buildingList;
-    public List<GraphicsRenderable> allList;
+    public List<Sprite> allList;
     HashMap<Integer, GameObject> netIDList;
     public CoRMap theMap;
     public byte[] descSettings;        // Die Settings. Bekommen wir vom Server geschickt.
@@ -915,7 +911,6 @@ public class ClientMapModule {
 
         unitList = Collections.synchronizedList((ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST"));
         buildingList = Collections.synchronizedList((ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST"));
-        resList = Collections.synchronizedList((ArrayList<Ressource>) theMap.getMapPoperty("RES_LIST"));
         refreshUnits();
         refreshBuildings();
         rgi.logger("[MapModul] Map \"" + mapFileName + "\" loaded.");
@@ -923,11 +918,9 @@ public class ClientMapModule {
         rgi.rogGraphics.activateMap(theMap.getVisMap());
         rgi.rogGraphics.updateBuildings(buildingList);
         rgi.rogGraphics.updateUnits(unitList);
-        rgi.rogGraphics.content.updateRessources(resList);
         createAllList();
         rgi.game.registerBuildingList(buildingList);
         rgi.game.registerUnitList(unitList);
-        rgi.game.registerRessourceList(resList);
         // Fertig, mitteilen
         rgi.rogGraphics.triggerStatusWaiting();
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
@@ -937,7 +930,7 @@ public class ClientMapModule {
         // Erstellt eine Liste, in der Einheiten, Gebäude und Ressourcen enthalten sind.
         // Für Grafik only
         if (allList == null) {
-            allList = new Vector<GraphicsRenderable>();
+            allList = new ArrayList<Sprite>();
         } else {
             allList.clear();
         }
@@ -946,9 +939,6 @@ public class ClientMapModule {
         }
         for (Building building : buildingList) {
             allList.add(building);
-        }
-        for (Ressource res : resList) {
-            allList.add(res);
         }
     }
 
@@ -961,7 +951,6 @@ public class ClientMapModule {
                 if (x % 2 != y % 2) {
                     continue;
                 }
-                serverCollision[x][y] = isGroundColliding(x, y);
             }
         }
     }
@@ -974,9 +963,6 @@ public class ClientMapModule {
         }
         for (Building building : buildingList) {
             netIDList.put(building.netID, building);
-        }
-        for (Ressource ressource : resList) {
-            netIDList.put(ressource.netID, ressource);
         }
     }
 
@@ -997,7 +983,7 @@ public class ClientMapModule {
         HashMap<Integer, Unit> descUnit = rgi.game.getOwnPlayer().descUnit;
         for (Unit unit : unitList) {
             // Alle Parameter kopieren
-            unit.copyPropertiesFrom(descUnit.get(unit.descTypeId));
+            unit.copyPropertiesFrom(descUnit.get(unit.getDescTypeId()));
         }
     }
 
@@ -1006,7 +992,7 @@ public class ClientMapModule {
         // Ausserdem werden alle (gespeicherten) Parameter überschrieben, das macht Änderungen einfacher (man ändert nur die desctypes und muss nicht immer neue maps machen)
         HashMap<Integer, Building> descBuilding = rgi.game.getOwnPlayer().descBuilding;
         for (Building building : buildingList) {
-            building.copyPropertiesFrom(descBuilding.get(building.descTypeId));
+            building.copyPropertiesFrom(descBuilding.get(building.getDescTypeId()));
         }
     }
 
@@ -1046,109 +1032,6 @@ public class ClientMapModule {
         }
     }
 
-    /**
-     * Gibt die Einheitenreferenz eines Feldes zurück.
-     */
-    public Unit getUnitRef(Position pos, int playerId) {
-        try {
-            return theMap.visMap[pos.X][pos.Y].unitref[playerId];
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public Unit getEnemyUnitRef(Position pos, int ownPlayerId) {
-        for (int i = 1; i < rgi.game.playerList.size(); i++) {
-            if (i == rgi.game.getOwnPlayer().playerId || rgi.game.areAllies(rgi.game.getPlayer(i), rgi.game.getOwnPlayer())) {
-                continue;
-            }
-            try {
-                Unit unit = theMap.visMap[pos.X][pos.Y].unitref[i];
-                if (unit != null && unit.isCompletelyActivated) {
-                    // Wartung
-                    if (!unit.alive) {
-                        // Referenz löschen, andere suchen
-                        theMap.visMap[pos.X][pos.Y].unitref[i] = null;
-                        continue;
-                    }
-                    return unit;
-                }
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Überprüft, ob das Feld irgendeine Referenz einer beliebigen Einheit hat
-     * @param pos
-     * @return
-     */
-    public boolean hasUnitRef(Position pos) {
-        return hasUnitRef(pos.X, pos.Y);
-    }
-
-    /**
-     * Überprüft, ob das Feld irgendeine Referenz einer beliebigen Einheit hat
-     * @param pos
-     * @return
-     */
-    public boolean hasUnitRef(int x, int y) {
-        for (int i = 1; i < rgi.game.playerList.size(); i++) {
-            try {
-                Unit unit = theMap.visMap[x][y].unitref[i];
-                if (unit != null && unit.isCompletelyActivated) {
-                    // Wartung
-                    if (!unit.alive) {
-                        // Referenz löschen, andere suchen
-                        theMap.visMap[x][y].unitref[i] = null;
-                        continue;
-                    }
-                    return true;
-                }
-            } catch (Exception ex) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Gibt die Ressourcenreferenz eines Feldes zurück.
-     */
-    public Ressource getResRef(Position pos) {
-        try {
-            return theMap.visMap[pos.X][pos.Y].resref;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Setzt die Einheitenreferenz eines Feldes.
-     */
-    public void setUnitRef(Position pos, Unit unit, int playerId) {
-        try {
-            theMap.visMap[pos.X][pos.Y].unitref[playerId] = unit;
-        } catch (Exception ex) {
-            System.out.println("SetUnitRef-ERROR: " + pos + "|" + unit);
-            rgi.logger(ex);
-        }
-    }
-
-    /**
-     * Setzt die Einheitenreferenz eines Feldes.
-     */
-    public void setResRef(Position pos, Ressource res) {
-        try {
-            theMap.visMap[pos.X][pos.Y].resref = res;
-        } catch (Exception ex) {
-            System.out.println("SetResRef-ERROR: " + pos + "|" + res);
-            rgi.logger(ex);
-        }
-    }
-
     public boolean isValidUnitDesc(int desc) {
         if (rgi.game.getOwnPlayer().descUnit.get(desc) != null) {
             return true;
@@ -1165,12 +1048,14 @@ public class ClientMapModule {
 
     public void insertUnitAnimator(int desc, UnitAnimator rgua) {
         // Speichert einen vorkonfigurierten Animator in die DESC-Datenbank ein
-        rgi.game.getOwnPlayer().descUnit.get(desc).anim = rgua;
+        System.out.println("AddMe: Instert Unit Animator");
+        // rgi.game.getOwnPlayer().descUnit.get(desc).anim = rgua;
     }
 
     public void insertBuildingAnimator(int desc, BuildingAnimator rgba) {
         // Speichert eien vorkonfigurierten Animator in die DESC-Datenbank ein
-        rgi.game.getOwnPlayer().descBuilding.get(desc).anim = rgba;
+        System.out.println("AddMe: Instert Building Animator");
+        // rgi.game.getOwnPlayer().descBuilding.get(desc).anim = rgba;
     }
 
     public List<Unit> getUnitList() {
@@ -1183,19 +1068,15 @@ public class ClientMapModule {
         return buildingList;
     }
 
-    public List<Ressource> getRessourceList() {
-        // Gibt die Ressourcenliste zurück
-        return resList;
-    }
-
     public Unit getDescUnit(int descId, int newNetID, int playerId) {
         try {
-            Unit unit = rgi.game.getPlayer(playerId).descUnit.get(descId).clone(newNetID);
+            Unit unit = (Unit) rgi.game.getPlayer(playerId).descUnit.get(descId).getCopy(newNetID);
             ArrayList<Ability> list = new ArrayList<Ability>();
-            for (Ability ab : unit.abilitys) {
+            List<Ability> unitsAbList = unit.getAbilitys();
+            for (Ability ab : unitsAbList) {
                 list.add(rgi.game.getPlayer(playerId).clientDescAbilities.get(ab.myId));
             }
-            unit.abilitys = list;
+            unit.setAbilitys(list);
             return unit;
         } catch (Exception ex) {
             System.out.println("FixMe: Cloning-Error Unit");
@@ -1205,12 +1086,13 @@ public class ClientMapModule {
 
     public Building getDescBuilding(int descId, int newNetID, int playerId) {
         try {
-            Building building = rgi.game.getPlayer(playerId).descBuilding.get(descId).clone(newNetID);
+            Building building = (Building) rgi.game.getPlayer(playerId).descBuilding.get(descId).getCopy(newNetID);
             ArrayList<Ability> list = new ArrayList<Ability>();
-            for (Ability ab : building.abilitys) {
+            List<Ability> buildingsAbList = building.getAbilitys();
+            for (Ability ab : buildingsAbList) {
                 list.add(rgi.game.getPlayer(playerId).clientDescAbilities.get(ab.myId));
             }
-            building.abilitys = list;
+            building.setAbilitys(list);
             return building;
         } catch (Exception ex) {
             System.out.println("FixMe: Cloning-Error Building");
@@ -1279,21 +1161,6 @@ public class ClientMapModule {
     }
 
     /**
-     * Sucht eine Ressource anhand ihrer netID.
-     *
-     * @param netID - Die netID der Ressource.
-     * @return RogRessource, falls sie gefunden wurde, sonst null.
-     */
-    public Ressource getRessourceviaID(int netID) {
-        try {
-            return (Ressource) netIDList.get(netID);
-        } catch (Exception ex) {
-            // Gibts net, falscher Typ etc...
-            return null;
-        }
-    }
-
-    /**
      * Sucht ein GameObject anhand seiner netID.
      *
      * @param netID - Die netID des GameObjects.
@@ -1327,22 +1194,12 @@ public class ClientMapModule {
         }
         this.netIDList.put(b.netID, b);
 
-        b.abilitys.add(0, new AbilityIntraManager(b, rgi));
-
-        b.cbehaviours.add(new ClientBehaviourProduce(rgi, b));
+        b.addAbility(new AbilityIntraManager(b, rgi));
 
         // In Abhängigkeitsliste einfügen
-        if (b.ready && b.playerId == rgi.game.getOwnPlayer().playerId) {
-            if (!rgi.game.getOwnPlayer().bList.contains(b.descTypeId)) {
-                rgi.game.getOwnPlayer().bList.add(b.descTypeId);
-            }
-        }
-
-        // Kollision einfügen
-        for (int z1 = 0; z1 < b.z1; z1++) {
-            for (int z2 = 0; z2 < b.z2; z2++) {
-                CoRMapElement tEle = theMap.visMap[(int) b.position.X + z1 + z2][(int) b.position.Y - z1 + z2];
-                tEle.setCollision(collision.blocked);
+        if (b.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
+            if (!rgi.game.getOwnPlayer().bList.contains(b.getDescTypeId())) {
+                rgi.game.getOwnPlayer().bList.add(b.getDescTypeId());
             }
         }
 
@@ -1365,7 +1222,7 @@ public class ClientMapModule {
     public collision getCollision(Position pos) {
         // Prüft ob ein Feld blockiert, also ob Einheiten drauf laufen können
         try {
-            return theMap.visMap[pos.X][pos.Y].getCollision();
+            return theMap.visMap[pos.getX()][pos.getY()].getCollision();
         } catch (Exception ex) {
             return collision.blocked;
         }
@@ -1385,7 +1242,7 @@ public class ClientMapModule {
         // Setzt die Kollision
         if (position != null) {
             try {
-                theMap.visMap[position.X][position.Y].setCollision(blocking);
+                theMap.visMap[position.getX()][position.getY()].setCollision(blocking);
             } catch (Exception ex) {
                 System.out.println("SetCollision-Error: " + position);
                 rgi.logger(ex);
@@ -1402,7 +1259,7 @@ public class ClientMapModule {
     public Building findBuilingViaPosition(Position position) {
         for (int i = 0; i < buildingList.size(); i++) {
             Building b = buildingList.get(i);
-            if (b.position.equals(position)) {
+            if (b.getMainPosition().equals(position)) {
                 return b;
             }
         }
@@ -1429,116 +1286,10 @@ public class ClientMapModule {
         this.netIDList.put(u.netID, u);
 
         // In Abhängigkeitsliste einfügen
-        if (u.playerId == rgi.game.getOwnPlayer().playerId) {
-            if (!rgi.game.getOwnPlayer().uList.contains(u.descTypeId)) {
-                rgi.game.getOwnPlayer().uList.add(u.descTypeId);
+        if (u.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
+            if (!rgi.game.getOwnPlayer().uList.contains(u.getDescTypeId())) {
+                rgi.game.getOwnPlayer().uList.add(u.getDescTypeId());
             }
-        }
-
-        // Behaviours adden
-        ClientBehaviourHarvest harvb = new ClientBehaviourHarvest(rgi, u);
-        ClientBehaviourIdle idleb = new ClientBehaviourIdle(rgi, u);
-        u.cbehaviours.add(harvb);
-        u.cbehaviours.add(idleb);
-
-        // Kollision einfügen
-        this.setCollision(u.position, collision.occupied);
-        this.setUnitRef(u.position, u, u.playerId);
-
-        // Truppenlimit hochsetzen
-        if (u.playerId == rgi.game.getOwnPlayer().playerId) {
-            if (u.limit < 0) {
-                rgi.game.getOwnPlayer().maxlimit -= u.limit;
-            }
-        }
-    }
-
-    /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundColliding(Position pos) {
-        try {
-            return (theMap.visMap[pos.X][pos.Y].collision != collision.free);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * spezielle Version für Einheiten, die durch eigene durchlaufen können
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundCollidingForUnit(Position pos, int playerId) {
-        try {
-            if (theMap.visMap[pos.X][pos.Y].collision != collision.free) {
-                if (theMap.visMap[pos.X][pos.Y].collision == collision.occupied && theMap.visMap[pos.X][pos.Y].unitref[playerId] != null) {
-                    return false;
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * spezielle Version für Einheiten, die durch eigene durchlaufen können
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundCollidingForUnit(int x, int y, int playerId) {
-        try {
-            if (theMap.visMap[x][y].collision != collision.free) {
-                if (theMap.visMap[x][y].collision == collision.occupied && theMap.visMap[x][y].unitref[playerId] != null) {
-                    return false;
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundColliding(int x, int y) {
-        try {
-            return (theMap.visMap[x][y].collision != collision.free);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob ein Feld für Lufteinheiten nicht "begehbar" ist
-     * @param pos
-     * @return true bedeutet, es ist NICHT begehbar
-     */
-    public boolean isAirColliding(Position pos) {
-        try {
-            return (theMap.visMap[pos.X][pos.Y].collision == collision.unreachable);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob ein Feld für Lufteinheiten nicht "begehbar" ist
-     * @return true bedeutet, es ist NICHT begehbar
-     */
-    public boolean isAirColliding(int x, int y) {
-        try {
-            return (theMap.visMap[x][y].collision == collision.unreachable);
-        } catch (Exception ex) {
-            return true;
         }
     }
 
@@ -1548,15 +1299,6 @@ public class ClientMapModule {
      */
     public void unitKilled(Unit unit) {
         if (unit != null) {
-            unit.destroy();
-            // Truppenlimit
-            if (unit.playerId == rgi.game.getOwnPlayer().playerId) {
-                if (unit.limit > 0) {
-                    rgi.game.getOwnPlayer().currentlimit -= unit.limit;
-                } else if (unit.limit < 0) {
-                    rgi.game.getOwnPlayer().maxlimit += unit.limit;
-                }
-            }
 
             rgi.rogGraphics.notifyUnitDieing(unit);
             this.unitList.remove(unit);
@@ -1575,18 +1317,10 @@ public class ClientMapModule {
      * Das kann nur der Server.
      * @param victim
      * @param damage
+     * @deprecated
      */
     public void dealDamage(GameObject victim, int damage) {
-        victim.hitpoints -= damage;
-        if (victim.getHitpoints() < 0) {
-            victim.hitpoints = 0;
-        }
-        if (victim.getClass().equals(Building.class)) {
-            if (!victim.ready) {
-                ((Building) victim).damageWhileContruction += damage;
-            }
-            rgi.rogGraphics.content.fireMan.buildingHit((Building) victim, rgi.rogGraphics.content.epoche);
-        }
+        victim.dealDamage(damage);
     }
 
     /**
@@ -1615,18 +1349,10 @@ public class ClientMapModule {
      * @param building
      */
     public void buildingKilled(Building building) {
-        // Truppenlimit
-        if (building.playerId == rgi.game.getOwnPlayer().playerId) {
-            if (building.limit > 0) {
-                rgi.game.getOwnPlayer().currentlimit -= building.limit;
-            } else if (building.limit < 0) {
-                rgi.game.getOwnPlayer().maxlimit += building.limit;
-            }
-        }
         if (building != null && !rgi.isAIClient) {
-            building.destroy();
+            building.kill();
             // Für eigene Gebäude den Sichtbereich auf erkundet setzen
-            if (building.playerId == rgi.game.getOwnPlayer().playerId) {
+            if (building.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                 rgi.rogGraphics.content.cutDieingBuildingSight(building);
             }
             // Jetzt löschen
@@ -1640,89 +1366,6 @@ public class ClientMapModule {
             // Selektion entfernen
             rgi.rogGraphics.content.deleteGO(building);
             // Effekte entfernen
-        }
-    }
-
-    /**
-     * Wird VOM BEHAVIOUR aufgerufen, wenn eine Ressource fertig abgeerntet ist.
-     * @param res
-     */
-    public void ressourceFullyHarvested(Ressource res) {
-        // Senden, das muss der Server broadcasten
-
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 33, res.netID, 0, 0, 0));
-    }
-
-    /**
-     * Wird aufgerufen, wenn der Server Befehl zum Löschen der Ressource gibt.
-     * @param res
-     */
-    public void killRessource(Ressource res) {
-        if (res != null) {
-            if (res.getType() < 5) {
-                res.destroy();
-                ArrayList<GameObject> harvs = res.getAllHarvesters();
-                // Alle vorhandenen Ernter löschen (freigeben)
-                res.removeAllHarvesters();
-
-                this.resList.remove(res);
-
-                // Referenz löschen
-                setResRef(res.position, null);
-
-                // Versuchen, für die Ernter neue Ressourcen zu finden:
-                if (res.getType() < 3) {
-                    for (GameObject obj : harvs) {
-                        if (obj != null) {
-                            try {
-                                Unit unit = (Unit) obj;
-                                Ressource potres = unit.ressourceAroundMe(res.getType(), 10, rgi);
-                                if (potres != null) {
-                                    unit.goHarvest(potres, rgi);
-                                }
-                            } catch (ClassCastException ex) {
-                            }
-                        }
-                    }
-                } else {
-                    // Ernter sollen nichtmehr fuchteln
-                    for (GameObject obj : harvs) {
-                        if (obj != null) {
-                            Unit unit = (Unit) obj;
-                            unit.order = orders.idle;
-                        }
-                    }
-                }
-
-                // Kollision löschen
-
-                this.setCollision(res.position, collision.free);
-                if (res.getType() > 2) {
-                    this.setCollision(res.position.X + 2, res.position.Y, collision.free);
-                    this.setCollision(res.position.X + 1, res.position.Y - 1, collision.free);
-                    this.setCollision(res.position.X + 1, res.position.Y + 1, collision.free);
-                }
-
-                // Selektion löschen
-
-                rgi.rogGraphics.content.deleteGO(res);
-
-                // Löschen
-
-                try {
-                    rgi.rogGraphics.content.allListLock.lock();
-                    this.allList.remove(res);
-                } finally {
-                    rgi.rogGraphics.content.allListLock.unlock();
-                }
-                this.netIDList.remove(res.netID);
-                rgi.rogGraphics.inputM.selected.remove(res);
-                if (rgi.rogGraphics.content.tempInfoObj == res) {
-                    rgi.rogGraphics.content.tempInfoObj = null;
-                }
-
-                rgi.rogGraphics.builingsChanged();
-            }
         }
     }
 
@@ -1748,13 +1391,13 @@ public class ClientMapModule {
             // Vorhandene
             if (units) {
                 for (Unit unit : unitList) {
-                    if (unit.descTypeId == fromDesc && unit.playerId == playerId) {
+                    if (unit.getDescTypeId() == fromDesc && unit.getPlayerId() == playerId) {
                         unit.performUpgrade(rgi, toDesc);
                     }
                 }
             } else {
                 for (Building building : buildingList) {
-                    if (building.descTypeId == fromDesc && building.playerId == playerId) {
+                    if (building.getDescTypeId() == fromDesc && building.getPlayerId() == playerId) {
                         building.performUpgrade(rgi, toDesc);
                     }
                 }
@@ -1776,13 +1419,13 @@ public class ClientMapModule {
             }
             if (units) {
                 for (Unit unit : unitList) {
-                    if (unit.descTypeId == fromDesc && unit.playerId == playerId) {
+                    if (unit.getDescTypeId() == fromDesc && unit.getPlayerId() == playerId) {
                         unit.performUpgrade(rgi, toDesc);
                     }
                 }
             } else {
                 for (Building building : buildingList) {
-                    if (building.descTypeId == fromDesc && building.playerId == playerId) {
+                    if (building.getDescTypeId() == fromDesc && building.getPlayerId() == playerId) {
                         building.performUpgrade(rgi, toDesc);
                     }
 

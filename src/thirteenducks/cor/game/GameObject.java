@@ -27,6 +27,7 @@ package thirteenducks.cor.game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
@@ -757,6 +758,23 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         return null;
     }
 
+    /**
+     * Gets all Abilitys as unmodifiable List.
+     * @return all Abilitys as unmodifiable List.
+     */
+    public List<Ability> getAbilitys() {
+        return Collections.unmodifiableList(abilitys);
+    }
+
+    /**
+     * Overrides ALL abilitys with the given.
+     * Uses the given List directly, please be aware of pass-by-ref issues
+     * @param list the List with all the ablitys the object shall have.
+     */
+    public void setAbilitys(List<Ability> list) {
+        this.abilitys = list;
+    }
+
     public void performDeltaUpgrade(ServerCore.InnerServer rgi, DeltaUpgradeParameter up) {
         // Allgemeine Upgrades durchführen:
 
@@ -1028,4 +1046,21 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @return Das kopierte Objekt
      */
     public abstract GameObject getCopy(int newNetId);
+
+    /**
+     * Schadet diesem GO.
+     * Das Objekt stibt normalerweise, wenn die Energie unter oder auf 0 fällt.
+     */
+    public void dealDamage(int damage) {
+        hitpoints -= damage;
+        if (hitpoints <= 0) {
+            hitpoints = 0;
+            kill();
+        }
+    }
+
+    /**
+     * Lässt das GO sterben.
+     */
+    public abstract void kill();
 }
