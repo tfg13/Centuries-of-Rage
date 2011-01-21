@@ -91,21 +91,7 @@ public class AbilityBuild extends Ability {
                         Position basePos = new Position(pos.width, pos.height);
                         // Ist das alles zum Bauen frei?
                         boolean free = true;
-                        for (int z1 = 0; z1 < building.getZ1(); z1++) {
-                            for (int z2 = 0; z2 < building.getZ2(); z2++) {
-                                if (rgi.mapModule.getCollision(basePos.getX() + z1 + z2, basePos.getY() - z1 + z2) != collision.free) {
-                                    free = false;
-                                    break;
-                                }
-                                if (rgi.mapModule.hasUnitRef(basePos.getX() + z1 + z2, basePos.getY() - z1 + z2)) {
-                                    free = false;
-                                    break;
-                                }
-                            }
-                            if (!free) {
-                                break;
-                            }
-                        }
+                        System.out.println("AddMe: Ask Server if position is free!");
                         // Und... frei?
                         if (free) {
                             // Dort hinstellen
