@@ -119,7 +119,7 @@ public abstract class ServerBehaviour implements Pauseable {
 
         // Ausführen
         try {
-            if (caster.alive) {
+            if (caster.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
                 this.execute();
             }
         } catch (Exception ex) {
