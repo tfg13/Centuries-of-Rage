@@ -38,10 +38,6 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import java.util.Timer;
 import java.util.TimerTask;
-import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourHarvest;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourIdle;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityIntraManager;
@@ -161,15 +157,6 @@ public class ClientGameController implements Runnable {
                 }
             }
 
-        }
-
-
-
-
-        for (Unit unit : unitList) {
-            // Behaviours adden
-            ClientBehaviourIdle idleb = new ClientBehaviourIdle(rgi, unit);
-            unit.addClientBehaviour(idleb);
         }
 
         for (Building building : buildingList) {
