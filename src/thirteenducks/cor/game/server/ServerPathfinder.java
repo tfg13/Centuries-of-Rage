@@ -70,12 +70,12 @@ public class ServerPathfinder {
                 RogP[x][y] = new Position(x, y);
             }
         }
-        start.cost = 0;   //Kosten für das Startfeld (von dem aus berechnet wird) sind natürlich 0
+        start.setCost(0);   //Kosten für das Startfeld (von dem aus berechnet wird) sind natürlich 0
         open.add(start);  //Startfeld in die openlist
         containopen.add(start);
-        ziel.parent = null;    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
+        ziel.setParent(null);    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
 
-        if (rgi.netmap.getCollision(ziel.X, ziel.Y) == collision.blocked || rgi.netmap.checkFieldReservation(ziel.X, ziel.Y)) {
+        if (rgi.netmap.getCollision(ziel.getX(), ziel.getY()) == collision.blocked || rgi.netmap.checkFieldReservation(ziel.getX(), ziel.getY())) {
             if (allowDifferentTarget) {
                 ziel = ziel.aroundMe(1, rgi);
             } else {
@@ -93,7 +93,7 @@ public class ServerPathfinder {
             Position current = (Position) open.remove();		//der Eintrag aus der openlist mit dem niedrigesten F-Wert rausholen und gleich löschen
             containopen.remove(current);
             if (current.equals(ziel)) {	//Abbruch, weil Weg von Start nach Ziel gefunden wurde
-                ziel.parent = current.parent;   //"Vorgängerfeld" von Ziel bekannt
+                ziel.setParent(current.getParent());   //"Vorgängerfeld" von Ziel bekannt
                 break;
             }
 
@@ -106,8 +106,8 @@ public class ServerPathfinder {
                         continue;
                     }
 
-                    int nx = x + current.X;		//x und y Wert fuer aktuelles Nachbarfeld
-                    int ny = y + current.Y;
+                    int nx = x + current.getX();		//x und y Wert fuer aktuelles Nachbarfeld
+                    int ny = y + current.getY();
 
                     if ((nx > 0) && (ny > 0) && (nx < sizeofmapX) && (ny < sizeofmapY)) {
                         if (!rgi.netmap.isGroundCollidingForUnit(nx, ny, playerId)) {		//überprüfen, ob Feld begehbar ist und innerhalb der Map ist
@@ -118,7 +118,7 @@ public class ServerPathfinder {
                                 continue;
                             }
 
-                            if (neighbour.X == current.X || neighbour.Y == current.Y) { //-> diagonal (über die Ecken)
+                            if (neighbour.getX() == current.getX() || neighbour.getY() == current.getY()) { //-> diagonal (über die Ecken)
                                 cost_t = 7; //Kosten für diagonale Bewegung
 
                                 int diax = 0;
@@ -126,16 +126,16 @@ public class ServerPathfinder {
                                 int dia2x = 0;
                                 int dia2y = 0;
 
-                                if (neighbour.X == current.X) {	// Zwischenfelder für horizontale diagonale Bewegung (haha)
-                                    diay = (neighbour.Y + current.Y) / 2;
-                                    dia2y = (neighbour.Y + current.Y) / 2;
-                                    diax = neighbour.X - 1;
-                                    dia2x = neighbour.X + 1;
+                                if (neighbour.getX() == current.getX()) {	// Zwischenfelder für horizontale diagonale Bewegung (haha)
+                                    diay = (neighbour.getY() + current.getY()) / 2;
+                                    dia2y = (neighbour.getY() + current.getY()) / 2;
+                                    diax = neighbour.getX() - 1;
+                                    dia2x = neighbour.getX() + 1;
                                 } else {
-                                    diax = (neighbour.X + current.X) / 2;	// Zwischenfelder für vertikale Bewegung
-                                    dia2x = (neighbour.X + current.X) / 2;
-                                    diay = neighbour.Y - 1;
-                                    dia2y = neighbour.Y + 1;
+                                    diax = (neighbour.getX() + current.getX()) / 2;	// Zwischenfelder für vertikale Bewegung
+                                    dia2x = (neighbour.getX() + current.getX()) / 2;
+                                    diay = neighbour.getY() - 1;
+                                    dia2y = neighbour.getY() + 1;
                                 }
                                 if (rgi.netmap.isGroundCollidingForUnit(diax, diay, playerId) || rgi.netmap.isGroundCollidingForUnit(dia2x, dia2y, playerId)) {
                                     continue;	//abbrechen, wenn Zwischenfelder blockiert sind (-> keine Ecken schneiden)
@@ -147,20 +147,20 @@ public class ServerPathfinder {
 
                             if (containopen.contains(neighbour)) {         //Wenn sich das Feld in der openlist befindet, muss berechnet werden, ob es einen kürzeren Weg gibt
 
-                                if (current.cost + cost_t < neighbour.cost) {		//kürzerer Weg gefunden?
+                                if (current.getCost() + cost_t < neighbour.getCost()) {		//kürzerer Weg gefunden?
 
-                                    neighbour.cost = current.cost + cost_t;         //-> Wegkosten neu berechnen
-                                    neighbour.valF = neighbour.cost + neighbour.heuristic;  //F-Wert, besteht aus Wegkosten vom Start + Luftlinie zum Ziel
-                                    neighbour.parent = current; //aktuelles Feld wird zum Vorgängerfeld
+                                    neighbour.setCost(current.getCost() + cost_t);         //-> Wegkosten neu berechnen
+                                    neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start + Luftlinie zum Ziel
+                                    neighbour.setParent(current); //aktuelles Feld wird zum Vorgängerfeld
                                 }
                             } else {
-                                neighbour.cost = current.cost + cost_t;
-                                neighbour.heuristic = (Math.abs((ziel.X - neighbour.X)) + Math.abs((ziel.Y - neighbour.Y))) * 3;	// geschätzte Distanz zum Ziel
+                                neighbour.setCost(current.getCost() + cost_t);
+                                neighbour.setHeuristic((Math.abs((ziel.getX() - neighbour.getX())) + Math.abs((ziel.getY() - neighbour.getY()))) * 3);	// geschätzte Distanz zum Ziel
                                 //Die Zahl am Ende der Berechnung ist der Aufwand der Wegsuche
                                 //5 ist schnell, 4 normal, 3 dauert lange
 
-                                neighbour.parent = current;						// Parent ist die RogPosition, von dem der aktuelle entdeckt wurde
-                                neighbour.valF = neighbour.cost + neighbour.heuristic;  //F-Wert, besteht aus Wegkosten vom Start aus + Luftlinie zum Ziel
+                                neighbour.setParent(current);						// Parent ist die RogPosition, von dem der aktuelle entdeckt wurde
+                                neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start aus + Luftlinie zum Ziel
                                 open.add(neighbour);    // in openlist hinzufügen
                                 containopen.add(neighbour);
                             }
@@ -170,15 +170,15 @@ public class ServerPathfinder {
             }
         }
 
-        if (ziel.parent == null) {		//kein Weg gefunden
+        if (ziel.getParent() == null) {		//kein Weg gefunden
             return null;
         }
 
         ArrayList<Position> pathrev = new ArrayList();   //Pfad aus parents erstellen, von Ziel nach Start
         Position target = ziel;
         while (!target.equals(start)) {
-            pathrev.add(RogP[target.X][target.Y]);
-            target = target.parent;
+            pathrev.add(RogP[target.getX()][target.getY()]);
+            target = target.getParent();
         }
         pathrev.add(start);
 
