@@ -35,6 +35,7 @@ import java.util.TimerTask;
 import thirteenducks.cor.game.Position;
 
 /**
+ * Hier sollte etwas stehten
  *
  * @author tfg
  */
