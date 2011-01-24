@@ -29,7 +29,6 @@ import thirteenducks.cor.game.client.ClientIALGroup;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.map.CoRMapElement.collision;
-import thirteenducks.cor.game.Unit.orders;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
