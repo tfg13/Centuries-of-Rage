@@ -28,7 +28,6 @@ package thirteenducks.cor.networks.cmd.client;
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
 import thirteenducks.cor.game.Building;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.networks.cmd.ClientCommand;
 
@@ -41,7 +40,7 @@ public class C043_SEND_UNIT_TO_SPECIAL_WAYPOINT extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
-        // Einheit als Startpunkt zu Ressource/Gebäude schicken
+       /* // Einheit als Startpunkt zu Ressource/Gebäude schicken
         // Unit suchen
         Unit unit43 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
         if (unit43 != null) {
@@ -92,5 +91,9 @@ public class C043_SEND_UNIT_TO_SPECIAL_WAYPOINT extends ClientCommand {
         } else {
             System.out.println("FixMe: Unit ID mismatch (cmd43)");
         }
+        * */
+
+
+        System.out.println("AddMe: Send Unit to Special Waypoint?");
     }
 }
