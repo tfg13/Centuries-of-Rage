@@ -68,12 +68,7 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
     @Override
     public void execute() {
         if (!loop.isEmpty()) {
-            // Wenn Gebäude, dann auf Arbeiten setzen
-            try {
-                Building b = (Building) caster;
-                b.isWorking = true;
-            } catch (ClassCastException ex) {
-            }
+            System.out.println("AddMe: Check for W-Status (Server-Recruit-Loop)");
             // Mit der Bauschleife weitermachen
             long now = System.currentTimeMillis();
             int passed = 0;
@@ -90,12 +85,13 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
             this.progress = (float) (passed * 1.0 / duration);
             if (passed > duration) {
                 // Neue Unit Adden
-                Unit unit = rgi.netmap.getDescUnit(caster.playerId, loop.get(0));
+                Unit unit = rgi.netmap.getDescUnit(caster.getPlayerId(), loop.get(0));
                 if (unit != null) {
-                    unit.setPlayerId(caster.playerId);
-		    rgi.serverstats.trackUnitrecruit(unit.playerId);
+                    unit.setPlayerId(caster.getPlayerId());
+		    rgi.serverstats.trackUnitrecruit(unit.getPlayerId());
                     // Auf der Richtigen Seite vom Gebäude spawnen
-                    if (caster.waypoint != null) {
+                    unit.setMainPosition(caster.getSpawnPosition(unit));
+                /*    if (caster.waypoint != null) {
                         try {
                             Building b = (Building) caster;
                             unit.position = b.getNextFreeField(caster.waypoint, rgi);
@@ -103,9 +99,12 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                         }
                     } else {
                         unit.position = caster.position.aroundMe(1, rgi);
-                    }
+                    } */
                     rgi.netmap.addUnit(unit);
-                    if (caster.waypoint != null) {
+                    if (caster.getWaypoint() != null) {
+                        System.out.println("Try move GO to waypoint!");
+                    }
+                  /*  if (caster.waypoint != null) {
                         // Ham wir was besseres zu tun als auf ein leeres Feld rennen (z.B. Ressource oder Gebäude)?
                         if (caster.wayRessource != null) {
                             // Diese Ressource oder eine gleichen Typs abernten
@@ -119,7 +118,7 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                             // Da hin rennen
                             rgi.moveMan.humanSingleMove(unit, caster.waypoint.aroundMe(0, rgi), true);
                         }
-                    }
+                    } */
                 }
                 // Dieses Löschen
                 loop.remove(0);
@@ -128,11 +127,12 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
             }
         } else {
             // Wenn Gebäude, dann auf nicht Arbeiten setzen
-            try {
+           /* try {
                 Building b = (Building) caster;
                 b.isWorking = false;
             } catch (ClassCastException ex) {
-            }
+            } */
+            System.out.println("AddMe: Check for W-Status (Server-Recruit-Loop)");
             this.deactivate();
         }
 
