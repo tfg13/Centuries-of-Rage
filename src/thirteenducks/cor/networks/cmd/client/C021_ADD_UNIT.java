@@ -40,8 +40,7 @@ public class C021_ADD_UNIT extends ClientCommand {
         // Einheit adden
         Unit unit = rgi.mapModule.getDescUnit(rgi.readInt(data, 2), rgi.readInt(data, 1), rgi.game.getOwnPlayer().playerId);
         if (unit != null) {
-            unit.position = rgi.readPosition(data, 2);
-            unit.isCompletelyActivated = false; // PlayerId fehlt noch
+            unit.setMainPosition((rgi.readPosition(data, 2)));
             rgi.mapModule.addUnit(unit);
 
             // Event an KI-Modul weiterleiten:
