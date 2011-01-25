@@ -41,7 +41,7 @@ public class C025_MOVE_SWITCH extends ClientCommand {
         for (int i = 1; i < 3; i++) {
             Position tpos = rgi.readPosition(data, i);
             if (tpos != null) {
-                if (tpos.X == -1 && tpos.Y == -1) {
+                if (tpos.getX() == -1 && tpos.getY() == -1) {
                     // Ende der Übertragung
                     // Loslaufen
                     handler.temp04.switchPath(rgi, handler.temp06);
