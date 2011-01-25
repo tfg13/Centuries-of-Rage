@@ -1101,4 +1101,14 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         }
         return null;
     }
+
+    /**
+     * Findet die Zuordnungsposition eines von diesem GO gespawnten Objekts heraus.
+     * Hauptsächlich zum Rekrutieren.
+     * 
+     * @param obj das Objekt, die Gespawnt werden soll. (Zur Größenbestimmung)
+     * @return Die Position, an der das Object gespawnt werden soll.
+     */
+    public abstract Position getSpawnPosition(GameObject obj);
+
 }
