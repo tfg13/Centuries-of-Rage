@@ -1111,4 +1111,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     public abstract Position getSpawnPosition(GameObject obj);
 
+    /**
+     * @return the waypoint
+     */
+    public Position getWaypoint() {
+        return waypoint;
+    }
+
 }
