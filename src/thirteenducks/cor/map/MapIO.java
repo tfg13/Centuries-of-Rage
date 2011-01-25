@@ -51,9 +51,7 @@ import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.graphics.CoRImage;
 import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
@@ -355,8 +353,6 @@ public class MapIO {
                 theMap.setMapProperty("UNIT_LIST", unitList);
                 ArrayList<Building> buildingList = new ArrayList<Building>();
                 theMap.setMapProperty("BUILDING_LIST", buildingList);
-                ArrayList<Ressource> resList = new ArrayList<Ressource>();
-                theMap.setMapProperty("RES_LIST", resList);
 
 
                 // Jetzt alles einlesen. Als erstes die ground_tex
@@ -411,13 +407,9 @@ public class MapIO {
                     int playerId = Integer.parseInt(unitData[2]);
                     int netId = Integer.parseInt(unitData[3]);
                     Unit unit = null;
-                    try {
-                        unit = descTypeUnit.get(desc).clone(netId);
-                    } catch (CloneNotSupportedException cnse) {
-                        cnse.printStackTrace();
-                    }
+                        unit = (Unit) descTypeUnit.get(desc).getCopy(netId);
                     unit.setPlayerId(playerId);
-                    unit.position = new Position(x, y);
+                    unit.setMainPosition(new Position(x, y));
                     unitList.add(unit);
                 }
 
@@ -432,29 +424,16 @@ public class MapIO {
                     int playerId = Integer.parseInt(unitData[2]);
                     int netId = Integer.parseInt(unitData[3]);
                     Building b = null;
-                    try {
-                        b = descTypeBuilding.get(desc).clone(netId);
-                    } catch (CloneNotSupportedException cnse) {
-                        cnse.printStackTrace();
-                    }
+                        b = (Building) descTypeBuilding.get(desc).getCopy(netId);
                     b.setPlayerId(playerId);
-                    b.position = new Position(x, y);
+                    b.setMainPosition(new Position(x, y));
                     buildingList.add(b);
                 }
 
                 // Gebäude
 
                 for (int i = 1; i <= rS; i++) {
-                    String[] unitData = reader.readLine().split(" ", 4);
-                    int type = Integer.parseInt(unitData[0]);
-                    String pos = unitData[1];
-                    int x = Integer.parseInt(pos.substring(0, pos.indexOf("|")));
-                    int y = Integer.parseInt(pos.substring(pos.indexOf("|") + 1, pos.length()));
-                    int netId = Integer.parseInt(unitData[2]);
-                    String tex = unitData[3];
-                    Ressource r = new thirteenducks.cor.game.Ressource(type, tex, netId);
-                    r.position = new Position(x, y);
-                    resList.add(r);
+                    // Res-List ignorieren, aus Kompatibiltätsgründen
                 }
 
                 // Grenzen der Map mit Kollision und isborder ausstatten
@@ -527,10 +506,9 @@ public class MapIO {
                 BufferedWriter writer = new BufferedWriter(new java.io.OutputStreamWriter(zipOut));
                 ArrayList<Unit> unitList = (ArrayList<Unit>) map.getMapPoperty("UNIT_LIST");
                 ArrayList<Building> buildingList = (ArrayList<Building>) map.getMapPoperty("BUILDING_LIST");
-                ArrayList<Ressource> resList = (ArrayList<Ressource>) map.getMapPoperty("RES_LIST");
                 int nextNetID = Integer.parseInt(map.getMapPoperty("NEXTNETID").toString());
                 // Zuerst ints nach folgender Systax: X Y unitList.size() buildingList.size() resList.size() nextNetID
-                writer.write(map.getMapSizeX() + " " + map.getMapSizeY() + " " + unitList.size() + " " + buildingList.size() + " " + resList.size() + " " + nextNetID);
+                writer.write(map.getMapSizeX() + " " + map.getMapSizeY() + " " + unitList.size() + " " + buildingList.size() + " 0 " + nextNetID);
                 writer.newLine();
                 // Jetzt die Bodentexturen
                 for (int x = 0; x < map.getMapSizeX(); x++) {
@@ -574,17 +552,12 @@ public class MapIO {
                 }
                 // Einheiten
                 for (Unit unit : unitList) {
-                    writer.write(unit.descTypeId + " " + unit.position + " " + unit.playerId + " " + unit.netID);
+                    writer.write(unit.getDescTypeId() + " " + unit.getMainPosition() + " " + unit.getPlayerId() + " " + unit.netID);
                     writer.newLine();
                 }
                 // Gebäude
                 for (Building building : buildingList) {
-                    writer.write(building.descTypeId + " " + building.position + " " + building.playerId + " " + building.netID);
-                    writer.newLine();
-                }
-                // Ressourcen
-                for (Ressource res : resList) {
-                    writer.write(res.getType() + " " + res.position + " " + res.netID + " " + res.getTex());
+                    writer.write(building.getDescTypeId() + " " + building.getMainPosition() + " " + building.getPlayerId() + " " + building.netID);
                     writer.newLine();
                 }
                 // Fertig
