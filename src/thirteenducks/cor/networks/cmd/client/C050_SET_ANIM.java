@@ -46,10 +46,11 @@ public class C050_SET_ANIM extends ClientCommand {
             // Nur Einheiten haben Richtungen:
             Unit unit50 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 2));
             if (unit50 != null) {
-                if (unit50.playerId != rgi.game.getOwnPlayer().playerId) {
-                    if (unit50.anim != null) {
+                if (unit50.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
+                    System.out.println("AddMe: Set direction for Unit");
+                    /* if (unit50.anim != null) {
                         unit50.anim.dir = rgi.readInt(data, 3);
-                    }
+                    } */
                 }
             } else {
                 System.out.println("FixMe: Unit ID mismatch (cmd50-1)");
@@ -59,9 +60,10 @@ public class C050_SET_ANIM extends ClientCommand {
             Building building50 = rgi.mapModule.getBuildingviaID(rgi.readInt(data, 2));
             if (building50 != null) {
                 // Nur fremde
-                if (building50.playerId != rgi.game.getOwnPlayer().playerId) {
+                System.out.println("AddMe: Set anim for Building");
+              /*  if (building50.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
                     building50.isWorking = rgi.readInt(data, 3) == 1;
-                }
+                } */
             } else {
                 System.out.println("FixMe: Building ID mismatch (cmd50-2)");
             }
