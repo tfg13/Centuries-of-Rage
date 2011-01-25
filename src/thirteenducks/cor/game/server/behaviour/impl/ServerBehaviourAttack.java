@@ -41,18 +41,16 @@ import thirteenducks.cor.game.Position;
  */
 public class ServerBehaviourAttack extends ServerBehaviour {
 
-    Unit caster2;
     double lastdistance;
     public static final int maxHuntDistance = 10;
+    private GameObject atkTarget;
     boolean idleMode = true;// Bei Gebäudeangriff:
     boolean useNP = false;
     boolean nPcalced = false;
-    boolean instantAtk = false; // Wird gesetzt, wenn der Cooldown bereits abgelaufen ist, die Einheit aber noch nicht kämpfen konnte. Dann darf die Einheit sofort nach dem Stehenbleiben draufhauen
     Position np;
 
-    public ServerBehaviourAttack(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 2, caster.cooldownmax > 0 ? 1000.0 / caster.cooldownmax : 1, true);
-        caster2 = caster;
+    public ServerBehaviourAttack(ServerCore.InnerServer newinner, GameObject caster) {
+        super(newinner, caster, 2, caster.getFireDelay() > 0 ? 1000.0 / caster.getFireDelay() : 1, true);
     }
 
     @Override
@@ -69,11 +67,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     public void execute() {
         // Draufhauen
         // Echter Angriff
-        final GameObject workingAtk = caster2.attacktarget;
-        if (!caster2.isMoving()) {
-            instantAtk = false;
+        final GameObject workingAtk = atkTarget;
             if (workingAtk != null) {
-                if (workingAtk.alive && !hides(workingAtk) && !rgi.game.areAllies(caster2, workingAtk)) {
+                if (workingAtk.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && !hides(workingAtk) && !rgi.game.areAllies(caster, workingAtk)) {
                     // Nah genug dran?
                     if (useNP && !nPcalced) {
                         refreshNearestBuildingPosition();
@@ -251,10 +247,6 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 // Abschalten
                 this.setIdle(true, true);
             }
-        } else {
-            // Wir laufen, wärend wir hätten Prügeln können
-            instantAtk = true; // Sofortiges Draufhauen nach dem Stehenbleiben erlauben
-        }
 
 
     }
