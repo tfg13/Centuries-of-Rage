@@ -452,6 +452,15 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     }
 
     /**
+     * Löscht das Behaviour sofort aus der Liste.
+     * Das Behaviour wird danach nie wieder ausgeführt.
+     * @param b
+     */
+    public void removeClientBehaviour(ClientBehaviour b) {
+        cbehaviours.remove(b);
+    }
+
+    /**
      * Fügt dieses Behaviour diesem GameObject hinzu
      * @param b
      */
