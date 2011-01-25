@@ -41,7 +41,7 @@ public class C027_SET_WAYPOINT extends ClientCommand {
         // Gebäude suchen
         GameObject go27 = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 1));
         if (go27 != null) {
-            go27.waypoint = rgi.readPosition(data, 2);
+            go27.setWaypoint(rgi.readPosition(data, 2));
         } else {
             System.out.println("FixMe: Object ID mismatch (cmd 27)");
         }
