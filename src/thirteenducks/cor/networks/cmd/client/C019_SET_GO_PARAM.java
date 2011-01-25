@@ -27,9 +27,7 @@ package thirteenducks.cor.networks.cmd.client;
 
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
-import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.networks.cmd.ClientCommand;
 
 /**
@@ -46,21 +44,14 @@ public class C019_SET_GO_PARAM extends ClientCommand {
         GameObject o = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 1));
         if (o != null) {
             int newPlayerId = rgi.readInt(data, 2);
-            if (newPlayerId != o.playerId) {
+            if (newPlayerId != o.getPlayerId()) {
                 o.setPlayerId(newPlayerId);
                 // Nach der playerId-Änderung wird ein Upgrade durchgeführt:
-                o.performUpgrade(rgi, o.descTypeId);
-                if (o.getClass().equals(Building.class)) {
-                    if (!o.ready) {
-                        o.visrange = 1;
-                    }
-                    rgi.rogGraphics.builingsChanged();
-                }
+                o.performUpgrade(rgi, o.getDescTypeId());
+                System.out.println("AddMe: BuildingsChanged may be required + manage sight-distance");
             }
-            o.hitpoints = rgi.readInt(data, 3);
-            if (o.getClass().equals(Unit.class) && !((Unit) o).isCompletelyActivated) {
-                ((Unit) o).isCompletelyActivated = true;
-            }
+            System.out.println("AddMe: Set GO Hitpoints!");
+            //o.hitpoints = rgi.readInt(data, 3);
         } else {
             System.out.println("FixMe: Invalid ID (cmd19)");
         }
