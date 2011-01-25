@@ -47,7 +47,7 @@ public class C036_UPGRADE_TODESC extends ClientCommand {
                 // Self-Upgrade
                 go36.performUpgrade(rgi, rgi.readInt(data, 4));
             } else {
-                rgi.mapModule.manageComplexUpgrades(mode, go36, rgi.readInt(data, 2), rgi.readInt(data, 4), go36.playerId);
+                rgi.mapModule.manageComplexUpgrades(mode, go36, rgi.readInt(data, 2), rgi.readInt(data, 4), go36.getPlayerId());
             }
         } else {
             System.out.println("FixMe: GameObject ID mismatch (cmd36)");
