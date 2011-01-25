@@ -41,9 +41,11 @@ public class C018_ADD_BUILDING extends ClientCommand {
         // Holen:
         Building b = rgi.mapModule.getDescBuilding(rgi.readInt(data, 2), rgi.readInt(data, 1), rgi.game.getOwnPlayer().playerId);
         if (b != null) {
-            b.position = rgi.readPosition(data, 2);
-            b.ready = false;
-            b.hitpoints = b.getMaxhitpoints() / 4;
+            b.setMainPosition(rgi.readPosition(data, 2));
+            System.out.println("AddMe: Set Lifestatus to unborn!");
+            //b.ready = false;
+            System.out.println("AddMe: Set Buildings hitpoints");
+            //b.hitpoints = b.getMaxhitpoints() / 4;
 
             rgi.mapModule.addBuilding(b);
         } else {
