@@ -30,11 +30,11 @@ import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.game.Unit.orders;
 
 /**
  * Das Gebäude bauen Client Behaviour
+ *
+ * Dieses Verhalten lässt ein GameObjekt ein (anderes!) Building aufbauen.
  *
  * ID = 5
  *
@@ -49,13 +49,6 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
 
     @Override
     public void execute() {
-        // Nur für Units:
-        Unit caster2;
-        try {
-            caster2 = (Unit) caster;
-        } catch (java.lang.ClassCastException ex) {
-            return;
-        }
         if (!caster2.isMoving()) {
             // Befindet sich die Einheit unmittelbar neben der Baustelle?
             if (!building.isAroundMe(caster2, rgi)) {
