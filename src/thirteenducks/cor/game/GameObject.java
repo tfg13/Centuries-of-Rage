@@ -1127,4 +1127,11 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         return waypoint;
     }
 
+    /**
+     * Sets the waypoint
+     */
+    public void setWaypoint(Position point) {
+        waypoint = point;
+    }
+
 }
