@@ -58,13 +58,9 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
     public void execute() {
         if (!loop.isEmpty()) {
             // Wenn Gebäude, dann auf Arbeiten setzen
-            try {
-                Building b = (Building) caster;
-                b.isWorking = true;
-                // An die andern Schicken, damit die Animation gesetzt wird.
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 50, 2, b.netID, 1, 0));
-            } catch (ClassCastException ex) {
-            }
+
+            System.out.println("AddMe: Check for work-status! (recr-run)");
+
             // Mit der Bauschleife weitermachen
             long now = System.currentTimeMillis();
             int passed = 0;
@@ -82,7 +78,7 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
             if (passed > duration) {
                 // Fertig
                 // Dieses Löschen
-                if (caster.playerId == rgi.game.getOwnPlayer().playerId) {
+                if (caster.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                 }
                 loop.remove(0);
                 durations.remove(0);
@@ -90,12 +86,7 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
             }
         } else {
             // Wenn Gebäude, dann auf nicht Arbeiten setzen
-            try {
-                Building b = (Building) caster;
-                b.isWorking = false;
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 50, 2, b.netID, 0, 0));
-            } catch (ClassCastException ex) {
-            }
+            System.out.println("AddMe: Check for work-status! (recr-stop)");
             this.deactivate();
         }
     }
@@ -122,11 +113,6 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
                 rgi.game.getOwnPlayer().res4 -= abr.costs[3];
                 rgi.game.getOwnPlayer().res5 -= abr.costs[4];
 
-                // Truppenlimit setzen
-                Unit u = rgi.mapModule.getDescUnit(descid, -1, 0);
-                if (u.limit > 0) {
-                    rgi.game.getOwnPlayer().currentlimit += u.limit;
-                }
                 abr.behaviour = this;
                 rgi.rogGraphics.triggerUpdateHud();
                 break;
@@ -143,12 +129,6 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
                     rgi.game.getOwnPlayer().res3 += abbr.costs[2];
                     rgi.game.getOwnPlayer().res4 += abbr.costs[3];
                     rgi.game.getOwnPlayer().res5 += abbr.costs[4];
-
-                    // Truppenlimit wieder abziehen
-                    Unit ur = rgi.mapModule.getDescUnit(abbr.descTypeId, -1, 0);
-                    if (ur.limit > 0) {
-                        rgi.game.getOwnPlayer().currentlimit -= ur.limit;
-                    }
                 }
         }
     }
@@ -190,22 +170,5 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
             }
         }
         return occ;
-    }
-
-    /**
-     * Truppenlimit freigeben
-     */
-    public void freeLimits() {
-        while (!durations.isEmpty()) {
-            int last = loop.remove(0);
-            durations.remove(0);
-            // Ressourcen gibts nicht zurück - Pech und selber Schuld
-
-            // Truppenlimit wieder abziehen
-            Unit ur = rgi.mapModule.getDescUnit(last, -1, 0);
-            if (ur.limit > 0) {
-                rgi.game.getOwnPlayer().currentlimit -= ur.limit;
-            }
-        }
     }
 }
