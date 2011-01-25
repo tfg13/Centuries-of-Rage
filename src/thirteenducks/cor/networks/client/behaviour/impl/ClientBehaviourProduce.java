@@ -31,7 +31,9 @@ import thirteenducks.cor.game.Building;
 
 /**
  *
+ *
  * @author tfg
+ * @deprecated
  */
 public class ClientBehaviourProduce extends ClientBehaviour {
 
@@ -47,19 +49,19 @@ public class ClientBehaviourProduce extends ClientBehaviour {
     @Override
     public void execute() {
         // Überhaupt was tun?
-        if (caster2.harvRate > 0 && caster2.harvests > 0 && caster2.playerId == rgi.game.getOwnPlayer().playerId) {
+        if (caster2.getHarvRate() > 0 && caster2.getHarvests() > 0 && caster2.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
             // Ernten oder warten?
-            if (caster2.intraUnits.size() > 0) {
+            if (caster2.currentIntra() > 0) {
                 // Ernten
-                int number = caster2.intraUnits.size();
+                int number = caster2.currentIntra();
                 // Mal (Rohstoffe/Sekunde)
-                double add = number * caster2.harvRate + diff; //exakt
-                number = (int) ((number * caster2.harvRate) + diff); // ungefähr
+                double add = number * caster2.getHarvRate() + diff; //exakt
+                number = (int) ((number * caster2.getHarvRate()) + diff); // ungefähr
                 // Unterschied zwischen Soll und tatsächlichem Wert berechnen:
                 diff = add - number; // Diff wird bei den nächsten iteration berücksichtigt
                 // Ernten
-		rgi.clientstats.trackRes(caster2.harvests, number);
-                switch (caster2.harvests) {
+		rgi.clientstats.trackRes(caster2.getHarvests(), number);
+                switch (caster2.getHarvests()) {
                     case 1:
                         rgi.game.getOwnPlayer().res1 += number;
                         break;
