@@ -55,14 +55,14 @@ public class C038_UPGRADE_EPOCHE extends ClientCommand {
                 if (para.modunit) {
                     // Vorhandene Units patchen
                     for (Unit unit38 : rgi.mapModule.unitList) {
-                        if (unit38.descTypeId == para.moddesc && unit38.playerId == playerId) {
+                        if (unit38.getDescTypeId() == para.moddesc && unit38.getPlayerId() == playerId) {
                             unit38.performDeltaUpgrade(rgi, para);
                         }
                     }
                     rgi.game.getPlayer(playerId).descUnit.get(para.moddesc).performDeltaUpgrade(rgi, para);
                 } else {
                     for (Building building38 : rgi.mapModule.buildingList) {
-                        if (building38.descTypeId == para.moddesc && building38.playerId == playerId) {
+                        if (building38.getDescTypeId() == para.moddesc && building38.getPlayerId() == playerId) {
                             building38.performDeltaUpgrade(rgi, para);
                         }
                     }
