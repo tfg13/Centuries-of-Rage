@@ -139,6 +139,14 @@ public abstract class Building extends GameObject {
         return maxIntra - intraUnits.size();
     }
 
+    /**
+     * Liefert die Anzahl an Einheiten, die sich derzeit in diesem Gebäude befinden.
+     * @return die Anzahl an Einheiten, die sich derzeit in diesem Gebäude befinden.
+     */
+    public int currentIntra() {
+        return intraUnits.size();
+    }
+
     public void addIntra(Unit unit, ServerCore.InnerServer inner) {
        /* // Reinjumpen lassen
         intraUnits.add(unit);
@@ -294,5 +302,19 @@ public abstract class Building extends GameObject {
             this.damageWhileContruction += damage;
         }
         rgi.rogGraphics.content.fireMan.buildingHit(this, rgi.rogGraphics.content.epoche);
+    }
+
+    /**
+     * @return the harvests
+     */
+    public int getHarvests() {
+        return harvests;
+    }
+
+    /**
+     * @return the harvRate
+     */
+    public double getHarvRate() {
+        return harvRate;
     }
 }
