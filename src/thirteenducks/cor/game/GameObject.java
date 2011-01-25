@@ -437,6 +437,21 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     }
 
     /**
+     * Sucht ein Behaviour anhand dessen Id.
+     * Liefert null, fall es nicht existiert.
+     * @param id Die Id des gesuchten Behaviours
+     * @return
+     */
+    public ClientBehaviour getClientBehaviour(int id) {
+        for (ClientBehaviour b : this.cbehaviours) {
+            if (b.getId() == id) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Fügt dieses Behaviour diesem GameObject hinzu
      * @param b
      */
