@@ -43,11 +43,7 @@ public class C023_INIT_MOVE extends ClientCommand {
         if (handler.temp04 != null) {
             handler.temp05 = rgi.readPosition(data, 2);
             handler.temp06 = new ArrayList<Position>();
-            if (!handler.temp04.jumpJustSet) {
-                handler.temp04.jumpTo = 0;
-            } else {
-                handler.temp04.jumpJustSet = false;
-            }
+            System.out.println("AddMe: Check for Jumps");
         } else {
             System.out.println("FixMe: Unit ID mismatch (cmd23)");
         }
