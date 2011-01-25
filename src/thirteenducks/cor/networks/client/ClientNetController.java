@@ -25,12 +25,9 @@
  */
 package thirteenducks.cor.networks.client;
 
-import thirteenducks.cor.game.ability.AbilityUpgrade.upgradeaffects;
-import thirteenducks.cor.game.Unit.orders;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import thirteenducks.cor.game.client.ClientCore;
@@ -339,7 +336,7 @@ public class ClientNetController {
      */
     public synchronized void broadcastMove(int netID, Position target, boolean allowDifferentTarget) {
         // Kommando, netId & Ziel schicken
-        this.broadcastDATA(rgi.packetFactory((byte) 23, netID, allowDifferentTarget ? 0 : 1, target.X, target.Y));
+        this.broadcastDATA(rgi.packetFactory((byte) 23, netID, allowDifferentTarget ? 0 : 1, target.getX(), target.getY()));
     }
 
     /**
