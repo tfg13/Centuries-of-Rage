@@ -43,13 +43,13 @@ public class C022_RECRUIT_DEL extends ClientCommand {
         // Behaviour Nr 6 - Rekrutieren
         try {
             GameObject caster = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 1));
-            if (caster.playerId == rgi.game.getOwnPlayer().playerId) {
+            if (caster.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                 // Behaviour ID 6
-                ClientBehaviour be = caster.getbehaviourC(6);
+                ClientBehaviour be = caster.getClientBehaviour(6);
                 if (be == null) {
                     // Neu anlegen
                     be = new ClientBehaviourRecruit(rgi, caster, 20);
-                    caster.cbehaviours.add(be);
+                    caster.addClientBehaviour(be);
                 }
                 be.gotSignal(data);
             }
