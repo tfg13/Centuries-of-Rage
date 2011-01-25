@@ -46,7 +46,7 @@ public class C037_UPGRADE_DELTA extends ClientCommand {
         GameObject go37 = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 1));
         if (go37 != null) {
             // Ability suchen
-            AbilityUpgrade up = (AbilityUpgrade) rgi.game.getPlayer(go37.playerId).clientDescAbilities.get(rgi.readInt(data, 2));
+            AbilityUpgrade up = (AbilityUpgrade) rgi.game.getPlayer(go37.getPlayerId()).clientDescAbilities.get(rgi.readInt(data, 2));
             if (up != null) {
                 // Jetzt performen:
                 if (up.affects == upgradeaffects.self) {
@@ -54,41 +54,41 @@ public class C037_UPGRADE_DELTA extends ClientCommand {
                 } else if (up.affects == upgradeaffects.old) {
                     if (up.descTypeIdU != 0) {
                         for (Unit unit37 : rgi.mapModule.unitList) {
-                            if (unit37.descTypeId == up.descTypeIdU && unit37.playerId == go37.playerId) {
+                            if (unit37.getDescTypeId() == up.descTypeIdU && unit37.getPlayerId() == go37.getPlayerId()) {
                                 unit37.performDeltaUpgrade(rgi, up);
                             }
                         }
                     } else {
                         for (Building building37 : rgi.mapModule.buildingList) {
-                            if (building37.descTypeId == up.descTypeIdB && building37.playerId == go37.playerId) {
+                            if (building37.getDescTypeId() == up.descTypeIdB && building37.getPlayerId() == go37.getPlayerId()) {
                                 building37.performDeltaUpgrade(rgi, up);
                             }
                         }
                     }
                 } else if (up.affects == upgradeaffects.fresh) {
                     if (up.descTypeIdU != 0) {
-                        rgi.game.getPlayer(go37.playerId).descUnit.get(up.descTypeIdU).performDeltaUpgrade(rgi, up);
+                        rgi.game.getPlayer(go37.getPlayerId()).descUnit.get(up.descTypeIdU).performDeltaUpgrade(rgi, up);
                     } else {
-                        rgi.game.getPlayer(go37.playerId).descBuilding.get(up.descTypeIdB).performDeltaUpgrade(rgi, up);
+                        rgi.game.getPlayer(go37.getPlayerId()).descBuilding.get(up.descTypeIdB).performDeltaUpgrade(rgi, up);
                     }
                 } else if (up.affects == upgradeaffects.all) {
                     if (up.descTypeIdU != 0) {
                         for (Unit unit37 : rgi.mapModule.unitList) {
-                            if (unit37.descTypeId == up.descTypeIdU && unit37.playerId == go37.playerId) {
+                            if (unit37.getDescTypeId() == up.descTypeIdU && unit37.getPlayerId() == go37.getPlayerId()) {
                                 unit37.performDeltaUpgrade(rgi, up);
                             }
                         }
                     } else {
                         for (Building building37 : rgi.mapModule.buildingList) {
-                            if (building37.descTypeId == up.descTypeIdB && building37.playerId == go37.playerId) {
+                            if (building37.getDescTypeId() == up.descTypeIdB && building37.getPlayerId() == go37.getPlayerId()) {
                                 building37.performDeltaUpgrade(rgi, up);
                             }
                         }
                     }
                     if (up.descTypeIdU != 0) {
-                        rgi.game.getPlayer(go37.playerId).descUnit.get(up.descTypeIdU).performDeltaUpgrade(rgi, up);
+                        rgi.game.getPlayer(go37.getPlayerId()).descUnit.get(up.descTypeIdU).performDeltaUpgrade(rgi, up);
                     } else {
-                        rgi.game.getPlayer(go37.playerId).descBuilding.get(up.descTypeIdB).performDeltaUpgrade(rgi, up);
+                        rgi.game.getPlayer(go37.getPlayerId()).descBuilding.get(up.descTypeIdB).performDeltaUpgrade(rgi, up);
                     }
                 }
             } else {
