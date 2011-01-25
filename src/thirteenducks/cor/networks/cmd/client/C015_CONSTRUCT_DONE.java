@@ -44,11 +44,11 @@ public class C015_CONSTRUCT_DONE extends ClientCommand {
         try {
             Unit unit = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
             // Behaviour ID 5
-            ClientBehaviour be = unit.getbehaviourC(5);
+            ClientBehaviour be = unit.getClientBehaviour(5);
             if (be == null) {
                 // Neues Anlegen
                 be = new ClientBehaviourConstruct(rgi, unit, 50, false);
-                unit.cbehaviours.add(be);
+                unit.addClientBehaviour(be);
             }
             ClientBehaviourConstruct con = (ClientBehaviourConstruct)be;
 
