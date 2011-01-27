@@ -28,7 +28,6 @@ package thirteenducks.cor.graphics.input;
 //import elementcorp.rog.RogMapElement.collision;
 import thirteenducks.cor.graphics.CoreGraphics;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.ability.AbilityBuild;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
@@ -42,7 +41,6 @@ import java.util.ArrayList;
 import org.newdawn.slick.*;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.Pauseable;
-import thirteenducks.cor.game.Unit.actions;
 
 /**
  *
@@ -310,7 +308,7 @@ public class CoRInput implements Pauseable {
                                         // Selektion ist an, jetzt abschalten und eingeschlossene Einheiten selektieren
                                         if (!shiftDown) {
                                             for (int i = 0; i < selected.size(); i++) {
-                                                selected.get(i).isSelected = false;
+                                                selected.get(i).setSelected(false);
                                             }
                                             selected.clear();
                                         }
@@ -318,8 +316,8 @@ public class CoRInput implements Pauseable {
                                         if (selectedUnits != null) {
                                             for (int i = 0; i < selectedUnits.size(); i++) {
                                                 Unit unit = selectedUnits.get(i);
-                                                if (unit.playerId == rgi.game.getOwnPlayer().playerId) {
-                                                    unit.isSelected = true;
+                                                if (unit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
+                                                    unit.setSelected(false);
                                                     selected.add(unit);
                                                 }
                                             }
@@ -455,22 +453,8 @@ public class CoRInput implements Pauseable {
                                 manageSavedSel(9, ctrlDown);
                                 break;
                             case Input.KEY_COMMA:
-                                // Arbeitslose Einheit anwählen:
-                                for (GameObject obj : selected) {
-                                    obj.isSelected = false;
-                                }
-                                selected.clear();
-                                for(Unit u : rgi.mapModule.unitList)
-                                {
-                                    if(u.playerId == rgi.game.getOwnPlayer().playerId && u.action == actions.nothing && u.canHarvest)
-                                    {
-                                        selected.add(u);
-                                        u.isSelected = true;
-                                        break;
-                                    }
-                                }
+                                System.out.println("AddMe: Reimplement select workless workers!");
                                 break;
-
                         }
                     }
                 }
@@ -686,17 +670,17 @@ public class CoRInput implements Pauseable {
                 if (!selected.isEmpty()) {
                     if (selected.get(0) instanceof Unit) {
                         Unit u = (Unit) selected.get(0);
-                        rgi.rogGraphics.jumpTo(u.position.X - (rgi.rogGraphics.content.viewX / 2), u.position.Y - (rgi.rogGraphics.content.viewY / 2));
+                        rgi.rogGraphics.jumpTo(u.getMainPosition().getX() - (rgi.rogGraphics.content.viewX / 2), u.getMainPosition().getY() - (rgi.rogGraphics.content.viewY / 2));
                     } else {
                         Building b = (Building) selected.get(0);
-                        rgi.rogGraphics.jumpTo((b.position.X + 6) - (rgi.rogGraphics.content.viewX / 2), b.position.Y - (rgi.rogGraphics.content.viewY / 2));
+                        rgi.rogGraphics.jumpTo((b.getMainPosition().getX() + 6) - (rgi.rogGraphics.content.viewX / 2), b.getMainPosition().getY() - (rgi.rogGraphics.content.viewY / 2));
                     }
                 }
             } else {
                 // Alle momentan selektierten Abwählen (falls nicht shift gedrückt wurde)
                 if (!shiftDown) {
                     for (GameObject obj : selected) {
-                        obj.isSelected = false;
+                        obj.setSelected(false);
                     }
                     selected.clear();
                 }
@@ -705,8 +689,8 @@ public class CoRInput implements Pauseable {
                 if (list != null) {
                     for (GameObject obj : list) {
                         // Gibts die noch?
-                        if (obj.alive && !selected.contains(obj)) {
-                            obj.isSelected = true;
+                        if (obj.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && !selected.contains(obj)) {
+                            obj.setSelected(true);
                             selected.add(obj);
                         }
                     }
@@ -731,11 +715,6 @@ public class CoRInput implements Pauseable {
             if ((selField.width + selField.height) % 2 == 1) {
                 selField.height--;
             }
-            // Dahin laufen lassen
-            // Die Positionen der Einheiten freimachen, für Wegfindung, und wenn sie sich bewegen sind die felder eh frei
-            for (int a = 0; a < selected.size(); a++) {
-                rgi.mapModule.setCollision(selected.get(a).position, collision.free);
-            }
 
             for (int i = 0; i < selected.size(); i++) {
                 Unit tmpUnit = (Unit) selected.get(i);
@@ -758,17 +737,17 @@ public class CoRInput implements Pauseable {
         // Wenn keine Einheit angeklickt wurde alle Einheiten abwählen:
         if (rUnit == null) {
             for (int i = 0; i < selected.size(); i++) {
-                selected.get(i).isSelected = false;
+                selected.get(i).setSelected(false);
             }
             selected.clear();
 
 
             Building rBuilding = identifyBuilding(selField.width, selField.height);
             if (rBuilding != null) {
-                if (rBuilding.playerId == rgi.game.getOwnPlayer().playerId) {
+                if (rBuilding.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                     // Gebäude auswählen
                     selected.add(rBuilding);
-                    rBuilding.isSelected = true;
+                    rBuilding.setSelected(true);
                 } else {
                     // Im FogOfWar?
                     if (rgi.rogGraphics.content.fowmap[selField.width][selField.height] > 1) { // Es muss sichtbar sein, erkundet reicht nicht
@@ -777,21 +756,14 @@ public class CoRInput implements Pauseable {
                     }
                 }
             }
-            Ressource rRes = identifyRessource(selField.width, selField.height);
-            if (rRes != null) {
-                // Im FogOfWar?
-                if (rgi.rogGraphics.content.fowmap[rRes.position.X][rRes.position.Y] > 1) { // Es muss sichtbar sein, erkundet reicht nicht
-                    rgi.rogGraphics.triggerTempStatus(rRes);
-                }
-            }
         } else {
             //Wenn shift nicht gedrücekt ist Alle Einheiten abwählen :
             if (!shiftDown) {
                 for (int i = 0; i < selected.size(); i++) {
-                    selected.get(i).isSelected = false;
+                    selected.get(i).setSelected(false);
                 }
                 selected.clear();
-                if (rUnit.playerId != rgi.game.getOwnPlayer().playerId) {
+                if (rUnit.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
                     rgi.rogGraphics.triggerTempStatus(rUnit);
                 }
             }
@@ -799,11 +771,11 @@ public class CoRInput implements Pauseable {
             if (System.currentTimeMillis() - klickTime <= CoRInput.doubleKlickDelay) {
                 // Es ist ein doppelklick (der 2. Klick)
                 // Alle sichtbaren Einheiten gleichen Typs selektieren
-                if (rUnit.playerId == rgi.game.getOwnPlayer().playerId) {
+                if (rUnit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                     for (int i = 0; i < rgi.mapModule.unitList.size(); i++) {
                         Unit unit = rgi.mapModule.unitList.get(i);
-                        if (rgi.rogGraphics.isInSight(unit.position.X, unit.position.Y) && unit.playerId == rUnit.playerId && unit.descTypeId == rUnit.descTypeId && unit.alive) {
-                            unit.isSelected = true;
+                        if (rgi.rogGraphics.isInSight(unit.getMainPosition().getX(), unit.getMainPosition().getY()) && unit.getPlayerId() == rUnit.getPlayerId() && unit.getDescTypeId() == rUnit.getDescTypeId() && unit.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
+                            unit.setSelected(true);
                             selected.add(unit);
                         }
                     }
@@ -811,9 +783,9 @@ public class CoRInput implements Pauseable {
             } else {
                 // Normaler - "erster" Klick
                 // Die angeklickte Einheit zur Auswahl hinzufügen:
-                if (rUnit.playerId == rgi.game.getOwnPlayer().playerId) {
+                if (rUnit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                     selected.add(rUnit);
-                    rUnit.isSelected = true;
+                    rUnit.setSelected(shiftDown);
                 }
             }
             klickTime = System.currentTimeMillis();
@@ -835,9 +807,8 @@ public class CoRInput implements Pauseable {
             final Dimension selField = graphics.content.getGameSelectedField(x, y);
             final Unit selUnit = graphics.content.identifyUnit(x, y);
             final Building selBuilding = graphics.content.identifyBuilding(selField.width, selField.height);
-            final Ressource selRessource = graphics.content.identifyRessource(selField.width, selField.height);
 
-            final int playerId = selected.get(0).playerId;
+            final int playerId = selected.get(0).getPlayerId();
 
             // Ganz unbekannt:
             final boolean clickedInBlack = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 1);
@@ -858,7 +829,7 @@ public class CoRInput implements Pauseable {
 
                             // Unit selektiert
 
-                            if (selUnit != null && selUnit.playerId != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId)) && !clickedInKnown) { // Man kann Feinde im erkundeten nicht angereifen
+                            if (selUnit != null && selUnit.getPlayerId() != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId)) && !clickedInKnown) { // Man kann Feinde im erkundeten nicht angereifen
 
                                 // Angreifen - Einzeln?
                                 if (selected.size() == 1) {
@@ -898,13 +869,13 @@ public class CoRInput implements Pauseable {
                                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
                                     }
                                 }
-                            } else if (selBuilding != null && selBuilding.playerId == playerId && !selBuilding.ready && !selBuilding.isbuilt) {
+                            } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
                                 // Gebäude - gleicher Spieler : Bauen
                                 Unit unit = (Unit) selected.get(0);
                                 // Wenn noch keiner da dran rumbaut:
-                                if (!selBuilding.isbuilt) {
+                                System.out.println("AddMe: Check for other builders!");
                                     // Kann die Einheit das?
-                                    AbilityBuild ro = unit.getBuildAbility(selBuilding.descTypeId);
+                                    AbilityBuild ro = unit.getBuildAbility(selBuilding.getDescTypeId());
                                     if (ro != null) {
                                         // Ja, geht.
                                         //unit.moveToBuilding(rBuilding, rgi);
@@ -913,8 +884,7 @@ public class CoRInput implements Pauseable {
                                         // Signal senden
                                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, selBuilding.netID, ro.duration, 0));
                                     }
-                                }
-                            } else if (selBuilding != null && selBuilding.playerId == playerId && selBuilding.ready) {
+                            } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.ready) {
                                 // Gebäude - gleicher Spieler : Betreten
                                 // So viele Einheiten reinschicken, wie noch Platz frei ist.
                                 int searchCount = 0;
