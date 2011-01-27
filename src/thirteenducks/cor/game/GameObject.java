@@ -1134,4 +1134,18 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         waypoint = point;
     }
 
+    /**
+     * @return the isSelected
+     */
+    public boolean isIsSelected() {
+        return isSelected;
+    }
+
+    /**
+     * @param isSelected the isSelected to set
+     */
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
 }
