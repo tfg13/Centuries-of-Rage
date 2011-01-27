@@ -48,6 +48,7 @@ import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.graphics.Sprite;
+import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.map.MapIO;
 
 /**
@@ -1329,7 +1330,7 @@ public class ClientMapModule {
      * Mischungen oder mehrerer Gebäude sind nicht zulässig!
      * @param selected
      */
-    public void deleteSelected(ArrayList<GameObject> selected) {
+    public void deleteSelected(List<InteractableGameElement> selected) {
         // Löscht alle derzeit selektierten Einheiten / das derzeit selektierte Gebäude
         if (!selected.isEmpty()) {
             if (selected.get(0).getClass().equals(Unit.class)) {

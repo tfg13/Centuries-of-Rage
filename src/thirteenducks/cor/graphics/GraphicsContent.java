@@ -47,8 +47,8 @@ import thirteenducks.cor.game.ability.AbilityUpgrade;
 import thirteenducks.cor.tools.mapeditor.MapEditorCursor;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.game.Unit;
+import thirteenducks.cor.graphics.input.InteractableGameElement;
 
 @SuppressWarnings("CallToThreadDumpStack")
 public class GraphicsContent extends BasicGame {
@@ -91,8 +91,7 @@ public class GraphicsContent extends BasicGame {
     boolean useAntialising = false; // Kantenglättung, normalerweise AUS // NUR IM NORMALEN RENDERMODE
     java.util.List<Unit> unitList;
     java.util.List<Building> buildingList;
-    java.util.List<Ressource> resList; // Ressourcenliste
-    public Vector<GraphicsRenderable> allList;
+    public List<Sprite> allList;
     public ArrayList<GameObject> selectedObjects;
     boolean newMode = true; // Units in Liste statt als Textur
     ArrayList<Position> wayPath; // Ein weg
@@ -3452,15 +3451,6 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public Ressource identifyRessource(int sX, int sY) {
-        // Sucht Ressoucen via BRSel
-        try {
-            return rgi.mapModule.getRessourceviaID(brSel[sX][sY]);
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     public void enableWayPointHighlighting(ArrayList<Position> path) {
         // Zeigt den Path an
         wayPath = path;
@@ -3614,7 +3604,7 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public void calcSelClicked(final int button, final int x, final int y, int clickCount, ArrayList<GameObject> list, boolean select) {
+    public void calcSelClicked(final int button, final int x, final int y, int clickCount, List<InteractableGameElement> list, boolean select) {
         // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
         int kX = x;
         int kY = y;

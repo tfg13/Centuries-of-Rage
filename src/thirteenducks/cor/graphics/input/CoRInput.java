@@ -48,27 +48,68 @@ import thirteenducks.cor.game.Pauseable;
  *  Das Inputmodul
  */
 public class CoRInput implements Pauseable {
-
+    /**
+     * Veraltete Referenz auf das Grafikmodul
+     * @deprecated
+     */
     private CoreGraphics graphics;
+    /**
+     * Referenz auf den CoR-Kern, wird benötigt um die Funktionen desselben aufzurufen. Eher Pfusch.
+     */
     private ClientCore.InnerClient rgi;
-    public ArrayList<GameObject> selected;         //Ausgewählte Einheiten
-    boolean debugPathfinder = false;                  // Spezieller Modus, um an der Wegfindung zu arbeiten - Zeigt bei allen laufenden Wegen immer die aktuelle open und closedlist dazu.
-    private CoRInputMode specialMode = null;          // Der derzeitige Spezielle Selektionsmodus, nomalerweise null.
-    boolean catchMouse = true;
-    org.newdawn.slick.Input input;
-    public boolean shiftDown = false;
-    boolean ctrlDown = false;
+    /**
+     * Alle derzeit selektierten IGE's.
+     */
+    private ArrayList<InteractableGameElement> selected;
+    /**
+     * Alle derzeit anklickbaren IGE's
+     */
+    private ArrayList<InteractableGameElement> igeList;
+    /**
+     * Ein anderer Eingabemodus. Kann durch einen Aufruf gesetzt werden, dann kann sich das Inputmodul kurzzeitig
+     * komplett anders verhalten, was zusätzliche Eingaben ermöglicht.
+     */
+    private CoRInputMode specialMode = null;
+    /**
+     * Das Input-Subsystem
+     */
+    private org.newdawn.slick.Input input;
+    /**
+     * True, während die shift-Taste (umschalt) gedrückt ist.
+     */
+    private boolean shiftDown = false;
+    /**
+     * True, während die ctrl-Taste (Strg) gedrückt ist.
+     */
+    private boolean ctrlDown = false;
+    /**
+     * Veralteter Scroll-Mechanismus, PFUSCH!
+     * @deprecated
+     */
     public boolean[] scroll;
-    boolean stopKeyboard = false; // Verbietet fast alle Tastaturaktionen, außer Scollen, Debug und beenden (ressourencheat ist verboten)
-    public boolean chatMode = false;     // Aktiviert den Chatmodus, fast alle Tastatureingaben werden an den Chat weitergeleitet.
-    GameObject[][] savedSelections; // Gespeicherte Selektion (0-9)
-    long lastSavedKlick = 0;
-    int lastSavedRead = -1;
+    /**
+     * Chatmodus, der die meisten Tastatureingaben an den Chat weiterreicht.
+     * Auch PFUSCH, sollte mit InputModes gemacht werden.
+     * @deprecated
+     */
+    public boolean chatMode = false;
+    /**
+     * Die auf den Nummerntasten 0-9 speicherbaren Belegungen
+     */
+    private InteractableGameElement[][] savedSelections; // Gespeicherte Selektion (0-9)
+    /**
+     * Der Zeitpunkt, zu dem zuletzt eine savedSelection aufgerufen wurde. Zur Doppelklick-Erkennung
+     */
+    private long lastSavedKlick = 0;
+    /**
+     * Die zuletzt aufgerufene savedSelection. Für Doppelklick-Erkennung
+     */
+    private int lastSavedRead = -1;
     /**
      * Wird bei jedem normalen Linksklick auf Einheiten gesetzt.
      * Dient zur Doppelklick-Selektion
      */
-    long klickTime = 0;
+    private long klickTime = 0;
     /**
      * Die Zeit, die maximal zwischen 2 Klicks vergehen darf,
      * damit es noch ein Doppelklick ist.
@@ -76,11 +117,6 @@ public class CoRInput implements Pauseable {
     public static final int doubleKlickDelay = 400;
 
     public void initAsSub(CoreGraphics rg) {
-
-        String opt = (String) rgi.configs.get("debugPathfinder");
-        if (opt != null && opt.equals("true")) {
-            debugPathfinder = true;
-        }
         graphics = rg;
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
@@ -159,6 +195,7 @@ public class CoRInput implements Pauseable {
             public void inputEnded() {
             }
 
+            @Override
             public void mouseDragged(int oldx, int oldy, int newx, int newy) {
                 // Position markieren
                 graphics.content.mouseX = newx;
@@ -168,6 +205,7 @@ public class CoRInput implements Pauseable {
                 }
             }
 
+            @Override
             public void inputStarted() {
             }
         });
@@ -377,12 +415,14 @@ public class CoRInput implements Pauseable {
                 return true;
             }
 
+            @Override
             public void mouseDragged(int i, int i1, int newx, int newy) {
                 // Position markieren
                 graphics.content.mouseX = newx;
                 graphics.content.mouseY = newy;
             }
 
+            @Override
             public void inputStarted() {
             }
 
@@ -475,10 +515,7 @@ public class CoRInput implements Pauseable {
                                 break;
                             case Input.KEY_P:
                             case Input.KEY_PAUSE:
-                                // Pause umschalten
-                                if (!stopKeyboard) {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 6, 0, 0, 0, 0));
-                                }
+                                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 6, 0, 0, 0, 0));
                                 break;
                             case Input.KEY_F10:
                                 // Ende
@@ -500,9 +537,7 @@ public class CoRInput implements Pauseable {
                                 break;
                             case Input.KEY_ESCAPE:
                                 // Speziellen Inputmodus verlassen
-                                if (!stopKeyboard) {
                                     CoRInput.this.removeSpecialMode();
-                                }
                                 break;
                             case Input.KEY_F2:
                                 // Kollisionsmodus
@@ -535,16 +570,13 @@ public class CoRInput implements Pauseable {
                             case Input.KEY_F6:
                                 // FoW abschalten
                                 rgi.netctrl.broadcastString("F6", (byte) 44);
-                                if (!stopKeyboard) {
                                     if (rgi.isInDebugMode()) {
                                         rgi.rogGraphics.disableFoW();
                                     }
-                                }
                                 break;
                             case Input.KEY_F7:
                                 // Ressourcen herbeicheaten
                                 rgi.netctrl.broadcastString("F7", (byte) 44);
-                                if (!stopKeyboard) {
                                     if (rgi.isInDebugMode()) {
                                         NetPlayer player = rgi.game.getOwnPlayer();
                                         player.res1 += 1000;
@@ -553,7 +585,6 @@ public class CoRInput implements Pauseable {
                                         player.res4 += 1000;
                                         player.res5 += 1000;
                                     }
-                                }
                                 break;
                             case Input.KEY_F8:
                                 // Einheitenverhalten-Debugmodus
@@ -581,11 +612,9 @@ public class CoRInput implements Pauseable {
                                 scroll[3] = false;
                                 break;
                             case Input.KEY_DELETE:
-                                if (!stopKeyboard) {
                                     // Alle derzeit selektierten Einheiten löschen
                                     rgi.mapModule.deleteSelected(selected);
                                     break;
-                                }
                                 break;
                             case Input.KEY_T:
                                 rgi.teamSel.toggle();
@@ -644,6 +673,7 @@ public class CoRInput implements Pauseable {
                 return true;
             }
 
+            @Override
             public void inputStarted() {
             }
 
@@ -1142,13 +1172,10 @@ public class CoRInput implements Pauseable {
 
     @Override
     public void pause() {
-        // Maus fangen aus.
-        this.catchMouse = false;
     }
 
     @Override
     public void unpause() {
         this.removeSpecialMode();
-        this.catchMouse = true;
     }
 }
