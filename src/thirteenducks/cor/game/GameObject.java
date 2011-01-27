@@ -767,7 +767,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     }
 
     /**
-     * Sucht eine Ability Anhand ihrere Eigenen DescTypeId.
+     * Sucht eine Ability Anhand ihrere ability-Id.
      * Findet nur Abilitys, die auch eine haben, also zum beispiel nicht den HuntSelector!
      *
      *
