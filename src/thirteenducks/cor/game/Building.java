@@ -301,7 +301,6 @@ public abstract class Building extends GameObject {
         if (getLifeStatus() == GameObject.LIFESTATUS_UNBORN) {
             this.damageWhileContruction += damage;
         }
-        rgi.rogGraphics.content.fireMan.buildingHit(this, rgi.rogGraphics.content.epoche);
     }
 
     /**
