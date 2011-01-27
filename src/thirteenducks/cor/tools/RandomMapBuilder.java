@@ -33,14 +33,10 @@ import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.map.CoRMapElement.collision;
-import java.io.*;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import thirteenducks.cor.graphics.BuildingAnimator;
 import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.map.MapIO;
 
@@ -49,7 +45,6 @@ public class RandomMapBuilder {
     public HashMap<Integer, Unit> descUnit;
     public HashMap<Integer, Building> descBuilding;
     CoRMap RandomRogMap;
-    ArrayList<Ressource> resList;
     ArrayList<Building> buildingList;
     ArrayList<Unit> unitList;
     int nextNetID = 1;
@@ -148,7 +143,7 @@ public class RandomMapBuilder {
             zAlles(WATERTEX);
             for (int i = 0; i < (15 + (PlayerNumber + Size) * 1.7); i++) {
                 Position alpha = RandPunkt();
-                zFeld(alpha.X, alpha.Y, LANDTEX);
+                zFeld(alpha.getX(), alpha.getY(), LANDTEX);
                 zBreit(LANDTEX, true);
             }
             zWasserRand(5);
@@ -180,29 +175,29 @@ public class RandomMapBuilder {
 
             //Flüsse:
             Position alpha = RandPunkt();
-            alpha.X = 0;
+            alpha.setX(0);
 
             Position beta = RandPunkt();
             double RndCoD = Math.random() * 2;
             byte RndCo = (byte) RndCoD;
             if (RndCo == 0) {
-                beta.X = sizeX;
+                beta.setX(sizeX);
             } else {
-                beta.Y = sizeY - 1;
-                if (beta.X < sizeX * 0.4) {
-                    beta.X += ((sizeX - 1) / 2);
+                beta.setY(sizeY - 1);
+                if (beta.getX() < sizeX * 0.4) {
+                    beta.setX(beta.getX() + ((sizeX - 1) / 2));
                     if (sizeX / 2 % 2 != 0) {
-                        beta.X += 1;
+                        beta.setX(beta.getX() + 1);
                     }
                 }
             }
 
             Position delta = RandPunkt();
-            delta.Y = 0;
+            delta.setY(0);
 
-            Position gamma = new Position((alpha.X + beta.X) / 2, (alpha.Y + beta.Y) / 2);
-            if (gamma.X % 2 != gamma.Y % 2) {
-                gamma.X++;
+            Position gamma = new Position((alpha.getX() + beta.getX()) / 2, (alpha.getY() + beta.getY()) / 2);
+            if (gamma.getX() % 2 != gamma.getY() % 2) {
+                gamma.setX(gamma.getX() + 1);
             }
 
             zGerade(alpha, gamma);
@@ -237,21 +232,16 @@ public class RandomMapBuilder {
             buildingList.add(StartG.get(i)); //Startgebäude setzen
         }
 
-        ArrayList<Ressource> RessourcenL = sRessourcen(StartG, PlayerNumber, Theme); //Ressourcen suchen
-        for (int i = 0; i < RessourcenL.size(); i++) {
-            resList.add(RessourcenL.get(i)); //Ressourcen setzen
-        }
-
         for (int v = 0; v < Reserviert.size(); v++) { //Reservierte Felder freigeben
             // Nur ändern, wenn vorher kein land da war:
-            if (workArray[Reserviert.get(v).X][Reserviert.get(v).Y].getTex() < 0) {
-                workArray[Reserviert.get(v).X][Reserviert.get(v).Y].setTex(LANDTEX);
+            if (workArray[Reserviert.get(v).getX()][Reserviert.get(v).getY()].getTex() < 0) {
+                workArray[Reserviert.get(v).getX()][Reserviert.get(v).getY()].setTex(LANDTEX);
             }
-            RandomRogMap.visMap[Reserviert.get(v).X][Reserviert.get(v).Y].setCollision(collision.free);
+            RandomRogMap.visMap[Reserviert.get(v).getX()][Reserviert.get(v).getY()].setCollision(collision.free);
         }
 
         for (int v = 0; v < Bruecke.size(); v++) { //Brückenfelder freigeben
-            RandomRogMap.visMap[Bruecke.get(v).X][Bruecke.get(v).Y].setCollision(collision.free);
+            RandomRogMap.visMap[Bruecke.get(v).getX()][Bruecke.get(v).getY()].setCollision(collision.free);
         }
 
         ArrayList<Unit> UnitL = sStartEinheiten(StartG);
@@ -293,7 +283,7 @@ public class RandomMapBuilder {
             int[][] oasen = new int[sizeX][sizeY];
             // Jetzt für jeden Baum den Bereich färben
             for (Position baum : Wald) {
-                calcOasis(baum.X, baum.Y, oasen);
+                calcOasis(baum.getX(), baum.getY(), oasen);
             }
             // Jetzt Felder mit ausreichend Großen Werten umfärben
             for (int x = 0; x < sizeX; x++) {
@@ -512,8 +502,6 @@ public class RandomMapBuilder {
         RandomRogMap.setMapProperty("UNIT_LIST", unitList);
         buildingList = new ArrayList<Building>();	// Leere BuildingList einfügen
         RandomRogMap.setMapProperty("BUILDING_LIST", buildingList);
-        resList = new ArrayList<Ressource>();
-        RandomRogMap.setMapProperty("RES_LIST", resList);
 
     }
 
@@ -628,7 +616,7 @@ public class RandomMapBuilder {
         for (int i = 0; i < change.size(); i++) {
             double Random = Math.random();
             if (Random < percent) {
-                zFeld(change.get(i).X, change.get(i).Y, tex);
+                zFeld(change.get(i).getX(), change.get(i).getY(), tex);
             }
         }
     }
@@ -655,19 +643,19 @@ public class RandomMapBuilder {
             allef.remove(0);
             while (!open.isEmpty()) { // freies Feld aussuchen und alle angrenzenden finden
                 closed.add(open.get(0));
-                int x = open.get(0).X;
-                int y = open.get(0).Y;
+                int x = open.get(0).getX();
+                int y = open.get(0).getY();
                 open.remove(0);
 
                 ArrayList<Position> verschieben = new ArrayList<Position>(); // 4 Nachbarfelder
                 for (int i = 0; i < allef.size(); i++) {
-                    if (allef.get(i).X == x + 1 && allef.get(i).Y == y + 1) {
+                    if (allef.get(i).getX() == x + 1 && allef.get(i).getY() == y + 1) {
                         verschieben.add(allef.get(i));
-                    } else if (allef.get(i).X == x - 1 && allef.get(i).Y == y + 1) {
+                    } else if (allef.get(i).getX() == x - 1 && allef.get(i).getY() == y + 1) {
                         verschieben.add(allef.get(i));
-                    } else if (allef.get(i).X == x + 1 && allef.get(i).Y == y - 1) {
+                    } else if (allef.get(i).getX() == x + 1 && allef.get(i).getY() == y - 1) {
                         verschieben.add(allef.get(i));
-                    } else if (allef.get(i).X == x - 1 && allef.get(i).Y == y - 1) {
+                    } else if (allef.get(i).getX() == x - 1 && allef.get(i).getY() == y - 1) {
                         verschieben.add(allef.get(i));
                     }
                 }
@@ -692,7 +680,7 @@ public class RandomMapBuilder {
         for (int i = 0; i < hae.size(); i++) {
             if (hae.get(i).size() < 200) {
                 for (int j = 0; j < hae.get(i).size(); j++) {
-                    zFeld(hae.get(i).get(j).X, hae.get(i).get(j).Y, WATERTEX);
+                    zFeld(hae.get(i).get(j).getX(), hae.get(i).get(j).getY(), WATERTEX);
                 }
                 hae.remove(i);
                 i--;
@@ -717,8 +705,8 @@ public class RandomMapBuilder {
             int ax = 0;
             int ay = 0;
             for (int j = 0; j < hae.get(i).size(); j++) {
-                ax += hae.get(i).get(j).X;
-                ay += hae.get(i).get(j).Y;
+                ax += hae.get(i).get(j).getX();
+                ay += hae.get(i).get(j).getY();
             }
             ax /= hae.get(i).size(); // durchschnitt
             ay /= hae.get(i).size();
@@ -726,7 +714,7 @@ public class RandomMapBuilder {
             int nah = 0;
             double dist = 99999;
             for (int z = 0; z < hae.get(m).size(); z++) {
-                double rechnen = Math.sqrt(Math.abs(hae.get(m).get(z).X - ax) + Math.abs(hae.get(m).get(z).Y - ay));
+                double rechnen = Math.sqrt(Math.abs(hae.get(m).get(z).getX() - ax) + Math.abs(hae.get(m).get(z).getY() - ay));
                 if (rechnen < dist) {
                     dist = rechnen;
                     nah = z;
@@ -736,14 +724,14 @@ public class RandomMapBuilder {
             int nah2 = 0;
             double dist2 = 99999;
             for (int z = 0; z < hae.get(i).size(); z++) {
-                double rechnen = Math.sqrt(Math.abs(hae.get(i).get(z).X - hae.get(m).get(nah).X) + Math.abs(hae.get(i).get(z).Y - hae.get(m).get(nah).Y));
+                double rechnen = Math.sqrt(Math.abs(hae.get(i).get(z).getX() - hae.get(m).get(nah).getX()) + Math.abs(hae.get(i).get(z).getY() - hae.get(m).get(nah).getY()));
                 if (rechnen < dist2) {
                     dist2 = rechnen;
                     nah2 = z;
                 }
             }
 
-            zBruecke(new Position(hae.get(i).get(nah2).X, hae.get(i).get(nah2).Y), new Position(hae.get(m).get(nah).X, hae.get(m).get(nah).Y));
+            zBruecke(new Position(hae.get(i).get(nah2).getX(), hae.get(i).get(nah2).getY()), new Position(hae.get(m).get(nah).getX(), hae.get(m).get(nah).getY()));
         }
     }
 
@@ -771,97 +759,97 @@ public class RandomMapBuilder {
         for (int i = 0; i < change.size(); i++) {
             double Random = Math.random();
             if (Random < 0.4) {
-                zFeld(change.get(i).X, change.get(i).Y, tex);
+                zFeld(change.get(i).getX(), change.get(i).getY(), tex);
             }
         }
     }
 
     public void zGerade(Position alpha, Position beta) { //eine Gerade aus Wasserfeldern zeichnen
-        int vX = beta.X - alpha.X;
-        int vY = beta.Y - alpha.Y;
+        int vX = beta.getX() - alpha.getX();
+        int vY = beta.getY() - alpha.getY();
         if (Math.abs(vX) >= Math.abs(vY)) {
             if (vX > 0) {
                 for (int i = 0; i < vX; i++) {
-                    Position argh = new Position(alpha.X + i, alpha.Y + (i * vY / vX));
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.X -= 1;
+                    Position argh = new Position(alpha.getX() + i, alpha.getY() + (i * vY / vX));
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setX(argh.getX() - 1);
                     }
-                    zFeld(argh.X, argh.Y, WATERTEX);
+                    zFeld(argh.getX(), argh.getY(), WATERTEX);
                 }
             } else {
                 for (int i = 0; i > vX; i--) {
-                    Position argh = new Position(alpha.X + i, alpha.Y + (i * vY / vX));
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.X -= 1;
+                    Position argh = new Position(alpha.getX() + i, alpha.getY() + (i * vY / vX));
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setX(argh.getX() - 1);
                     }
-                    zFeld(argh.X, argh.Y, WATERTEX);
+                    zFeld(argh.getX(), argh.getY(), WATERTEX);
                 }
             }
         } else {
             if (vY > 0) {
                 for (int i = 0; i < vY; i++) {
-                    Position argh = new Position(alpha.X + (i * vX / vY), alpha.Y + i);
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.Y -= 1;
+                    Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setY(argh.getY() - 1);
                     }
-                    zFeld(argh.X, argh.Y, WATERTEX);
+                    zFeld(argh.getX(), argh.getY(), WATERTEX);
                 }
             } else {
                 for (int i = 0; i > vY; i--) {
-                    Position argh = new Position(alpha.X + (i * vX / vY), alpha.Y + i);
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.Y -= 1;
+                    Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setY(argh.getY() - 1);
                     }
-                    zFeld(argh.X, argh.Y, WATERTEX);
+                    zFeld(argh.getX(), argh.getY(), WATERTEX);
                 }
             }
         }
     }
 
     public void zBruecke(Position alpha, Position beta) { //Bruecke zeichnen
-        int vX = beta.X - alpha.X;
-        int vY = beta.Y - alpha.Y;
+        int vX = beta.getX() - alpha.getX();
+        int vY = beta.getY() - alpha.getY();
         if (Math.abs(vX) >= Math.abs(vY)) {
             if (vX > 0) {
                 for (int i = 0; i < vX; i++) {
-                    Position argh = new Position(alpha.X + i, alpha.Y + (i * vY / vX));
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.X -= 1;
+                    Position argh = new Position(alpha.getX() + i, alpha.getY() + (i * vY / vX));
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setX(argh.getX() - 1);
                     }
-                    zFeld(argh.X, argh.Y, BRIDGETEX);
-                    workArray[argh.X][argh.Y].setBlocked(true);
+                    zFeld(argh.getX(), argh.getY(), BRIDGETEX);
+                    workArray[argh.getX()][argh.getY()].setBlocked(true);
                     Bruecke.add(argh);
                 }
             } else {
                 for (int i = 0; i > vX; i--) {
-                    Position argh = new Position(alpha.X + i, alpha.Y + (i * vY / vX));
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.X -= 1;
+                    Position argh = new Position(alpha.getX() + i, alpha.getY() + (i * vY / vX));
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setX(argh.getX() - 1);
                     }
-                    zFeld(argh.X, argh.Y, BRIDGETEX);
-                    workArray[argh.X][argh.Y].setBlocked(true);
+                    zFeld(argh.getX(), argh.getY(), BRIDGETEX);
+                    workArray[argh.getX()][argh.getY()].setBlocked(true);
                     Bruecke.add(argh);
                 }
             }
         } else {
             if (vY > 0) {
                 for (int i = 0; i < vY; i++) {
-                    Position argh = new Position(alpha.X + (i * vX / vY), alpha.Y + i);
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.Y -= 1;
+                    Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setY(argh.getY() - 1);
                     }
-                    zFeld(argh.X, argh.Y, BRIDGETEX);
-                    workArray[argh.X][argh.Y].setBlocked(true);
+                    zFeld(argh.getX(), argh.getY(), BRIDGETEX);
+                    workArray[argh.getX()][argh.getY()].setBlocked(true);
                     Bruecke.add(argh);
                 }
             } else {
                 for (int i = 0; i > vY; i--) {
-                    Position argh = new Position(alpha.X + (i * vX / vY), alpha.Y + i);
-                    if (argh.X % 2 != argh.Y % 2) {
-                        argh.Y -= 1;
+                    Position argh = new Position(alpha.getX() + (i * vX / vY), alpha.getY() + i);
+                    if (argh.getX() % 2 != argh.getY() % 2) {
+                        argh.setY(argh.getY() - 1);
                     }
-                    zFeld(argh.X, argh.Y, BRIDGETEX);
-                    workArray[argh.X][argh.Y].setBlocked(true);
+                    zFeld(argh.getX(), argh.getY(), BRIDGETEX);
+                    workArray[argh.getX()][argh.getY()].setBlocked(true);
                     Bruecke.add(argh);
                 }
             }
@@ -919,7 +907,7 @@ public class RandomMapBuilder {
         }
 
         for (int i = 0; i < Wasser.size(); i++) {
-            zFeld(Wasser.get(i).X, Wasser.get(i).Y, tex);
+            zFeld(Wasser.get(i).getX(), Wasser.get(i).getY(), tex);
         }
     }
 
@@ -1081,7 +1069,7 @@ public class RandomMapBuilder {
                 double[] dist = new double[Frei.size()]; // Distanz zum nächsten Hauptgebäude
 
                 for (int z = 0; z < Frei.size(); z++) { //für jedes Feld Distanz zum Rand berechnen
-                    dist[z] = Math.min(Math.min(Frei.get(z).X, Frei.get(z).Y), Math.min(RandomRogMap.getMapSizeX() - Frei.get(z).X, RandomRogMap.getMapSizeY() - Frei.get(z).Y));
+                    dist[z] = Math.min(Math.min(Frei.get(z).getX(), Frei.get(z).getY()), Math.min(RandomRogMap.getMapSizeX() - Frei.get(z).getX(), RandomRogMap.getMapSizeY() - Frei.get(z).getY()));
                 }
 
                 double mittel = 0;
@@ -1102,12 +1090,12 @@ public class RandomMapBuilder {
 
                 for (int q = 0; q < Frei.size(); q++) {
                     if (dist[q] > low) {
-                        Frei.get(q).X = -1;
+                        Frei.get(q).setX(Frei.get(q).getX() - 1);
                     }
                 }
                 int w = 0;
                 while (w < Frei.size()) {
-                    if (Frei.get(w).X == -1) {
+                    if (Frei.get(w).getX() == -1) {
                         Frei.remove(w); //Felder mit zu geringer Distanz löschen
                     } else {
                         w++;
@@ -1121,7 +1109,7 @@ public class RandomMapBuilder {
 
                 for (int z = 0; z < Frei.size(); z++) { //für jedes Feld Distanz zu allen Hauptgebäuden berechnen
                     for (int d = 0; d < i - 1; d++) {
-                        work[d] = Math.sqrt(Math.pow(Frei.get(z).X - StartG.get(d).position.X + 1, 2) + Math.pow(Frei.get(z).Y - StartG.get(d).position.Y, 2));
+                        work[d] = Math.sqrt(Math.pow(Frei.get(z).getX() - StartG.get(d).getMainPosition().getX() + 1, 2) + Math.pow(Frei.get(z).getY() - StartG.get(d).getMainPosition().getY(), 2));
                     }
                     dist[z] = 9999;
                     for (int e = 0; e < i - 1; e++) {
@@ -1149,12 +1137,12 @@ public class RandomMapBuilder {
 
                 for (int q = 0; q < Frei.size(); q++) {
                     if (dist[q] < high) {
-                        Frei.get(q).X = -1;
+                        Frei.get(q).setX(Frei.get(q).getX() - 1);
                     }
                 }
                 int w = 0;
                 while (w < Frei.size()) {
-                    if (Frei.get(w).X == -1) {
+                    if (Frei.get(w).getX() == -1) {
                         Frei.remove(w); //Felder mit zu geringer Distanz löschen
                     } else {
                         w++;
@@ -1164,8 +1152,8 @@ public class RandomMapBuilder {
 
             double RndStartD = Math.random() * Frei.size(); //zufällige Startposition aus der Frei-Arraylist
             int RndStart = (int) RndStartD;
-            int x = Frei.get(RndStart).X;
-            int y = Frei.get(RndStart).Y;
+            int x = Frei.get(RndStart).getX();
+            int y = Frei.get(RndStart).getY();
 
             Building Haus = new Building(x, y, getNewNetID());   //Haus an diese Position setzen
 
@@ -1240,563 +1228,6 @@ public class RandomMapBuilder {
         return StartG; //Arraylist zurückgeben
     }
 
-    // Setzt Ressourcen auf die Map
-    public ArrayList<Ressource> sRessourcen(ArrayList<Building> StartG, int player, int Theme) {
-        ArrayList<Position> Frei = new ArrayList<Position>(); //Arraylist mit allen freien Rogpositions
-        ArrayList<Ressource> ResPos = new ArrayList<Ressource>(); //Liste mit RogRessourcen, die zurückgegeben wird
-        ArrayList<ArrayList<Position>> Hae = new ArrayList<ArrayList<Position>>();
-
-        //Nahrung neben Hauptgebäude setzen
-        for (int i = 2; i < RandomRogMap.getMapSizeX() - 3; i++) { //alle freien Felder suchen
-            for (int j = 2; j < RandomRogMap.getMapSizeY() - 3; j++) {
-                if (i % 2 != j % 2) {
-                    continue;
-                }
-                if (RandomRogMap.visMap[i][j].getCollision().equals(collision.free)) {
-                    Frei.add(new Position(i, j));
-                }
-            }
-        }
-
-        for (int i = 0; i < player; i++) { //für jeden Spieler einmal ausführen
-            ArrayList<Position> Resposis = new ArrayList<Position>();
-            for (int j = 1; j < Frei.size(); j++) {
-                double distance = Math.sqrt(Math.pow(Frei.get(j).X - StartG.get(i).position.X + 1, 2) + Math.pow(Frei.get(j).Y - StartG.get(i).position.Y, 2));
-                if (distance < 15 && distance > 2) {
-                    Resposis.add(Frei.get(j)); //alle freien Felder in der Nähe der Startgebäude
-                }
-                if (Resposis.isEmpty()) {
-                    if (distance < 30) {
-                        Resposis.add(Frei.get(j));
-                    }
-                }
-            }
-            Hae.add(Resposis);
-        }
-
-        for (int i = 0; i < Hae.size(); i++) {
-            double RndResPd = Math.random() * Hae.get(i).size(); //eine zufällige RogPosition
-            int RndResP = (int) RndResPd;
-
-            Ressource newres = new Ressource(1, "img/res/FOOD0.png", getNewNetID()); //eine Ressource neben das Startgebäude setzen
-            Position Resi = new Position(Hae.get(i).get(RndResP).X, Hae.get(i).get(RndResP).Y);
-            newres.position = Resi;
-            RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-            ResPos.add(newres);
-
-            Reserviert.add(new Position(Resi.X - 1, Resi.Y - 1)); // 4 Nachbarfelder reservieren
-            RandomRogMap.visMap[Resi.X - 1][Resi.Y - 1].setCollision(collision.blocked);
-            Reserviert.add(new Position(Resi.X - 1, Resi.Y + 1));
-            RandomRogMap.visMap[Resi.X - 1][Resi.Y + 1].setCollision(collision.blocked);
-            Reserviert.add(new Position(Resi.X + 1, Resi.Y - 1));
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y - 1].setCollision(collision.blocked);
-            Reserviert.add(new Position(Resi.X + 1, Resi.Y + 1));
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y + 1].setCollision(collision.blocked);
-
-            Hae.get(i).clear();
-            for (int t = 0; t < Frei.size(); t++) {
-                if (Frei.get(t).X == newres.position.X) {
-                    if (Frei.get(t).Y == newres.position.Y) {
-                        Frei.remove(t);
-                        t--;
-                    }
-                } else if (Frei.get(t).X == newres.position.X - 1 || Frei.get(t).X == newres.position.X + 1) {
-                    if (Frei.get(t).Y == newres.position.Y - 1 || Frei.get(t).Y == newres.position.Y + 1) {
-                        Frei.remove(t);
-                        t--;
-                    }
-                }
-            }
-
-            for (int w = 0; w < Frei.size(); w++) { //freie Felder neben der Rogressource suchen
-                double distance = Math.sqrt(Math.pow(Frei.get(w).X - newres.position.X, 2) + Math.pow(Frei.get(w).Y - newres.position.Y, 2));
-                if (distance < 6) {
-                    Hae.get(i).add(Frei.get(w));
-                }
-            }
-
-            for (int m = 1; m < 4; m++) { //mehr Rogressourcen neben die erste setzen
-                double mRndResPd = Math.random() * Hae.get(i).size();
-                int mRndResP = (int) mRndResPd;
-
-                Ressource newres2 = new Ressource(1, "img/res/FOOD0.png", getNewNetID());
-                Position Resi2 = new Position(Hae.get(i).get(mRndResP).X, Hae.get(i).get(mRndResP).Y);
-                newres2.position = Resi2;
-                RandomRogMap.visMap[Resi2.X][Resi2.Y].setCollision(collision.blocked);
-
-                Reserviert.add(new Position(Resi2.X - 1, Resi2.Y - 1)); // 4 Nachbarfelder reservieren
-                RandomRogMap.visMap[Resi2.X - 1][Resi2.Y - 1].setCollision(collision.blocked);
-                Reserviert.add(new Position(Resi2.X - 1, Resi2.Y + 1));
-                RandomRogMap.visMap[Resi2.X - 1][Resi2.Y + 1].setCollision(collision.blocked);
-                Reserviert.add(new Position(Resi2.X + 1, Resi2.Y - 1));
-                RandomRogMap.visMap[Resi2.X + 1][Resi2.Y - 1].setCollision(collision.blocked);
-                Reserviert.add(new Position(Resi2.X + 1, Resi2.Y + 1));
-                RandomRogMap.visMap[Resi2.X + 1][Resi2.Y + 1].setCollision(collision.blocked);
-
-                ResPos.add(newres2);
-                Hae.get(i).remove(mRndResP);
-
-                for (int t = 0; t < Hae.get(i).size(); t++) {
-                    if (Hae.get(i).get(t).X == newres2.position.X) {
-                        if (Hae.get(i).get(t).Y == newres2.position.Y) {
-                            Hae.get(i).remove(t);
-                            t--;
-                        }
-                    } else if (Hae.get(i).get(t).X == newres2.position.X - 1 || Hae.get(i).get(t).X == newres2.position.X + 1) {
-                        if (Hae.get(i).get(t).Y == newres2.position.Y - 1 || Hae.get(i).get(t).Y == newres2.position.Y + 1) {
-                            Hae.get(i).remove(t);
-                            t--;
-                        }
-                    }
-                }
-            }
-        }
-
-        // WÄLDER SETZEN
-        Frei.clear();
-        for (int i = 2; i < RandomRogMap.getMapSizeX() - 3; i++) { //alle freien Felder suchen
-            for (int j = 2; j < RandomRogMap.getMapSizeY() - 3; j++) {
-                if (i % 2 != j % 2) {
-                    continue;
-                }
-                if (RandomRogMap.visMap[i][j].getCollision().equals(collision.free)) {
-                    Frei.add(new Position(i, j));
-                }
-            }
-        }
-
-        Wald = new ArrayList<Position>();
-        ArrayList<Position> Waldpos = Frei;
-        ArrayList<Integer> Waldminus = new ArrayList<Integer>();
-        ArrayList<Integer> Waldtrf = new ArrayList<Integer>();
-        int platz;
-
-        for (int z = 0; z < 2; z++) { //Für jedes Feld überprüfen, ob Nachbarfelder frei sind, sonst aus Waldpos entfernen
-            for (int i = 0; i < Waldpos.size(); i++) {
-                boolean allesfrei = true;
-                for (int x = -2; x <= 2; x++) {
-                    for (int y = -2; y <= 2; y++) {
-                        if (Math.abs(x) + Math.abs(y) == 2) {
-                            if (RandomRogMap.visMap[Waldpos.get(i).X + x][Waldpos.get(i).Y + y].getCollision().equals(collision.blocked)) {
-                                allesfrei = false;
-                            }
-                        }
-                    }
-                }
-                if (allesfrei == false) {
-                    Waldminus.add(i);
-                }
-            }
-            for (int i = Waldminus.size() - 1; i >= 0; i--) {
-                Waldpos.remove((int) Waldminus.get(i));
-            }
-            Waldminus.clear();
-        }
-        platz = Waldpos.size();
-
-        boolean genugw = false;
-        while (!genugw) { //Wälder setzen, bis es genug sind
-            int einFeld = (int) (Waldpos.size() * Math.random());
-            int x = Waldpos.get(einFeld).X;
-            int y = Waldpos.get(einFeld).Y;
-            Wald.add(Waldpos.get(einFeld));
-            Waldpos.remove(einFeld);
-
-            for (int i = 0; i < Waldpos.size(); i++) {
-                double zufall = 5 + Math.random() * 11;
-                if (Math.sqrt((Waldpos.get(i).X - x) * (Waldpos.get(i).X - x) + (Waldpos.get(i).Y - y) * (Waldpos.get(i).Y - y)) < zufall) {
-                    Wald.add(Waldpos.get(i));
-                    Waldtrf.add(i);
-                }
-            }
-            for (int i = Waldtrf.size() - 1; i >= 0; i--) {
-                Waldpos.remove((int) Waldtrf.get(i));
-            }
-            if (Wald.size() * 7 > platz) {
-                genugw = true;
-                System.out.println(Wald.size() + " / " + platz);
-            }
-            Waldtrf.clear();
-        }
-
-        double freq = 0.75 + 0.15 * Math.random();
-        for (int i = 0; i < Wald.size(); i++) {
-            double randomt = Math.random();
-            if (randomt >= freq) {
-                String Holz = "img/res/WOOD1.png";
-                if (Theme == 1) {
-                    double Rnd2 = Math.random();
-                    if (Rnd2 < 0.5) {
-                        Holz = "img/res/WOOD0.png";
-                    }
-                } else if (Theme == 3) {
-                    double Rnd2 = Math.random();
-                    if (Rnd2 < 0.5) {
-                        Holz = "img/res/WOOD2.png";
-                    } else {
-                        Holz = "img/res/WOOD3.png";
-                    }
-                }
-                Ressource newres = new Ressource(2, Holz, getNewNetID()); //eine Ressource neben das Startgebäude setzen
-                Position Resi = new Position(Wald.get(i).X, Wald.get(i).Y);
-                newres.position = Resi;
-                RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-                ResPos.add(newres);
-            }
-        }
-
-        //Metall
-        Frei.clear();
-        Hae.clear();
-        for (int u = 4; u < RandomRogMap.getMapSizeX() - 6; u++) { //alle freien Felder suchen
-            for (int j = 5; j < RandomRogMap.getMapSizeY() - 5; j++) {
-                if (u % 2 != j % 2) {
-                    continue;
-                }
-                boolean frei = true;
-                if (RandomRogMap.visMap[u][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j - 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j + 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j - 3].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j - 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 3][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 4][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 3][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j + 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j + 3].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                }
-                if (frei) {
-                    Frei.add(new Position(u, j));
-                }
-            }
-        }
-
-        for (int i = 0; i < player; i++) { //für jeden Spieler einmal ausführen
-            ArrayList<Position> Resposis = new ArrayList<Position>();
-            for (int j = 1; j < Frei.size(); j++) {
-                double distance = Math.sqrt(Math.pow(Frei.get(j).X - StartG.get(i).position.X + 1, 2) + Math.pow(Frei.get(j).Y - StartG.get(i).position.Y, 2));
-                if (distance < 20 && distance > 5) {
-                    Resposis.add(Frei.get(j)); //alle freien Felder in der Nähe der Startgebäude
-                }
-                if (Resposis.isEmpty()) {
-                    if (distance < 40) {
-                        Resposis.add(Frei.get(j));
-                    }
-                }
-            }
-            Hae.add(Resposis);
-        }
-
-        for (int i = 0; i < Hae.size(); i++) {
-            double RndResPd = Math.random() * Hae.get(i).size(); //eine zufällige RogPosition
-            int RndResP = (int) RndResPd;
-
-            Ressource newres = new Ressource(3, "img/res/METAL0.png", getNewNetID());
-            Position Resi = new Position(Hae.get(i).get(RndResP).X, Hae.get(i).get(RndResP).Y);
-            newres.position = Resi;
-            RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 2][Resi.Y].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y - 1].setCollision(collision.blocked);
-            ResPos.add(newres);
-
-            for (int t = 0; t < Frei.size(); t++) {
-                if (Frei.get(t).X == newres.position.X + 1 && Frei.get(t).Y == newres.position.Y + 1) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X && Frei.get(t).Y == newres.position.Y) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X + 2 && Frei.get(t).Y == newres.position.Y) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X + 1 && Frei.get(t).Y == newres.position.Y - 1) {
-                    Frei.remove(t);
-                }
-            }
-
-            Hae.get(i).clear();
-        }
-
-        //Gold
-        Frei.clear();
-        Hae.clear();
-        for (int u = 4; u < RandomRogMap.getMapSizeX() - 6; u++) { //alle freien Felder suchen
-            for (int j = 5; j < RandomRogMap.getMapSizeY() - 5; j++) {
-                if (u % 2 != j % 2) {
-                    continue;
-                }
-                boolean frei = true;
-                if (RandomRogMap.visMap[u][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j - 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j + 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j - 3].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j - 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 3][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 4][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 3][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j + 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j + 3].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                }
-                if (frei) {
-                    Frei.add(new Position(u, j));
-                }
-            }
-        }
-
-        for (int i = 0; i < player; i++) { //für jeden Spieler einmal ausführen
-            ArrayList<Position> Resposis = new ArrayList<Position>();
-            for (int j = 1; j < Frei.size(); j++) {
-                double distance = Math.sqrt(Math.pow(Frei.get(j).X - StartG.get(i).position.X + 1, 2) + Math.pow(Frei.get(j).Y - StartG.get(i).position.Y, 2));
-                if (distance < 20 && distance > 5) {
-                    Resposis.add(Frei.get(j)); //alle freien Felder in der Nähe der Startgebäude
-                }
-                if (Resposis.isEmpty()) {
-                    if (distance < 40) {
-                        Resposis.add(Frei.get(j));
-                    }
-                }
-            }
-            Hae.add(Resposis);
-        }
-
-        for (int i = 0; i < Hae.size(); i++) {
-            double RndResPd = Math.random() * Hae.get(i).size(); //eine zufällige RogPosition
-            int RndResP = (int) RndResPd;
-
-            Ressource newres = new Ressource(4, "img/res/COINS0.png", getNewNetID());
-            Position Resi = new Position(Hae.get(i).get(RndResP).X, Hae.get(i).get(RndResP).Y);
-            newres.position = Resi;
-            RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 2][Resi.Y].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[Resi.X + 1][Resi.Y - 1].setCollision(collision.blocked);
-            ResPos.add(newres);
-
-            for (int t = 0; t < Frei.size(); t++) {
-                if (Frei.get(t).X == newres.position.X + 1 && Frei.get(t).Y == newres.position.Y + 1) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X && Frei.get(t).Y == newres.position.Y) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X + 2 && Frei.get(t).Y == newres.position.Y) {
-                    Frei.remove(t);
-                } else if (Frei.get(t).X == newres.position.X + 1 && Frei.get(t).Y == newres.position.Y - 1) {
-                    Frei.remove(t);
-                }
-            }
-
-            Hae.get(i).clear();
-        }
-
-        //Bäume neben Startgebäude
-        Frei.clear();
-        Hae.clear();
-        for (int i = 2; i < RandomRogMap.getMapSizeX() - 3; i++) { //alle freien Felder suchen
-            for (int j = 2; j < RandomRogMap.getMapSizeY() - 3; j++) {
-                if (i % 2 != j % 2) {
-                    continue;
-                }
-                if (RandomRogMap.visMap[i][j].getCollision().equals(collision.free)) {
-                    Frei.add(new Position(i, j));
-                }
-            }
-        }
-
-        for (int i = 0; i < player; i++) { //für jeden Spieler einmal ausführen
-            ArrayList<Position> Resposis = new ArrayList<Position>();
-            for (int j = 1; j < Frei.size(); j++) {
-                double distance = Math.sqrt(Math.pow(Frei.get(j).X - StartG.get(i).position.X + 1, 2) + Math.pow(Frei.get(j).Y - StartG.get(i).position.Y, 2));
-                if (distance < 15 && distance > 2) {
-                    Resposis.add(Frei.get(j)); //alle freien Felder in der Nähe der Startgebäude
-                }
-                if (Resposis.isEmpty()) {
-                    if (distance < 30) {
-                        Resposis.add(Frei.get(j));
-                    }
-                }
-            }
-            Hae.add(Resposis);
-        }
-
-        for (int i = 0; i < Hae.size(); i++) {
-            double RndResPd = Math.random() * Hae.get(i).size(); //eine zufällige RogPosition
-            int RndResP = (int) RndResPd;
-
-            String Baumtyp = "img/res/WOOD1.png"; // Welcher Baumtyp?
-            if (Theme == 1) {
-                double Rnd2 = Math.random();
-                if (Rnd2 < 0.5) {
-                    Baumtyp = "img/res/WOOD0.png";
-                }
-            } else if (Theme == 3) {
-                double Rnd2 = Math.random();
-                if (Rnd2 < 0.5) {
-                    Baumtyp = "img/res/WOOD2.png";
-                } else {
-                    Baumtyp = "img/res/WOOD3.png";
-                }
-            }
-
-            Ressource newres = new Ressource(2, Baumtyp, getNewNetID()); //eine Ressource neben das Startgebäude setzen
-            Position Resi = new Position(Hae.get(i).get(RndResP).X, Hae.get(i).get(RndResP).Y);
-            newres.position = Resi;
-            RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-            ResPos.add(newres);
-            Hae.get(i).clear();
-            for (int t = 0; t < Frei.size(); t++) {
-                if (Frei.get(t).X == newres.position.X) {
-                    if (Frei.get(t).Y == newres.position.Y) {
-                        Frei.remove(t);
-                    }
-                }
-            }
-
-            for (int w = 0; w < Frei.size(); w++) { //freie Felder neben der Rogressource suchen
-                double distance = Math.sqrt(Math.pow(Frei.get(w).X - newres.position.X, 2) + Math.pow(Frei.get(w).Y - newres.position.Y, 2));
-                if (distance < 5) {
-                    Hae.get(i).add(Frei.get(w));
-                }
-            }
-
-            int Zufall = (int) (Math.random() * 3 + 1); // zufällig 2,3 oder 4 Bäume
-            for (int m = 1; m < Zufall; m++) { //mehr Rogressourcen neben die erste setzen
-                double mRndResPd = Math.random() * Hae.get(i).size();
-                int mRndResP = (int) mRndResPd;
-
-                Baumtyp = "img/res/WOOD1.png"; // Welcher Baumtyp?
-                if (Theme == 1) {
-                    double Rnd2 = Math.random();
-                    if (Rnd2 < 0.5) {
-                        Baumtyp = "img/res/WOOD0.png";
-                    }
-                } else if (Theme == 3) {
-                    double Rnd2 = Math.random();
-                    if (Rnd2 < 0.5) {
-                        Baumtyp = "img/res/WOOD2.png";
-                    } else {
-                        Baumtyp = "img/res/WOOD3.png";
-                    }
-                }
-
-                Ressource newres2 = new Ressource(2, Baumtyp, getNewNetID());
-                Position Resi2 = new Position(Hae.get(i).get(mRndResP).X, Hae.get(i).get(mRndResP).Y);
-                newres2.position = Resi2;
-                RandomRogMap.visMap[Resi2.X][Resi2.Y].setCollision(collision.blocked);
-                ResPos.add(newres2);
-                Hae.get(i).remove(mRndResP);
-                Zufall = (int) (Math.random() * 3 + 2);
-            }
-        }
-
-        // Einzelne Bäume
-        for (int u = 3; u < RandomRogMap.getMapSizeX() - 3; u++) { // einzelne Bäume
-            for (int j = 3; j < RandomRogMap.getMapSizeY() - 3; j++) {
-                if (u % 2 != j % 2) {
-                    continue;
-                }
-                boolean frei = true;
-                if (RandomRogMap.visMap[u][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 2][j].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j - 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u][j + 2].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u + 1][j - 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if (RandomRogMap.visMap[u - 1][j + 1].getCollision().equals(collision.blocked)) {
-                    frei = false;
-                } else if ("img/ground/testground3.png".equals(RandomRogMap.getElementProperty(u, j, "ground_tex"))) {
-                    frei = false;
-                }
-
-                if (frei) {
-                    double Rnd = Math.random();
-                    if (Rnd < 0.001) {
-                        RandomRogMap.changeElementProperty(u, j, "fix_tex", "img/fix/teststone.png");
-                        RandomRogMap.visMap[u][j].setCollision(collision.blocked);
-                    } else if (Rnd < 0.002) {
-                        Ressource newres = new Ressource(1, "img/res/FOOD0.png", getNewNetID()); //eine Ressource neben das Startgebäude setzen
-                        Position Resi = new Position(u, j);
-                        newres.position = Resi;
-                        RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-                        ResPos.add(newres);
-                    } else if (Rnd < 0.009) {
-                        String Holz = "img/res/WOOD1.png";
-                        if (Theme == 1) {
-                            double Rnd2 = Math.random();
-                            if (Rnd2 < 0.5) {
-                                Holz = "img/res/WOOD0.png";
-                            }
-                        } else if (Theme == 3) {
-                            double Rnd2 = Math.random();
-                            if (Rnd2 < 0.5) {
-                                Holz = "img/res/WOOD2.png";
-                            } else {
-                                Holz = "img/res/WOOD3.png";
-                            }
-                        }
-                        Ressource newres = new Ressource(2, Holz, getNewNetID()); //eine Ressource neben das Startgebäude setzen
-                        Position Resi = new Position(u, j);
-                        newres.position = Resi;
-                        RandomRogMap.visMap[Resi.X][Resi.Y].setCollision(collision.blocked);
-                        ResPos.add(newres);
-                    }
-                }
-            }
-        }
-
-        return ResPos;
-    }
-
     public ArrayList<Unit> sStartEinheiten(ArrayList<Building> StartG) {
         ArrayList<Unit> StartU = new ArrayList<Unit>(); //Arraylist mit den Starteinheiten
 
@@ -1807,35 +1238,35 @@ public class RandomMapBuilder {
             Einheit.setPlayerId(i + 1);
             Einheit.anim = new UnitAnimator();
             StartU.add(Einheit);
-            RandomRogMap.visMap[Einheit.position.X][Einheit.position.Y].setCollision(collision.occupied);
+            RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit Einheit2 = new Unit(StartG.get(i).getX() + 5, StartG.get(i).getY() + 7, getNewNetID());
             Einheit2.descTypeId = 401;
             Einheit2.setPlayerId(i + 1);
             Einheit2.anim = new UnitAnimator();
             StartU.add(Einheit2);
-            RandomRogMap.visMap[Einheit2.position.X][Einheit2.position.Y].setCollision(collision.occupied);
+            RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit Einheit3 = new Unit(StartG.get(i).getX() + 6, StartG.get(i).getY() + 6, getNewNetID());
             Einheit3.descTypeId = 401;
             Einheit3.setPlayerId(i + 1);
             Einheit3.anim = new UnitAnimator();
             StartU.add(Einheit3);
-            RandomRogMap.visMap[Einheit3.position.X][Einheit3.position.Y].setCollision(collision.occupied);
+            RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit Einheit4 = new Unit(StartG.get(i).getX() + 3, StartG.get(i).getY() + 5, getNewNetID());
             Einheit4.descTypeId = 401;
             Einheit4.setPlayerId(i + 1);
             Einheit4.anim = new UnitAnimator();
             StartU.add(Einheit4);
-            RandomRogMap.visMap[Einheit4.position.X][Einheit4.position.Y].setCollision(collision.occupied);
+            RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit Einheit5 = new Unit(StartG.get(i).getX() + 8, StartG.get(i).getY() + 4, getNewNetID());
             Einheit5.descTypeId = 402;
             Einheit5.setPlayerId(i + 1);
             Einheit5.anim = new UnitAnimator();
             StartU.add(Einheit5);
-            RandomRogMap.visMap[Einheit5.position.X][Einheit5.position.Y].setCollision(collision.occupied);
+            RandomRogMap.visMap[Einheit5.getMainPosition().getX()][Einheit5.getMainPosition().getY()].setCollision(collision.occupied);
         }
 
         return StartU;
