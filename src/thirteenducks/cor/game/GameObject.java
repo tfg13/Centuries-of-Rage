@@ -1137,13 +1137,15 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     /**
      * @return the isSelected
      */
-    public boolean isIsSelected() {
+    @Override
+    public boolean isSelected() {
         return isSelected;
     }
 
     /**
      * @param isSelected the isSelected to set
      */
+    @Override
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
     }

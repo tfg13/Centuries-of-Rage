@@ -50,4 +50,23 @@ public interface InteractableGameElement {
      * Die Maus wurde über diesem InteractableGameElement loggelassen.
      */
     public void mouseReleased();
+    /**
+     * Findet heraus, ob dieses IGE selektiertbar ist.
+     * Selektierbar bedeutet, der User kann es (üblicherweise per Linksklick)
+     * anwählen, es ist dann in einem besonderen Zustand in dem es direkte Befehle annimmt.
+     * @return true, wenn selektier bar.
+     */
+    public boolean selectable();
+    /**
+     * Findet heraus, ob dieses IGE derzeit selektiert ist.
+     * Nur sinnvoll, wenn überhaupt selektierbar.
+     * @return true, wenn derzeit selektiert.
+     */
+    public boolean isSelected();
+    /**
+     * Setzt den Selektionsstatus dieses IGE's.
+     * Nur sinnvoll, wenn überhaupt selektierbar.
+     * @param sel true, wenn es nach diesem Aufruf selektiert sein soll, sonst false.
+     */
+    public void setSelected(boolean sel);
 }
