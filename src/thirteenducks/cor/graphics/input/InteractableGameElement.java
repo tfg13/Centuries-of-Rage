@@ -69,4 +69,6 @@ public interface InteractableGameElement {
      * @param sel true, wenn es nach diesem Aufruf selektiert sein soll, sonst false.
      */
     public void setSelected(boolean sel);
+    public boolean selPosChanged();
+    public SelectionMarker getSelectionMarker();
 }
