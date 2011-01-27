@@ -41,7 +41,6 @@ import java.awt.event.MouseMotionListener;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
@@ -58,13 +57,12 @@ import thirteenducks.cor.graphics.GraphicsComponent;
 import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.graphics.CoRImage;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Ressource;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.map.MapIO;
 
 public class MapEditor {
 
-    String versionNumber = "0.2.2";
+    String versionNumber = "0.2.3";
     // Eigene Vars
     HashMap imgInput;
     int imgInputNumber = 0;
@@ -90,7 +88,6 @@ public class MapEditor {
     boolean colisionMode = false; // Modus für Kolisionsänderung
     ArrayList<Unit> unitList;
     ArrayList<Building> buildingList;
-    ArrayList<Ressource> resList;
     boolean firstMapRun = false;
     boolean newMode = true; // Units in unitList und nicht als Textur eines Feldes
     MapEditorCursor paintCursor;
@@ -1025,8 +1022,7 @@ public class MapEditor {
                                                                 theMap.changeElementProperty((int) selField.getWidth(), (int) selField.getHeight(), "unit_tex", selTex);
                                                             } else {
                                                                 //Einfach neu erstellen und hinzufügen
-                                                                try {
-                                                                    Unit kUnit = descUnit.get(selUnitId).clone(getNextNetID());
+                                                                    Unit kUnit = (Unit) descUnit.get(selUnitId).getCopy(getNextNetID());
                                                                     // Spieler festgelegt?
                                                                     if (rmegui.jCheckBox1.isSelected()) {
                                                                         try {
@@ -1037,10 +1033,8 @@ public class MapEditor {
                                                                         } catch (java.lang.NumberFormatException exx) {
                                                                         }
                                                                     }
-                                                                    kUnit.position = new Position((int) selField.getWidth(), (int) selField.getHeight());
+                                                                    kUnit.setMainPosition(new Position((int) selField.getWidth(), (int) selField.getHeight()));
                                                                     unitList.add(kUnit);
-                                                                } catch (java.lang.CloneNotSupportedException ex) {
-                                                                }
                                                             }
                                                             // Produziert Kollision!
                                                             if (rmegui.jCheckBoxMenuItem5.isSelected()) {
@@ -1051,81 +1045,6 @@ public class MapEditor {
                                                         rmegui.content.changeVisMap(theMap.getVisMap());
                                                         rmegui.content.updateUnits(unitList);
                                                     }
-                                                } else if (rmegui.jComboBox1.getSelectedIndex() == 3) {
-                                                    // Layer = Ressourcen
-                                                    if (rmegui.miscPanel.gotlist) { // Nullpointer - Sicherheitsabfrage
-                                                        String tex = rmegui.miscPanel.getSelectedImage().getImageName();
-                                                        if (tex != null && tex.equals("noTex")) {
-                                                            // Löschen, suchen ob da was ist:
-                                                            Ressource dres = identifyRessource(selField.width, selField.height);
-                                                            if (dres != null) {
-                                                                // Löschen
-                                                                resList.remove(dres);
-                                                                // Kollision entfernen
-                                                                theMap.visMap[selField.width][selField.height].setCollision(collision.free);
-                                                                // Mehrere Felder?
-                                                                if (dres.getType() >= 3 && dres.getType() <= 5) {
-                                                                    theMap.visMap[selField.width + 1][selField.height - 1].setCollision(collision.free);
-                                                                    theMap.visMap[selField.width + 2][selField.height].setCollision(collision.free);
-                                                                    theMap.visMap[selField.width + 1][selField.height + 1].setCollision(collision.free);
-                                                                }
-                                                                rmegui.content.repaint();
-                                                            }
-                                                        } else {
-                                                            if (tex != null) {
-                                                                // Ressource adden
-                                                                // Type herausfinden
-                                                                int type = 0;
-                                                                if (tex.contains("FOOD")) {
-                                                                    type = 1;
-                                                                } else if (tex.contains("WOOD")) {
-                                                                    type = 2;
-                                                                } else if (tex.contains("METAL")) {
-                                                                    type = 3;
-                                                                } else if (tex.contains("COINS")) {
-                                                                    type = 4;
-                                                                } else if (tex.contains("OIL")) {
-                                                                    type = 5;
-                                                                }
-                                                                // Was da?
-                                                                if (type != 0) {
-                                                                    // Position frei?
-                                                                    if (theMap.visMap[selField.width][selField.height].getCollision().equals(collision.free)) {
-                                                                        boolean free = true;
-                                                                        // Große Ressource?
-                                                                        if (type >= 3) {
-                                                                            // Andere Felder checken
-                                                                            if (!theMap.visMap[selField.width + 1][selField.height - 1].getCollision().equals(collision.free)) {
-                                                                                free = false;
-                                                                            }
-                                                                            if (!theMap.visMap[selField.width + 2][selField.height].getCollision().equals(collision.free)) {
-                                                                                free = false;
-                                                                            }
-                                                                            if (!theMap.visMap[selField.width + 1][selField.height + 1].getCollision().equals(collision.free)) {
-                                                                                free = false;
-                                                                            }
-                                                                        }
-                                                                        if (free) {
-                                                                            // OK, frei, Einfügen
-                                                                            Ressource newres = new Ressource(type, tex, getNextNetID());
-                                                                            newres.position = new Position(selField.width, selField.height);
-                                                                            resList.add(newres);
-                                                                            // Kollision setzen
-                                                                            theMap.visMap[selField.width][selField.height].setCollision(collision.blocked);
-                                                                            if (type >= 3) {
-                                                                                theMap.visMap[selField.width + 1][selField.height - 1].setCollision(collision.blocked);
-                                                                                theMap.visMap[selField.width + 2][selField.height].setCollision(collision.blocked);
-                                                                                theMap.visMap[selField.width + 1][selField.height + 1].setCollision(collision.blocked);
-                                                                            }
-                                                                            rmegui.content.repaint();
-                                                                        }
-                                                                    } else {
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
                                                 } else if (rmegui.jComboBox1.getSelectedIndex() == 4) {
                                                     // Layer = Gebäude
                                                     if (rmegui.buildPanel.gotlist) { // NullPointer-Sicherheitsabfrage
@@ -1138,68 +1057,16 @@ public class MapEditor {
                                                                 // Ist da, löschen!
                                                                 buildingList.remove(tempBu);
                                                                 // Neu sortieren ist nich nötig!
-                                                                // Kollision entfernen:
-                                                                for (int z1 = 0; z1 < tempBu.z1; z1++) {
-                                                                    for (int z2 = 0; z2 < tempBu.z2; z2++) {
-                                                                        CoRMapElement tEle = theMap.visMap[tempBu.position.X + z1 + z2][tempBu.position.Y - z1 + z2];
-                                                                        tEle.setCollision(collision.free);
-                                                                    }
+                                                                Position[] colPos = tempBu.getPositions();
+                                                                for (Position pos : colPos) {
+                                                                    theMap.visMap[pos.getX()][pos.getY()].setCollision(collision.free);
                                                                 }
                                                                 rmegui.content.updateBuildings(buildingList);
                                                             }
                                                         } else {
                                                             // Gebäude einfügen
                                                             // Alle Felder frei?
-                                                            boolean free = true;
-                                                            for (int z1 = 0; z1 < descBuilding.get(selBuildingId).z1; z1++) {
-                                                                for (int z2 = 0; z2 < descBuilding.get(selBuildingId).z2; z2++) {
-                                                                    CoRMapElement tEle = theMap.visMap[(int) selField.getWidth() + z1 + z2 + descBuilding.get(selBuildingId).offsetX][(int) selField.getHeight() - z1 + z2 + descBuilding.get(selBuildingId).offsetY];
-                                                                    if (tEle != null) {
-                                                                        if (tEle.getCollision() == collision.blocked) {
-                                                                            // Da ist schon was, also blockiert
-                                                                            free = false;
-                                                                        }
-                                                                    } else {
-                                                                        // Das Feld gibts gar nicht / Ausserhalb der Map, also auch false
-                                                                        free = false;
-                                                                    }
-                                                                }
-                                                            }
-                                                            if (free) {
-                                                                try {
-                                                                    // Ok, wir können bauen
-                                                                    // Gebäude zur Liste hinzufügen
-                                                                    Building tempB = descBuilding.get(selBuildingId).clone(getNextNetID());
-                                                                    // Spieler festgelegt?
-                                                                    if (rmegui.jCheckBox2.isSelected()) {
-                                                                        try {
-                                                                            int trans = Integer.parseInt(rmegui.jSpinner6.getValue().toString());
-                                                                            if (trans >= 0 && trans <= 8) {
-                                                                                tempB.setPlayerId(trans);
-                                                                            }
-                                                                        } catch (java.lang.NumberFormatException exx) {
-                                                                        }
-                                                                    }
-                                                                    tempB.position = new Position((int) selField.getWidth() + descBuilding.get(selBuildingId).offsetX, (int) selField.getHeight() + descBuilding.get(selBuildingId).offsetY);
-                                                                    tempB.anim = new BuildingAnimator();
-                                                                    buildingList.add(tempB);
-                                                                    // Liste sortieren, wegen der Perspektive
-                                                                    Collections.sort(buildingList);
-                                                                    // Kollision setzen
-                                                                    for (int z1 = 0; z1 < descBuilding.get(selBuildingId).z1; z1++) {
-                                                                        for (int z2 = 0; z2 < descBuilding.get(selBuildingId).z2; z2++) {
-                                                                            CoRMapElement tEle = theMap.visMap[(int) selField.getWidth() + z1 + z2 + descBuilding.get(selBuildingId).offsetX][(int) selField.getHeight() - z1 + z2 + descBuilding.get(selBuildingId).offsetY];
-                                                                            tEle.setCollision(collision.blocked);
-                                                                        }
-                                                                    }
-                                                                    rmegui.content.updateBuildings(buildingList);
-
-                                                                } catch (CloneNotSupportedException ex) {
-                                                                    // Is abgesichert, passiert net!
-                                                                }
-                                                                // Ferig
-
-                                                            }
+                                                            System.out.println("AddMe: Reimplement Buildings!");
                                                         }
                                                     }
                                                 }
@@ -1210,25 +1077,25 @@ public class MapEditor {
                                                 Building tempB = identifyBuilding(selField.width, selField.height);
                                                 // Alte einheit abwählen
                                                 if (currentUnit != null) {
-                                                    currentUnit.isSelected = false;
+                                                    currentUnit.setSelected(false);
                                                     currentUnit = null;
                                                     rmegui.jButton1.setEnabled(false);
                                                 }
                                                 if (currentBuilding != null) {
-                                                    currentBuilding.isSelected = false;
+                                                    currentBuilding.setSelected(false);
                                                     currentBuilding = null;
                                                 }
                                                 // Als aktuelle Einheit setzen, wenn eine gefunden wurde
                                                 if (tempU != null) {
                                                     // Einheit gefunden!
                                                     currentUnit = tempU;
-                                                    currentUnit.isSelected = true;
+                                                    currentUnit.setSelected(true);
                                                     updateCurrentUnit();
                                                     rmegui.jTabbedPane3.setSelectedIndex(0);
                                                 } else if (tempB != null) {
                                                     // Gebäude gefunden!
                                                     currentBuilding = tempB;
-                                                    currentBuilding.isSelected = true;
+                                                    currentBuilding.setSelected(true);
                                                     updateCurrentBuilding();
                                                     rmegui.jTabbedPane3.setSelectedIndex(1);
                                                 }
@@ -1443,11 +1310,11 @@ public class MapEditor {
                             rmegui.jTabbedPane2.setSelectedIndex(0);
                             System.out.println(rmegui.jTabbedPane2.getSelectedIndex());
                             if (currentUnit != null) {
-                                currentUnit.isSelected = false;
+                                currentUnit.setSelected(false);
                             }
                             currentUnit = null;
                             if (currentBuilding != null) {
-                                currentBuilding.isSelected = false;
+                                currentBuilding.setSelected(false);
                             }
                             currentBuilding = null;
 
@@ -1721,15 +1588,9 @@ public class MapEditor {
         descUnit = new HashMap<Integer, Unit>();
         descBuilding = new HashMap<Integer, Building>();
         // Löschen-Felder einfügen
-        Unit tU = new Unit(0, 0, -2);
-        tU.descTypeId = 0;
-        tU.Gdesc = "Deletes Units";
-        tU.graphicsdata.setTexture("del");
+        Unit tU = new Unit();
         descUnit.put(0, tU);
-        Building tB = new Building(0, 0, -2);
-        tB.descTypeId = 0;
-        tB.Gdesc = "Deleted Buildings";
-        tB.defaultTexture = "del";
+        Building tB = new Building();
         descBuilding.put(0, tB);
         // Dateiliste erstellen
 
