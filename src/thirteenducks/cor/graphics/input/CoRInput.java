@@ -764,8 +764,7 @@ public class CoRInput implements Pauseable {
         System.out.println("AddMe: Rework mKL-Input");
         rgi.rogGraphics.triggerTempStatus(null);
         Position selField = graphics.content.translateCoordinatesToField(x, y);
-        Unit rUnit = identifyUnit(x, y);
-
+        List<InteractableGameElement> elems = selMap.getIGEsAt(selField.getX(), selField.getY()s);
         // Wenn keine Einheit angeklickt wurde alle Einheiten abwählen:
         if (rUnit == null) {
             for (int i = 0; i < selected.size(); i++) {
@@ -829,13 +828,12 @@ public class CoRInput implements Pauseable {
      * @param e: MouseEvent, enthält Position, welcher Button, wie oft, etc..
      */
     public void mouseKlickedRight(final int button, final int x, final int y) {
-        System.out.println("AddMe: Improve/Acknowledge basic check for valid Koordinates!");
         System.out.println("AddMe: Check for double-klicks");
         Position selField = graphics.content.translateCoordinatesToField(x, y);
         // Überhaupt was selektiert?
         if (!selected.isEmpty()) {
             // Ziele finden:
-            List<InteractableGameElement> targets = selMap.getIGEsAt(x, y);
+            List<InteractableGameElement> targets = selMap.getIGEsAt(selField.getX(), selField.getY());
             if (!targets.isEmpty()) {
                 for (InteractableGameElement elem : selected) {
                     elem.command(button, targets, false);
