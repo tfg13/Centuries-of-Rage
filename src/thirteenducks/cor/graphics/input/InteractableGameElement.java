@@ -39,18 +39,6 @@ public interface InteractableGameElement {
      */
     public void mouseHovered();
     /**
-     * Dieses InteractableGameElement wurde angeklickt.
-     */
-    public void mouseKlicked();
-    /**
-     * Die Maus wurde über diesem InteractableGameElement gedrückt.
-     */
-    public void mousePressed();
-    /**
-     * Die Maus wurde über diesem InteractableGameElement loggelassen.
-     */
-    public void mouseReleased();
-    /**
      * Findet heraus, ob dieses IGE selektiertbar ist.
      * Selektierbar bedeutet, der User kann es (üblicherweise per Linksklick)
      * anwählen, es ist dann in einem besonderen Zustand in dem es direkte Befehle annimmt.
