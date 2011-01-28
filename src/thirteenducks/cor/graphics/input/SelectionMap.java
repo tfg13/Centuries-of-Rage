@@ -99,6 +99,21 @@ public class SelectionMap {
         }
         return found;
     }
+    /**
+     * Liefert alle IGE's an dieser Stelle
+     * @param cx Die X-Koordinate
+     * @param cy Die Y-Koordinate
+     * @return Eine Liste mit allen Elementen aller teams, die an dieser Stelle eingetragen sind.
+     */
+    List<InteractableGameElement> getIGEsAt(int cx, int cy) {
+        // Alle holen
+        LinkedList<InteractableGameElement> list = map[cx][cy];
+        if (list != null) {
+            return list;
+        } else {
+            return new LinkedList<InteractableGameElement>();
+        }
+    }
 
 
 
