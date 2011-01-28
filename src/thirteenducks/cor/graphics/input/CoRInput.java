@@ -62,10 +62,6 @@ public class CoRInput implements Pauseable {
      */
     private List<InteractableGameElement> selected;
     /**
-     * Alle derzeit anklickbaren IGE's
-     */
-    private List<InteractableGameElement> igeList;
-    /**
      * Die SelektionsMap, die alle Position speichert, an denen derzeit etwas selektierbar ist.
      */
     private SelectionMap selMap;
@@ -1158,7 +1154,6 @@ public class CoRInput implements Pauseable {
         input = inp;
         scroll = new boolean[4];
         savedSelections = new GameObject[10][];
-        igeList = new ArrayList<InteractableGameElement>();
     }
 
     @Override
