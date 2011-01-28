@@ -1154,6 +1154,7 @@ public class CoRInput implements Pauseable {
         input = inp;
         scroll = new boolean[4];
         savedSelections = new GameObject[10][];
+        overlays = new LinkedList<OverlayMouseListener>();
     }
 
     @Override
@@ -1250,5 +1251,28 @@ public class CoRInput implements Pauseable {
 
     public void stopSelectionBox() {
         dragSelectionBox = false;
+    }
+
+    /**
+     * Fügt einen OverlayMouseListener zum InputModul hinzu.
+     * Der neue Listener ist ab sofort aktiv.
+     * Falls sich der catch-Bereich mit denen anderer Überschneiden sollte, so wird das Inputmodul
+     * immer den zuletzt hinzugefügten aufrufen.
+     * Damit lassen sich beispielsweise Abfragen auf einem anderen Menü realisieren.
+     * @param listener Der Listener, der hinzugefügt werden soll.
+     */
+    public void addOverlayMouseListener(OverlayMouseListener listener) {
+        overlays.add(0, listener);
+    }
+
+    /**
+     * Löscht den gegebenen Listener wieder as dem InputModul, er fängt also künftig keine Mausklicks mehr.
+     * Achtung: Löscht den Listener nur einmal. Sollten aus Versehen mehrere geadded worden sein, müssen auch genau so viele
+     * wieder einzeln gelöscht werden.
+     * Sollte der Listener gar nicht vorhanden sein, geschieht nichts weiter.
+     * @param listener Der Listener, der gelöscht werden soll.
+     */
+    public void removeOverlayMouseListener(OverlayMouseListener listener) {
+        overlays.remove(listener);
     }
 }
