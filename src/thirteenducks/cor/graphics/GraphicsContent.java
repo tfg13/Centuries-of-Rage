@@ -3889,12 +3889,6 @@ public class GraphicsContent extends BasicGame {
             if (lastInputEvent == 1) {
                 // CalcOptClicked
                 this.calcOptClicked(lastInputButton, lastInputX, lastInputY, 1, rgi.rogGraphics.inputM.selected);
-            } else if (lastInputEvent == 2) {
-                // MouseKlickedRight
-                rgi.rogGraphics.inputM.mouseKlickedRight(lastInputButton, lastInputX, lastInputY);
-            } else if (lastInputEvent == 3) {
-                // MouseKlickedLeft
-                rgi.rogGraphics.inputM.mouseKlickedLeft(0, lastInputX, lastInputY, 1);
             }
         } finally {
             lastInputEvent = 0;
