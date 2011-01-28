@@ -28,13 +28,10 @@ package thirteenducks.cor.graphics.input;
 //import elementcorp.rog.RogMapElement.collision;
 import thirteenducks.cor.graphics.CoreGraphics;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.ability.AbilityBuild;
-import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -378,9 +375,7 @@ public class CoRInput implements Pauseable {
                                 } else {
                                     // Kein Rahmen, normaler klick
                                     if (x < graphics.content.hudX) {
-                                        graphics.content.lastInputEvent = 3;
-                                        graphics.content.lastInputX = x;
-                                        graphics.content.lastInputY = y;
+                                        CoRInput.this.mouseKlickedLeft(button, x, y, 1);
                                     }
                                 }
                                 // Das auf jeden Fall machen:
@@ -396,12 +391,7 @@ public class CoRInput implements Pauseable {
                                         }
                                     }
                                 } else {
-                                    // Muss ausgelagert werden, muss Slick(grafik) selber machen, sonst ist es beleidigt...
-                                    graphics.content.lastInputEvent = 2;
-                                    graphics.content.lastInputX = x;
-                                    graphics.content.lastInputY = y;
-                                    graphics.content.lastInputButton = 1;
-                                    //mouseKlickedRight(button, x, y);
+                                    mouseKlickedRight(button, x, y);
                                 }
                             }
                         }
@@ -767,10 +757,11 @@ public class CoRInput implements Pauseable {
     }
 
     /**
-     * Wird bei Linksklick aufgerufen. Behandelt an/abwählen von Einheiten, Gebäuden oder Resssourcen.
+     * Wird bei Linksklick aufgerufen. Behandelt an/abwählen von Einheiten, Gebäuden.
      * @param e     MouseEvent, enthält Position, welcher Button, wie oft, welche Maus, etc..
      */
     public void mouseKlickedLeft(final int button, final int x, final int y, int clickCount) {
+        System.out.println("AddMe: Rework mKL-Input");
         rgi.rogGraphics.triggerTempStatus(null);
         final Dimension selField = graphics.content.getGameSelectedField(x, y);
         Unit rUnit = identifyUnit(x, y);
@@ -835,328 +826,348 @@ public class CoRInput implements Pauseable {
 
     /**
      * Wird bei Rechtsklick aufgerufen. Behandelt Befehle an die Einheiten (Angreifen, bewegen, Gebäude weiterbauen, ...)
-     * @param e: MouseEvent, enthält Position, welcher Button, wie oft, welche Maus, etc..
+     * @param e: MouseEvent, enthält Position, welcher Button, wie oft, etc..
      */
     public void mouseKlickedRight(final int button, final int x, final int y) {
-
+        System.out.println("AddMe: Improve/Acknowledge basic check for valid Koordinates!");
+        System.out.println("AddMe: Check for double-klicks");
+        Position selField = new Position(x, y);
+        if (!selField.valid()) {
+            selField.setX(selField.getX() + 1);
+        }
         // Überhaupt was selektiert?
-
         if (!selected.isEmpty()) {
+            // Ziele finden:
+            List<InteractableGameElement> targets = selMap.getIGEsAt(x, y);
+            if (!targets.isEmpty()) {
+                for (InteractableGameElement elem : selected) {
+                    elem.command(button, targets, false);
+                }
+            } else {
+                for (InteractableGameElement elem : selected) {
+                    elem.command(button, selField, false);
+                }
+            }
+            }}
 
-            // Was wurde angeklickt?
+            // Überhaupt was selektiert?
 
-            final Dimension selField = graphics.content.getGameSelectedField(x, y);
-            final Unit selUnit = graphics.content.identifyUnit(x, y);
-            final Building selBuilding = graphics.content.identifyBuilding(selField.width, selField.height);
+      /*      if (!selected.isEmpty()) {
 
-            final int playerId = selected.get(0).getPlayerId();
+                // Was wurde angeklickt?
 
-            // Ganz unbekannt:
-            final boolean clickedInBlack = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 1);
-            // Grob bekannt:
-            final boolean clickedInKnown = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 2);
+                final Dimension selField = graphics.content.getGameSelectedField(x, y);
+                final Unit selUnit = graphics.content.identifyUnit(x, y);
+                final Building selBuilding = graphics.content.identifyBuilding(selField.width, selField.height);
 
-            // Ab jetzt multithreaden, sonst wird die Grafik überlastet
+                final int playerId = selected.get(0).getPlayerId();
 
-            Thread t = new Thread(new Runnable() {
+                // Ganz unbekannt:
+                final boolean clickedInBlack = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 1);
+                // Grob bekannt:
+                final boolean clickedInKnown = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 2);
 
-                @Override
-                public void run() {
-                    if (!clickedInBlack) { //Weiß der Spieler, was er anklickt?
+                // Ab jetzt multithreaden, sonst wird die Grafik überlastet
 
-                        // Was ist zurzeit selektiert
+                Thread t = new Thread(new Runnable() {
 
-                        if (selected.get(0).getClass().equals(Unit.class)) {
+                    @Override
+                    public void run() {
+                        if (!clickedInBlack) { //Weiß der Spieler, was er anklickt?
 
-                            // Unit selektiert
+                            // Was ist zurzeit selektiert
 
-                            if (selUnit != null && selUnit.getPlayerId() != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId)) && !clickedInKnown) { // Man kann Feinde im erkundeten nicht angereifen
+                            if (selected.get(0).getClass().equals(Unit.class)) {
 
-                                // Angreifen - Einzeln?
-                                if (selected.size() == 1) {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 29, selected.get(0).netID, selUnit.netID, 2, 0));
-                                } else {
-                                    // Bei mehr als 2 sind mehrere Packete nötig:
-                                    if (selected.size() == 2) {
-                                        // Nur ein Packet:
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selUnit.netID, selected.get(0).netID, selected.get(1).netID, 0));
+                                // Unit selektiert
+
+                                if (selUnit != null && selUnit.getPlayerId() != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId)) && !clickedInKnown) { // Man kann Feinde im erkundeten nicht angereifen
+
+                                    // Angreifen - Einzeln?
+                                    if (selected.size() == 1) {
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 29, selected.get(0).netID, selUnit.netID, 2, 0));
                                     } else {
-                                        // Das erste gleich mal raushauen
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selUnit.netID, selected.get(0).netID, selected.get(1).netID, selected.get(2).netID));
-                                        // Jetzt den Rest abhandeln
-                                        int[] ids = new int[4];
-                                        for (int i = 0; i < 4; i++) {
-                                            ids[i] = 0;
-                                        }
-                                        int nextselindex = 3;
-                                        int nextidindex = 0;
-                                        // Solange noch was da ist:
-                                        while (nextselindex < selected.size()) {
-                                            // Auffüllen
-                                            ids[nextidindex] = selected.get(nextselindex).netID;
-                                            nextidindex++;
-                                            nextselindex++;
-                                            // Zu weit?
-                                            if (nextidindex == 4) {
-                                                // Einmal rausschicken & löschen
-                                                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
-                                                for (int i = 0; i < 4; i++) {
-                                                    ids[i] = 0;
+                                        // Bei mehr als 2 sind mehrere Packete nötig:
+                                        if (selected.size() == 2) {
+                                            // Nur ein Packet:
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selUnit.netID, selected.get(0).netID, selected.get(1).netID, 0));
+                                        } else {
+                                            // Das erste gleich mal raushauen
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selUnit.netID, selected.get(0).netID, selected.get(1).netID, selected.get(2).netID));
+                                            // Jetzt den Rest abhandeln
+                                            int[] ids = new int[4];
+                                            for (int i = 0; i < 4; i++) {
+                                                ids[i] = 0;
+                                            }
+                                            int nextselindex = 3;
+                                            int nextidindex = 0;
+                                            // Solange noch was da ist:
+                                            while (nextselindex < selected.size()) {
+                                                // Auffüllen
+                                                ids[nextidindex] = selected.get(nextselindex).netID;
+                                                nextidindex++;
+                                                nextselindex++;
+                                                // Zu weit?
+                                                if (nextidindex == 4) {
+                                                    // Einmal rausschicken & löschen
+                                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
+                                                    for (int i = 0; i < 4; i++) {
+                                                        ids[i] = 0;
+                                                    }
+                                                    nextidindex = 0;
                                                 }
-                                                nextidindex = 0;
                                             }
+                                            // Fertig, den Rest noch senden
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
                                         }
-                                        // Fertig, den Rest noch senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
                                     }
-                                }
-                            } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-                                // Gebäude - gleicher Spieler : Bauen
-                                Unit unit = (Unit) selected.get(0);
-                                // Wenn noch keiner da dran rumbaut:
-                                System.out.println("AddMe: Check for other builders!");
-                                // Kann die Einheit das?
-                                AbilityBuild ro = unit.getBuildAbility(selBuilding.getDescTypeId());
-                                if (ro != null) {
-                                    // Ja, geht.
-                                    //unit.moveToBuilding(rBuilding, rgi);
-                                    // Unit hinlaufen lassen
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 26, unit.netID, selBuilding.netID, 0, 0));
-                                    // Signal senden
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, selBuilding.netID, ro.duration, 0));
-                                }
-                            } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.ready) {
-                                // Gebäude - gleicher Spieler : Betreten
-                                // So viele Einheiten reinschicken, wie noch Platz frei ist.
-                                int searchCount = 0;
-                                int free = selBuilding.intraFree();
-                                while (free > 0 && selected.size() > searchCount) {
-                                    if (selBuilding.accepts == Building.ACCEPTS_ALL) {
-                                        selBuilding.goIntra((Unit) selected.get(searchCount), rgi);
-                                        searchCount++;
-                                        free--;
-                                    } else {
-                                        boolean found = true;
-                                        while (!((Unit) selected.get(searchCount)).canHarvest) {
-                                            searchCount++;
-                                            if (selected.size() <= searchCount) {
-                                                found = false;
-                                                break;
-                                            }
-                                        }
-                                        if (found) {
+                                } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
+                                    // Gebäude - gleicher Spieler : Bauen
+                                    Unit unit = (Unit) selected.get(0);
+                                    // Wenn noch keiner da dran rumbaut:
+                                    System.out.println("AddMe: Check for other builders!");
+                                    // Kann die Einheit das?
+                                    AbilityBuild ro = unit.getBuildAbility(selBuilding.getDescTypeId());
+                                    if (ro != null) {
+                                        // Ja, geht.
+                                        //unit.moveToBuilding(rBuilding, rgi);
+                                        // Unit hinlaufen lassen
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 26, unit.netID, selBuilding.netID, 0, 0));
+                                        // Signal senden
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, selBuilding.netID, ro.duration, 0));
+                                    }
+                                } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.ready) {
+                                    // Gebäude - gleicher Spieler : Betreten
+                                    // So viele Einheiten reinschicken, wie noch Platz frei ist.
+                                    int searchCount = 0;
+                                    int free = selBuilding.intraFree();
+                                    while (free > 0 && selected.size() > searchCount) {
+                                        if (selBuilding.accepts == Building.ACCEPTS_ALL) {
                                             selBuilding.goIntra((Unit) selected.get(searchCount), rgi);
                                             searchCount++;
                                             free--;
-                                        }
-                                    }
-                                }
-
-                            } else if (selBuilding != null && selBuilding.playerId != playerId && !rgi.game.areAllies(selBuilding, rgi.game.getPlayer(playerId)) && selBuilding.wasSeen) { // Man kann Gebäude im erkundeten angreiffen, aber nur wenn sie bereits entdeckt wurden
-                                // Gebäude - fremder Spieler : Gebäudeangriff
-                                // Gruppenangriff?
-                                if (selected.size() == 1) {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 29, selected.get(0).netID, selBuilding.netID, 2, 0));
-                                } else {
-                                    // Hier sind unter umständen mehrere Packete nötig:
-                                    if (selected.size() == 2) {
-                                        // Nur ein Packet:
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selBuilding.netID, selected.get(0).netID, selected.get(1).netID, 0));
-                                    } else {
-                                        // Das erste gleich mal raushauen
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selBuilding.netID, selected.get(0).netID, selected.get(1).netID, selected.get(2).netID));
-                                        // Jetzt den Rest abhandeln
-                                        int[] ids = new int[4];
-                                        for (int i = 0; i < 4; i++) {
-                                            ids[i] = 0;
-                                        }
-                                        int nextselindex = 3;
-                                        int nextidindex = 0;
-                                        // Solange noch was da ist:
-                                        while (nextselindex < selected.size()) {
-                                            // Auffüllen
-                                            ids[nextidindex] = selected.get(nextselindex).netID;
-                                            nextidindex++;
-                                            nextselindex++;
-                                            // Zu weit?
-                                            if (nextidindex == 4) {
-                                                // Einmal rausschicken & löschen
-                                                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
-                                                for (int i = 0; i < 4; i++) {
-                                                    ids[i] = 0;
-                                                }
-                                                nextidindex = 0;
-                                            }
-                                        }
-                                        // Fertig, den Rest noch senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
-                                    }
-                                }
-
-                            } else if (selRessource != null) { // Man kann Ressourcen im grauen anklicken
-                                // Ernten
-                                if (selRessource.getType() < 5) {
-                                    for (GameObject obj : selected) {
-                                        try {
-                                            Unit unit = (Unit) obj;
-                                            unit.goHarvest(selRessource, rgi);
-                                        } catch (ClassCastException ex1) {
-                                        }
-                                    }
-                                }
-                            } else {
-                                // Bewegen - man kann sich ins graue bewegen
-                                // Mehrere?
-                                if (selected.size() == 1) {
-                                    Unit tmpUnit = (Unit) selected.get(0);
-                                    Position target = new Position(selField.width, selField.height);
-                                    tmpUnit.sendToPosition(target, rgi, true);
-                                } else {
-                                    // Alle vorbereiten:
-                                    for (int i = 0; i < selected.size(); i++) {
-                                        Unit mover = (Unit) selected.get(i);
-                                        mover.prepareMove();
-                                    }
-                                    // Befehl abschicken:
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, selField.width, selField.height, selected.get(0).netID, selected.get(1).netID));
-                                    // Hier sind unter umständen mehrere Packete nötig:
-                                    if (selected.size() == 2) {
-                                        // Nein, abbrechen
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, 0, 0, 0, 0));
-                                    } else {
-                                        // Jetzt den Rest abhandeln
-                                        int[] ids = new int[4];
-                                        for (int i = 0; i < 4; i++) {
-                                            ids[i] = 0;
-                                        }
-                                        int nextselindex = 2;
-                                        int nextidindex = 0;
-                                        // Solange noch was da ist:
-                                        while (nextselindex < selected.size()) {
-                                            // Auffüllen
-                                            ids[nextidindex] = selected.get(nextselindex).netID;
-                                            nextidindex++;
-                                            nextselindex++;
-                                            // Zu weit?
-                                            if (nextidindex == 4) {
-                                                // Einmal rausschicken & löschen
-                                                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
-                                                for (int i = 0; i < 4; i++) {
-                                                    ids[i] = 0;
-                                                }
-                                                nextidindex = 0;
-                                            }
-                                        }
-                                        // Fertig, den Rest noch senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
-                                    }
-                                }
-                            }
-
-                        } else if (selected.get(0).getClass().equals(Building.class)) {
-                            // Building selektiert
-                            // Nur Gebäude die auch was rekrutieren, dürfen Sammelpunkte setzen
-                            boolean recruits = false;
-                            for (Ability ab : selected.get(0).abilitys) {
-                                if (ab.type == Ability.ABILITY_RECRUIT) {
-                                    recruits = true;
-                                    break;
-                                }
-                            }
-                            // Kann das Gebäude angreifen?
-                            if (selected.get(0).getDamage() != 0) {
-                                // Eigene Position berechnen
-                                Building bui = (Building) selected.get(0);
-                                float bx = 0;
-                                float by = 0;
-                                bx = bui.position.X + ((bui.z1 - 1) * 1.0f / 2);
-                                by = bui.position.Y - ((bui.z1 - 1) * 1.0f / 2);
-                                bx += ((bui.z2 - 1) * 1.0f / 2);
-                                by += ((bui.z2 - 1) * 1.0f / 2);
-                                Position Omg = new Position((int) bx, (int) by);
-                                // Feindliche Einheit angeklickt?
-                                if (selUnit != null && selUnit.playerId != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId))) {
-                                    // In Reichweite?
-                                    if (selUnit.position.getDistance(Omg) <= bui.getRange()) {
-                                        // Idle deaktivieren
-                                        bui.getbehaviourC(10).deactivate();
-                                        // Angriff an Server senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 47, bui.netID, selUnit.netID, 0, 0));
-                                    }
-                                } else if (selBuilding != null && selBuilding.playerId != playerId && !rgi.game.areAllies(selBuilding, rgi.game.getPlayer(playerId))) {
-                                    //Eines der Gebäudefelder in Reichweite?
-                                    //z1 nuff, z2 nab
-                                    boolean inreichweite = false;
-                                    int randfelder = (selBuilding.z1 + selBuilding.z2 - 2) * 2;
-                                    Position Test = new Position(selBuilding.position.X, selBuilding.position.Y);
-                                    for (int i = 0; i < randfelder; i++) {
-                                        if (i == 0) {
-                                        } else if (i < selBuilding.z2) {
-                                            Test.X++;
-                                            Test.Y++;
-                                        } else if (i < selBuilding.z1 + selBuilding.z2) {
-                                            Test.X++;
-                                            Test.Y--;
-                                        } else if (i < selBuilding.z1 + 2 * selBuilding.z2) {
-                                            Test.X--;
-                                            Test.Y--;
-                                        } else if (i < 2 * (selBuilding.z1 + selBuilding.z2)) {
-                                            Test.X--;
-                                            Test.Y++;
                                         } else {
-                                            break;
-                                        }
-                                        if (Omg.getDistance(Test) <= bui.getRange()) {
-                                            inreichweite = true;
-                                            break;
+                                            boolean found = true;
+                                            while (!((Unit) selected.get(searchCount)).canHarvest) {
+                                                searchCount++;
+                                                if (selected.size() <= searchCount) {
+                                                    found = false;
+                                                    break;
+                                                }
+                                            }
+                                            if (found) {
+                                                selBuilding.goIntra((Unit) selected.get(searchCount), rgi);
+                                                searchCount++;
+                                                free--;
+                                            }
                                         }
                                     }
-                                    if (inreichweite) {
-                                        // Idle deaktivieren
-                                        bui.getbehaviourC(10).deactivate();
-                                        // Angriff an Server senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 47, bui.netID, selBuilding.netID, 0, 0));
+
+                                } else if (selBuilding != null && selBuilding.playerId != playerId && !rgi.game.areAllies(selBuilding, rgi.game.getPlayer(playerId)) && selBuilding.wasSeen) { // Man kann Gebäude im erkundeten angreiffen, aber nur wenn sie bereits entdeckt wurden
+                                    // Gebäude - fremder Spieler : Gebäudeangriff
+                                    // Gruppenangriff?
+                                    if (selected.size() == 1) {
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 29, selected.get(0).netID, selBuilding.netID, 2, 0));
+                                    } else {
+                                        // Hier sind unter umständen mehrere Packete nötig:
+                                        if (selected.size() == 2) {
+                                            // Nur ein Packet:
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selBuilding.netID, selected.get(0).netID, selected.get(1).netID, 0));
+                                        } else {
+                                            // Das erste gleich mal raushauen
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, selBuilding.netID, selected.get(0).netID, selected.get(1).netID, selected.get(2).netID));
+                                            // Jetzt den Rest abhandeln
+                                            int[] ids = new int[4];
+                                            for (int i = 0; i < 4; i++) {
+                                                ids[i] = 0;
+                                            }
+                                            int nextselindex = 3;
+                                            int nextidindex = 0;
+                                            // Solange noch was da ist:
+                                            while (nextselindex < selected.size()) {
+                                                // Auffüllen
+                                                ids[nextidindex] = selected.get(nextselindex).netID;
+                                                nextidindex++;
+                                                nextselindex++;
+                                                // Zu weit?
+                                                if (nextidindex == 4) {
+                                                    // Einmal rausschicken & löschen
+                                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
+                                                    for (int i = 0; i < 4; i++) {
+                                                        ids[i] = 0;
+                                                    }
+                                                    nextidindex = 0;
+                                                }
+                                            }
+                                            // Fertig, den Rest noch senden
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
+                                        }
                                     }
-                                }
-                            } else if (recruits) {
-                                // Wegpunkt setzen - man darf das ins Graue tun...
-                                // ...kann es aber auch auf ein Ressourcengebäude oder auf Ressourcen tun, um die neuen Einheiten sofort ernten zu lassen
-                                if (selRessource != null) {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, selRessource.netID, selField.width, selField.height));
-                                } else if (selBuilding != null && selBuilding.playerId == rgi.game.getOwnPlayer().playerId && selBuilding.maxIntra > 0) {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, selBuilding.netID, selField.width, selField.height));
+
+                                } else if (selRessource != null) { // Man kann Ressourcen im grauen anklicken
+                                    // Ernten
+                                    if (selRessource.getType() < 5) {
+                                        for (GameObject obj : selected) {
+                                            try {
+                                                Unit unit = (Unit) obj;
+                                                unit.goHarvest(selRessource, rgi);
+                                            } catch (ClassCastException ex1) {
+                                            }
+                                        }
+                                    }
                                 } else {
-                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, 0, selField.width, selField.height));
+                                    // Bewegen - man kann sich ins graue bewegen
+                                    // Mehrere?
+                                    if (selected.size() == 1) {
+                                        Unit tmpUnit = (Unit) selected.get(0);
+                                        Position target = new Position(selField.width, selField.height);
+                                        tmpUnit.sendToPosition(target, rgi, true);
+                                    } else {
+                                        // Alle vorbereiten:
+                                        for (int i = 0; i < selected.size(); i++) {
+                                            Unit mover = (Unit) selected.get(i);
+                                            mover.prepareMove();
+                                        }
+                                        // Befehl abschicken:
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, selField.width, selField.height, selected.get(0).netID, selected.get(1).netID));
+                                        // Hier sind unter umständen mehrere Packete nötig:
+                                        if (selected.size() == 2) {
+                                            // Nein, abbrechen
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, 0, 0, 0, 0));
+                                        } else {
+                                            // Jetzt den Rest abhandeln
+                                            int[] ids = new int[4];
+                                            for (int i = 0; i < 4; i++) {
+                                                ids[i] = 0;
+                                            }
+                                            int nextselindex = 2;
+                                            int nextidindex = 0;
+                                            // Solange noch was da ist:
+                                            while (nextselindex < selected.size()) {
+                                                // Auffüllen
+                                                ids[nextidindex] = selected.get(nextselindex).netID;
+                                                nextidindex++;
+                                                nextselindex++;
+                                                // Zu weit?
+                                                if (nextidindex == 4) {
+                                                    // Einmal rausschicken & löschen
+                                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
+                                                    for (int i = 0; i < 4; i++) {
+                                                        ids[i] = 0;
+                                                    }
+                                                    nextidindex = 0;
+                                                }
+                                            }
+                                            // Fertig, den Rest noch senden
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
+                                        }
+                                    }
+                                }
+
+                            } else if (selected.get(0).getClass().equals(Building.class)) {
+                                // Building selektiert
+                                // Nur Gebäude die auch was rekrutieren, dürfen Sammelpunkte setzen
+                                boolean recruits = false;
+                                for (Ability ab : selected.get(0).abilitys) {
+                                    if (ab.type == Ability.ABILITY_RECRUIT) {
+                                        recruits = true;
+                                        break;
+                                    }
+                                }
+                                // Kann das Gebäude angreifen?
+                                if (selected.get(0).getDamage() != 0) {
+                                    // Eigene Position berechnen
+                                    Building bui = (Building) selected.get(0);
+                                    float bx = 0;
+                                    float by = 0;
+                                    bx = bui.position.X + ((bui.z1 - 1) * 1.0f / 2);
+                                    by = bui.position.Y - ((bui.z1 - 1) * 1.0f / 2);
+                                    bx += ((bui.z2 - 1) * 1.0f / 2);
+                                    by += ((bui.z2 - 1) * 1.0f / 2);
+                                    Position Omg = new Position((int) bx, (int) by);
+                                    // Feindliche Einheit angeklickt?
+                                    if (selUnit != null && selUnit.playerId != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId))) {
+                                        // In Reichweite?
+                                        if (selUnit.position.getDistance(Omg) <= bui.getRange()) {
+                                            // Idle deaktivieren
+                                            bui.getbehaviourC(10).deactivate();
+                                            // Angriff an Server senden
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 47, bui.netID, selUnit.netID, 0, 0));
+                                        }
+                                    } else if (selBuilding != null && selBuilding.playerId != playerId && !rgi.game.areAllies(selBuilding, rgi.game.getPlayer(playerId))) {
+                                        //Eines der Gebäudefelder in Reichweite?
+                                        //z1 nuff, z2 nab
+                                        boolean inreichweite = false;
+                                        int randfelder = (selBuilding.z1 + selBuilding.z2 - 2) * 2;
+                                        Position Test = new Position(selBuilding.position.X, selBuilding.position.Y);
+                                        for (int i = 0; i < randfelder; i++) {
+                                            if (i == 0) {
+                                            } else if (i < selBuilding.z2) {
+                                                Test.X++;
+                                                Test.Y++;
+                                            } else if (i < selBuilding.z1 + selBuilding.z2) {
+                                                Test.X++;
+                                                Test.Y--;
+                                            } else if (i < selBuilding.z1 + 2 * selBuilding.z2) {
+                                                Test.X--;
+                                                Test.Y--;
+                                            } else if (i < 2 * (selBuilding.z1 + selBuilding.z2)) {
+                                                Test.X--;
+                                                Test.Y++;
+                                            } else {
+                                                break;
+                                            }
+                                            if (Omg.getDistance(Test) <= bui.getRange()) {
+                                                inreichweite = true;
+                                                break;
+                                            }
+                                        }
+                                        if (inreichweite) {
+                                            // Idle deaktivieren
+                                            bui.getbehaviourC(10).deactivate();
+                                            // Angriff an Server senden
+                                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 47, bui.netID, selBuilding.netID, 0, 0));
+                                        }
+                                    }
+                                } else if (recruits) {
+                                    // Wegpunkt setzen - man darf das ins Graue tun...
+                                    // ...kann es aber auch auf ein Ressourcengebäude oder auf Ressourcen tun, um die neuen Einheiten sofort ernten zu lassen
+                                    if (selRessource != null) {
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, selRessource.netID, selField.width, selField.height));
+                                    } else if (selBuilding != null && selBuilding.playerId == rgi.game.getOwnPlayer().playerId && selBuilding.maxIntra > 0) {
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, selBuilding.netID, selField.width, selField.height));
+                                    } else {
+                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, selected.get(0).netID, 0, selField.width, selField.height));
+                                    }
+                                }
+                            }
+                        } else {
+                            // Ins schwarze geklickt, das ist nur für Einheiten zulässig:
+                            if (selected.get(0).getClass().equals(Unit.class)) {
+                                // Dahin laufen lassen
+                                // Die Positionen der Einheiten freimachen, für Wegfindung, und wenn sie sich bewegen sind die felder eh frei
+                                for (int a = 0; a < selected.size(); a++) {
+                                    rgi.mapModule.setCollision(selected.get(a).position, collision.free);
+                                }
+
+                                for (int i = 0; i < selected.size(); i++) {
+                                    Unit tmpUnit = (Unit) selected.get(i);
+                                    Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
+                                    tmpUnit.sendToPosition(target, rgi, true);
                                 }
                             }
                         }
-                    } else {
-                        // Ins schwarze geklickt, das ist nur für Einheiten zulässig:
-                        if (selected.get(0).getClass().equals(Unit.class)) {
-                            // Dahin laufen lassen
-                            // Die Positionen der Einheiten freimachen, für Wegfindung, und wenn sie sich bewegen sind die felder eh frei
-                            for (int a = 0; a < selected.size(); a++) {
-                                rgi.mapModule.setCollision(selected.get(a).position, collision.free);
-                            }
 
-                            for (int i = 0; i < selected.size(); i++) {
-                                Unit tmpUnit = (Unit) selected.get(i);
-                                Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
-                                tmpUnit.sendToPosition(target, rgi, true);
-                            }
-                        }
                     }
+                });
 
-                }
-            });
+                t.setDaemon(true);
+                t.setName("InputHandler: RightClick");
+                t.start();
+            }
 
-            t.setDaemon(true);
-            t.setName("InputHandler: RightClick");
-            t.start();
-        }
-
-        return;
-    }
+            return;
+        } */
 
     private Unit identifyUnit(int x, int y) {
         // Identifizier eine Einheit anhand ihrer Koordinaten
@@ -1226,7 +1237,6 @@ public class CoRInput implements Pauseable {
                 List<InteractableGameElement> elems = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
                 for (InteractableGameElement elem : elems) {
                     if (!finalList.contains(elem)) {
-                        
                     }
                 }
             }
