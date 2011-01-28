@@ -1607,15 +1607,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-    public void startSelectionBox(int button, int x, int y) {
-        content.dragSelectionBox = true;
-        content.boxselectionstart = new Dimension(x, y);
-    }
-
-    public void stopSelectionBox() {
-        content.dragSelectionBox = false;
-    }
-
     public void startRightScrolling() {
         rightScrollStart = System.currentTimeMillis();
         this.setMouseGrabbed(true);

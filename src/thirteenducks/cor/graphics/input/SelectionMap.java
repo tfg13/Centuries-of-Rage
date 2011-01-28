@@ -78,4 +78,19 @@ public class SelectionMap {
         }
     }
 
+    /**
+     * Liefert alle IGE's an dieser Stelle, die vom angegebenen Team sind.
+     * @param cx die X-Koordinate
+     * @param cy die Y-Koordinate
+     * @param playerId die PlayerId der gesuchten Einheiten
+     * @return alle IGE's an der angegebenen Stelle, die vom angegebenen Team sind.
+     */
+    InteractableGameElement[] getIGEsWithTeamAt(int cx, int cy, int playerId) {
+        
+    }
+
+
+
+
+
 }

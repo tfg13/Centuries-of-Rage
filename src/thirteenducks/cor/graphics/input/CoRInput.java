@@ -37,6 +37,7 @@ import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.*;
 import thirteenducks.cor.game.NetPlayer;
@@ -48,6 +49,7 @@ import thirteenducks.cor.game.Pauseable;
  *  Das Inputmodul
  */
 public class CoRInput implements Pauseable {
+
     /**
      * Veraltete Referenz auf das Grafikmodul
      * @deprecated
@@ -65,6 +67,10 @@ public class CoRInput implements Pauseable {
      * Alle derzeit anklickbaren IGE's
      */
     private ArrayList<InteractableGameElement> igeList;
+    /**
+     * Die SelektionsMap, die alle Position speichert, an denen derzeit etwas selektierbar ist.
+     */
+    private SelectionMap selMap;
     /**
      * Ein anderer Eingabemodus. Kann durch einen Aufruf gesetzt werden, dann kann sich das Inputmodul kurzzeitig
      * komplett anders verhalten, was zusätzliche Eingaben ermöglicht.
@@ -115,9 +121,18 @@ public class CoRInput implements Pauseable {
      * damit es noch ein Doppelklick ist.
      */
     public static final int doubleKlickDelay = 400;
+    /**
+     * Die Koordinaten des Startpunktes der Selektionsbox.
+     */
+    public Dimension boxselectionstart;
+    /**
+     * Sind wir derzeit im Box-Selektionsmodus?
+     */
+    public boolean dragSelectionBox = false;
 
-    public void initAsSub(CoreGraphics rg) {
+    public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
+        selMap = new SelectionMap(mapX, mapY);
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
         rgi.logger("[RogInput] RogInput is ready to rock! (init completed)");
@@ -314,7 +329,7 @@ public class CoRInput implements Pauseable {
                         // Im Game.
                         // Selektionskästchen ziehen
                         if (button == 0) {
-                            graphics.startSelectionBox(button, x, y);
+                            startSelectionBox(x, y);
                             graphics.dSBX = x;
                             graphics.dSBY = y;
                         } else if (button == 1) {
@@ -342,7 +357,7 @@ public class CoRInput implements Pauseable {
                                 int dx = graphics.dSBX - x;
                                 int dy = graphics.dSBY - y;
                                 if ((dx > 5 || dx < -5) && (dy > 5 || dy < -5)) {
-                                    if (graphics.content.dragSelectionBox) {
+                                    if (dragSelectionBox) {
                                         // Selektion ist an, jetzt abschalten und eingeschlossene Einheiten selektieren
                                         if (!shiftDown) {
                                             for (int i = 0; i < selected.size(); i++) {
@@ -350,14 +365,11 @@ public class CoRInput implements Pauseable {
                                             }
                                             selected.clear();
                                         }
-                                        ArrayList<Unit> selectedUnits = graphics.getBoxSelected(button, x, y);
-                                        if (selectedUnits != null) {
-                                            for (int i = 0; i < selectedUnits.size(); i++) {
-                                                Unit unit = selectedUnits.get(i);
-                                                if (unit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-                                                    unit.setSelected(false);
-                                                    selected.add(unit);
-                                                }
+                                        List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
+                                        if (selectedIGE != null) {
+                                            for (InteractableGameElement ige : selectedIGE) {
+                                                ige.setSelected(true);
+                                                selected.add(ige);
                                             }
                                         }
 
@@ -371,7 +383,7 @@ public class CoRInput implements Pauseable {
                                     }
                                 }
                                 // Das auf jeden Fall machen:
-                                graphics.stopSelectionBox();
+                                stopSelectionBox();
                             }
                             if (button == 1 && !rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200)) {
                                 if (x > graphics.content.hudX) {
@@ -537,7 +549,7 @@ public class CoRInput implements Pauseable {
                                 break;
                             case Input.KEY_ESCAPE:
                                 // Speziellen Inputmodus verlassen
-                                    CoRInput.this.removeSpecialMode();
+                                CoRInput.this.removeSpecialMode();
                                 break;
                             case Input.KEY_F2:
                                 // Kollisionsmodus
@@ -570,21 +582,21 @@ public class CoRInput implements Pauseable {
                             case Input.KEY_F6:
                                 // FoW abschalten
                                 rgi.netctrl.broadcastString("F6", (byte) 44);
-                                    if (rgi.isInDebugMode()) {
-                                        rgi.rogGraphics.disableFoW();
-                                    }
+                                if (rgi.isInDebugMode()) {
+                                    rgi.rogGraphics.disableFoW();
+                                }
                                 break;
                             case Input.KEY_F7:
                                 // Ressourcen herbeicheaten
                                 rgi.netctrl.broadcastString("F7", (byte) 44);
-                                    if (rgi.isInDebugMode()) {
-                                        NetPlayer player = rgi.game.getOwnPlayer();
-                                        player.res1 += 1000;
-                                        player.res2 += 1000;
-                                        player.res3 += 1000;
-                                        player.res4 += 1000;
-                                        player.res5 += 1000;
-                                    }
+                                if (rgi.isInDebugMode()) {
+                                    NetPlayer player = rgi.game.getOwnPlayer();
+                                    player.res1 += 1000;
+                                    player.res2 += 1000;
+                                    player.res3 += 1000;
+                                    player.res4 += 1000;
+                                    player.res5 += 1000;
+                                }
                                 break;
                             case Input.KEY_F8:
                                 // Einheitenverhalten-Debugmodus
@@ -612,9 +624,8 @@ public class CoRInput implements Pauseable {
                                 scroll[3] = false;
                                 break;
                             case Input.KEY_DELETE:
-                                    // Alle derzeit selektierten Einheiten löschen
-                                    rgi.mapModule.deleteSelected(selected);
-                                    break;
+                                // Alle derzeit selektierten Einheiten löschen
+                                rgi.mapModule.deleteSelected(selected);
                                 break;
                             case Input.KEY_T:
                                 rgi.teamSel.toggle();
@@ -709,17 +720,16 @@ public class CoRInput implements Pauseable {
             } else {
                 // Alle momentan selektierten Abwählen (falls nicht shift gedrückt wurde)
                 if (!shiftDown) {
-                    for (GameObject obj : selected) {
+                    for (InteractableGameElement obj : selected) {
                         obj.setSelected(false);
                     }
                     selected.clear();
                 }
                 // Wenn was gespeichert ist, dann das setzen
-                GameObject[] list = savedSelections[number];
+                InteractableGameElement[] list = savedSelections[number];
                 if (list != null) {
-                    for (GameObject obj : list) {
-                        // Gibts die noch?
-                        if (obj.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && !selected.contains(obj)) {
+                    for (InteractableGameElement obj : list) {
+                        if (!selected.contains(obj)) {
                             obj.setSelected(true);
                             selected.add(obj);
                         }
@@ -904,16 +914,16 @@ public class CoRInput implements Pauseable {
                                 Unit unit = (Unit) selected.get(0);
                                 // Wenn noch keiner da dran rumbaut:
                                 System.out.println("AddMe: Check for other builders!");
-                                    // Kann die Einheit das?
-                                    AbilityBuild ro = unit.getBuildAbility(selBuilding.getDescTypeId());
-                                    if (ro != null) {
-                                        // Ja, geht.
-                                        //unit.moveToBuilding(rBuilding, rgi);
-                                        // Unit hinlaufen lassen
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 26, unit.netID, selBuilding.netID, 0, 0));
-                                        // Signal senden
-                                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, selBuilding.netID, ro.duration, 0));
-                                    }
+                                // Kann die Einheit das?
+                                AbilityBuild ro = unit.getBuildAbility(selBuilding.getDescTypeId());
+                                if (ro != null) {
+                                    // Ja, geht.
+                                    //unit.moveToBuilding(rBuilding, rgi);
+                                    // Unit hinlaufen lassen
+                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 26, unit.netID, selBuilding.netID, 0, 0));
+                                    // Signal senden
+                                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, selBuilding.netID, ro.duration, 0));
+                                }
                             } else if (selBuilding != null && selBuilding.getPlayerId() == playerId && selBuilding.ready) {
                                 // Gebäude - gleicher Spieler : Betreten
                                 // So viele Einheiten reinschicken, wie noch Platz frei ist.
@@ -1157,17 +1167,13 @@ public class CoRInput implements Pauseable {
         return rgi.rogGraphics.content.identifyBuilding(x, y);
     }
 
-    private Ressource identifyRessource(int x, int y) {
-        // Findet eine Ressouce anhand seiner Koordinaten
-        return rgi.rogGraphics.content.identifyRessource(x, y);
-    }
-
     public CoRInput(ClientCore.InnerClient inner, org.newdawn.slick.Input inp) {
         rgi = inner;
-        selected = new ArrayList<GameObject>();        //Die Liste der angewählten Einheiten initialisieren
+        selected = new ArrayList<InteractableGameElement>();        //Die Liste der angewählten Einheiten initialisieren
         input = inp;
         scroll = new boolean[4];
         savedSelections = new GameObject[10][];
+        igeList = new ArrayList<InteractableGameElement>();
     }
 
     @Override
@@ -1177,5 +1183,70 @@ public class CoRInput implements Pauseable {
     @Override
     public void unpause() {
         this.removeSpecialMode();
+    }
+
+    private List<InteractableGameElement> getBoxSelected(final int x, final int y) {
+        // Wir wollen alle Einheiten im SelectionBox Feld.
+        // Wir müssen die Ecken der SelectionShadows mit den Ecken der SelektionBox vergleichen
+        ArrayList<Unit> finalList = new ArrayList<Unit>();
+        Dimension finalDimension = new Dimension(x, y);
+        if (finalDimension.equals(boxselectionstart)) {
+            // Wir haben gar keine Box gezogen...
+            return null;
+        }
+        // Gleiches Tauschsystem, wie bei der drawSelBox Methode
+        int dirX = finalDimension.width - this.boxselectionstart.width;
+        int dirY = finalDimension.height - this.boxselectionstart.height;
+        // Bpxen können nur von links oben nach rechts unten berechnet werden - eventuell Koordinaten tauschen
+        if (dirX < 0 && dirY > 0) {
+            // Nur x Tauschen
+            int backupX = finalDimension.width;
+            finalDimension.width = this.boxselectionstart.width;
+            this.boxselectionstart.width = backupX;
+        } else if (dirY < 0 && dirX > 0) {
+            // Nur Y tauschen
+            int backupY = finalDimension.height;
+            finalDimension.height = this.boxselectionstart.height;
+            this.boxselectionstart.height = backupY;
+        } else if (dirX < 0 && dirY < 0) {
+            // Beide tauschen
+            int backupX = finalDimension.width;
+            finalDimension.width = this.boxselectionstart.width;
+            this.boxselectionstart.width = backupX;
+            int backupY = finalDimension.height;
+            finalDimension.height = this.boxselectionstart.height;
+            this.boxselectionstart.height = backupY;
+        }
+        // Jetzt berechnen
+        for (int i = 0; i < selectionShadowsB.size(); i += 3) {
+            Dimension ecke1 = (Dimension) selectionShadowsB.get(i);
+            Dimension ecke2 = (Dimension) selectionShadowsB.get(i + 1);
+            // Wenn im Rahmen dann gut
+            if (((boxselectionstart.width < ecke1.width && finalDimension.width > ecke1.width) && (boxselectionstart.height < ecke1.height && finalDimension.height > ecke1.height)) || ((boxselectionstart.width < ecke2.width && finalDimension.width > ecke2.width) && (boxselectionstart.height < ecke2.height && finalDimension.height > ecke2.height))) {
+                // Einheit drin, addieren
+                finalList.add((Unit) selectionShadowsB.get(i + 2));
+            }
+        }
+        // Felder im Rahmen berechnen:
+        Position eckeLO = new Position(boxselectionstart.width, boxselectionstart.height);
+        Position eckeRU = new Position(finalDimension.width, finalDimension.height);
+        for (int cx = eckeLO.getX(); cx <= eckeRU.getX(); cx++) {
+            for (int cy = eckeLO.getY(); cy <= eckeRU.getY(); cy++) {
+                InteractableGameElement[] elem = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
+            }
+        }
+
+        // Fertig, zurückgeben
+        return finalList;
+
+    }
+
+    public void startSelectionBox(int x, int y) {
+        dragSelectionBox = true;
+        boxselectionstart = new Dimension(x, y);
+    }
+
+    public void stopSelectionBox() {
+        dragSelectionBox = false;
     }
 }

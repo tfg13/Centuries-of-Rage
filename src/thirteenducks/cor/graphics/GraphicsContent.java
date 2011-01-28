@@ -29,7 +29,6 @@ import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.map.CoRMapElement.collision;
-import thirteenducks.cor.game.Unit.orders;
 import java.awt.Dimension;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -119,8 +118,8 @@ public class GraphicsContent extends BasicGame {
     private ClientCore.InnerClient rgi;
     private int miniMapViewSizeX = 10;
     private int miniMapViewSizeY = 10;
-    public Dimension boxselectionstart;
-    public boolean dragSelectionBox = false;
+    
+    
     Image wayPointHighlighting[];
     private static final boolean beautyDraw = true;     // Schöner zeichnen durch umsortieren der allList, kostet Leistung
     public Image[] huds;                               // Die Huds für verschiedene Epochen
@@ -3194,53 +3193,7 @@ public class GraphicsContent extends BasicGame {
         return new Dimension(coordX, coordY);
     }
 
-    public ArrayList<Unit> getBoxSelected(final int button, final int x, final int y) {
-        // Wir wollen alle Einheiten im SelectionBox Feld.
-        // Wir müssen die Ecken der SelectionShadows mit den Ecken der SelektionBox vergleichen
-        ArrayList<Unit> finalList = new ArrayList<Unit>();
-        Dimension finalDimension = new Dimension(x, y);
-        if (finalDimension.equals(boxselectionstart)) {
-            // Wir haben gar keine Box gezogen...
-            return null;
-        }
-        // Gleiches Tauschsystem, wie bei der drawSelBox Methode
-        int dirX = finalDimension.width - this.boxselectionstart.width;
-        int dirY = finalDimension.height - this.boxselectionstart.height;
-        // Bpxen können nur von links oben nach rechts unten berechnet werden - eventuell Koordinaten tauschen
-        if (dirX < 0 && dirY > 0) {
-            // Nur x Tauschen
-            int backupX = finalDimension.width;
-            finalDimension.width = this.boxselectionstart.width;
-            this.boxselectionstart.width = backupX;
-        } else if (dirY < 0 && dirX > 0) {
-            // Nur Y tauschen
-            int backupY = finalDimension.height;
-            finalDimension.height = this.boxselectionstart.height;
-            this.boxselectionstart.height = backupY;
-        } else if (dirX < 0 && dirY < 0) {
-            // Beide tauschen
-            int backupX = finalDimension.width;
-            finalDimension.width = this.boxselectionstart.width;
-            this.boxselectionstart.width = backupX;
-            int backupY = finalDimension.height;
-            finalDimension.height = this.boxselectionstart.height;
-            this.boxselectionstart.height = backupY;
-        }
-
-        for (int i = 0; i < selectionShadowsB.size(); i += 3) {
-            Dimension ecke1 = (Dimension) selectionShadowsB.get(i);
-            Dimension ecke2 = (Dimension) selectionShadowsB.get(i + 1);
-            // Wenn im Rahmen dann gut
-            if (((boxselectionstart.width < ecke1.width && finalDimension.width > ecke1.width) && (boxselectionstart.height < ecke1.height && finalDimension.height > ecke1.height)) || ((boxselectionstart.width < ecke2.width && finalDimension.width > ecke2.width) && (boxselectionstart.height < ecke2.height && finalDimension.height > ecke2.height))) {
-                // Einheit drin, addieren
-                finalList.add((Unit) selectionShadowsB.get(i + 2));
-            }
-        }
-
-        // Fertig, zurückgeben
-        return finalList;
-
-    }
+    
 
     public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
         // Koordinaten finden
