@@ -93,4 +93,10 @@ public interface InteractableGameElement {
      * @return
      */
     public boolean isSelectableByPlayer(int playerId);
+    /**
+     * Findet heraus, ob dieses IGE zusammen mit anderen ausgewählt werden kann, oder nur alleine.
+     * In der Regel können beliebig viele Einheiten zusammen ausgewählt werden, aber nur ein Gebäude.
+     * @return true, wenn dieses IGE zusammen mit anderen ausgewählt werden kann.
+     */
+    public boolean isMultiSelectable();
 }
