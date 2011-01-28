@@ -60,15 +60,19 @@ public class CoRInput implements Pauseable {
     /**
      * Alle derzeit selektierten IGE's.
      */
-    private ArrayList<InteractableGameElement> selected;
+    private List<InteractableGameElement> selected;
     /**
      * Alle derzeit anklickbaren IGE's
      */
-    private ArrayList<InteractableGameElement> igeList;
+    private List<InteractableGameElement> igeList;
     /**
      * Die SelektionsMap, die alle Position speichert, an denen derzeit etwas selektierbar ist.
      */
     private SelectionMap selMap;
+    /**
+     * Die Liste mit allen OverlayListeners, die Mausaktionen möglichweise abfangen könnten.
+     */
+    private List<OverlayMouseListener> overlays;
     /**
      * Ein anderer Eingabemodus. Kann durch einen Aufruf gesetzt werden, dann kann sich das Inputmodul kurzzeitig
      * komplett anders verhalten, was zusätzliche Eingaben ermöglicht.
