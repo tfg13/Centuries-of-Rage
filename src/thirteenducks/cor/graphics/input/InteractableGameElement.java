@@ -69,6 +69,28 @@ public interface InteractableGameElement {
      * @param sel true, wenn es nach diesem Aufruf selektiert sein soll, sonst false.
      */
     public void setSelected(boolean sel);
+    /**
+     * Findet heraus, ob sich die Position(en) an denen dieses IGE selektierbar ist
+     * seit dem letzten Aufruf von dieser Methode geändert haben.
+     * Dies wird vom Inputmodul regelmäßig aufgerufen, um die Selektionsmap aktuell zu halten.
+     *
+     * Ist Anfangs immer true, damit die Position zum ersten Mal gesetzt wird.
+     * Ist ebenso nach dem Tod einmal false, damit die Registrierung gelöscht wird.
+     * @return true, wenn seit dem letzten mal geändert
+     */
     public boolean selPosChanged();
+    /**
+     * Liefert einen SelektionMarker der das Update der SelectionMap repräsentiert.
+     * Wird nur vom Inputmodul aufgerufen, und zwar unmittelbar nach dem ein selPosChanged() true ergeben hatte.
+     * @return ein SelektionMarker, der das für diese Einheit notwendige Update der Selektionsmap repräsentiert.
+     */
     public SelectionMarker getSelectionMarker();
+    /**
+     * Fragt das IGE, ob es zulassen möchte, dass der Player mit der angegebenen Id es auswählt.
+     * In der Regel sind Einheiten nur vom Besitzter anwählbar, allerdings sind auch Ausnahmen denkbar
+     * und hiermit realisierbar.
+     * @param playerId
+     * @return
+     */
+    public boolean isSelectableByPlayer(int playerId);
 }
