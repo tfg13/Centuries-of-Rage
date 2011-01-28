@@ -3171,7 +3171,7 @@ public class GraphicsContent extends BasicGame {
         return new Dimension(coordX, coordY);
     }
 
-    public Dimension getGameSelectedField(int x, int y) {
+    public Position translateCoordinatesToField(int x, int y) {
         // Grundposition bestimmen
         // Versatz beachten
         x = x - 10;
@@ -3187,7 +3187,7 @@ public class GraphicsContent extends BasicGame {
         if (xg != yg) {
             coordX++;
         }
-        return new Dimension(coordX, coordY);
+        return new Position(coordX, coordY);
     }
 
     
@@ -3889,10 +3889,12 @@ public class GraphicsContent extends BasicGame {
     }
 
     //@Override
+    @Override
     public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
     }
 
     //@Override
+    @Override
     public void inputStarted() {
     }
 }
