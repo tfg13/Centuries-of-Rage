@@ -37,6 +37,7 @@ import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.*;
@@ -1188,7 +1189,7 @@ public class CoRInput implements Pauseable {
     private List<InteractableGameElement> getBoxSelected(final int x, final int y) {
         // Wir wollen alle Einheiten im SelectionBox Feld.
         // Wir müssen die Ecken der SelectionShadows mit den Ecken der SelektionBox vergleichen
-        ArrayList<Unit> finalList = new ArrayList<Unit>();
+        LinkedList<InteractableGameElement> finalList = new LinkedList<InteractableGameElement>();
         Dimension finalDimension = new Dimension(x, y);
         if (finalDimension.equals(boxselectionstart)) {
             // Wir haben gar keine Box gezogen...
@@ -1217,25 +1218,47 @@ public class CoRInput implements Pauseable {
             finalDimension.height = this.boxselectionstart.height;
             this.boxselectionstart.height = backupY;
         }
-        // Jetzt berechnen
-        for (int i = 0; i < selectionShadowsB.size(); i += 3) {
-            Dimension ecke1 = (Dimension) selectionShadowsB.get(i);
-            Dimension ecke2 = (Dimension) selectionShadowsB.get(i + 1);
-            // Wenn im Rahmen dann gut
-            if (((boxselectionstart.width < ecke1.width && finalDimension.width > ecke1.width) && (boxselectionstart.height < ecke1.height && finalDimension.height > ecke1.height)) || ((boxselectionstart.width < ecke2.width && finalDimension.width > ecke2.width) && (boxselectionstart.height < ecke2.height && finalDimension.height > ecke2.height))) {
-                // Einheit drin, addieren
-                finalList.add((Unit) selectionShadowsB.get(i + 2));
-            }
-        }
-        // Felder im Rahmen berechnen:
+        // Felder im Rahmen berechnen & Dort anwählbare Elemente zur Liste hinzufügen
         Position eckeLO = new Position(boxselectionstart.width, boxselectionstart.height);
         Position eckeRU = new Position(finalDimension.width, finalDimension.height);
         for (int cx = eckeLO.getX(); cx <= eckeRU.getX(); cx++) {
             for (int cy = eckeLO.getY(); cy <= eckeRU.getY(); cy++) {
-                InteractableGameElement[] elem = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
+                List<InteractableGameElement> elems = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
+                for (InteractableGameElement elem : elems) {
+                    if (!finalList.contains(elem)) {
+                        
+                    }
+                }
             }
         }
 
+        // Nachbearbeiten.
+        // Manche Objekte sind nicht zusammen mit anderen auswählbar. (Builindgs mit Units)
+        // Sobald ein multi-fähiges auftaucht, alle nicht-multis rausschmeißen
+        // Außerdem alle nicht-multis nach dem ersten nichtmulti entfernen
+        int singleIndex = -1;
+        boolean foundMulti = false;
+        boolean killSingle = false;
+        for (int i = 0; i < finalList.size(); i++) {
+            InteractableGameElement elem = finalList.get(i);
+            if (elem.isMultiSelectable()) {
+                foundMulti = true;
+                if (singleIndex != -1) {
+                    killSingle = true;
+                    // Single entfernen
+                    finalList.remove(singleIndex);
+                    i--;
+                }
+            } else {
+                if (killSingle || singleIndex != -1) {
+                    // Schon eins da? Dann das hier löschen
+                    finalList.remove(i--);
+                    continue;
+                } else {
+                    singleIndex = i;
+                }
+            }
+        }
         // Fertig, zurückgeben
         return finalList;
 
