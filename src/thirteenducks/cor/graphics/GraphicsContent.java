@@ -104,9 +104,6 @@ public class GraphicsContent extends BasicGame {
     public int lastFr = 0; // Auch frameRatezeug
     Dimension framePos = new Dimension(0, 0); // Editor-Rahmen
     MapEditorCursor drawCursor;
-    ArrayList selectionShadows;
-    ArrayList selectionShadowsB;
-    int[][] brSel;
     Date[] analyze;
     private Image hudGround; // Hud-Hauptbild, hängt von epoche ab
     private Image fowMiniLayer;  // FoW der Minimap
@@ -3369,13 +3366,6 @@ public class GraphicsContent extends BasicGame {
 
     public void updateBuildings(java.util.List<Building> bL) {
         buildingList = bL;
-        if (modi != 3) {
-            repaint();
-        }
-    }
-
-    public void updateRessources(java.util.List<Ressource> rL) {
-        resList = rL;
         if (modi != 3) {
             repaint();
         }
