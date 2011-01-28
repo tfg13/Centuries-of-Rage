@@ -761,65 +761,49 @@ public class CoRInput implements Pauseable {
      * @param e     MouseEvent, enthält Position, welcher Button, wie oft, welche Maus, etc..
      */
     public void mouseKlickedLeft(final int button, final int x, final int y, int clickCount) {
-        System.out.println("AddMe: Rework mKL-Input");
-        rgi.rogGraphics.triggerTempStatus(null);
+        System.out.println("AddMe: doubleklick on mKL-Input!");
+        final int myPlayer = rgi.game.getOwnPlayer().playerId;
         Position selField = graphics.content.translateCoordinatesToField(x, y);
-        List<InteractableGameElement> elems = selMap.getIGEsAt(selField.getX(), selField.getY()s);
-        // Wenn keine Einheit angeklickt wurde alle Einheiten abwählen:
-        if (rUnit == null) {
+        List<InteractableGameElement> elems = selMap.getIGEsAt(selField.getX(), selField.getY());
+        // Alle rausschmeißen, die sich nicht selektieren lassen und den Rest auf multi-nicht multi untersuchen
+        boolean containsMulti = false;
+        for (int i = 0; i < elems.size(); i++) {
+            InteractableGameElement elem = elems.get(i);
+            if (elem.selectable() && elem.isSelectableByPlayer(myPlayer)) {
+            if (elem.isMultiSelectable()) {
+                containsMulti = true;
+            }
+            } else {
+                // Rauswerfen, das können wir nicht anklicken
+                elems.remove(i--);
+            }
+        }
+        // Liste bereinigen - wenn ein multi drin ist, alle singles rausschmeißen.
+        // Wenn nicht: Alle Singles bis auf eines rausschmeißen
+        if (containsMulti) {
+            // Singles weg
+            for (int i = 0; i < elems.size(); i++) {
+                if (!elems.get(i).isMultiSelectable()) {
+                    elems.remove(i--);
+                }
+            }
+        } else { // Nur wenn gar keine Multis
+            // Alle Singles bis auf das erste Weg
+            elems.retainAll(elems.subList(0, 1));
+        }
+        // Die Liste entählt jetzt entweder nur noch Multis (Anzahl egal) oder nur ein Single.
+        // Wenn ein Single, dann auf jeden Fall alles alte abwählen. Bei Multis alles alte abwählen, falls shift NICHT gedrückt ist.
+        if (!containsMulti || !shiftDown) {
             for (int i = 0; i < selected.size(); i++) {
                 selected.get(i).setSelected(false);
             }
             selected.clear();
+        }
 
-
-            Building rBuilding = identifyBuilding(selField.width, selField.height);
-            if (rBuilding != null) {
-                if (rBuilding.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-                    // Gebäude auswählen
-                    selected.add(rBuilding);
-                    rBuilding.setSelected(true);
-                } else {
-                    // Im FogOfWar?
-                    if (rgi.rogGraphics.content.fowmap[selField.width][selField.height] > 1) { // Es muss sichtbar sein, erkundet reicht nicht
-                        // Temporär Energie im Hud anzeigen:
-                        rgi.rogGraphics.triggerTempStatus(rBuilding);
-                    }
-                }
-            }
-        } else {
-            //Wenn shift nicht gedrücekt ist Alle Einheiten abwählen :
-            if (!shiftDown) {
-                for (int i = 0; i < selected.size(); i++) {
-                    selected.get(i).setSelected(false);
-                }
-                selected.clear();
-                if (rUnit.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
-                    rgi.rogGraphics.triggerTempStatus(rUnit);
-                }
-            }
-
-            if (System.currentTimeMillis() - klickTime <= CoRInput.doubleKlickDelay) {
-                // Es ist ein doppelklick (der 2. Klick)
-                // Alle sichtbaren Einheiten gleichen Typs selektieren
-                if (rUnit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-                    for (int i = 0; i < rgi.mapModule.unitList.size(); i++) {
-                        Unit unit = rgi.mapModule.unitList.get(i);
-                        if (rgi.rogGraphics.isInSight(unit.getMainPosition().getX(), unit.getMainPosition().getY()) && unit.getPlayerId() == rUnit.getPlayerId() && unit.getDescTypeId() == rUnit.getDescTypeId() && unit.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-                            unit.setSelected(true);
-                            selected.add(unit);
-                        }
-                    }
-                }
-            } else {
-                // Normaler - "erster" Klick
-                // Die angeklickte Einheit zur Auswahl hinzufügen:
-                if (rUnit.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-                    selected.add(rUnit);
-                    rUnit.setSelected(shiftDown);
-                }
-            }
-            klickTime = System.currentTimeMillis();
+        // Alles, was noch da ist anwählen:
+        for (InteractableGameElement elem : elems) {
+            elem.setSelected(true);
+            selected.add(elem);
         }
     }
 
