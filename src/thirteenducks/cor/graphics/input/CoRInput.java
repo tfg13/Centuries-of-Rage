@@ -1215,8 +1215,9 @@ public class CoRInput implements Pauseable {
             this.boxselectionstart.height = backupY;
         }
         // Felder im Rahmen berechnen & Dort anwählbare Elemente zur Liste hinzufügen
-        Position eckeLO = new Position(boxselectionstart.width, boxselectionstart.height);
-        Position eckeRU = new Position(finalDimension.width, finalDimension.height);
+        // Felder berechnen:
+        Position eckeLO = graphics.content.translateCoordinatesToField(boxselectionstart.width, boxselectionstart.height);
+        Position eckeRU = graphics.content.translateCoordinatesToField(finalDimension.width, finalDimension.height);
         for (int cx = eckeLO.getX(); cx <= eckeRU.getX(); cx++) {
             for (int cy = eckeLO.getY(); cy <= eckeRU.getY(); cy++) {
                 List<InteractableGameElement> elems = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
