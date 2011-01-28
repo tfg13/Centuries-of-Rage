@@ -27,6 +27,7 @@
 package thirteenducks.cor.graphics.input;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Die SelektionsMap des Clients.
@@ -85,8 +86,18 @@ public class SelectionMap {
      * @param playerId die PlayerId der gesuchten Einheiten
      * @return alle IGE's an der angegebenen Stelle, die vom angegebenen Team sind.
      */
-    InteractableGameElement[] getIGEsWithTeamAt(int cx, int cy, int playerId) {
-        
+    List<InteractableGameElement> getIGEsWithTeamAt(int cx, int cy, int playerId) {
+        // Alle holen
+        LinkedList<InteractableGameElement> found = new LinkedList<InteractableGameElement>();
+        LinkedList<InteractableGameElement> list = map[cx][cy];
+        if (list != null && !list.isEmpty()) {
+            for (InteractableGameElement elem : list) {
+                if (elem.isSelectableByPlayer(playerId)) {
+                    found.add(elem);
+                }
+            }
+        }
+        return found;
     }
 
 
