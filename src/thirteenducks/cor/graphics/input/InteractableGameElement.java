@@ -26,6 +26,9 @@
 
 package thirteenducks.cor.graphics.input;
 
+import java.util.List;
+import thirteenducks.cor.game.Position;
+
 /**
  * InteractableGameElements sind Spielelemente, mit denen (durch die Maus) interagiert werden kann.
  *
@@ -87,4 +90,26 @@ public interface InteractableGameElement {
      * @return true, wenn dieses IGE zusammen mit anderen ausgewählt werden kann.
      */
     public boolean isMultiSelectable();
+    /**
+     * Aufrufen, um einem selektierten IGE mitzuteilen, dass ein Befehl für es eingegangen ist.
+     * Ein Befehl ist ein Klick mit der rechten oder mittleren Maustaste, während das IGE selektiert ist.
+     * Diese Methode wird aufgerufen, wenn der Klick andere IGE'S getroffen hat.
+     * Das IGE wird nun berechnen, ob mit den Zielen etwas anzufangen ist und gegebenenfalls in Aktion treten.
+     * Anhand des Parameters doubleKlick kann das IGE herausfinden, ob es sich um den (2ten!!!) Klick eines Doppelklicks handelt.
+     * @param button Mittlere oder Linke Maustaste. (2 oder 3) (Reihenfolge?)
+     * @param targets Eine Liste aller IGE's die sich auf der ZielPosition des Klicks befinden
+     * @param doubleKlick ist dies der wiederholte klick eines Doppelklicks
+     */
+    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick);
+    /**
+     * Aufrufen, um einem selektierten IGE mitzuteilen, dass ein Befehl für es eingegangen ist.
+     * Ein Befehl ist ein Klick mit der rechten oder mittleren Maustaste, während das IGE selektiert ist.
+     * Diese Methode wird aufgerufen, wenn der Klick keine anderen IGE's getroffen hat, (sondern den Boden)
+     * Das IGE soll sich möglicherweise hier hin bewegen, daher wird das getroffenen Feld übertragen.
+     * Anhand des Parameters doubleKlick kann das IGE herausfinden, ob es sich um den (2ten!!!) Klick eines Doppelklicks handelt.
+     * @param button Mittlere oder Linke Maustaste. (2 oder 3) (Reihenfolge?)
+     * @param target Das Feld auf der Map, dass der Benutzer angeklickt hatte.
+     * @param doubleKlick ist dies der wiederholte Klick eines Doppelklicks?
+     */
+    public void command(int button, Position target, boolean doubleKlick);
 }
