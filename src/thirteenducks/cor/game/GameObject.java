@@ -278,6 +278,12 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+    /**
+     * Die Parameter dieses Objekts.
+     * Die Parameter wurden ursprünglich von dieser Parameterliste kopiert.
+     * Die Parameter stimmen in der Regel nichtmehr mit den aktuellen dieses Objekts überein.
+     */
+    private descParamsGO params;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
@@ -296,7 +302,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Erzeugt ein Platzhalter-GameObject, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
      */
-    protected GameObject() {
+    protected GameObject(descParamsGO params) {
         netID = -1;
     }
 
@@ -336,6 +342,39 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.playerId = copyFrom.playerId;
         this.range = copyFrom.range;
         this.visrange = copyFrom.visrange;
+    }
+
+    /**
+     * Wendet die Parameterliste an (kopiert die Parameter rein)
+     * @param par
+     */
+    private void applyParams(descParamsGO par) {
+        this.armorType = par.getArmorType();
+        this.atkdelay = par.getAtkdelay();
+        this.bulletspeed = par.getBulletspeed();
+        this.bullettexture = par.getBullettexture();
+        this.damage = par.getDamage();
+        this.damageFactors = par.getDamageFactors();
+        this.descCon = par.getDescCon();
+        this.descDescription = par.getDescDescription();
+        this.descName = par.getDescName();
+        this.descPro = par.getDescPro();
+        this.descTypeId = par.getDescTypeId();
+        this.fireDelay = par.getFireDelay();
+        this.graphicsData = par.getGraphicsData().clone();
+        this.healRate = par.getHealRate();
+        this.hitpoints = par.getHitpoints();
+        this.maxhitpoints = par.getMaxhitpoints();
+        this.range = par.getRange();
+        this.visrange = par.getVisrange();
+        this.abilitys = new ArrayList<Ability>();
+        for (Ability ab : par.getAbilitys()) {
+            try {
+                this.abilitys.add(ab.clone());
+            } catch (Exception ex) {
+                System.out.println("NEVEREVER: Cannot clone Ability!");
+            }
+        }
     }
 
     /**
