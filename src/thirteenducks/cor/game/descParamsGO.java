@@ -66,11 +66,6 @@ public class descParamsGO {
      */
     private int maxhitpoints;
     /**
-     * Der Typ der folgenden descTypeId.
-     * Derzeit werden vor allem B für Gebäude und U für Einheiten genutzt.
-     */
-    private char descTypeType;
-    /**
      * Die ID-Nummer dieser Einheit.
      * Wird für Zuordnungen mehrerer Einheiten des gleichen Typs verwendet.
      */
@@ -225,24 +220,6 @@ public class descParamsGO {
      */
     public void setMaxhitpoints(int maxhitpoints) {
         this.maxhitpoints = maxhitpoints;
-    }
-
-    /**
-     * Der Typ der folgenden descTypeId.
-     * Derzeit werden vor allem B für Gebäude und U für Einheiten genutzt.
-     * @return the descTypeType
-     */
-    public char getDescTypeType() {
-        return descTypeType;
-    }
-
-    /**
-     * Der Typ der folgenden descTypeId.
-     * Derzeit werden vor allem B für Gebäude und U für Einheiten genutzt.
-     * @param descTypeType the descTypeType to set
-     */
-    public void setDescTypeType(char descTypeType) {
-        this.descTypeType = descTypeType;
     }
 
     /**
