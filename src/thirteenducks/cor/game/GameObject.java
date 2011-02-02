@@ -372,7 +372,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
             try {
                 this.abilitys.add(ab.clone());
             } catch (Exception ex) {
-                System.out.println("NEVEREVER: Cannot clone Ability!");
+                System.out.println("NEVEREVER: Cannot clone Ability (applyparamsgo)!");
             }
         }
     }
