@@ -40,7 +40,7 @@ import thirteenducks.cor.graphics.GOGraphicsData;
  *
  * Es existieren erweiterte Versionen für die Unterklassen von GameObjekt.
  */
-public class descParamsGO {
+public class DescParamsGO {
 
     /**
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich

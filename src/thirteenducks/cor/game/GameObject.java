@@ -296,7 +296,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Erzeugt ein Platzhalter-GameObject, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
      */
-    protected GameObject(descParamsGO params) {
+    protected GameObject(DescParamsGO params) {
         netID = -1;
     }
 
@@ -342,7 +342,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Wendet die Parameterliste an (kopiert die Parameter rein)
      * @param par
      */
-    private void applyParams(descParamsGO par) {
+    private void applyParams(DescParamsGO par) {
         this.armorType = par.getArmorType();
         this.atkdelay = par.getAtkdelay();
         this.bulletspeed = par.getBulletspeed();
