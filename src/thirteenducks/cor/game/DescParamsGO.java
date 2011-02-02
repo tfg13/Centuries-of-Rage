@@ -26,6 +26,7 @@
 
 package thirteenducks.cor.game;
 
+import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.graphics.GOGraphicsData;
@@ -135,6 +136,11 @@ public class DescParamsGO {
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+
+    public void DescParamsGO() {
+        damageFactors = new int[7];
+        abilitys = new ArrayList<Ability>();
+    }
 
     /**
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
