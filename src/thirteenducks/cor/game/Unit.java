@@ -53,7 +53,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     private final Path path;
 
-
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
         // Default-Werte *ugly*
@@ -67,8 +66,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Erzeugt eine Platzhalter-Einheit, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
      */
-    protected Unit() {
-        super();
+    protected Unit(DescParamsUnit params) {
+        super(params);
+        applyUnitParams(params);
         path = null;
     }
 
@@ -83,6 +83,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         super(newNetId, copyFrom);
         path = new Path();
         this.speed = copyFrom.speed;
+    }
+
+    /**
+     * Wendet die Parameterliste an (kopiert die Parameter rein)
+     * @param par
+     */
+    private void applyUnitParams(DescParamsUnit par) {
+        this.speed = par.getSpeed();
     }
 
     /**
@@ -305,64 +313,63 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
 
-  /*  public Unit clone(int newNetID) throws CloneNotSupportedException {
-        // Dies ist kein echtes Klonen mehr, es wird viel mehr eine neue Einheit mit den gleichen Eigenschaften erzeugt.
-        // Es werden NICHT (!) alle Eigenschaften übernommen, da die ursprungseinheiten des Klonvorgangs kaum Inhalte haben
-        Unit retUnit = new Unit(this.position.X, this.position.Y, newNetID);
-        retUnit.Gcon = this.Gcon;
-        retUnit.Gdesc = this.Gdesc;
-        retUnit.Gpro = this.Gpro;
-        retUnit.canHarvest = this.canHarvest;
-        retUnit.cooldown = this.cooldown;
-        retUnit.cooldownmax = this.cooldownmax;
-        retUnit.armortype = this.armortype;
-        retUnit.damage = this.damage;
-        retUnit.antiheavyinf = this.antiheavyinf;
-        retUnit.antilightinf = this.antilightinf;
-        retUnit.antikav = this.antikav;
-        retUnit.antivehicle = this.antivehicle;
-        retUnit.antitank = this.antitank;
-        retUnit.antiair = this.antiair;
-        retUnit.antibuilding = this.antibuilding;
-        retUnit.descTypeId = this.descTypeId;
-        retUnit.hitpoints = this.hitpoints;
-        retUnit.idlehuntradius = this.idlehuntradius;
-        retUnit.idlerange = this.idlerange;
-        retUnit.maxhitpoints = this.maxhitpoints;
-        retUnit.atkdelay = this.atkdelay;
-        retUnit.name = this.name;
-        retUnit.pathLengthCalced = false;
-        retUnit.range = this.range;
-        retUnit.selectionShadow = this.selectionShadow;
-        retUnit.speed = this.speed;
-        retUnit.setgetPlayerId()(this.getPlayerId());
-        retUnit.bullettexture = this.bullettexture;
-        retUnit.bulletspeed = this.bulletspeed;
-        retUnit.visrange = this.visrange;
-        retUnit.limit = this.limit;
-        if (this.movingtarget != null) {
-            retUnit.movingtarget = this.movingtarget.clone();
-        }
+    /*  public Unit clone(int newNetID) throws CloneNotSupportedException {
+    // Dies ist kein echtes Klonen mehr, es wird viel mehr eine neue Einheit mit den gleichen Eigenschaften erzeugt.
+    // Es werden NICHT (!) alle Eigenschaften übernommen, da die ursprungseinheiten des Klonvorgangs kaum Inhalte haben
+    Unit retUnit = new Unit(this.position.X, this.position.Y, newNetID);
+    retUnit.Gcon = this.Gcon;
+    retUnit.Gdesc = this.Gdesc;
+    retUnit.Gpro = this.Gpro;
+    retUnit.canHarvest = this.canHarvest;
+    retUnit.cooldown = this.cooldown;
+    retUnit.cooldownmax = this.cooldownmax;
+    retUnit.armortype = this.armortype;
+    retUnit.damage = this.damage;
+    retUnit.antiheavyinf = this.antiheavyinf;
+    retUnit.antilightinf = this.antilightinf;
+    retUnit.antikav = this.antikav;
+    retUnit.antivehicle = this.antivehicle;
+    retUnit.antitank = this.antitank;
+    retUnit.antiair = this.antiair;
+    retUnit.antibuilding = this.antibuilding;
+    retUnit.descTypeId = this.descTypeId;
+    retUnit.hitpoints = this.hitpoints;
+    retUnit.idlehuntradius = this.idlehuntradius;
+    retUnit.idlerange = this.idlerange;
+    retUnit.maxhitpoints = this.maxhitpoints;
+    retUnit.atkdelay = this.atkdelay;
+    retUnit.name = this.name;
+    retUnit.pathLengthCalced = false;
+    retUnit.range = this.range;
+    retUnit.selectionShadow = this.selectionShadow;
+    retUnit.speed = this.speed;
+    retUnit.setgetPlayerId()(this.getPlayerId());
+    retUnit.bullettexture = this.bullettexture;
+    retUnit.bulletspeed = this.bulletspeed;
+    retUnit.visrange = this.visrange;
+    retUnit.limit = this.limit;
+    if (this.movingtarget != null) {
+    retUnit.movingtarget = this.movingtarget.clone();
+    }
 
-        if (this.path != null) {
-            retUnit.path = new ArrayList<Position>();
-        }
+    if (this.path != null) {
+    retUnit.path = new ArrayList<Position>();
+    }
 
-        // Special-Stuff
-        if (this.anim != null) {
-            retUnit.anim = this.anim.clone();
-        }
-        if (this.abilitys != null) {
-            retUnit.abilitys = Collections.synchronizedList(new ArrayList<Ability>());
-            for (Ability a : this.abilitys) {
-                retUnit.abilitys.add(a.clone());
-            }
-        }
-        retUnit.graphicsdata = this.graphicsdata.clone();
+    // Special-Stuff
+    if (this.anim != null) {
+    retUnit.anim = this.anim.clone();
+    }
+    if (this.abilitys != null) {
+    retUnit.abilitys = Collections.synchronizedList(new ArrayList<Ability>());
+    for (Ability a : this.abilitys) {
+    retUnit.abilitys.add(a.clone());
+    }
+    }
+    retUnit.graphicsdata = this.graphicsdata.clone();
 
-        return retUnit;
+    return retUnit;
     } */
-
     @Override
     public void pause() {
         path.pause();
