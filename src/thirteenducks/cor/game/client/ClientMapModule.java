@@ -35,6 +35,8 @@ import java.util.*;
 import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
+import thirteenducks.cor.game.DescParamsBuilding;
+import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
@@ -626,8 +628,8 @@ public class ClientMapModule {
             // Einlesen
             boolean inDesc = false;
             String mode = null;
-            Building rB = null;
-            Unit rU = null;
+            DescParamsBuilding rB = null;
+            DescParamsUnit rU = null;
             int id = 0;
             int line = 0;
             while ((zeile = ddescReader.readLine()) != null) {
@@ -656,70 +658,73 @@ public class ClientMapModule {
                             if (mode.equals("B")) {
                                 // Gebäude
                                 if (v1.equals("name")) {
-                                    rB.name = v2;
+                                    rB.setDescName(v2);
                                 } else if (v1.equals("defaultTexture")) {
                                     rB.defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
-                                    rB.hitpoints = saveStrtoInt(v2, zeile, line);
+                                    rB.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
-                                    rB.maxhitpoints = saveStrtoInt(v2, zeile, line);
+                                    rB.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("Gdesc")) {
-                                    rB.Gdesc = v2;
-                                } else if (v1.equals("Gimg")) {
-                                    rB.Gimg = v2;
+                                    rB.setDescDescription(v2);
                                 } else if (v1.equals("offsetX")) {
                                     rB.offsetX = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("offsetY")) {
                                     rB.offsetY = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("z1")) {
-                                    rB.z1 = saveStrtoInt(v2, zeile, line);
+                                    rB.setZ1(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("z2")) {
-                                    rB.z2 = saveStrtoInt(v2, zeile, line);
+                                    rB.setZ2(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxIntra")) {
-                                    rB.maxIntra = saveStrtoInt(v2, zeile, line);
+                                    rB.setMaxIntra(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("harvests")) {
-                                    rB.harvests = saveStrtoInt(v2, zeile, line);
+                                    rB.setHarvests(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("harvRate")) {
-                                    rB.harvRate = saveStrtoDouble(v2, zeile, line);
+                                    rB.setHarvRate(saveStrtoDouble(v2, zeile, line));
                                 } else if (v1.equals("range")) {
-                                    rB.range = saveStrtoDouble(v2, zeile, line);
+                                    rB.setRange(saveStrtoDouble(v2, zeile, line));
                                 } else if (v1.equals("damage")) {
-                                    rB.damage = saveStrtoInt(v2, zeile, line);
+                                    rB.setDamage(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("cooldownmax")) {
-                                    rB.cooldownmax = saveStrtoInt(v2, zeile, line);
+                                    rB.setFireDelay(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("bulletspeed")) {
-                                    rB.bulletspeed = saveStrtoInt(v2, zeile, line);
+                                    rB.setBulletspeed(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("bullettexture")) {
-                                    rB.bullettexture = v2;
+                                    rB.setBullettexture(v2);
                                 } else if (v1.equals("atkdelay")) {
-                                    rB.atkdelay = saveStrtoInt(v2, zeile, line);
+                                    rB.setAtkdelay(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("antiair")) {
-                                    rB.antiair = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antibuilding")) {
-                                    rB.antibuilding = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antiheavyinf")) {
-                                    rB.antiheavyinf = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antikav")) {
-                                    rB.antikav = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antilightinf")) {
-                                    rB.antilightinf = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antitank")) {
-                                    rB.antitank = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antivehicle")) {
-                                    rB.antivehicle = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rB.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("accepts")) {
                                     if ("all".equals(v2)) {
-                                        rB.accepts = Building.ACCEPTS_ALL;
+                                        rB.setAccepts(Building.ACCEPTS_ALL);
                                     }
                                 } else if (v1.equals("ability")) {
                                     Ability ra = descAbilities.get(new Integer(saveStrtoInt(v2, zeile, line)));
                                     if (ra != null) {
-                                        rB.abilitys.add(ra);
+                                        rB.getAbilitys().add(ra);
                                     }
                                 } else if (v1.equals("visrange")) {
-                                    rB.visrange = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("limit")) {
-                                    rB.limit = saveStrtoInt(v2, zeile, line);
+                                    rB.setVisrange(saveStrtoInt(v2, zeile, line));
                                 }
                             } else if (mode.equals("U")) {
                                 // Einheiten
@@ -791,7 +796,7 @@ public class ClientMapModule {
 
                     if (first == 'U') {
                         // Neue Einheit
-                        rU = new Unit(0, 0, -1);
+                        rU = new DescParamsUnit();
                         inDesc = true;
                         int indexL1 = zeile.indexOf(" ");
                         int indexL2 = zeile.lastIndexOf(" ");
@@ -800,7 +805,7 @@ public class ClientMapModule {
                         mode = "U";
                     } else if (first == 'B') {
                         // Neues Gebäude
-                        rB = new Building(0, 0, -1);
+                        rB = new DescParamsBuilding();
                         inDesc = true;
                         int indexL1 = zeile.indexOf(" ");
                         int indexL2 = zeile.lastIndexOf(" ");
@@ -810,12 +815,12 @@ public class ClientMapModule {
                     } else if (first == '}') {
                         // Fertig, in HashMap speichern
                         if (mode.equals("U")) {
-                            rU.descTypeId = id;
-                            descUnit.put(id, rU);
+                            rU.setDescTypeId(id);
+                            descUnit.put(id, new Unit(rU));
                             inDesc = false;
                         } else if (mode.equals("B")) {
-                            rB.descTypeId = id;
-                            descBuilding.put(id, rB);
+                            rB.setDescTypeId(id);
+                            descBuilding.put(id, new Building(rB));
                             inDesc = false;
                         }
                     }
