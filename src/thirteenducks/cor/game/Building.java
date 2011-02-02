@@ -112,8 +112,9 @@ public abstract class Building extends GameObject {
      * Erzeugt ein Platzhalter-Gebäude, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
      */
-    protected Building() {
-        super();
+    protected Building(DescParamsBuilding params) {
+        super(params);
+        applyBuildingParams(params);
     }
 
     /**
@@ -129,6 +130,19 @@ public abstract class Building extends GameObject {
         this.maxIntra = copyFrom.maxIntra;
         this.z1 = copyFrom.z1;
         this.z2 = copyFrom.z2;
+    }
+
+    /**
+     * Wendet die Parameterliste an (kopiert die Parameter rein)
+     * @param par
+     */
+    private void applyBuildingParams(DescParamsBuilding par) {
+        this.accepts = par.getAccepts();
+        this.harvRate = par.getHarvRate();
+        this.harvests = par.getHarvests();
+        this.maxIntra = par.getMaxIntra();
+        this.z1 = par.getZ1();
+        this.z2 = par.getZ2();
     }
 
     /**
