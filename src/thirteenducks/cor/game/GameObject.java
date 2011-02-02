@@ -298,6 +298,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     protected GameObject(DescParamsGO params) {
         netID = -1;
+        applyParams(params);
     }
 
     /**
