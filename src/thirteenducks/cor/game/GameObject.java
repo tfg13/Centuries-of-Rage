@@ -278,12 +278,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
-    /**
-     * Die Parameter dieses Objekts.
-     * Die Parameter wurden ursprünglich von dieser Parameterliste kopiert.
-     * Die Parameter stimmen in der Regel nichtmehr mit den aktuellen dieses Objekts überein.
-     */
-    private descParamsGO params;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
