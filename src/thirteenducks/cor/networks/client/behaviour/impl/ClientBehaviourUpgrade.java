@@ -102,11 +102,11 @@ public class ClientBehaviourUpgrade extends ClientBehaviour implements ShowsProg
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 37, caster.netID, ability.myId, 0, 0));
                 } else if (ability.kind == AbilityUpgrade.upgradetype.epoche) {
                     // Epochen-Upgrade
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 38, ability.myId, caster.playerId, 0, 0));
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 38, ability.myId, caster.getPlayerId(), 0, 0));
                 }
             }
             // Selber löschen
-            caster.cbehaviours.remove(this);
+            caster.removeClientBehaviour(this);
             this.ability.behaviour = null;
             if (!this.ability.allowMultipleUses) {
                 this.ability.alreadyUsed = true;
