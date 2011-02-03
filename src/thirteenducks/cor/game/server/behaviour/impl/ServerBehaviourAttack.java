@@ -37,13 +37,12 @@ import thirteenducks.cor.game.Position;
 /**
  * Hier sollte etwas stehten
  *
- * @author tfg
  */
 public class ServerBehaviourAttack extends ServerBehaviour {
 
     double lastdistance;
     public static final int maxHuntDistance = 10;
-    private GameObject atkTarget;
+    public GameObject atkTarget;
     boolean idleMode = true;// Bei Gebäudeangriff:
     boolean useNP = false;
     boolean nPcalced = false;
