@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.ability.Ability;
+import thirteenducks.cor.game.ability.AbilityBuild;
 import thirteenducks.cor.game.ability.AbilityIntraManager;
 import thirteenducks.cor.game.ability.AbilityRecruit;
 import thirteenducks.cor.game.ability.AbilityUpgrade;
@@ -1135,6 +1136,28 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
             if (a.getClass().equals(AbilityRecruit.class)) {
                 try {
                     AbilityRecruit ab = (AbilityRecruit) a;
+                    if (ab.descTypeId == searchDESC) {
+                        return ab;
+                    }
+                } catch (Exception ex) {
+                }
+            }
+        }
+        return null;
+    }
+
+        /**
+     * Sucht eine Fähigkeit anhand ihrer DescTypeId
+     * @param searchDESC Die Desc-Id
+     * @return RogGameObjectAbiliyRecruit, falls gefunden, sonst null
+     * @deprecated
+     */
+    public AbilityBuild getBuildAbility(int searchDESC) {
+        for (int i = 0; i < abilitys.size(); i++) {
+            Ability a = abilitys.get(i);
+            if (a.getClass().equals(AbilityBuild.class)) {
+                try {
+                    AbilityBuild ab = (AbilityBuild) a;
                     if (ab.descTypeId == searchDESC) {
                         return ab;
                     }
