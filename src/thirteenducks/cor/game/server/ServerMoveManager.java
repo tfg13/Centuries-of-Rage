@@ -172,62 +172,47 @@ public class ServerMoveManager {
      * @param unit
      * @param target
      */
-    public void humanSingleMove(Unit unit, Position target, boolean allowDifferentTarget) {
-        synchronized (unit.pathSync) {
-            // aktuelle Position freimachen:
-            if (!unit.isMoving()) {
-                inner.netmap.setCollision(unit.position, collision.free);
-                if (unit.equals(inner.netmap.getUnitRef(unit.position, unit.playerId))) {
-                    inner.netmap.setUnitRef(unit.position, null, unit.playerId);
-                }
-            }
-            //Bewegung initialisieren:
+    public synchronized void humanSingleMove(Unit unit, Position target, boolean allowDifferentTarget) {
+        //Bewegung initialisieren:
 
-            // Weg suchen
-            ArrayList<Position> newpath = null;
-            if (!unit.isMoving()) {
-                newpath = inner.pathfinder.findPath(unit.position, target, unit.playerId, allowDifferentTarget);
-            } else {
-                if (unit.path.indexOf(unit.position) + 1 != unit.path.size()) {
-                    newpath = inner.pathfinder.findPath(unit.path.get(unit.lastwaypoint + 1), target, unit.playerId, allowDifferentTarget);
-                } else {
-                    System.out.println("FixMe: ERROR switching Path! 1");
-                }
-            }
+        // Weg suchen
+        ArrayList<Position> newpath = null;
 
-            if (newpath == null || newpath.size() == 1) {
-                // Es gibt keinen Weg, wir können da also nicht hingehen
-                // Kollision wieder setzen - falls wir stehen
-                if (!unit.isMoving()) {
-                    inner.netmap.setCollision(unit.position, collision.occupied);
-                    inner.netmap.setUnitRef(unit.position, unit, unit.playerId);
-                }
-                return;
-            }
+        newpath = inner.pathfinder.findPath(unit.getMainPosition(), target, unit.getPlayerId(), allowDifferentTarget);
+        /*
+        if (unit.path.indexOf(unit.position) + 1 != unit.path.size()) {
+        newpath = inner.pathfinder.findPath(unit.path.get(unit.lastwaypoint + 1), target, unit.getPlayerId(), allowDifferentTarget);
+        } else {
+        System.out.println("FixMe: ERROR switching Path! 1");
+        } */
+        System.out.println("Check for Switchpath!");
 
-            if (!unit.isMoving()) {
-                // Wenn wir uns nicht bewegen, dann einfach Pfad nehmen und losrennen
-                this.directMoveUnit(newpath, unit, false, unit.attacktarget != null);
-
-            } else {
-                try {
-                    // Bewegt sich gerade, neuen Pfad an nächsten Wegpunkt anhängen.
-                    // Wir löschen alle Wegpunkte nach dem Nächsten:
-                    newpath = saveSubList(unit.path, unit.lastwaypoint, newpath);
-
-                    // Altes Ziel freigeben
-                    inner.netmap.deleteFieldReservation(unit.movingtarget);
-
-                    this.attachMoveUnit(newpath, unit, false, unit.attacktarget != null);
-
-                } catch (Exception ex) {
-                    // Relativ Wichtig.
-                    System.out.println("FixMe: ERROR switching Path! 2");
-                    inner.logger(ex);
-                }
-
-            }
+        if (newpath == null || newpath.size() == 1) {
+            // Es gibt keinen Weg, wir können da also nicht hingehen
+            // Kollision wieder setzen - falls wir stehen
+            return;
         }
+        // Wenn wir uns nicht bewegen, dann einfach Pfad nehmen und losrennen
+        this.directMoveUnit(newpath, unit, false);
+
+        /*  } else {
+        try {
+        // Bewegt sich gerade, neuen Pfad an nächsten Wegpunkt anhängen.
+        // Wir löschen alle Wegpunkte nach dem Nächsten:
+        newpath = saveSubList(unit.path, unit.lastwaypoint, newpath);
+
+        // Altes Ziel freigeben
+        inner.netmap.deleteFieldReservation(unit.movingtarget);
+
+        this.attachMoveUnit(newpath, unit, false, unit.attacktarget != null);
+
+        } catch (Exception ex) {
+        // Relativ Wichtig.
+        System.out.println("FixMe: ERROR switching Path! 2");
+        inner.logger(ex);
+        }
+
+        } */
     }
 
     /**
@@ -238,9 +223,7 @@ public class ServerMoveManager {
     public void humanGroupMove(Position target, final ArrayList<Unit> movers) {
         // Die Positionen aller Einheiten freigeben:
         for (Unit unit : movers) {
-            if (!unit.isMoving()) { // Bewegende haben keine
-                inner.netmap.setCollision(unit.position, collision.free);
-            }
+            inner.netmap.setCollision(unit.getMainPosition(), collision.free);
         }
 
         // Jetzt alle Einheiten laufen lassen:
@@ -254,7 +237,7 @@ public class ServerMoveManager {
     }
 
     public void cancelledReservationFor(Unit unit) {
-        System.out.println("Res-Cancel: " + unit + " " + unit.movingtarget);
+        System.out.println("AddMe: Cancel reservation!");
     }
 
     /**
@@ -263,11 +246,12 @@ public class ServerMoveManager {
      */
     public void autoMoveStop(Unit unit) {
         // Frei?
-        if (!inner.netmap.isGroundColliding(unit.position.X, unit.position.Y) && !inner.netmap.checkFieldReservation(unit.position)) {
+        if (!inner.netmap.isGroundColliding(unit.getMainPosition().getX(), unit.getMainPosition().getY()) && !inner.netmap.checkFieldReservation(unit.getMainPosition())) {
             // Ursprüngliche Reservierung löschen
-            inner.netmap.deleteFieldReservation(unit.movingtarget);
+            //inner.netmap.deleteFieldReservation(unit.movingtarget);
+            System.out.println("AddMe: Delete Field ReservatioN!");
             // Hinschicken
-            ialSendTo(unit, unit.position, true);
+            ialSendTo(unit, unit.getMainPosition());
 
         }
     }
@@ -294,7 +278,7 @@ public class ServerMoveManager {
     public void searchNewAtkPosForMeele(final Unit unit) {
         // Es darf nur ein neues Ziel gesucht werden, wenn die Einheit gerade nicht mit wichtigerem Beschäftigt ist
         // Nicht während dem Bauen:
-        ServerBehaviour constructing = unit.getbehaviourS(5);
+        ServerBehaviour constructing = unit.getServerBehaviour(5);
         if (constructing != null && constructing.isActive()) {
             // Angriffsverhalten abschalten
             unit.attackManager.setIdle(false, false);
@@ -302,13 +286,13 @@ public class ServerMoveManager {
             return;
         }
         // Diverse Variablen sichern:
-        Position realPos = unit.position;
+        Position realPos = unit.getMainPosition();
         GameObject victim = null;
-        if (unit.attacktarget != null && unit.attacktarget.alive) {
-            victim = unit.attacktarget;
+        if (unit.attackManager.atkTarget != null && unit.attackManager.atkTarget.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
+            victim = unit.attackManager.atkTarget;
         }
         // Zuerst schauen, ob die Einheit stehen bleiben kann:
-        Unit potTarget = searchDirectEnemys(realPos, unit.playerId);
+        Unit potTarget = searchDirectEnemys(realPos, unit.getPlayerId());
         if (potTarget != null) {
             // Gefunden, die Angreifen
             unit.attackManager.attackUnit(potTarget);
@@ -319,7 +303,7 @@ public class ServerMoveManager {
         if (victim != null && victim instanceof Unit) {
             Position pos = searchAtkPosForTarget((Unit) victim);
             if (pos != null) {
-                ialSendTo(unit, pos, true);
+                ialSendTo(unit, pos);
                 return;
             }
         }
@@ -331,10 +315,10 @@ public class ServerMoveManager {
         }
         Position newtar = unit.meeleAttackableEnemyAroundMe(searchRange, inner);
         if (newtar != null) {
-            Unit newatk = searchDirectEnemys(newtar, unit.playerId);
+            Unit newatk = searchDirectEnemys(newtar, unit.getPlayerId());
             if (newatk != null) {
                 // Die nehmen und angreiffen!
-                ialSendTo(unit, newtar, true);
+                ialSendTo(unit, newtar);
                 unit.attackManager.ialUnit(newatk);
                 return;
             }
@@ -371,7 +355,7 @@ public class ServerMoveManager {
     public void searchNewAtkPosForRange(final Unit unit) {
         // Es darf nur ein neues Ziel gesucht werden, wenn die Einheit gerade nicht mit wichtigerem Beschäftigt ist
         // Nicht während dem Bauen:
-        ServerBehaviour constructing = unit.getbehaviourS(5);
+        ServerBehaviour constructing = unit.getServerBehaviour(5);
         if (constructing != null && constructing.isActive()) {
             // Angriffsverhalten abschalten
             unit.attackManager.setIdle(false, false);
@@ -395,7 +379,7 @@ public class ServerMoveManager {
      * @return
      */
     private Position searchAtkPosForTarget(Unit target) {
-        return target.position.aroundMe(1, inner, 8);
+        return target.getMainPosition().aroundMe(1, inner, 8);
 
     }
 
@@ -408,8 +392,8 @@ public class ServerMoveManager {
      */
     private Unit searchDirectEnemys(Position pos, int playerId) {
         // 8 Felder absuchen
-        int px = pos.X;
-        int py = pos.Y;
+        int px = pos.getX();
+        int py = pos.getY();
         for (int i = 0; i < 8; i++) {
             int x = px;
             int y = py;
@@ -469,66 +453,55 @@ public class ServerMoveManager {
      * @param unit
      * @param to
      */
-    private void ialSendTo(Unit unit, Position to, boolean fleeing) {
-        synchronized (unit.pathSync) {
+    private synchronized void ialSendTo(Unit unit, Position to) {
 
-            // aktuelle Position freimachen:
-            if (!unit.isMoving()) {
-                inner.netmap.setCollision(unit.position, collision.free);
-                if (unit.equals(inner.netmap.getUnitRef(unit.position, unit.playerId))) {
-                    inner.netmap.setUnitRef(unit.position, null, unit.playerId);
-                }
-            }
-            //Bewegung initialisieren:
-
-            // Weg suchen
-            ArrayList<Position> newpath = null;
-            if (!unit.isMoving()) {
-                newpath = inner.pathfinder.findPath(unit.position, to, unit.playerId, true);
-            } else {
-                if (unit.path.indexOf(unit.position) + 1 != unit.path.size()) {
-                    newpath = inner.pathfinder.findPath(unit.path.get(unit.lastwaypoint + 1), to, unit.playerId, true);
-                } else {
-                    System.out.println("FixMe: ialERROR switching Path! 1");
-                }
-            }
-
-            if (newpath == null) {
-                // Es gibt keinen Weg, wir können da also nicht hingehen
-                // Kollision wieder setzen - falls wir stehen
-                if (!unit.isMoving()) {
-                    inner.netmap.setCollision(unit.position, collision.occupied);
-                    inner.netmap.setUnitRef(unit.position, unit, unit.playerId);
-                }
-                System.out.println("FixMoveMan: IAL-SendTo, no path!");
-                return;
-            }
-
-            if (!unit.isMoving()) {
-                // Wenn wir uns nicht bewegen, dann einfach Pfad nehmen und losrennen
-                // IAL-Bewegungen sind fliehen, damit keine anderen Ziele gesucht werden
-                this.directMoveUnit(newpath, unit, false, fleeing);
-
-            } else {
-                try {
-                    // Bewegt sich gerade, neuen Pfad an nächsten Wegpunkt anhängen.
-                    // Wir löschen alle Wegpunkte nach dem Nächsten:
-                    newpath = saveSubList(unit.path, unit.lastwaypoint, newpath);
-
-                    // Altes Ziel freigeben
-                    inner.netmap.deleteFieldReservation(unit.movingtarget);
-
-                    // IAL ist fliehen
-                    this.attachMoveUnit(newpath, unit, false, true);
-
-                } catch (Exception ex) {
-                    // Relativ Wichtig.
-                    System.out.println("FixMe: ialERROR switching Path! 2");
-                    inner.logger(ex);
-                }
-
-            }
+        // aktuelle Position freimachen:
+        inner.netmap.setCollision(unit.getMainPosition(), collision.free);
+        if (unit.equals(inner.netmap.getUnitRef(unit.getMainPosition(), unit.getPlayerId()))) {
+            inner.netmap.setUnitRef(unit.getMainPosition(), null, unit.getPlayerId());
         }
+        //Bewegung initialisieren:
+
+        // Weg suchen
+        ArrayList<Position> newpath = null;
+        newpath = inner.pathfinder.findPath(unit.getMainPosition(), to, unit.getPlayerId(), true);
+        System.out.println("AddMe: Check for SWITCH");
+
+        /*} else {
+        if (unit.path.indexOf(unit.getMainPosition()) + 1 != unit.path.size()) {
+        newpath = inner.pathfinder.findPath(unit.path.get(unit.lastwaypoint + 1), to, unit.getPlayerId(), true);
+        } else {
+        System.out.println("FixMe: ialERROR switching Path! 1");
+        }
+        } */
+
+        if (newpath == null) {
+            System.out.println("FixMoveMan: IAL-SendTo, no path!");
+            return;
+        }
+        // Wenn wir uns nicht bewegen, dann einfach Pfad nehmen und losrennen
+        // IAL-Bewegungen sind fliehen, damit keine anderen Ziele gesucht werden
+        this.directMoveUnit(newpath, unit, false);
+
+        /*  } else {
+        try {
+        // Bewegt sich gerade, neuen Pfad an nächsten Wegpunkt anhängen.
+        // Wir löschen alle Wegpunkte nach dem Nächsten:
+        newpath = saveSubList(unit.path, unit.lastwaypoint, newpath);
+
+        // Altes Ziel freigeben
+        inner.netmap.deleteFieldReservation(unit.movingtarget);
+
+        // IAL ist fliehen
+        this.attachMoveUnit(newpath, unit, false, true);
+
+        } catch (Exception ex) {
+        // Relativ Wichtig.
+        System.out.println("FixMe: ialERROR switching Path! 2");
+        inner.logger(ex);
+        }
+
+        } */
     }
 
     /**
@@ -538,58 +511,56 @@ public class ServerMoveManager {
      * @param path
      * @param unit
      */
-    private void directMoveUnit(ArrayList<Position> path, Unit unit, boolean compressed, boolean flee) {
+    private synchronized void directMoveUnit(ArrayList<Position> path, Unit unit, boolean compressed) {
         // Bauen abbrechen:
-        ServerBehaviour cnstrct = unit.getbehaviourS(5);
+        ServerBehaviour cnstrct = unit.getServerBehaviour(5);
         if (cnstrct != null && cnstrct.isActive()) {
             cnstrct.deactivate();
         }
         // Erst broadcasten, dann selber verarbeiten, denn senden kann lang dauern
 
-        synchronized (unit.pathSync) {
-
-            inner.netctrl.broadcastMove(unit.netID, path, false);
-            // Komprimierten Pfad auspacken
-            if (compressed) {
-                inner.extractPath(path);
-            }
-            unit.movingtarget = path.get(path.size() - 1);
-            unit.position = path.get(0);
-            unit.path = path;
-            unit.order = orders.move;
-            unit.lastwaypoint = 0;
-            unit.calcWayLength();
-            unit.nextWayPointDist = unit.pathOrder.get(1);
-            unit.startTime = System.currentTimeMillis();
-
-            this.reserveTarget(unit, (long) (1000.0 * unit.length / unit.speed), unit.movingtarget);
-
-            // Ist diese Bewegung ein Fliehen?
-            if (flee) {
-                unit.moveManager.fleeing = true;
-            } else {
-                unit.moveManager.fleeing = false;
-            }
-
-            // Angriffsverhalten umstellen?
-            if (flee) {
-                unit.attackManager.setIdle(false, false);
-                unit.attacktarget = null;
-                unit.attackManager.deactivate();
-                // Dem Client für Debug mitteilen
-                if (inner.isInDebugMode()) {
-                    inner.netctrl.broadcastDATA(inner.packetFactory((byte) 13, unit.netID, 0, 0, 0));
-                }
-            } else {
-                unit.attackManager.setIdle(true, false);
-            }
-
-            unit.moveManager.activate();
+        inner.netctrl.broadcastMove(unit.netID, path, false);
+        // Komprimierten Pfad auspacken
+        if (compressed) {
+            inner.extractPath(path);
         }
+        unit.applyNewPath(inner, path);
+      /*  unit.movingtarget = path.get(path.size() - 1);
+        unit.position = path.get(0);
+        unit.path = path;
+        unit.order = orders.move;
+        unit.lastwaypoint = 0;
+        unit.calcWayLength();
+        unit.nextWayPointDist = unit.pathOrder.get(1);
+        unit.startTime = System.currentTimeMillis();
+
+        this.reserveTarget(unit, (long) (1000.0 * unit.length / unit.speed), unit.movingtarget);
+
+        // Ist diese Bewegung ein Fliehen?
+        if (flee) {
+            unit.moveManager.fleeing = true;
+        } else {
+            unit.moveManager.fleeing = false;
+        }
+
+        // Angriffsverhalten umstellen?
+        if (flee) {
+            unit.attackManager.setIdle(false, false);
+            unit.attacktarget = null;
+            unit.attackManager.deactivate();
+            // Dem Client für Debug mitteilen
+            if (inner.isInDebugMode()) {
+                inner.netctrl.broadcastDATA(inner.packetFactory((byte) 13, unit.netID, 0, 0, 0));
+            }
+        } else {
+            unit.attackManager.setIdle(true, false);
+        }*/
+
+        unit.moveManager.activate();
 
     }
 
-    private void attachMoveUnit(ArrayList<Position> completePath, Unit unit, boolean compressed, boolean flee) {
+ /*   private void attachMoveUnit(ArrayList<Position> completePath, Unit unit, boolean compressed, boolean flee) {
         if (completePath == null) {
             return;
         }
@@ -635,7 +606,7 @@ public class ServerMoveManager {
 
             unit.moveManager.activate();
         }
-    }
+    } */
 
     public static ArrayList<Position> saveSubList(ArrayList<Position> oldpath, int lastwaypoint, ArrayList<Position> newpath) {
         if (oldpath.size() > lastwaypoint + 1) {
@@ -669,8 +640,8 @@ public class ServerMoveManager {
         // Die sind fürs Kämpfen zu viel, die müssen warten
         ArrayList<Unit> store = new ArrayList<Unit>();
         // Fertig, Liste ist da.
-        float bx = victim.position.X;
-        float by = victim.position.Y;
+        float bx = victim.getMainPosition().getX();
+        float by = victim.getMainPosition().getY();
         // Gruppen anlegen
         // Leider erlaubt Java keine "generic array creation" a la ArrayList<RogUnit>[]
         ClientIALGroup[] groups = new ClientIALGroup[8];
@@ -679,8 +650,8 @@ public class ServerMoveManager {
         }
         // Für jede Einheit Winkel berechnen und in Gruppen zuteilen
         for (Unit unit : ial) {
-            float mx = unit.position.X;
-            float my = unit.position.Y;
+            float mx = unit.getMainPosition().getY();
+            float my = unit.getMainPosition().getX();
             // Winkel berechnen:
             float deg = (float) Math.atan((mx - bx) / (by - my));
             // Bogenmaß in Grad umrechnen (Bogenmaß ist böse (!))
@@ -745,7 +716,7 @@ public class ServerMoveManager {
             Position vecD = null; // Normaler Schritt
             Position vecR = null; // Abweichung rechts
             Position vecL = null; // Abweichung links
-            Position posG = victim.position; // Bezugsposition
+            Position posG = victim.getMainPosition(); // Bezugsposition
             if (i == 0) {
                 // Ecke, nach unten
                 vecD = new Position(0, 2);
@@ -790,10 +761,7 @@ public class ServerMoveManager {
             // Alle Units löschen, die schon in Reichweite stehen
             for (int p = 0; p < units.size(); p++) {
                 Unit unit = units.get(p);
-                Position tpos = unit.position;
-                if (unit.isMoving()) {
-                    tpos = unit.movingtarget;
-                }
+                Position tpos = unit.getMainPosition();
                 if (tpos.getDistance(posG) <= unit.getRange()) {
                     units.remove(p);
                     p--;
@@ -820,7 +788,7 @@ public class ServerMoveManager {
             });
             // Range holen
             double range = units.get(0).getRange();
-            Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
+            Position opVecD = new Position(vecD.getX() * -1, vecD.getY() * -1);
             Position posO = null;
             try {
                 posO = posG.clone();
@@ -841,13 +809,13 @@ public class ServerMoveManager {
             // Jetzt mit der Verteilung beginnen
             // Alle Positionen freimachen
             for (int a = 0; a < units.size(); a++) {
-                inner.netmap.setCollision(units.get(a).position, collision.free);
+                inner.netmap.setCollision(units.get(a).getMainPosition(), collision.free);
             }
 
             // Erste Einheit kommt auf die Startposition
             double lastrange = units.get(0).getRange();
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                ialSendTo(units.get(0), posO, false);
+                ialSendTo(units.get(0), posO);
                 usedFields.add(posO);
                 units.remove(0);
             }
@@ -884,7 +852,7 @@ public class ServerMoveManager {
                     }
                     // Gefunden, diese Einheit da hin
                     if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                        ialSendTo(units.get(0), posO, false);
+                        ialSendTo(units.get(0), posO);
                         usedFields.add(posO);
                         units.remove(0);
                     }
@@ -903,7 +871,7 @@ public class ServerMoveManager {
                         // Wie oft?
                         int jumps = counter - ((counter - 1) / 2);
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecR.X * jumps, vecR.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecR.getX() * jumps, vecR.getY() * jumps));
                         // Position ok?
                         if (posG.getDistance(potTarget) > range) {
                             // In den nächsten Kreis jumpen - falls es den gibt
@@ -916,13 +884,13 @@ public class ServerMoveManager {
                                 break;
                             }
                             if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                                ialSendTo(unit, jumpPos, false);
+                                ialSendTo(unit, jumpPos);
                                 usedFields.add(jumpPos);
                                 units.remove(0);
                             }
                         } else {
                             if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                                ialSendTo(unit, potTarget, false);
+                                ialSendTo(unit, potTarget);
                                 usedFields.add(potTarget);
                                 units.remove(0);
                             }
@@ -932,7 +900,7 @@ public class ServerMoveManager {
                         // Wie oft?
                         int jumps = (counter - 1) - ((counter - 2) / 2);
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecL.X * jumps, vecL.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecL.getX() * jumps, vecL.getY() * jumps));
                         // Position ok?
                         if (posG.getDistance(potTarget) > range) {
                             // In den nächsten Kreis jumpen - falls es den gibt
@@ -945,13 +913,13 @@ public class ServerMoveManager {
                                 break;
                             }
                             if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                                ialSendTo(unit, jumpPos, false);
+                                ialSendTo(unit, jumpPos);
                                 usedFields.add(jumpPos);
                                 units.remove(0);
                             }
                         } else {
                             if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                                ialSendTo(unit, potTarget, false);
+                                ialSendTo(unit, potTarget);
                                 usedFields.add(potTarget);
                                 units.remove(0);
                             }
@@ -986,7 +954,7 @@ public class ServerMoveManager {
             Position vecD = null; // Normaler Schritt
             Position vecR = null; // Abweichung rechts
             Position vecL = null; // Abweichung links
-            Position posG = victim.position; // Bezugsposition des Gebäudes
+            Position posG = victim.getMainPosition(); // Bezugsposition des Gebäudes
             if (i == 0) {
                 // Ecke, nach unten
                 vecD = new Position(0, 2);
@@ -1034,7 +1002,7 @@ public class ServerMoveManager {
             }
             // Range holen
             double range = units.get(0).getRange();
-            Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
+            Position opVecD = new Position(vecD.getX() * -1, vecD.getY() * -1);
             Position posO = null;
             try {
                 posO = posG.clone();
@@ -1052,7 +1020,7 @@ public class ServerMoveManager {
             }
             // Erste Einheit kommt auf die Startposition
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                ialSendTo(units.get(0), posO, false);
+                ialSendTo(units.get(0), posO);
                 usedFields.add(posO);
                 units.remove(0);
             }
@@ -1082,15 +1050,15 @@ public class ServerMoveManager {
                         counter = 0;
                         kreis++;
                         if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                            ialSendTo(unit, jumpPos, false);
+                            ialSendTo(unit, jumpPos);
                             usedFields.add(jumpPos);
                             units.remove(0);
                         }
                     } else {
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecR.X * jumps, vecR.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecR.getX() * jumps, vecR.getY() * jumps));
                         if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                            ialSendTo(unit, potTarget, false);
+                            ialSendTo(unit, potTarget);
                             usedFields.add(potTarget);
                             units.remove(0);
                         }
@@ -1106,15 +1074,15 @@ public class ServerMoveManager {
                         counter = 1;
                         kreis++;
                         if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                            ialSendTo(unit, jumpPos, false);
+                            ialSendTo(unit, jumpPos);
                             usedFields.add(jumpPos);
                             units.remove(0);
                         }
                     } else {
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecL.X * jumps, vecL.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecL.getX() * jumps, vecL.getY() * jumps));
                         if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                            ialSendTo(unit, potTarget, false);
+                            ialSendTo(unit, potTarget);
                             usedFields.add(potTarget);
                             units.remove(0);
                         }
@@ -1154,12 +1122,12 @@ public class ServerMoveManager {
         float by = 0;
         //Z1
         //Einfach die Hälfte als Mitte nehmen
-        bx = victim.position.X + ((victim.z1 - 1) * 1.0f / 2);
-        by = victim.position.Y - ((victim.z1 - 1) * 1.0f / 2);
+        bx = victim.getMainPosition().getX() + ((victim.getZ1() - 1) * 1.0f / 2);
+        by = victim.getMainPosition().getY() - ((victim.getZ1() - 1) * 1.0f / 2);
         //Z2
         // Einfach die Hälfte als Mitte nehmen
-        bx += ((victim.z2 - 1) * 1.0f / 2);
-        by += ((victim.z2 - 1) * 1.0f / 2);
+        bx += ((victim.getZ2() - 1) * 1.0f / 2);
+        by += ((victim.getZ2() - 1) * 1.0f / 2);
         // Gebäude-Mitte gefunden
         // Gruppen anlegen
         // Leider erlaubt Java keine "generic array creation" a la ArrayList<RogUnit>[]
@@ -1169,8 +1137,8 @@ public class ServerMoveManager {
         }
         // Für jede Einheit Winkel berechnen und in Gruppen zuteilen
         for (Unit unit : ial) {
-            float mx = unit.position.X;
-            float my = unit.position.Y;
+            float mx = unit.getMainPosition().getX();
+            float my = unit.getMainPosition().getY();
             // Winkel berechnen:
             float deg = (float) Math.atan((mx - bx) / (by - my));
             // Bogenmaß in Grad umrechnen (Bogenmaß ist böse (!))
@@ -1242,57 +1210,54 @@ public class ServerMoveManager {
                 vecD = new Position(0, 2);
                 vecR = new Position(-1, 1);
                 vecL = new Position(1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1), victim.position.Y - (victim.z1 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1));
             } else if (i == 1) {
                 // Gerade, nach links unten
                 vecD = new Position(-1, 1);
                 vecR = new Position(-1, -1);
                 vecL = new Position(1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1) + ((victim.z2 - 1) / 2), victim.position.Y - (victim.z1 - 1) + ((victim.z2 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() - (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2));
             } else if (i == 2) {
                 // Ecke, nach links
                 vecD = new Position(-2, 0);
                 vecR = new Position(-1, -1);
                 vecL = new Position(-1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1) + (victim.z2 - 1), victim.position.Y - (victim.z1 - 1) + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + (victim.getZ2() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1) + (victim.getZ2() - 1));
             } else if (i == 3) {
                 // Gerade, nach links oben
                 vecD = new Position(-1, -1);
                 vecR = new Position(1, -1);
                 vecL = new Position(-1, 1);
-                posG = new Position(victim.position.X + ((victim.z1 - 1) / 2) + (victim.z2 - 1), victim.position.Y - ((victim.z1 - 1) / 2) + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1));
             } else if (i == 4) {
                 // Ecke, nach oben
                 vecD = new Position(0, -2);
                 vecR = new Position(1, -1);
                 vecL = new Position(-1, -1);
-                posG = new Position(victim.position.X + (victim.z2 - 1), victim.position.Y + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ2() - 1), victim.getMainPosition().getY() + (victim.getZ2() - 1));
             } else if (i == 5) {
                 // Gerade, nach rechts oben
                 vecD = new Position(1, -1);
                 vecR = new Position(1, 1);
                 vecL = new Position(-1, -1);
-                posG = new Position(victim.position.X + ((victim.z2 - 1) / 2), victim.position.Y + ((victim.z2 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() + ((victim.getZ2() - 1) / 2));
             } else if (i == 6) {
                 // Ecke, nach rechts
                 vecD = new Position(2, 0);
                 vecR = new Position(1, 1);
                 vecL = new Position(1, -1);
-                posG = victim.position;
+                posG = victim.getMainPosition();
             } else if (i == 7) {
                 // Gerade, nach rechts unten
                 vecD = new Position(1, 1);
                 vecR = new Position(-1, 1);
                 vecL = new Position(1, -1);
-                posG = new Position(victim.position.X + ((victim.z1 - 1) / 2), victim.position.Y - ((victim.z1 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2));
             }
             // Alle Units löschen, die schon in Reichweite stehen
             for (int p = 0; p < units.size(); p++) {
                 Unit unit = units.get(p);
-                Position tpos = unit.position;
-                if (unit.isMoving()) {
-                    tpos = unit.movingtarget;
-                }
+                Position tpos = unit.getMainPosition();
                 if (tpos.getDistance(posG) <= unit.getRange()) {
                     units.remove(p);
                     p--;
@@ -1319,7 +1284,7 @@ public class ServerMoveManager {
             });
             // Range holen
             double range = units.get(0).getRange();
-            Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
+            Position opVecD = new Position(vecD.getX() * -1, vecD.getY() * -1);
             Position posO = null;
             try {
                 posO = posG.clone();
@@ -1340,13 +1305,13 @@ public class ServerMoveManager {
             // Jetzt mit der Verteilung beginnen
             // Alle Positionen freimachen
             for (int a = 0; a < units.size(); a++) {
-                inner.netmap.setCollision(units.get(a).position, collision.free);
+                inner.netmap.setCollision(units.get(a).getMainPosition(), collision.free);
             }
 
             double lastrange = units.get(0).getRange();
             // Erste Einheit kommt auf die Startposition
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                ialSendTo(units.get(0), posO, true);
+                ialSendTo(units.get(0), posO);
                 usedFields.add(posO);
                 units.remove(0);
             }
@@ -1383,7 +1348,7 @@ public class ServerMoveManager {
                     }
                     // Gefunden, diese Einheit da hin
                     if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                        ialSendTo(units.get(0), posO, true);
+                        ialSendTo(units.get(0), posO);
                         usedFields.add(posO);
                         // Die ist damit abgehandelt
                         units.remove(0);
@@ -1403,7 +1368,7 @@ public class ServerMoveManager {
                         // Wie oft?
                         int jumps = counter - ((counter - 1) / 2);
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecR.X * jumps, vecR.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecR.getX() * jumps, vecR.getY() * jumps));
                         // Position ok?
                         if (posG.getDistance(potTarget) > range) {
                             // In den nächsten Kreis jumpen - falls es den gibt
@@ -1416,14 +1381,13 @@ public class ServerMoveManager {
                                 break;
                             }
                             if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                                ialSendTo(unit, jumpPos, true);
+                                ialSendTo(unit, jumpPos);
                                 usedFields.add(jumpPos);
                                 units.remove(0);
                             }
                         } else {
                             if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                                ialSendTo(unit, potTarget, true);
-                                usedFields.add(potTarget);
+                                ialSendTo(unit, potTarget);
                                 units.remove(0);
                             }
                         }
@@ -1432,7 +1396,7 @@ public class ServerMoveManager {
                         // Wie oft?
                         int jumps = (counter - 1) - ((counter - 2) / 2);
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecL.X * jumps, vecL.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecL.getX() * jumps, vecL.getY() * jumps));
                         // Position ok?
                         if (posG.getDistance(potTarget) > range) {
                             // In den nächsten Kreis jumpen - falls es den gibt
@@ -1445,13 +1409,13 @@ public class ServerMoveManager {
                                 break;
                             }
                             if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                                ialSendTo(unit, jumpPos, true);
+                                ialSendTo(unit, jumpPos);
                                 usedFields.add(jumpPos);
                                 units.remove(0);
                             }
                         } else {
                             if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                                ialSendTo(unit, potTarget, true);
+                                ialSendTo(unit, potTarget);
                                 usedFields.add(potTarget);
                                 units.remove(0);
                             }
@@ -1492,49 +1456,49 @@ public class ServerMoveManager {
                 vecD = new Position(0, 2);
                 vecR = new Position(-1, 1);
                 vecL = new Position(1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1), victim.position.Y - (victim.z1 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1));
             } else if (i == 1) {
                 // Gerade, nach links unten
                 vecD = new Position(-1, 1);
                 vecR = new Position(-1, -1);
                 vecL = new Position(1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1) + ((victim.z2 - 1) / 2), victim.position.Y - (victim.z1 - 1) + ((victim.z2 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() - (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2));
             } else if (i == 2) {
                 // Ecke, nach links
                 vecD = new Position(-2, 0);
                 vecR = new Position(-1, -1);
                 vecL = new Position(-1, 1);
-                posG = new Position(victim.position.X + (victim.z1 - 1) + (victim.z2 - 1), victim.position.Y - (victim.z1 - 1) + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + (victim.getZ2() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1) + (victim.getZ2() - 1));
             } else if (i == 3) {
                 // Gerade, nach links oben
                 vecD = new Position(-1, -1);
                 vecR = new Position(1, -1);
                 vecL = new Position(-1, 1);
-                posG = new Position(victim.position.X + ((victim.z1 - 1) / 2) + (victim.z2 - 1), victim.position.Y - ((victim.z1 - 1) / 2) + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1));
             } else if (i == 4) {
                 // Ecke, nach oben
                 vecD = new Position(0, -2);
                 vecR = new Position(1, -1);
                 vecL = new Position(-1, -1);
-                posG = new Position(victim.position.X + (victim.z2 - 1), victim.position.Y + (victim.z2 - 1));
+                posG = new Position(victim.getMainPosition().getX() + (victim.getZ2() - 1), victim.getMainPosition().getY() + (victim.getZ2() - 1));
             } else if (i == 5) {
                 // Gerade, nach rechts oben
                 vecD = new Position(1, -1);
                 vecR = new Position(1, 1);
                 vecL = new Position(-1, -1);
-                posG = new Position(victim.position.X + ((victim.z2 - 1) / 2), victim.position.Y + ((victim.z2 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() + ((victim.getZ2() - 1) / 2));
             } else if (i == 6) {
                 // Ecke, nach rechts
                 vecD = new Position(2, 0);
                 vecR = new Position(1, 1);
                 vecL = new Position(1, -1);
-                posG = victim.position;
+                posG = victim.getMainPosition();
             } else if (i == 7) {
                 // Gerade, nach rechts unten
                 vecD = new Position(1, 1);
                 vecR = new Position(-1, 1);
                 vecL = new Position(1, -1);
-                posG = new Position(victim.position.X + ((victim.z1 - 1) / 2), victim.position.Y - ((victim.z1 - 1) / 2));
+                posG = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2));
             }
             // Überhaupt welche da?
             if (units.isEmpty()) {
@@ -1542,7 +1506,7 @@ public class ServerMoveManager {
             }
             // Range holen
             double range = units.get(0).getRange();
-            Position opVecD = new Position(vecD.X * -1, vecD.Y * -1);
+            Position opVecD = new Position(vecD.getX() * -1, vecD.getY() * -1);
             Position posO = null;
             try {
                 posO = posG.clone();
@@ -1560,7 +1524,7 @@ public class ServerMoveManager {
             }
             // Erste Einheit kommt auf die Startposition
             if (!inner.netmap.isGroundColliding(posO) && !usedFields.contains(posO)) {
-                ialSendTo(units.get(0), posO, true);
+                ialSendTo(units.get(0), posO);
                 usedFields.add(posO);
                 units.remove(0);
             }
@@ -1590,15 +1554,15 @@ public class ServerMoveManager {
                         counter = 0;
                         kreis++;
                         if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                            ialSendTo(unit, jumpPos, true);
+                            ialSendTo(unit, jumpPos);
                             usedFields.add(jumpPos);
                             units.remove(0);
                         }
                     } else {
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecR.X * jumps, vecR.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecR.getX() * jumps, vecR.getY() * jumps));
                         if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                            ialSendTo(unit, potTarget, true);
+                            ialSendTo(unit, potTarget);
                             usedFields.add(potTarget);
                             units.remove(0);
                         }
@@ -1614,15 +1578,15 @@ public class ServerMoveManager {
                         counter = 1;
                         kreis++;
                         if (!inner.netmap.isGroundColliding(jumpPos) && !usedFields.contains(jumpPos)) {
-                            ialSendTo(unit, jumpPos, true);
+                            ialSendTo(unit, jumpPos);
                             usedFields.add(jumpPos);
                             units.remove(0);
                         }
                     } else {
                         // Jetzt so oft jumpen
-                        Position potTarget = jumpPos.add(new Position(vecL.X * jumps, vecL.Y * jumps));
+                        Position potTarget = jumpPos.add(new Position(vecL.getX() * jumps, vecL.getY() * jumps));
                         if (!inner.netmap.isGroundColliding(potTarget) && !usedFields.contains(potTarget)) {
-                            ialSendTo(unit, potTarget, true);
+                            ialSendTo(unit, potTarget);
                             usedFields.add(potTarget);
                             units.remove(0);
                         }
