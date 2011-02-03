@@ -443,4 +443,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public String toString() {
         return ("Unit \"" + this.getName() + "\" ID: " + this.netID);
     }
+
+    /**
+     * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
+     * @return the isIntra
+     */
+    public boolean isIntra() {
+        return isIntra;
+    }
 }
