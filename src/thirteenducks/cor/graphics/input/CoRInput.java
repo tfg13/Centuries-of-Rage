@@ -1275,4 +1275,13 @@ public class CoRInput implements Pauseable {
     public void removeOverlayMouseListener(OverlayMouseListener listener) {
         overlays.remove(listener);
     }
+
+    /**
+     * Löscht diese Einheit aus der aktuellen Selektion (falls sie selektiert ist)
+     * Benötigt für gestorbene Einheit oder Einheiten, die Gebäude betreten
+     * @param unit
+     */
+    public void removeFromSelection(GameObject unit) {
+        selected.remove(unit);
+    }
 }
