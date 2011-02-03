@@ -39,6 +39,7 @@ import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourHeal;
 import thirteenducks.cor.graphics.GOGraphicsData;
 import thirteenducks.cor.graphics.Sprite;
@@ -279,6 +280,12 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+    /**
+     * VORSICHT PFUSCH!
+     * Nur aus kompatibiltätsgründen da
+     * @deprecated 
+     */
+    public ServerBehaviourAttack attackManager;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
@@ -501,6 +508,21 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     public void addServerBehaviour(ServerBehaviour b) {
         sbehaviours.add(b);
+    }
+
+    /**
+     * Sucht ein Behaviour anhand dessen Id.
+     * Liefert null, fall es nicht existiert.
+     * @param id Die Id des gesuchten Behaviours
+     * @return
+     */
+    public ServerBehaviour getServerBehaviour(int id) {
+        for (ServerBehaviour b : this.sbehaviours) {
+            if (b.getId() == id) {
+                return b;
+            }
+        }
+        return null;
     }
 
     /**
@@ -1146,7 +1168,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         return null;
     }
 
-        /**
+    /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId
      * @param searchDESC Die Desc-Id
      * @return RogGameObjectAbiliyRecruit, falls gefunden, sonst null
@@ -1215,5 +1237,4 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void setHitpoints(int hitpoints) {
         this.hitpoints = hitpoints;
     }
-
 }
