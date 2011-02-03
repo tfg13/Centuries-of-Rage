@@ -104,7 +104,7 @@ public class ServerBehaviourConstruct extends ServerBehaviour {
                 caster2.attackManager.activate();
 	    }
             // Soviel Energie adden:
-            building.hitpoints = (int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.damageWhileContruction;
+            building.setHitpoints((int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.damageWhileContruction);
 	    // Gebäude-Fortschritt einstellen
 	    building.buildprogress = fortschritt;
 	}

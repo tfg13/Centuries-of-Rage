@@ -1163,7 +1163,7 @@ public class RandomMapBuilder {
             Haus.setPlayerId(i);
             Haus.anim = new BuildingAnimator();
             Haus.name = "Village Center";
-            Haus.hitpoints = 2000;
+            Haus.setHitpoints(2000);
             Haus.maxhitpoints = 2000;
             Haus.offsetY = 4;
             Haus.z1 = 6;

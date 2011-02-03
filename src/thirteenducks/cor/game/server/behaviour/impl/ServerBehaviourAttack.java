@@ -122,7 +122,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                             }
                             // Damage dealen
                             if (atkdelay == 0) {
-                                workingAtk.hitpoints -= damage;
+                                workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
                                 if (workingAtk.getHitpoints() <= 0) {
                                     // Tot
                                     rgi.netmap.killUnit((Unit) workingAtk, caster2.playerId);
@@ -141,7 +141,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
                                     @Override
                                     public void run() {
-                                        victim2.hitpoints -= dmg;
+                                        victim2.setHitpoints(victim2.getHitpoints() - dmg);
                                         if (victim2.getHitpoints() <= 0) {
                                             // Tot
                                             rgi.netmap.killUnit((Unit) victim2, caster2.playerId);
@@ -173,7 +173,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                             }
                             // Damage dealen
                             if (atkdelay == 0) {
-                                workingAtk.hitpoints -= damage;
+                                workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
                                 if (!workingAtk.ready) {
                                     ((Building) workingAtk).damageWhileContruction += damage;
                                 }
@@ -195,7 +195,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
                                     @Override
                                     public void run() {
-                                        victim.hitpoints -= dmg;
+                                        victim.setHitpoints(victim.getHitpoints() - dmg);
                                         if (!victim.ready) {
                                             ((Building) victim).damageWhileContruction += dmg;
                                         }

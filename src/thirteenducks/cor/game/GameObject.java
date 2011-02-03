@@ -1184,4 +1184,13 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.isSelected = isSelected;
     }
 
+    /**
+     * Aktuelle Lebensenergie dieses Objekts.
+     * Normalerweise stirbt das Objekt bei <=0
+     * @param hitpoints the hitpoints to set
+     */
+    public void setHitpoints(int hitpoints) {
+        this.hitpoints = hitpoints;
+    }
+
 }

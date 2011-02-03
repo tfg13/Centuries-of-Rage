@@ -1669,7 +1669,7 @@ public class MapEditor {
                                     } else if (v1.equals("defaultTexture")) {
                                         rB.defaultTexture = v2;
                                     } else if (v1.equals("hitpoints")) {
-                                        rB.hitpoints = saveStrtoInt(v2, zeile, line);
+                                        rB.setHitpoints(saveStrtoInt(v2, zeile, line));
                                     } else if (v1.equals("maxhitpoints")) {
                                         rB.maxhitpoints = saveStrtoInt(v2, zeile, line);
                                     } else if (v1.equals("Gdesc")) {
@@ -1697,7 +1697,7 @@ public class MapEditor {
                                     } else if (v1.equals("defaultTexture")) {
                                         rU.graphicsdata.defaultTexture = v2;
                                     } else if (v1.equals("hitpoints")) {
-                                        rU.hitpoints = saveStrtoInt(v2, zeile, line);
+                                        rU.setHitpoints(saveStrtoInt(v2, zeile, line));
                                     } else if (v1.equals("maxhitpoints")) {
                                         rU.maxhitpoints = saveStrtoInt(v2, zeile, line);
                                     } else if (v1.equals("Gdesc")) {
@@ -1991,7 +1991,7 @@ public class MapEditor {
             currentUnit.graphicsdata.defaultTexture = rmegui.jTextField1.getText();
             currentUnit.speed = Double.parseDouble(rmegui.jTextField2.getText());
             currentUnit.maxhitpoints = Integer.parseInt(rmegui.jTextField3.getText());
-            currentUnit.hitpoints = Integer.parseInt(rmegui.jTextField4.getText());
+            currentUnit.setHitpoints(Integer.parseInt(rmegui.jTextField4.getText()));
             currentUnit.damage = Integer.parseInt(rmegui.jTextField12.getText());
             currentUnit.cooldownmax = Integer.parseInt(rmegui.jTextField13.getText());
             currentUnit.range = Double.parseDouble(rmegui.jTextField14.getText());
@@ -2086,7 +2086,7 @@ public class MapEditor {
             currentBuilding.setPlayerId(Integer.parseInt(rmegui.jSpinner4.getValue().toString()));
             currentBuilding.defaultTexture = rmegui.jTextField5.getText();
             currentBuilding.maxhitpoints = Integer.parseInt(rmegui.jTextField6.getText());
-            currentBuilding.hitpoints = Integer.parseInt(rmegui.jTextField7.getText());
+            currentBuilding.setHitpoints(Integer.parseInt(rmegui.jTextField7.getText()));
             currentBuilding.z1 = Integer.parseInt(rmegui.jTextField8.getText());
             currentBuilding.z2 = Integer.parseInt(rmegui.jTextField9.getText());
             currentBuilding.offsetX = Integer.parseInt(rmegui.jTextField10.getText());

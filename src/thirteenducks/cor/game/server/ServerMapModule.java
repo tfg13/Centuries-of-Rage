@@ -480,7 +480,7 @@ public class ServerMapModule {
                                     } else if (v1.equals("defaultTexture")) {
                                         rB.defaultTexture = v2;
                                     } else if (v1.equals("hitpoints")) {
-                                        rB.hitpoints = saveStrtoInt(v2, zeile, line);
+                                        rB.setHitpoints(saveStrtoInt(v2, zeile, line));
                                     } else if (v1.equals("maxhitpoints")) {
                                         rB.maxhitpoints = saveStrtoInt(v2, zeile, line);
                                     } else if (v1.equals("Gdesc")) {
@@ -544,7 +544,7 @@ public class ServerMapModule {
                                     } else if (v1.equals("defaultTexture")) {
                                         rU.graphicsdata.defaultTexture = v2;
                                     } else if (v1.equals("hitpoints")) {
-                                        rU.hitpoints = saveStrtoInt(v2, zeile, line);
+                                        rU.setHitpoints(saveStrtoInt(v2, zeile, line));
                                     } else if (v1.equals("maxhitpoints")) {
                                         rU.maxhitpoints = saveStrtoInt(v2, zeile, line);
                                     } else if (v1.equals("Gdesc")) {

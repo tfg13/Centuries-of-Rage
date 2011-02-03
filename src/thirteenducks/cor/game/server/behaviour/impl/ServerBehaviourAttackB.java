@@ -105,7 +105,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
 
                         // Damage dealen
                         if (atkdelay == 0) {
-                            workingAtk.hitpoints -= damage;
+                            workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
                             if (workingAtk.getHitpoints() <= 0) {
                                 // Ja, Tod
                                 rgi.netmap.killUnit((Unit) workingAtk, caster2.playerId);
@@ -118,7 +118,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
 
                                 @Override
                                 public void run() {
-                                    victim2.hitpoints -= dmg;
+                                    victim2.setHitpoints(victim2.getHitpoints() - dmg);
                                     if (victim2.getHitpoints() <= 0) {
                                         // Ja, Tod 
                                         rgi.netmap.killUnit((Unit) victim2, caster2.playerId);
@@ -148,7 +148,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
 
                         // Damage dealen
                         if (atkdelay == 0) {
-                            workingAtk.hitpoints -= damage;
+                            workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
                             if (workingAtk.getHitpoints() <= 0) {
                                 // Ja, Tod
                                 rgi.netmap.killBuilding((Building) workingAtk, caster2.playerId);
@@ -161,7 +161,7 @@ public class ServerBehaviourAttackB extends ServerBehaviour {
 
                                 @Override
                                 public void run() {
-                                    victim.hitpoints -= dmg;
+                                    victim.setHitpoints(victim.getHitpoints() - dmg);
                                     if (victim.getHitpoints() <= 0) {
                                         // Ja, Tod
                                         rgi.netmap.killBuilding((Building) victim, caster2.playerId);
