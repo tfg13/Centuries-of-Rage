@@ -330,4 +330,25 @@ public abstract class Building extends GameObject {
     public double getHarvRate() {
         return harvRate;
     }
+
+    /**
+     * Der derzeitige Baufortschritt, in 0.Prozent
+     * Nur relevant, wenn lifeStatus noch auf unborn steht.
+     * @return the buildprogress
+     */
+    public double getBuildprogress() {
+        return buildprogress;
+    }
+
+    /**
+     * Der derzeitige Baufortschritt, in 0.Prozent
+     * Nur relevant, wenn lifeStatus noch auf unborn steht.
+     * @param buildprogress the buildprogress to set
+     */
+    public void setBuildprogress(double buildprogress) {
+        this.buildprogress = buildprogress;
+        if (buildprogress >= 1) {
+            this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
+        }
+    }
 }
