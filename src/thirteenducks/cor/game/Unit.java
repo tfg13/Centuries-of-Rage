@@ -227,6 +227,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         path.switchPath(newPath);
     }
 
+    public void serverManagePath(ServerCore.InnerServer rgi) {
+        path.serverManagePath(rgi, this);
+    }
+
     /**
      * Lässt die Einheit zum Gebäude laufen
      * Wenn die Route dorthin halbwegs der Luftlinie entspricht,

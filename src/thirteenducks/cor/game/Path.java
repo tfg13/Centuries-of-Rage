@@ -28,6 +28,8 @@ package thirteenducks.cor.game;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
@@ -253,6 +255,106 @@ public class Path implements Pauseable {
     public void unpause() {
         movePaused = false;
         moveStartTime = System.currentTimeMillis() - (movePauseTime - moveStartTime);
+    }
+
+    void serverManagePath(InnerServer rgi, Unit caster2) {
+        boolean gotError = false;
+            int trys = 0;
+
+            do {
+                trys++;
+                gotError = false;
+                try {
+                    long passedTime = 0;
+                    if (movePaused) {
+                        passedTime = movePauseTime - moveStartTime;
+                    } else {
+                        passedTime = System.currentTimeMillis() - moveStartTime;
+                    }
+                    double passedWay = passedTime * caster2.speed / 1000;
+                    // Schon fertig?
+                    if (passedWay >= length) {
+                        // Fertig, Bewegung stoppen
+                        caster2.setMainPosition(targetPos);
+                        targetPos = null;
+                        path = null;
+                        rgi.netmap.setCollision(caster2.getMainPosition(), collision.occupied);
+                        rgi.netmap.setUnitRef(caster2.getMainPosition(), caster2, caster2.getPlayerId());
+                        caster2.attackManager.moveStopped();
+                        caster2.moveManager.deactivate();
+                        return;
+                    }
+                    // Zuletzt erreichten Wegpunkt finden
+                    if (passedWay >= nextWayPointDist) {
+                        // Sind wir einen weiter oder mehrere
+                        int weiter = 1;
+                        while (passedWay > path.get(lastWayPoint + 1 + weiter).getDistance()) {
+                            weiter++;
+                        }
+                        lastWayPoint += weiter;
+                        nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
+                        caster2.setMainPosition(path.get(lastWayPoint).getPos());
+
+                        // Ziel in Reichweite? (für Anhalten)
+                        // Neuer Wegpunkt! - Berechnungen durchführen:
+
+                        // Ziel nichtmehr frei?
+
+                        /*          if (rgi.netmap.isGroundColliding(caster2.movingtarget) || (!reservedTarget && rgi.netmap.checkFieldReservation(caster2.movingtarget))) {
+                        if (caster2.jumpTo == 0) { // Nicht bei jumps
+                        // Weg zu neuem Ziel berechnen
+                        RogPosition pos = caster2.movingtarget.aroundMe(1, rgi);
+                        // Reservierung nur löschen, wenn wir die selber schon eingetragen haben
+                        if (reservedTarget) {
+                        rgi.netmap.deleteFieldReservation(caster2.movingtarget);
+                        reservedTarget = false;
+                        }
+                        boolean ret = false;
+                        if (caster2.position.getDistance(pos) < 100) {
+                        ret = caster2.moveToPosition(pos, rgi, true);
+                        } else {
+                        ret = caster2.moveToPosition(pos, rgi, false);
+                        }
+                        if (!ret) {
+                        // Das Ausweichen ging nicht, die Einheit ist ziemlich "gelockt".
+                        // Versuche die Einheit da wo sie derzeit ist anzuhalten
+                        System.out.println("FixMe: Units target blocked, but can't change path! Trying to stop...");
+                        boolean ret2 = caster2.moveToPosition(caster2.position.aroundMe(0, rgi), rgi, true);
+                        if (!ret2) {
+                        // Da hilft nix mehr...
+                        System.out.println("FixMe: Unit can't move anywhere, this may result in 2 units on one field - SRY!");
+                        }
+                        }
+                        }
+                        } */
+
+                        // Einheit noch nicht am Ziel angekommen - übernächstes Feld frei?
+                        // Fürt zu sinnlosem rumgerenne - son mist
+                        // (Nächstes braucht man nicht zu prüfen, da rennen wir ja eh schon hin...
+
+                        /*if (caster2.lastwaypoint < caster2.path.size() - 3) {
+                        // Feld prüfen
+                        if (rgi.netmap.isGroundColliding(caster2.path.get(caster2.lastwaypoint + 2))) {
+                        // Blockiert, Weg neu suchen
+                        //System.out.println(System.currentTimeMillis() + ": Way to " + caster2.movingtarget + " is blocked, re-calcing...");
+                        //caster2.moveToPosition(caster2.movingtarget, rgi);
+                        }
+                        } */
+
+                    }
+                } catch (Exception ex) {
+                    // Fehler, mit Ziemlicher Sicherheit wurde was von nem anderen Thread geändert, während dieser durchlief.
+                    // Darum einfach noch mal versuchen
+                    if (trys < 2) {
+                        gotError = true;
+                        System.out.println("Error in SMoveBehaviour, trying again...");
+                        rgi.logger(ex);
+                    } else {
+                        gotError = false;
+                        System.out.println("Critical: 2nd try in SMoveBehaviour didn't help.");
+                    }
+                }
+            } while (gotError);
     }
 
     /**
