@@ -33,7 +33,7 @@ import thirteenducks.cor.game.Position;
  * Ein Sprite ist ein zum Spiel gehörendes Objekt.
  * Die Grafikengine zeichnet Sprites automatisch, sofern sie in Sichtweite sind etc.
  */
-public interface Sprite {
+public interface Sprite extends Comparable<Sprite> {
 
     /**
      * Zeichnet dieses Sprite nach x, y auf den Bildschirm.
