@@ -203,7 +203,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Der derzeitige Lebens-Zustand dieses Objekts.
      * Kann soetwas wie "am Leben" oder "schon gestorben" sein.
      */
-    private int lifeStatus;
+    protected int lifeStatus;
     /**
      * Bewegungs/Angriffszustand dieses Objekts.
      * z.B. Aggressive Bewegung, FocusFire
