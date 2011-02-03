@@ -27,8 +27,6 @@ package thirteenducks.cor.networks.cmd.client;
 
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
-import thirteenducks.cor.game.Building;
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.networks.cmd.ClientCommand;
 
 /**
@@ -41,7 +39,7 @@ public class C048_DEBUG_SET_BUILDING_ATKTARGET extends ClientCommand {
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
         // Gebäudeangriffziele - Debug (sowas wie case 13)
         // Gebäude suchen
-        Building b48 = rgi.mapModule.getBuildingviaID(rgi.readInt(data, 1));
+    /*    Building b48 = rgi.mapModule.getBuildingviaID(rgi.readInt(data, 1));
         if (b48 != null) {
             // Ziel suchen
             if (rgi.readInt(data, 2) != 0) {
@@ -58,6 +56,8 @@ public class C048_DEBUG_SET_BUILDING_ATKTARGET extends ClientCommand {
             }
         } else {
             System.out.println("FixMe: Unit ID mismatch (cmd148) (minor)");
-        }
+        } */
+
+        System.out.println("AddMe: Reimplement Set buildingATK-DEBZUG");
     }
 }
