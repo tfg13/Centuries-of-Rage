@@ -351,4 +351,12 @@ public abstract class Building extends GameObject {
             this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
         }
     }
+
+    /**
+     * Speichert den genommenen Schaden während der Bauphase
+     * @return the damageWhileContruction
+     */
+    public int getDamageWhileContruction() {
+        return damageWhileContruction;
+    }
 }
