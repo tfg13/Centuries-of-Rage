@@ -29,6 +29,7 @@ import java.io.*;
 import java.util.*;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore;
+import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
 
 /**
  * Superklasse für Einheiten
@@ -52,6 +53,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der Wegmanager der Einheit.
      */
     private final Path path;
+    /**
+     * PFUSCH!!!
+     * Nur aus Kompatibilitätsgründen hier!
+     * @deprecated 
+     */
+    public ServerBehaviourMove moveManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -125,7 +132,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @param rgi Inner Client
      * @param newPath Der neue Weg der Unit
      */
-    public void applyNewPath(ClientCore.InnerClient rgi, List<Position> newPath) {
+    public synchronized void applyNewPath(ClientCore.InnerClient rgi, List<Position> newPath) {
         if (newPath == null) {
             System.out.println("ERROR: Can't set path(client), it is null !? Debug: unit: " + this);
             return;
@@ -152,12 +159,64 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public synchronized void switchPath(ClientCore.InnerClient rgi, ArrayList<Position> newPath) {
         if (newPath == null) {
-            System.out.println("ERROR: Can't switch path(server), it is null !? Debug: unit: " + this);
+            System.out.println("ERROR: Can't switch path(client), it is null !? Debug: unit: " + this);
             return;
         }
         if (newPath.size() < 2) {
             // Ungültig ein Weg muss mindestens 2 Punkte haben
             System.out.println("ERROR: Path with only one Position! (switchTo-Unit-client)");
+            return;
+        }
+
+        // Bauen
+        System.out.println("AddMe: Notify Behaviours about MOVE_SWITCH");
+
+        // Weg ändern
+        path.switchPath(newPath);
+    }
+
+    /**
+     * Lässt die Einheit sofort auf diesem Pfad laufen
+     * Server only
+     * Übernimmt den Pfad bedingungslos und startet die Bewegung sofort vom
+     * ersten Feld aus, die Unit wird eventuell versetzt, wenn path(0) != this.position
+     *
+     * @param rgi Inner Server
+     * @param newPath Der neue Weg der Unit
+     */
+    public synchronized void applyNewPath(ServerCore.InnerServer rgi, List<Position> newPath) {
+        if (newPath == null) {
+            System.out.println("ERROR: Can't set path(server), it is null !? Debug: unit: " + this);
+            return;
+        }
+        if (newPath.size() < 2) {
+            // Ungültig ein Weg muss mindestens 2 Punkte haben
+            System.out.println("ERROR: Path with only one Position! (applyNew-Unit-server)");
+            return;
+        }
+
+        // Bauen anhalten
+        System.out.println("AddMe: Notify Behaviours about MOVE_START");
+
+        //rgi.mapModule.setCollision(newPath.get(0), collision.free);
+        //rgi.mapModule.setUnitRef(newPath.get(0), null, playerId);
+        path.overwritePath(newPath);
+    }
+
+    /**
+     * Wechselt auf diesen Weg, MUSS den alten enthalten
+     * Server only
+     *
+     * @param newPath Der neue Weg der Unit MUSS DEN ALTEN ENTHALTEN
+     */
+    public synchronized void switchPath(ServerCore.InnerServer rgi, ArrayList<Position> newPath) {
+        if (newPath == null) {
+            System.out.println("ERROR: Can't switch path(server), it is null !? Debug: unit: " + this);
+            return;
+        }
+        if (newPath.size() < 2) {
+            // Ungültig ein Weg muss mindestens 2 Punkte haben
+            System.out.println("ERROR: Path with only one Position! (switchTo-Unit-server)");
             return;
         }
 
