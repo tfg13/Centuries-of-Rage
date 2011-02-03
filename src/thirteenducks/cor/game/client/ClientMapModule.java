@@ -35,6 +35,7 @@ import java.util.*;
 import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
+import org.newdawn.slick.Input;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
@@ -729,67 +730,76 @@ public class ClientMapModule {
                             } else if (mode.equals("U")) {
                                 // Einheiten
                                 if (v1.equals("name")) {
-                                    rU.name = v2;
+                                    rU.setDescName(v2);
                                 } else if (v1.equals("defaultTexture")) {
                                     rU.graphicsdata.defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
-                                    rU.hitpoints = saveStrtoInt(v2, zeile, line);
+                                    rU.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
-                                    rU.maxhitpoints = saveStrtoInt(v2, zeile, line);
+                                    rU.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("Gdesc")) {
-                                    rU.Gdesc = v2;
-                                } else if (v1.equals("Gimg")) {
-                                    rU.Gimg = v2;
+                                    rU.setDescDescription(v2);
                                 } else if (v1.equals("Gpro")) {
-                                    rU.Gpro = v2;
+                                    rU.setDescPro(v2);
                                 } else if (v1.equals("Gcon")) {
-                                    rU.Gcon = v2;
+                                    rU.setDescCon(v2);
                                 } else if (v1.equals("speed")) {
-                                    rU.speed = saveStrtoDouble(v2, zeile, line);
+                                    rU.setSpeed(saveStrtoDouble(v2, zeile, line));
                                 } else if (v1.equals("range")) {
-                                    rU.range = saveStrtoDouble(v2, zeile, line);
+                                    rU.setRange(saveStrtoDouble(v2, zeile, line));
                                 } else if (v1.equals("damage")) {
-                                    rU.damage = saveStrtoInt(v2, zeile, line);
+                                    rU.setDamage(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("cooldownmax")) {
-                                    rU.cooldownmax = saveStrtoInt(v2, zeile, line);
+                                    rU.setFireDelay(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("bulletspeed")) {
-                                    rU.bulletspeed = saveStrtoInt(v2, zeile, line);
+                                    rU.setBulletspeed(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("bullettexture")) {
-                                    rU.bullettexture = v2;
+                                    rU.setBullettexture(v2);
                                 } else if (v1.equals("atkdelay")) {
-                                    rU.atkdelay = saveStrtoInt(v2, zeile, line);
+                                    rU.setAtkdelay(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("armortype")) {
-                                    rU.armortype = v2;
-                                } else if (v1.equals("antiheavyinf")) {
-                                    rU.antiheavyinf = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antilightinf")) {
-                                    rU.antilightinf = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antikav")) {
-                                    rU.antikav = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antivehicle")) {
-                                    rU.antivehicle = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antitank")) {
-                                    rU.antitank = saveStrtoInt(v2, zeile, line);
+                                    if ("lightinf".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_LIGHTINF);
+                                    } else if ("heavyinf".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_HEAVYINF);
+                                    } else if ("air".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_AIR);
+                                    } else if ("kav".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_KAV);
+                                    } else if ("tank".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_TANK);
+                                    } else if ("vehicle".equals(v2)) {
+                                        rU.setArmorType(GameObject.ARMORTYPE_VEHICLE);
+                                    }
                                 } else if (v1.equals("antiair")) {
-                                    rU.antiair = saveStrtoInt(v2, zeile, line);
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("antibuilding")) {
-                                    rU.antibuilding = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("idlerange")) {
-                                    rU.idlerange = saveStrtoDouble(v2, zeile, line);
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
+                                } else if (v1.equals("antiheavyinf")) {
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
+                                } else if (v1.equals("antikav")) {
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
+                                } else if (v1.equals("antilightinf")) {
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
+                                } else if (v1.equals("antitank")) {
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
+                                } else if (v1.equals("antivehicle")) {
+                                    int[] damageFactors = rU.getDamageFactors();
+                                    damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("ability")) {
                                     Ability ra = descAbilities.get(new Integer(saveStrtoInt(v2, zeile, line)));
                                     if (ra != null) {
-                                        rU.abilitys.add(ra);
+                                        rU.getAbilitys().add(ra);
                                     }
-                                } else if ("harvester".equals(v1)) {
-                                    // Einheit kann ernten:
-                                    rU.canHarvest = true;
                                 } else if (v1.equals("visrange")) {
-                                    rU.visrange = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("limit")) {
-                                    rU.limit = saveStrtoInt(v2, zeile, line);
+                                    rU.setVisrange(saveStrtoInt(v2, zeile, line));
                                 }
-
                             }
                         }
                     }
@@ -1309,7 +1319,7 @@ public class ClientMapModule {
             rgi.rogGraphics.notifyUnitDieing(unit);
             this.unitList.remove(unit);
             this.netIDList.remove(unit.netID);
-            rgi.rogGraphics.inputM.selected.remove(unit);
+            rgi.rogGraphics.inputM.removeFromSelection(unit);
             if (rgi.rogGraphics.content.tempInfoObj == unit) {
                 rgi.rogGraphics.content.tempInfoObj = null;
             }
@@ -1338,14 +1348,8 @@ public class ClientMapModule {
     public void deleteSelected(List<InteractableGameElement> selected) {
         // Löscht alle derzeit selektierten Einheiten / das derzeit selektierte Gebäude
         if (!selected.isEmpty()) {
-            if (selected.get(0).getClass().equals(Unit.class)) {
-                // Einheiten - Löschbefehl an Server schicken
-                for (int i = 0; i < selected.size(); i++) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 28, selected.get(i).netID, 0, 0, 0));
-                }
-            } else if (selected.get(0).getClass().equals(Building.class)) {
-                // Gebäude - Löschbefehl an Server schicken
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 30, selected.get(0).netID, 0, 0, 0));
+            for (int i = 0; i < selected.size(); i++) {
+                selected.get(i).keyCommand(Input.KEY_DELETE, '\0');
             }
         }
     }
@@ -1365,7 +1369,7 @@ public class ClientMapModule {
             this.buildingList.remove(building);
             this.netIDList.remove(building.netID);
             rgi.rogGraphics.notifyBuildingDieing(building);
-            rgi.rogGraphics.inputM.selected.remove(building);
+            rgi.rogGraphics.inputM.removeFromSelection(building);
             if (rgi.rogGraphics.content.tempInfoObj == building) {
                 rgi.rogGraphics.content.tempInfoObj = null;
             }
