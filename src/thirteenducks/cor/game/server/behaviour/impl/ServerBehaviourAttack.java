@@ -30,8 +30,6 @@ import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import java.util.Timer;
-import java.util.TimerTask;
 import thirteenducks.cor.game.Position;
 
 /**
@@ -64,190 +62,8 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
     @Override
     public void execute() {
-        // Draufhauen
-        // Echter Angriff
-        final GameObject workingAtk = atkTarget;
-            if (workingAtk != null) {
-                if (workingAtk.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && !hides(workingAtk) && !rgi.game.areAllies(caster, workingAtk)) {
-                    // Nah genug dran?
-                    if (useNP && !nPcalced) {
-                        refreshNearestBuildingPosition();
-                    }
-                    if (useNP) {
-                        lastdistance = caster2.position.getDistance(np);
-                    } else {
-                        lastdistance = caster2.position.getDistance(workingAtk.position);
-                    }
-                    if (lastdistance <= caster2.getRange()) {
-                        // Einheit muss sich wehren - Falls es ne Unit ist
-                        // Units wehren sich nur, wenn sie nicht im Flie-Modus sind
-                        int damage = 0;
-                        if (workingAtk.getClass().equals(Unit.class)) {
-                            Unit victim = (Unit) workingAtk;
-                            if (victim.attacktarget == null) { // Antwort nur erzwingen, wenn kein Ziel
-                                // Das hier angreiffen
-                                if (!victim.moveManager.fleeing) {
-                                    victim.attackManager.attackUnit(caster2);
-                                }
-                            }
-                            // Damage dealen, dabei Rüstungstyp und Extraschaden beachten
-                            if (workingAtk.armortype.equals("lightinf")) {
-                                damage = caster2.getDamage() * caster2.antilightinf / 100;
-                            } else if (workingAtk.armortype.equals("heavyinf")) {
-                                damage = caster2.getDamage() * caster2.antiheavyinf / 100;
-                            } else if (workingAtk.armortype.equals("kav")) {
-                                damage = caster2.getDamage() * caster2.antikav / 100;
-                            } else if (workingAtk.armortype.equals("vehicle")) {
-                                damage = caster2.getDamage() * Math.max(caster2.antivehicle, caster2.antitank) / 100;
-                            } else if (workingAtk.armortype.equals("tank")) {
-                                damage = caster2.getDamage() * caster2.antitank / 100;
-                            } else if (workingAtk.armortype.equals("air")) {
-                                damage = caster2.getDamage() * caster2.antiair / 100;
-                            } else {
-                                damage = caster2.getDamage();
-                            }
-                            // Flugzeit des Geschosses in ms
-                            int atkdelay = 0;
-                            // Fernkampf?
-                            if (caster2.getRange() > 2) {
-                                if (useNP) {
-                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.getBulletspeed());
-                                } else {
-                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.getBulletspeed());
-                                }
-                            } else {
-                                // Nahkampf
-                                atkdelay = caster2.getAtkdelay();
-                            }
-                            // Damage dealen
-                            if (atkdelay == 0) {
-                                workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
-                                if (workingAtk.getHitpoints() <= 0) {
-                                    // Tot
-                                    rgi.netmap.killUnit((Unit) workingAtk, caster2.playerId);
-                                    // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                    if (caster2.getRange() <= 2) {
-                                        rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                                    } else {
-                                        rgi.moveMan.searchNewAtkPosForRange(caster2);
-                                    }
-                                }
-                            } else {
-                                // delayen
-                                final GameObject victim2 = workingAtk;
-                                final int dmg = damage;
-                                new Timer().schedule(new TimerTask() {
-
-                                    @Override
-                                    public void run() {
-                                        victim2.setHitpoints(victim2.getHitpoints() - dmg);
-                                        if (victim2.getHitpoints() <= 0) {
-                                            // Tot
-                                            rgi.netmap.killUnit((Unit) victim2, caster2.playerId);
-                                            // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                            if (caster2.getRange() <= 2) {
-                                                rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                                            } else {
-                                                rgi.moveMan.searchNewAtkPosForRange(caster2);
-                                            }
-                                        }
-                                    }
-                                }, atkdelay);
-                            }
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 39, caster2.netID, workingAtk.netID, damage, atkdelay));
-                        } else {
-                            damage = caster2.getDamage() * caster2.antibuilding / 100;
-                            // Flugzeit des Geschosses in ms
-                            int atkdelay = 0;
-                            // Fernkampf?
-                            if (caster2.getRange() > 2) {
-                                if (useNP) {
-                                    atkdelay = (int) (caster2.position.getDistance(np) * 1000 / caster2.getBulletspeed());
-                                } else {
-                                    atkdelay = (int) (caster2.position.getDistance(workingAtk.position) * 1000 / caster2.getBulletspeed());
-                                }
-                            } else {
-                                // Nahkampf
-                                atkdelay = caster2.getAtkdelay();
-                            }
-                            // Damage dealen
-                            if (atkdelay == 0) {
-                                workingAtk.setHitpoints(workingAtk.getHitpoints() - damage);
-                                if (!workingAtk.ready) {
-                                    ((Building) workingAtk).damageWhileContruction += damage;
-                                }
-                                if (workingAtk.getHitpoints() <= 0) {
-                                    // Tot
-                                    rgi.netmap.killBuilding((Building) workingAtk, caster2.playerId);
-                                    // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                    if (caster2.getRange() <= 2) {
-                                        rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                                    } else {
-                                        rgi.moveMan.searchNewAtkPosForRange(caster2);
-                                    }
-                                }
-                            } else {
-                                // delayen
-                                final GameObject victim = workingAtk;
-                                final int dmg = damage;
-                                new Timer().schedule(new TimerTask() {
-
-                                    @Override
-                                    public void run() {
-                                        victim.setHitpoints(victim.getHitpoints() - dmg);
-                                        if (!victim.ready) {
-                                            ((Building) victim).damageWhileContruction += dmg;
-                                        }
-                                        if (victim.getHitpoints() <= 0) {
-                                            // Tot
-                                            rgi.netmap.killBuilding((Building) victim, caster2.playerId);
-                                            // Wenn das Atk-Behaviour noch kein neues Ziel hat, dann eines suchen
-                                            if (caster2.getRange() <= 2) {
-                                                rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                                            } else {
-                                                rgi.moveMan.searchNewAtkPosForRange(caster2);
-                                            }
-                                        }
-                                    }
-                                }, atkdelay);
-                            }
-                            // An den Client senden
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 39, caster2.netID, workingAtk.netID, damage, atkdelay));
-                        }
-                    } else {
-                        // Zu weit weg
-                        if (caster2.getRange() <= 2) { // Nur Nahkampf
-                            rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                            // Hier sofort aufhören, denn es könnte:
-                            // 1. Eine andere Position zugewiesen worden sein, zu der wir schon hinlaufen
-                            // 2. Eine andere Einheit als Ziel erklärt worden sein, die wir direkt angreiffen können
-                            // 3. Eine andere Einheit als Ziel erklärt worden sein, zu der wir jetzt hinlaufen
-                            return;
-                        } else {
-                            rgi.moveMan.searchNewAtkPosForRange(caster2);
-                            return;
-                        }
-                    }
-                } else {
-                    // Ziel lebt nimmer oder versteckt oder verbündet, neues suchen
-                    caster2.attacktarget = null;
-                    // Dem Client für Debug mitteilen
-                    if (rgi.isInDebugMode()) {
-                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, 0, 0, 0));
-                    }
-                    // Server soll eine neues suchen, der kann das besser:
-                    if (caster2.getRange() <= 2) {
-                        rgi.moveMan.searchNewAtkPosForMeele(caster2);
-                    } else {
-                        rgi.moveMan.searchNewAtkPosForRange(caster2);
-                    }
-                }
-            } else {
-                // Abschalten
-                this.setIdle(true, true);
-            }
-
-
+        // Reimplement
+        System.out.println("Reimplement fighting!");
     }
 
     /**
@@ -256,7 +72,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      */
     protected boolean hides(GameObject obj) {
         if (obj.getClass().equals(Unit.class)) {
-            if (((Unit) obj).isIntra) {
+            if (((Unit) obj).isIntra()) {
                 return true;
             }
         }
@@ -277,76 +93,76 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
     public void attackUnit(Unit victim) {
         // Diese Einheit jetzt zum Angriffsziel erklären
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = false;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
     public void attackBuilding(Building victim) {
         // Dieses Gebäude zum Angriffsziel erklären
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = true;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
     public void attackMoveUnit(Unit victim) {
         // Einheitenangriff mit festgelegtem Angriffspunkt
         // Einheit läuft bereits...
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = false;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
     public void attackMoveBuilding(Building victim) {
         // Gebäudeangriff mit festgelegtem Angriffspunkt
         // Einheit läuft bereits
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = true;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
     public void ialUnit(Unit victim) {
         // Einheit läuft bereits
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = false;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
     public void ialBuilding(Building victim) {
         // Gebäudeangriff mit festgelegtem Angriffspunkt
         // Einheit läuft bereits
-        caster2.attacktarget = victim;
+        caster.attackManager.atkTarget = victim;
         useNP = true;
         nPcalced = false;
         this.setIdle(false, true);
         // Dem Client für Debug mitteilen
         if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster2.netID, victim.netID, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 13, caster.netID, victim.netID, 0, 0));
         }
     }
 
@@ -356,14 +172,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             // Vorsichtshalber neu berechnen
             nPcalced = false;
         }
-        if (caster2.attacktarget == null || !caster2.attacktarget.alive) {
+        if (caster.attackManager.atkTarget == null || caster.getLifeStatus() != GameObject.LIFESTATUS_ALIVE) {
             // Idle aktiviern, falls wir davor geflohen sind
             this.setIdle(true, false);
-        } else {
-            // Eventuell sofort draufhauen
-            if (instantAtk) {
-                this.nextUse = System.currentTimeMillis();
-            }
         }
     }
 
@@ -377,12 +188,12 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             if (modifyState) {
                 this.deactivate();
             }
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 40, caster2.netID, 1, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 40, caster.netID, 1, 0, 0));
         } else {
             if (modifyState) {
                 this.activate();
             }
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 40, caster2.netID, 2, 0, 0));
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 40, caster.netID, 2, 0, 0));
         }
     }
 
@@ -393,26 +204,26 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      */
     protected void refreshNearestBuildingPosition() {
         Building victim = null;
-        if (caster2.attacktarget.getClass().equals(Building.class)) {
-            victim = (Building) caster2.attacktarget;
+        if (caster.attackManager.atkTarget.getClass().equals(Building.class)) {
+            victim = (Building) caster.attackManager.atkTarget;
         } else {
-            np = caster2.attacktarget.position;
+            np = caster.attackManager.atkTarget.getMainPosition();
             nPcalced = true;
             return;
         }
-        int mx = caster2.position.X;
-        int my = caster2.position.Y;
+        int mx = caster.getMainPosition().getX();
+        int my = caster.getMainPosition().getY();
         //Gebäude-Mitte finden:
         float bx = 0;
         float by = 0;
         //Z1
         //Einfach die Hälfte als Mitte nehmen
-        bx = victim.position.X + ((victim.z1 - 1) * 1.0f / 2);
-        by = victim.position.Y - ((victim.z1 - 1) * 1.0f / 2);
+        bx = victim.getMainPosition().getX() + ((victim.getZ1() - 1) * 1.0f / 2);
+        by = victim.getMainPosition().getY() - ((victim.getZ1() - 1) * 1.0f / 2);
         //Z2
         // Einfach die Hälfte als Mitte nehmen
-        bx += ((victim.z2 - 1) * 1.0f / 2);
-        by += ((victim.z2 - 1) * 1.0f / 2);
+        bx += ((victim.getZ2() - 1) * 1.0f / 2);
+        by += ((victim.getZ2() - 1) * 1.0f / 2);
         // Gebäude-Mitte gefunden
         // Winkel berechnen:
         float deg = (float) Math.atan((mx - bx) / (by - my));
@@ -435,23 +246,23 @@ public class ServerBehaviourAttack extends ServerBehaviour {
         }
         // Zuteilung suchen (Ecke/Gerade(und welche?)
         if (deg < 22.5) {
-            np = new Position(victim.position.X + (victim.z1 - 1), victim.position.Y - (victim.z1 - 1));
+            np = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1));
         } else if (deg < 67.5) {
-            np = new Position(victim.position.X + (victim.z1 - 1) + ((victim.z2 - 1) / 2), victim.position.Y - (victim.z1 - 1) + ((victim.z2 - 1) / 2));
+            np = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() - (victim.getZ1() - 1) + ((victim.getZ2() - 1) / 2));
         } else if (deg < 115.5) {
-            np = new Position(victim.position.X + (victim.z1 - 1) + (victim.z2 - 1), victim.position.Y - (victim.z1 - 1) + (victim.z2 - 1));
+            np = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1) + (victim.getZ2() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1) + (victim.getZ2() - 1));
         } else if (deg < 160.5) {
-            np = new Position(victim.position.X + ((victim.z1 - 1) / 2) + (victim.z2 - 1), victim.position.Y - ((victim.z1 - 1) / 2) + (victim.z2 - 1));
+            np = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2) + (victim.getZ2() - 1));
         } else if (deg < 205.5) {
-            np = new Position(victim.position.X + (victim.z2 - 1), victim.position.Y + (victim.z2 - 1));
+            np = new Position(victim.getMainPosition().getX() + (victim.getZ2() - 1), victim.getMainPosition().getY() + (victim.getZ2() - 1));
         } else if (deg < 250.5) {
-            np = new Position(victim.position.X + ((victim.z2 - 1) / 2), victim.position.Y + ((victim.z2 - 1) / 2));
+            np = new Position(victim.getMainPosition().getX() + ((victim.getZ2() - 1) / 2), victim.getMainPosition().getY() + ((victim.getZ2() - 1) / 2));
         } else if (deg < 295.5) {
-            np = victim.position;
+            np = victim.getMainPosition();
         } else if (deg < 340.5) {
-            np = new Position(victim.position.X + ((victim.z1 - 1) / 2), victim.position.Y - ((victim.z1 - 1) / 2));
+            np = new Position(victim.getMainPosition().getX() + ((victim.getZ1() - 1) / 2), victim.getMainPosition().getY() - ((victim.getZ1() - 1) / 2));
         } else {
-            np = new Position(victim.position.X + (victim.z1 - 1), victim.position.Y - (victim.z1 - 1));
+            np = new Position(victim.getMainPosition().getX() + (victim.getZ1() - 1), victim.getMainPosition().getY() - (victim.getZ1() - 1));
         }
         nPcalced = true;
     }
