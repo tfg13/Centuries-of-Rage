@@ -49,18 +49,15 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
 
     @Override
     public void execute() {
-        if (!caster2.isMoving()) {
             // Befindet sich die Einheit unmittelbar neben der Baustelle?
-            if (!building.isAroundMe(caster2, rgi)) {
+            if (!building.isAroundMe(caster.getMainPosition())) {
                 // Das ist net gut - abbrechen
-                building.isbuilt = false;
                 this.deactivate();
                 return;
             }
             if (start == 0 && pause == 0) {
                 // Neue Startzeit, es geht los
-                this.start = (long) (-(building.buildprogress * duration) + System.currentTimeMillis());
-                caster2.order = orders.construct;
+                this.start = (long) (-(building.getBuildprogress() * duration) + System.currentTimeMillis());
             }
             // Baut das Gebäude weiter
             // Zeit bestimmen, die bereits vergangen ist
@@ -81,34 +78,23 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                 start = System.currentTimeMillis();
             }
             if (fortschritt >= 1) {
-                // Schon fertig.
-                building.ready = true;
-                building.isbuilt = false;
                 // Gebäude fertig, jetzt kriegts die volle Sichtweite
-                building.visrange = rgi.mapModule.getDescBuilding(building.descTypeId, -1, building.playerId).getVisrange();
+                building.setVisrange(rgi.mapModule.getDescBuilding(building.getDescTypeId(), -1, building.getPlayerId()).getVisrange());
                 rgi.rogGraphics.builingsChanged();
                 // Wenn das Gebäude das Truppenlimit erhöht, dann jetzt eintragen
-                // Truppenlimit setzen
-                if (building.limit < 0 && building.playerId == rgi.game.getOwnPlayer().playerId) {
-                    rgi.game.getOwnPlayer().maxlimit -= building.limit; // minus, weil der wert negativ ist
-                }
                 // zur Playerliste hinzufügen
-                rgi.game.registerBuilding(caster.playerId, building);
-                if (building.getDamage() != 0) {
-                    building.cbehaviours.add(new ClientBehaviourIdleB(rgi, building));
-                }
+                rgi.game.registerBuilding(caster.getPlayerId(), building);
 
                 // Behaviour abschalten
                 this.deactivate();
                 fortschritt = 1;
             }
             // Soviel Energie adden:
-            building.hitpoints = (int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.damageWhileContruction;
+            building.setHitpoints((int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.getDamageWhileContruction());
 
             // Gebäude-Fortschritt einstellen
-            building.buildprogress = fortschritt;
+            building.setBuildprogress(fortschritt);
         }
-    }
 
     public ClientBehaviourConstruct(ClientCore.InnerClient newinner, GameObject caster, int callsPerSecond, boolean createAsActive) {
         super(newinner, caster, 5, callsPerSecond, createAsActive);
@@ -116,7 +102,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
 
     @Override
     public boolean showProgess(int descTypeId) {
-        if (this.building.descTypeId == descTypeId && this.building.playerId == rgi.game.getOwnPlayer().playerId) {
+        if (this.building.getDescTypeId() == descTypeId && this.building.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
             return this.isActive();
         }
         return false;
@@ -124,7 +110,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
 
     @Override
     public float getProgress(int descTypeId) {
-        return (float) building.buildprogress;
+        return (float) building.getBuildprogress();
     }
 
     @Override
@@ -160,8 +146,6 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
             case 16:
                 // Bau stoppen:
                 if (building.netID == rgi.readInt(packet, 2)) {
-                    // Anhalten
-                    building.isbuilt = false;
                     //this.pause = System.currentTimeMillis();
                     this.deactivate();
                 } else {
@@ -172,9 +156,6 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
             case 17:
                 // Bau starten/weiter
                 // Alten Bau wieder für neuen Arbeiter freimachen
-                if (building != null) {
-                    building.isbuilt = false;
-                }
                 int netID = rgi.readInt(packet, 2);
                 if (building == null || building.netID != netID) {
                     // Umstellen, Gebäude suchen
@@ -183,19 +164,17 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                         // Es geht, aktivieren
                         this.duration = rgi.readInt(packet, 3);
                         start = 0;
-                        building.isbuilt = true;
                         this.activate();
-                        caster.getBuildAbility(building.descTypeId).behaviour = this;
+                        caster.getBuildAbility(building.getDescTypeId()).behaviour = this;
                         rgi.rogGraphics.triggerUpdateHud();
                     } else {
                         System.out.println("FixMe: Building ID mismatch, Cmd: 17");
                     }
                 } else {
                     // Weiter:
-                    building.isbuilt = true;
                     start = 0;
                     this.activate();
-                    caster.getBuildAbility(building.descTypeId).behaviour = this;
+                    caster.getBuildAbility(building.getDescTypeId()).behaviour = this;
                     rgi.rogGraphics.triggerUpdateHud();
                 }
         }
@@ -216,7 +195,6 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
 
     @Override
     public void deactivate() {
-        building.isbuilt = false;
         super.deactivate();
     }
 
