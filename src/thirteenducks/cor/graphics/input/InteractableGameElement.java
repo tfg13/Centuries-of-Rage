@@ -30,7 +30,7 @@ import java.util.List;
 import thirteenducks.cor.game.Position;
 
 /**
- * InteractableGameElements sind Spielelemente, mit denen (durch die Maus) interagiert werden kann.
+ * InteractableGameElements sind Spielelemente, mit denen (primär durch die Maus) interagiert werden kann.
  *
  * Dieses Interface regelt, was passiert, wenn die Maus über eine Objekt bewegt wird, wenn es angeklickt wird/ etc.
  * Nur die Selektion selber findet nicht hier statt, dafür ist das Inputmodul selber zuständig
@@ -112,4 +112,11 @@ public interface InteractableGameElement {
      * @param doubleKlick ist dies der wiederholte Klick eines Doppelklicks?
      */
     public void command(int button, Position target, boolean doubleKlick);
+
+    /**
+     * Es wurde eine für diese Einheit bestimmte Taste gedrückt.
+     * @param key Der Keycode des Buttons.
+     * @param character Das gedrückte Zeichen
+     */
+    public void keyCommand(int key, char character);
 }
