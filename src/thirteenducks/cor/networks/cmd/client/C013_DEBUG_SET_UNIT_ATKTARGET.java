@@ -27,8 +27,6 @@ package thirteenducks.cor.networks.cmd.client;
 
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
-import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.networks.cmd.ClientCommand;
 
 /**
@@ -42,7 +40,7 @@ public class C013_DEBUG_SET_UNIT_ATKTARGET extends ClientCommand {
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
         // Einheitenangriffziele - Debug
         // Einheit suchen
-        Unit unit13 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
+      /*  Unit unit13 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
         if (unit13 != null) {
             // Ziel suchen
             if (rgi.readInt(data, 2) != 0) {
@@ -58,6 +56,7 @@ public class C013_DEBUG_SET_UNIT_ATKTARGET extends ClientCommand {
             }
         } else {
             System.out.println("FixMe: Unit ID mismatch (cmd13) (minor)");
-        }
+        } */
+        System.out.println("AddMe: ReImplement set DEBUG-ATK");
     }
 }
