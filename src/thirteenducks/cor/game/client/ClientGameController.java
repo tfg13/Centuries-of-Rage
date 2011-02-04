@@ -164,12 +164,6 @@ public class ClientGameController implements Runnable {
             building.addAbility(intram);
         }
 
-        // BRSel initialisieren
-        if (!rgi.isAIClient) {
-            rgi.rogGraphics.content.initBRSel();
-            rgi.rogGraphics.content.refreshBRSel();
-        }
-
         // Dem Spieler Startressourcen geben
         myself.res1 = 200;
         myself.res2 = 100;
