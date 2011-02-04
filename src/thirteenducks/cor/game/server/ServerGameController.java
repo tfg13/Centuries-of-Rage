@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Set;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.game.Unit;
 
 /**

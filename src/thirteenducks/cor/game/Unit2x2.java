@@ -8,7 +8,7 @@ package thirteenducks.cor.game;
 import java.util.List;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;

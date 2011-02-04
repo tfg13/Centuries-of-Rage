@@ -29,7 +29,7 @@ import java.io.*;
 import java.util.*;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 
 /**
  * Superklasse für Einheiten

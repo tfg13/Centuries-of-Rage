@@ -23,9 +23,9 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.game.server.behaviour.impl;
+package thirteenducks.cor.game.networks.behaviour.impl;
 
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.map.CoRMapElement.collision;

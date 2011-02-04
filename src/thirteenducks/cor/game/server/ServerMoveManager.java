@@ -35,7 +35,7 @@ import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.Unit;
 
 /**

@@ -45,8 +45,8 @@ import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.map.MapIO;
 
 /**

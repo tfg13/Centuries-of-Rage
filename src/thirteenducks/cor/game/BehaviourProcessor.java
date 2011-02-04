@@ -27,7 +27,7 @@
 package thirteenducks.cor.game;
 
 import java.util.List;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 
 /**

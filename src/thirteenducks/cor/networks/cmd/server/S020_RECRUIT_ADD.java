@@ -26,8 +26,8 @@
 package thirteenducks.cor.networks.cmd.server;
 
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
-import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourRecruit;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourRecruit;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.networks.server.ServerNetController.ServerHandler;
 import thirteenducks.cor.networks.cmd.ServerCommand;

@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.game.server.behaviour;
+package thirteenducks.cor.networks.server.behaviour;
 
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.server.ServerCore;

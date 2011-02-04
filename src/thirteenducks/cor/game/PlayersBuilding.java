@@ -1,20 +1,41 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2008, 2009, 2010, 2011:
+ *   Tobias Fleig (tfg[AT]online[DOT]de),
+ *   Michael Haas (mekhar[AT]gmx[DOT]de),
+ *   Johannes Kattinger (johanneskattinger[AT]gmx[DOT]de)
+ *
+ *  - All rights reserved -
+ *
+ *
+ *  This file is part of Centuries of Rage.
+ *
+ *  Centuries of Rage is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Centuries of Rage is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
 package thirteenducks.cor.game;
 
 import java.util.List;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 
 /**
- *
+ * Nicht-Neutrales Spielergebäude
+ * 
  * @author tfg
  */
 public class PlayersBuilding extends Building {
