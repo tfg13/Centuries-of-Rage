@@ -34,12 +34,12 @@ package thirteenducks.cor.graphics;
 public class GraphicsWindow extends javax.swing.JFrame {
     GraphicsComponent content;
     void init(boolean saveMode) {
-        this.setIgnoreRepaint(true);
-        content = new GraphicsComponent();
-        if (saveMode) {
-            content.saveMode = true;
-        }
-        add(content);
+//        this.setIgnoreRepaint(true);
+//        content = new GraphicsComponent();
+//        if (saveMode) {
+//            content.saveMode = true;
+//        }
+//        add(content);
     }
 
 }
