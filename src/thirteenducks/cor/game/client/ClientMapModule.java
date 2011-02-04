@@ -661,7 +661,7 @@ public class ClientMapModule {
                                 if (v1.equals("name")) {
                                     rB.setDescName(v2);
                                 } else if (v1.equals("defaultTexture")) {
-                                    rB.defaultTexture = v2;
+                                    rB.getGraphicsData().defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
                                     rB.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
@@ -669,9 +669,9 @@ public class ClientMapModule {
                                 } else if (v1.equals("Gdesc")) {
                                     rB.setDescDescription(v2);
                                 } else if (v1.equals("offsetX")) {
-                                    rB.offsetX = saveStrtoInt(v2, zeile, line);
+                                    rB.getGraphicsData().offsetX = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("offsetY")) {
-                                    rB.offsetY = saveStrtoInt(v2, zeile, line);
+                                    rB.getGraphicsData().offsetY = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("z1")) {
                                     rB.setZ1(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("z2")) {
@@ -732,7 +732,7 @@ public class ClientMapModule {
                                 if (v1.equals("name")) {
                                     rU.setDescName(v2);
                                 } else if (v1.equals("defaultTexture")) {
-                                    rU.graphicsdata.defaultTexture = v2;
+                                    rU.getGraphicsData().defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
                                     rU.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
@@ -1221,7 +1221,6 @@ public class ClientMapModule {
 
         // Selektionsschatten einfügen
         if (!rgi.isAIClient) {
-            rgi.rogGraphics.content.placeGO(b);
             rgi.rogGraphics.builingsChanged();
         }
     }
@@ -1373,8 +1372,6 @@ public class ClientMapModule {
             if (rgi.rogGraphics.content.tempInfoObj == building) {
                 rgi.rogGraphics.content.tempInfoObj = null;
             }
-            // Selektion entfernen
-            rgi.rogGraphics.content.deleteGO(building);
             // Effekte entfernen
         }
     }
