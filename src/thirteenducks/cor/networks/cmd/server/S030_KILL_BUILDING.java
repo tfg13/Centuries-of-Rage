@@ -43,7 +43,7 @@ public class S030_KILL_BUILDING extends ServerCommand {
         if (building30 != null) {
             // Weg damit
             rgi.netmap.killBuilding(building30);
-            rgi.serverstats.trackBuildingdelete(building30.playerId);
+            rgi.serverstats.trackBuildingdelete(building30.getPlayerId());
         } else {
             System.out.println("SFixMe: Building ID mismatch (cmd 30)");
         }
