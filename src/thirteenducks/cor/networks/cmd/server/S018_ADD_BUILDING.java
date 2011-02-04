@@ -41,8 +41,7 @@ public class S018_ADD_BUILDING extends ServerCommand {
         // Holen:
         Building b = rgi.netmap.getDescBuilding(handler.client.playerId, rgi.readInt(data, 2));
         if (b != null) {
-            b.ready = false;
-            b.position = rgi.readPosition(data, 2);
+            b.setMainPosition(rgi.readPosition(data, 2));
             b.setPlayerId(handler.client.playerId);
             b.setHitpoints(b.getMaxhitpoints() / 4);
             rgi.netmap.addBuildingAsSite(b);
