@@ -36,7 +36,6 @@ import org.apache.commons.collections.buffer.PriorityBuffer;
 import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.geom.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityBuild;
@@ -115,8 +114,6 @@ public class GraphicsContent extends BasicGame {
     private ClientCore.InnerClient rgi;
     private int miniMapViewSizeX = 10;
     private int miniMapViewSizeY = 10;
-    
-    
     Image wayPointHighlighting[];
     private static final boolean beautyDraw = true;     // Schöner zeichnen durch umsortieren der allList, kostet Leistung
     public Image[] huds;                               // Die Huds für verschiedene Epochen
@@ -237,7 +234,7 @@ public class GraphicsContent extends BasicGame {
 
                 if (mouseX != lastHovMouseX || mouseY != lastHovMouseY) {
                     // Wenn sichs geändert hat neu suchen
-                    hoveredUnit = identifyUnit(mouseX, mouseY);
+                  //  hoveredUnit = identifyUnit(mouseX, mouseY);
                     lastHovMouseX = mouseX;
                     lastHovMouseY = mouseY;
                 }
@@ -248,7 +245,7 @@ public class GraphicsContent extends BasicGame {
                         renderUnitDest(g);
                     }
                     g.setWorldClip(0, 0, hudX, realPixY);
-                    renderGraphicElements(g);
+                    //renderGraphicElements(g);
                     g.clearWorldClip();
 
                 }
@@ -256,7 +253,7 @@ public class GraphicsContent extends BasicGame {
                 fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
 
 
-                renderHealthBars(g);
+                // renderHealthBars(g);
                 // Fog of War rendern, falls aktiv
                 if (renderFogOfWar) {
                     renderFogOfWar(g);
@@ -264,9 +261,9 @@ public class GraphicsContent extends BasicGame {
                 if (renderPicCursor) {
                     renderCursor();
                 }
-                if (this.dragSelectionBox) {
-                    renderSelBox(g);
-                }
+                /*     if (this.dragSelectionBox) {
+                renderSelBox(g);
+                }*/
                 if (idMode) {
                     renderIds(g);
                 }
@@ -344,30 +341,29 @@ public class GraphicsContent extends BasicGame {
      * Zeichnet alle Health-Bars.
      * @param g2
      */
-    private void renderHealthBars(Graphics g2) {
-        for (int i = 0; i < buildingList.size(); i++) {
-            Building b = buildingList.get(i);
-            if (b.isSelected || (this.alwaysshowenergybars && b.wasSeen)) {
-                this.renderHealth(b, g2, (b.position.X - positionX) * 20, (b.position.Y - positionY) * 15);
-            }
-        }
-        for (int i = 0; i < unitList.size(); i++) {
-            Unit u = unitList.get(i);
-            if (u.isSelected || (this.alwaysshowenergybars && u.alive)) {
-                // Ist diese Einheit gerade sichtbar? (nur eigene oder sichtbare zeichnen)
-                if (u.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(u, rgi.game.getOwnPlayer()) || fowmap[u.position.X][u.position.Y] > 1) {
-                    Position tempP = null;
-                    if (u.isMoving()) {
-                        tempP = u.getMovingPosition(rgi, positionX, positionY);
-                    } else {
-                        tempP = new Position((u.position.X - positionX) * 20, (u.position.Y - positionY) * 15);
-                    }
-                    renderHealth(u, g2, tempP.X, tempP.Y);
-                }
-            }
-        }
+    /*    private void renderHealthBars(Graphics g2) {
+    for (int i = 0; i < buildingList.size(); i++) {
+    Building b = buildingList.get(i);
+    if (b.isSelected || (this.alwaysshowenergybars && b.wasSeen)) {
+    this.renderHealth(b, g2, (b.position.getX() - positionX) * 20, (b.position.getY() - positionY) * 15);
     }
-
+    }
+    for (int i = 0; i < unitList.size(); i++) {
+    Unit u = unitList.get(i);
+    if (u.isSelected || (this.alwaysshowenergybars && u.alive)) {
+    // Ist diese Einheit gerade sichtbar? (nur eigene oder sichtbare zeichnen)
+    if (u.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(u, rgi.game.getOwnPlayer()) || fowmap[u.position.getX()][u.position.getY()] > 1) {
+    Position tempP = null;
+    if (u.isMoving()) {
+    tempP = u.getMovingPosition(rgi, positionX, positionY);
+    } else {
+    tempP = new Position((u.position.getX() - positionX) * 20, (u.position.getY() - positionY) * 15);
+    }
+    renderHealth(u, g2, tempP.getX(), tempP.getY());
+    }
+    }
+    }
+    } */
     private void renderOverlays(Graphics g2) {
         // Zeichnet alle Overlays.
         for (int i = 0; i < overlays.size(); i++) {
@@ -384,83 +380,83 @@ public class GraphicsContent extends BasicGame {
      * @param g2
      */
     private void renderUnitDest(Graphics g2) {
-        int mode = unitDestMode;
-        g2.setLineWidth(2);
-        for (int x = 0; x < unitList.size(); x++) {
-            Unit unit = unitList.get(x);
-            // Modus abfragen:
-            if (mode == 3 || (mode == 1 && unit.playerId == rgi.game.getOwnPlayer().playerId) || (mode == 2 && unit.playerId != rgi.game.getOwnPlayer().playerId)) {
-                // Zuerst Bewegung
-                if (unit.movingtarget != null) {
-                    // Markieren, ob Einheit flieht oder nicht
-                    if (unit.getbehaviourC(4).active) {
-                        // Angry, roter Punkt
-                        g2.setColor(Color.red);
-                    } else {
-                        g2.setColor(Color.blue);
-                    }
-                    // Source (unit selber)
-                    Position pos = unit.getMovingPosition(rgi, positionX, positionY);
-                    int sx = pos.X;
-                    int sy = pos.Y;
-                    g2.fillRect(sx, sy, 5, 5);
-                    // Target (ziel)
-                    // Diese 2. Abfrage ist sinnvoll und notwendig, weil getMovingPosition am Ende der Bewegung das movingtarget löscht
-                    if (unit.movingtarget != null) {
-                        int tx = (unit.movingtarget.X - positionX) * 20;
-                        int ty = (unit.movingtarget.Y - positionY) * 15;
-                        // Zeichnen
-                        g2.setColor(new Color(3, 100, 0)); // Dunkelgrün
-                        g2.drawLine(sx + 19, sy + 25, tx + 19, ty + 25);
-                    }
-                }
-                // Jetzt Angriff
-                if (unit.attacktarget != null) {
-                    g2.setColor(Color.red);
-                    // Source (unit selber)
-                    int sx = (unit.position.X - positionX) * 20;
-                    int sy = (unit.position.Y - positionY) * 15;
-                    if (unit.isMoving()) {
-                        Position pos = unit.getMovingPosition(rgi, positionX, positionY);
-                        sx = pos.X;
-                        sy = pos.Y;
-                    }
-                    // Target (ziel)
-                    int tx = 0;
-                    int ty = 0;
-                    if (unit.attacktarget.getClass().equals(Unit.class)) {
-                        Unit target = (Unit) unit.attacktarget;
-                        if (target.isMoving()) {
-                            Position pos = target.getMovingPosition(rgi, positionX, positionY);
-                            tx = pos.X;
-                            ty = pos.Y;
-                        } else {
-                            tx = (target.position.X - positionX) * 20;
-                            ty = (target.position.Y - positionY) * 15;
-                        }
-                    } else if (unit.attacktarget.getClass().equals(Building.class)) {
-                        Building target = (Building) unit.attacktarget;
-                        //Gebäude-Mitte finden:
-                        float bx = 0;
-                        float by = 0;
-                        //Z1
-                        //Einfach die Hälfte als Mitte nehmen
-                        bx = target.position.X + ((target.z1 - 1) * 1.0f / 2);
-                        by = target.position.Y - ((target.z1 - 1) * 1.0f / 2);
-                        //Z2
-                        // Einfach die Hälfte als Mitte nehmen
-                        bx += ((target.z2 - 1) * 1.0f / 2);
-                        by += ((target.z2 - 1) * 1.0f / 2);
-                        // Gebäude-Mitte gefunden
-                        tx = (int) ((bx - positionX) * 20) - 19;
-                        ty = (int) ((by - positionY) * 15) - 25;
-                    }
-                    // Zeichnen
-                    g2.drawLine(sx + 19, sy + 25, tx + 19, ty + 25);
-                }
-            }
-        }
-        g2.setLineWidth(1);
+//        int mode = unitDestMode;
+//        g2.setLineWidth(2);
+//        for (int x = 0; x < unitList.size(); x++) {
+//            Unit unit = unitList.get(x);
+//            // Modus abfragen:
+//            if (mode == 3 || (mode == 1 && unit.getPlayerId() == rgi.game.getOwnPlayer().getPlayerId()) || (mode == 2 && unit.getPlayerId() != rgi.game.getOwnPlayer().getPlayerId())) {
+//                // Zuerst Bewegung
+//                if (unit.movingtarget != null) {
+//                    // Markieren, ob Einheit flieht oder nicht
+//                    if (unit.getbehaviourC(4).active) {
+//                        // Angry, roter Punkt
+//                        g2.setColor(Color.red);
+//                    } else {
+//                        g2.setColor(Color.blue);
+//                    }
+//                    // Source (unit selber)
+//                    Position pos = unit.getMovingPosition(rgi, positionX, positionY);
+//                    int sx = pos.getX();
+//                    int sy = pos.getY();
+//                    g2.fillRect(sx, sy, 5, 5);
+//                    // Target (ziel)
+//                    // Diese 2. Abfrage ist sinnvoll und notwendig, weil getMovingPosition am Ende der Bewegung das movingtarget löscht
+//                    if (unit.movingtarget != null) {
+//                        int tx = (unit.movingtarget.getX() - positionX) * 20;
+//                        int ty = (unit.movingtarget.getY() - positionY) * 15;
+//                        // Zeichnen
+//                        g2.setColor(new Color(3, 100, 0)); // Dunkelgrün
+//                        g2.drawLine(sx + 19, sy + 25, tx + 19, ty + 25);
+//                    }
+//                }
+//                // Jetzt Angriff
+//                if (unit.attacktarget != null) {
+//                    g2.setColor(Color.red);
+//                    // Source (unit selber)
+//                    int sx = (unit.position.getX() - positionX) * 20;
+//                    int sy = (unit.position.getY() - positionY) * 15;
+//                    if (unit.isMoving()) {
+//                        Position pos = unit.getMovingPosition(rgi, positionX, positionY);
+//                        sx = pos.getX();
+//                        sy = pos.getY();
+//                    }
+//                    // Target (ziel)
+//                    int tx = 0;
+//                    int ty = 0;
+//                    if (unit.attacktarget.getClass().equals(Unit.class)) {
+//                        Unit target = (Unit) unit.attacktarget;
+//                        if (target.isMoving()) {
+//                            Position pos = target.getMovingPosition(rgi, positionX, positionY);
+//                            tx = pos.getX();
+//                            ty = pos.getY();
+//                        } else {
+//                            tx = (target.position.getX() - positionX) * 20;
+//                            ty = (target.position.getY() - positionY) * 15;
+//                        }
+//                    } else if (unit.attacktarget.getClass().equals(Building.class)) {
+//                        Building target = (Building) unit.attacktarget;
+//                        //Gebäude-Mitte finden:
+//                        float bx = 0;
+//                        float by = 0;
+//                        //Z1
+//                        //Einfach die Hälfte als Mitte nehmen
+//                        bx = target.position.getX() + ((target.getZ1() - 1) * 1.0f / 2);
+//                        by = target.position.getY() - ((target.getZ1() - 1) * 1.0f / 2);
+//                        //Z2
+//                        // Einfach die Hälfte als Mitte nehmen
+//                        bx += ((target.getZ2() - 1) * 1.0f / 2);
+//                        by += ((target.getZ2() - 1) * 1.0f / 2);
+//                        // Gebäude-Mitte gefunden
+//                        tx = (int) ((bx - positionX) * 20) - 19;
+//                        ty = (int) ((by - positionY) * 15) - 25;
+//                    }
+//                    // Zeichnen
+//                    g2.drawLine(sx + 19, sy + 25, tx + 19, ty + 25);
+//                }
+//            }
+//        }
+//        g2.setLineWidth(1);
     }
 
     /**
@@ -469,28 +465,28 @@ public class GraphicsContent extends BasicGame {
      * @param g2
      */
     private void renderIds(Graphics g2) {
-        g2.setColor(Color.cyan);
-        g2.setFont(fonts[4]);
-        // Einheiten durchgehen
-        for (int i = 0; i < unitList.size(); i++) {
-            Unit unit = unitList.get(i);
-            if (unit.isMoving()) {
-                Position pos = unit.getMovingPosition(rgi, positionX, positionY);
-                g2.drawString(String.valueOf(unit.netID), pos.X + 10, pos.Y + 16);
-            } else {
-                g2.drawString(String.valueOf(unit.netID), (unit.position.X - positionX) * 20 + 10, (unit.position.Y - positionY) * 15 + 16);
-            }
-        }
-        // Gebäude
-        for (int i = 0; i < buildingList.size(); i++) {
-            Building building = buildingList.get(i);
-            g2.drawString(String.valueOf(building.netID), (building.position.X - positionX) * 20 + 10, (building.position.Y - positionY) * 15 + 16);
-        }
-        // Ressourcen
-        for (int i = 0; i < resList.size(); i++) {
-            Ressource res = resList.get(i);
-            g2.drawString(String.valueOf(res.netID), (res.position.X - positionX) * 20 + 10, (res.position.Y - positionY) * 15 + 16);
-        }
+//        g2.setColor(Color.cyan);
+//        g2.setFont(fonts[4]);
+//        // Einheiten durchgehen
+//        for (int i = 0; i < unitList.size(); i++) {
+//            Unit unit = unitList.get(i);
+//            if (unit.isMoving()) {
+//                Position pos = unit.getMovingPosition(rgi, positionX, positionY);
+//                g2.drawString(String.valueOf(unit.netID), pos.getX() + 10, pos.getY() + 16);
+//            } else {
+//                g2.drawString(String.valueOf(unit.netID), (unit.position.getX() - positionX) * 20 + 10, (unit.position.getY() - positionY) * 15 + 16);
+//            }
+//        }
+//        // Gebäude
+//        for (int i = 0; i < buildingList.size(); i++) {
+//            Building building = buildingList.get(i);
+//            g2.drawString(String.valueOf(building.netID), (building.position.getX() - positionX) * 20 + 10, (building.position.getY() - positionY) * 15 + 16);
+//        }
+//        // Ressourcen
+//        for (int i = 0; i < resList.size(); i++) {
+//            Ressource res = resList.get(i);
+//            g2.drawString(String.valueOf(res.netID), (res.position.getX() - positionX) * 20 + 10, (res.position.getY() - positionY) * 15 + 16);
+//        }
     }
 
     private void renderLoadScreen(Graphics g2) {
@@ -703,19 +699,19 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderBuildingWaypoint() {
-        // Gebäude-Sammelpunkt zeichnen
-        if (!rgi.rogGraphics.inputM.selected.isEmpty() && rgi.rogGraphics.inputM.selected.get(0).getClass().equals(Building.class)) {
-            Building b = (Building) rgi.rogGraphics.inputM.selected.get(0);
-            if (b.waypoint != null) {
-                // Dahin rendern
-                GraphicsImage image = coloredImgMap.get("img/game/building_defaulttarget.png" + b.playerId);
-                if (image != null) {
-                    image.getImage().draw(((b.waypoint.X - positionX) * 20) - 40, ((b.waypoint.Y - positionY) * 15) - 40);
-                } else {
-                    System.out.println("ERROR: Textures missing (34124)");
-                }
-            }
-        }
+//        // Gebäude-Sammelpunkt zeichnen
+//        if (!rgi.rogGraphics.inputM.selected.isEmpty() && rgi.rogGraphics.inputM.selected.get(0).getClass().equals(Building.class)) {
+//            Building b = (Building) rgi.rogGraphics.inputM.selected.get(0);
+//            if (b.waypoint != null) {
+//                // Dahin rendern
+//                GraphicsImage image = coloredImgMap.get("img/game/building_defaulttarget.png" + b.getPlayerId());
+//                if (image != null) {
+//                    image.getImage().draw(((b.waypoint.getX() - positionX) * 20) - 40, ((b.waypoint.getY() - positionY) * 15) - 40);
+//                } else {
+//                    System.out.println("ERROR: Textures missing (34124)");
+//                }
+//            }
+//        }
     }
 
     private void renderFogOfWar(Graphics g) {
@@ -853,20 +849,20 @@ public class GraphicsContent extends BasicGame {
         // Spielermarkierungen für Gebäude - neueres System
         for (int i = 0; i < buildingList.size(); i++) {
             Building b = buildingList.get(i);
-            if (b.playerId != rgi.game.getOwnPlayer().playerId && !b.wasSeen) {
+            if (b.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
                 continue;
             }
             // Startkoordinaten
-            int x = (b.position.X - positionX) * 20;
-            int y = ((b.position.Y - positionY) * 15) + 25;
+            int x = (b.getMainPosition().getX() - positionX) * 20;
+            int y = ((b.getMainPosition().getY() - positionY) * 15) + 25;
             // Linien ziehen
             g2.setLineWidth(4);
             //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g2.setColor(rgi.game.getPlayer(b.playerId).color);
-            g2.drawLine(x, y, x + (b.z1 * 20), y - (b.z1 * 15));
-            g2.drawLine(x, y, x + (b.z2 * 20), y + (b.z2 * 15));
-            g2.drawLine(x + (b.z1 * 20), y - (b.z1 * 15), x + (b.z1 * 20) + (b.z2 * 20), y - (b.z1 * 15) + (b.z2 * 15));
-            g2.drawLine(x + (b.z2 * 20), y + (b.z2 * 15), x + (b.z1 * 20) + (b.z2 * 20), y - (b.z1 * 15) + (b.z2 * 15));
+            g2.setColor(rgi.game.getPlayer(b.getPlayerId()).color);
+            g2.drawLine(x, y, x + (b.getZ1() * 20), y - (b.getZ1() * 15));
+            g2.drawLine(x, y, x + (b.getZ2() * 20), y + (b.getZ2() * 15));
+            g2.drawLine(x + (b.getZ1() * 20), y - (b.getZ1() * 15), x + (b.getZ1() * 20) + (b.getZ2() * 20), y - (b.getZ1() * 15) + (b.getZ2() * 15));
+            g2.drawLine(x + (b.getZ2() * 20), y + (b.getZ2() * 15), x + (b.getZ1() * 20) + (b.getZ2() * 20), y - (b.getZ1() * 15) + (b.getZ2() * 15));
         }
         g2.setLineWidth(1);
         //g2.setStroke(new BasicStroke(1));
@@ -952,18 +948,6 @@ public class GraphicsContent extends BasicGame {
                     g2.drawString("Duration: " + GraphicsContent.transformTime(abb.duration), hovX + 2, hovY + 15);
                     Building building = rgi.mapModule.getDescBuilding(abb.descTypeId, -1, rgi.game.getOwnPlayer().playerId);
                     // Truppenlimit
-                    boolean limitOk = true;
-                    if (building.limit > 0) {
-                        if (rgi.game.getOwnPlayer().freeLimit() < building.limit || rgi.game.getOwnPlayer().currentlimit + building.limit > 100) {
-                            g2.setColor(Color.red);
-                            limitOk = false;
-                        }
-                        g2.drawString("Requires: " + building.limit, hovX + 82, hovY + 15);
-                        g2.drawImage(imgMap.get("img/sym/limit.png").getImage(), hovX + 135, hovY + 16);
-                    } else if (building.limit < 0) {
-                        g2.setColor(new Color(3, 100, 0));
-                        g2.drawString("Increases limit by: " + String.valueOf(building.limit).substring(1), hovX + 82, hovY + 15);
-                    }
                     g2.setColor(Color.black);
                     if (ability.showCosts) {
                         // Kosten:
@@ -1030,10 +1014,10 @@ public class GraphicsContent extends BasicGame {
                     // Infos über das Gebäude
                     // Name:
                     g2.setFont(fonts[2]);
-                    g2.drawString(building.name, hovX + 2, hovY + 32);
+                    g2.drawString(building.getName(), hovX + 2, hovY + 32);
                     // Beschreibung
                     g2.setFont(fonts[0]);
-                    g2.drawString(building.Gdesc, hovX + 2, hovY + 48);
+                    g2.drawString(building.getDescDescription(), hovX + 2, hovY + 48);
                     // HP
                     g2.drawString("HP: " + building.getMaxhitpoints(), hovX + 2, hovY + 60);
                     // Absatz
@@ -1078,9 +1062,6 @@ public class GraphicsContent extends BasicGame {
                                 g2.drawString("- another " + d5 + " Oil", hovX + 2, hovY + 74 + (12 * (i + 1)));
                                 i++;
                             }
-                            if (!limitOk) {
-                                g2.drawString("- more Houses", hovX + 2, hovY + 74 + (12 * (i + 1)));
-                            }
                         }
                     }
                 } else if (ability.type == Ability.ABILITY_RECRUIT) {
@@ -1089,18 +1070,6 @@ public class GraphicsContent extends BasicGame {
                     g2.drawString("Duration: " + GraphicsContent.transformTime(abr.duration), hovX + 2, hovY + 15);
                     Unit unit = rgi.mapModule.getDescUnit(abr.descTypeId, -1, rgi.game.getOwnPlayer().playerId);
                     // Truppenlimit
-                    boolean limitOk = true;
-                    if (unit.limit > 0) {
-                        if (rgi.game.getOwnPlayer().freeLimit() < unit.limit || rgi.game.getOwnPlayer().currentlimit + unit.limit > 100) {
-                            g2.setColor(Color.red);
-                            limitOk = false;
-                        }
-                        g2.drawString("Requires: " + unit.limit, hovX + 82, hovY + 15);
-                        g2.drawImage(imgMap.get("img/sym/limit.png").getImage(), hovX + 135, hovY + 16);
-                    } else if (unit.limit < 0) {
-                        g2.setColor(new Color(3, 100, 0));
-                        g2.drawString("Increases limit by: " + String.valueOf(unit.limit).substring(1), hovX + 82, hovY + 15);
-                    }
                     if (ability.showCosts) {
                         // Kosten:
                         Color green = new Color(3, 100, 0);
@@ -1167,15 +1136,15 @@ public class GraphicsContent extends BasicGame {
 
                     // Name:
                     g2.setFont(fonts[2]);
-                    g2.drawString(unit.name, hovX + 2, hovY + 32);
+                    g2.drawString(unit.getName(), hovX + 2, hovY + 32);
                     // Beschreibung
                     g2.setFont(fonts[0]);
-                    g2.drawString(unit.Gdesc, hovX + 2, hovY + 48);
+                    g2.drawString(unit.getDescDescription(), hovX + 2, hovY + 48);
                     // HP
                     g2.drawString("HP: " + unit.getMaxhitpoints(), hovX + 2, hovY + 60);
                     // Stark / Schwach gegen...
-                    g2.drawString("Strong vs: " + unit.Gpro, hovX + 2, hovY + 72);
-                    g2.drawString("Weak vs: " + unit.Gcon, hovX + 2, hovY + 84);
+                    g2.drawString("Strong vs: " + unit.getDescPro(), hovX + 2, hovY + 72);
+                    g2.drawString("Weak vs: " + unit.getDescCon(), hovX + 2, hovY + 84);
                     // Trennlinie
                     g2.drawLine(hovX, hovY + 97, mouseX, hovY + 97);
                     // Verfügbar?
@@ -1217,9 +1186,6 @@ public class GraphicsContent extends BasicGame {
                             if (d5 > 0) {
                                 g2.drawString("- another " + d5 + " Oil", hovX + 2, hovY + 98 + (12 * (i + 1)));
                                 i++;
-                            }
-                            if (!limitOk) {
-                                g2.drawString("- more Houses", hovX + 2, hovY + 98 + (12 * (i + 1)));
                             }
                         }
                     }
@@ -1351,7 +1317,7 @@ public class GraphicsContent extends BasicGame {
                     // Trennlinie
                     g2.drawLine(hovX, hovY + 15, mouseX, hovY + 15);
                     g2.setFont(fonts[2]);
-                    g2.drawString(intr.caster2.intraUnits.size() + " / " + intr.caster2.maxIntra + " Units indoors", hovX + 2, hovY + 18);
+                    g2.drawString(intr.caster2.currentIntra() + " / " + intr.caster2.getMaxIntra() + " Units indoors", hovX + 2, hovY + 18);
                     g2.setColor(new Color(3, 100, 0));
                     g2.drawString("Left-click to evacuate ONE Unit", hovX + 2, hovY + 35);
                     g2.drawString("Right-click to evacuate ALL Units", hovX + 2, hovY + 47);
@@ -1360,353 +1326,6 @@ public class GraphicsContent extends BasicGame {
             }
         }
 
-    }
-
-    private void renderGraphicElements(Graphics g) {
-        // Zeichnet alles, was es an GameObjects gibt.
-        selectionShadows = new ArrayList();
-        for (int i = 0; i < allList.size(); i++) {
-            Unit unit;
-            Building building;
-            // Einheit?
-            try {
-                unit = (Unit) allList.get(i);
-                // Ok, es ist eine Einheit:
-                // In Bewegung?
-                GraphicsImage tempImage = null;
-                Position tempP = null;
-                if (unit.alive) {
-                    if (unit.isMoving()) {
-                        boolean animatk = false;
-                        if (unit.anim != null && unit.atkAnim && unit.anim.isAttackingAnimated()) {
-                            Image img = unit.anim.getNextAttackingFrame();
-                            if (img != null) {
-                                animatk = true;
-                                tempImage = new GraphicsImage(img);
-                            } else {
-                                unit.atkAnim = false;
-                            }
-                        }
-                        if (!animatk) {
-                            if (unit.anim != null && unit.anim.isMovingAnimated()) {
-                                tempImage = new GraphicsImage(unit.anim.getNextMovingFrame());
-                            } else {
-                                tempImage = imgMap.get(unit.graphicsdata.getTexture());
-                            }
-                        }
-                        tempP = unit.getMovingPosition(rgi, positionX, positionY);
-
-                    } else if (unit.order == orders.harvest) {
-                        if (unit.anim != null && unit.anim.isHarvestingAnimated()) {
-                            tempImage = new GraphicsImage(unit.anim.getNextHarvestingFrame());
-                        } else {
-                            tempImage = imgMap.get(unit.graphicsdata.getTexture());
-                        }
-                        tempP = new Position((unit.position.X - positionX) * 20, (unit.position.Y - positionY) * 15);
-                    } else {
-                        boolean animatk = false;
-                        if (unit.anim != null && unit.atkAnim && unit.anim.isAttackingAnimated()) {
-                            Image img = unit.anim.getNextAttackingFrame();
-                            if (img != null) {
-                                animatk = true;
-                                tempImage = new GraphicsImage(img);
-                            } else {
-                                unit.atkAnim = false;
-                            }
-                        }
-                        if (!animatk) {
-                            if (unit.anim != null && unit.anim.isIdleAnimated()) {
-                                tempImage = new GraphicsImage(unit.anim.getNextIdleFrame());
-                            } else {
-                                tempImage = imgMap.get(unit.graphicsdata.getTexture());
-                            }
-                        }
-                        tempP = new Position((unit.position.X - positionX) * 20, (unit.position.Y - positionY) * 15);
-                    }
-                } else {
-                    if (unit.anim != null && unit.anim.isDieingAnimated()) {
-                        tempImage = new GraphicsImage(unit.anim.getNextDieingFrame());
-                    } else {
-                        tempImage = null;
-                    }
-                    tempP = new Position((unit.position.X - positionX) * 20, (unit.position.Y - positionY) * 15);
-                }
-                if (tempImage != null) {
-                    // Ist diese Einheit gerade sichtbar? (nur eigene oder sichtbare zeichnen)
-                    if (unit.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.position.X][unit.position.Y] > 1) {
-                        if (tempP.X != -1) {
-                            //Einheit gehört zu / Selektiert
-                            if (unit.playerId != 0) {
-                                String sub = "img/game/sel_s1.png" + unit.playerId;
-                                coloredImgMap.get(sub).getImage().draw(tempP.X, tempP.Y);
-                            }
-                            if (unit.isSelected) {
-                                // Weiß markieren
-                                //TODO größe der Einheit an selektion anpassen
-                                imgMap.get("img/game/sel_t0_s1.png").getImage().draw(tempP.X, tempP.Y);
-                            }
-                            // Beim Angriff die Position der Einheit ein bissle verschieben: (Nur Nahkampf)
-                            int maxX = 0;
-                            int maxY = 0;
-                            if (unit.anim != null && unit.atkStart != 0 && unit.getRange() == 2) {
-                                int del = unit.getAtkdelay() != 0 ? unit.getAtkdelay() : 250;
-                                // Solange wie del sagt vorschieben, danach gleich lang zurück
-                                switch (unit.anim.dir) {
-                                    case 1:
-                                        // Oben
-                                        maxY = -10;
-                                        break;
-                                    case 2:
-                                        // Oben rechts
-                                        maxX = 5;
-                                        maxY = -5;
-                                        break;
-                                    case 3:
-                                        // Rechts
-                                        maxX = 10;
-                                        break;
-                                    case 4:
-                                        // RU
-                                        maxX = 5;
-                                        maxY = 5;
-                                        break;
-                                    case 5:
-                                        // U
-                                        maxY = 10;
-                                        break;
-                                    case 6:
-                                        // LU
-                                        maxX = -5;
-                                        maxY = 5;
-                                        break;
-                                    case 7:
-                                        // L
-                                        maxX = -10;
-                                        break;
-                                    case 8:
-                                        // LO
-                                        maxX = -5;
-                                        maxY = -5;
-                                        break;
-                                }
-                                // Zeit (Fortschritt der Bewegung reinrechnen)
-                                // Fortschritt berechnen:
-                                double pro = 1.0 * ((System.currentTimeMillis() - unit.atkStart) * 1.0 / del);
-                                if (pro > 2) {
-                                    // Fertig
-                                    pro = 0;
-                                    unit.atkStart = 0;
-                                } else if (pro > 1) {
-                                    // Zurück
-                                    pro -= ((pro - 1) * 2);
-                                }
-                                maxX = (int) (pro * maxX);
-                                maxY = (int) (pro * maxY);
-                            }
-                            if (unit.equals(hoveredUnit)) {
-                                Image ui = tempImage.getImage();
-                                ui.drawFlash(tempP.X + maxX, tempP.Y + maxY);
-                                ui.draw(tempP.X + maxX, tempP.Y + maxY, new Color(1.0f, 1.0f, 1.0f, 0.5f));
-                                //tempImage.getImage().draw(tempP.X + maxX, tempP.Y + maxY);
-                            } else {
-                                tempImage.getImage().draw(tempP.X + maxX, tempP.Y + maxY);
-                            }
-
-                            if (unit.alive) { // Tote Einheiten kann man nicht selektieren
-                                if (unit.selectionShadow == 1) {
-                                    // Kleine Units, 27x33 + 8/3
-                                    selectionShadows.add(new Dimension(tempP.X + 8, tempP.Y + 3));
-                                    selectionShadows.add(new Dimension(tempP.X + 35, tempP.Y + 36));
-                                    selectionShadows.add(unit);
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (ClassCastException ex) {
-                try {
-                    building = (Building) allList.get(i);
-                    // Textur holen
-                    String tex = building.defaultTexture;
-                    // Grafik aus ImgMap laden
-                    GraphicsImage tempImage = null;
-                    boolean inSight = building.wasSeen;
-                    // Wenn noch nicht, dann schauen, ob aktuell
-                    if (!inSight) {
-                        for (int z1 = 0; z1 < building.z1; z1++) {
-                            for (int z2 = 0; z2 < building.z2; z2++) {
-                                if (fowmap[(int) building.position.X + z1 + z2][(int) building.position.Y - z1 + z2] > 1) {
-                                    // Jetzt sehen wirs
-                                    inSight = true;
-                                    building.wasSeen = true;
-                                    // Auf Minimap anzeigen
-                                    calcMiniMap();
-                                    break;
-                                }
-                            }
-                            if (inSight) {
-                                break;
-                            }
-                        }
-                    }
-                    if (inSight) {
-                        if (building.ready) {
-                            if (building.alive) {
-                                if (!building.isWorking) {
-                                    if (building.isSelected) {
-                                        if (building.anim != null && building.anim.isIdleAnimated()) {
-                                            tempImage = new GraphicsImage(building.anim.getNextIdleFrame(9));
-                                        } else {
-                                            tempImage = imgMap.get(tex);
-                                        }
-                                    } else {
-                                        // Zum Spieler passend setzen
-                                        if (building.anim != null && building.anim.isIdleAnimated()) {
-                                            tempImage = new GraphicsImage(building.anim.getNextIdleFrame(building.playerId));
-                                        } else {
-                                            tempImage = imgMap.get(tex);
-                                        }
-                                    }
-                                } else {
-                                    if (building.isSelected) {
-                                        if (building.anim != null && building.anim.isWorkingAnimated()) {
-                                            tempImage = new GraphicsImage(building.anim.getNextWorkingFrame(9));
-                                        } else {
-                                            tempImage = imgMap.get(tex);
-                                        }
-                                    } else {
-                                        // Zum Spieler passend setzen
-                                        if (building.anim != null && building.anim.isWorkingAnimated()) {
-                                            tempImage = new GraphicsImage(building.anim.getNextWorkingFrame(building.playerId));
-                                        } else {
-                                            tempImage = imgMap.get(tex);
-                                        }
-                                    }
-                                }
-                            } else {
-                                // Dieing
-                                if (building.anim != null && building.anim.isDieingAnimated()) {
-                                    tempImage = new GraphicsImage(building.anim.getNextDieingFrame(building.playerId));
-                                } else {
-                                    tempImage = null;
-                                }
-                            }
-
-                        } else {
-                            tempImage = imgMap.get(tex);
-                            if (tempImage != null) {
-
-                                Image img = tempImage.getImage();
-                                // Baustelle
-                                // Wieviele Pixel rendern?
-                                int rpix = (int) (img.getHeight() * building.buildprogress);
-                                // Boden der Baustelle markieren
-                                GraphicsImage bimg = null;
-                                for (int z1 = 0; z1 < building.z1; z1++) {
-                                    for (int z2 = 0; z2 < building.z2; z2++) {
-                                        if (z1 == building.z1 - 1 && z2 == 0) {
-                                            bimg = imgMap.get("img/game/build_hm.png");
-                                        } else if (z2 == 0) {
-                                            bimg = imgMap.get("img/game/build_hl.png");
-                                        } else if (z1 == building.z1 - 1) {
-                                            bimg = imgMap.get("img/game/build_hr.png");
-                                        } else {
-                                            bimg = imgMap.get("img/game/build.png");
-                                        }
-                                        if (bimg != null) {
-                                            bimg.getImage().draw(((building.position.X + z1 + z2) - positionX) * 20, ((building.position.Y - z1 + z2) - positionY) * 15);
-                                        }
-                                        bimg = null;
-                                    }
-                                }
-                                // Gebäude zeichnen
-                                int rX = (building.position.X - building.offsetX - positionX) * 20;
-                                int rY = (building.position.Y - building.offsetY - positionY) * 15;
-                                rY = rY + (img.getHeight() - rpix);
-                                img.draw(rX, rY, rX + img.getWidth(), rY + rpix, 0, img.getHeight() - rpix, img.getWidth(), img.getHeight());
-                                tempImage = null;
-
-                                // Vordergrund der Baustelle zeichnen:
-                                GraphicsImage bimg2 = null;
-                                for (int z1 = 0; z1 < building.z1; z1++) {
-                                    for (int z2 = 0; z2 < building.z2; z2++) {
-                                        if (z2 == building.z2 - 1 && z1 == 0) {
-                                            bimg2 = imgMap.get("img/game/build_vm.png");
-                                        } else if (z1 == 0) {
-                                            bimg2 = imgMap.get("img/game/build_vl.png");
-                                        } else if (z2 == building.z2 - 1) {
-                                            bimg2 = imgMap.get("img/game/build_vr.png");
-                                        }
-                                        if (bimg2 != null) {
-                                            bimg2.getImage().draw(((building.position.X + z1 + z2) - positionX) * 20, ((building.position.Y - z1 + z2) - positionY) * 15);
-                                        }
-                                        bimg2 = null;
-                                    }
-                                }
-                            }
-
-                        }
-                        // Bild da?
-                        if (tempImage != null) {
-                            // Ok, zeichnen
-                            tempImage.getImage().draw((building.position.X - building.offsetX - positionX) * 20, (building.position.Y - building.offsetY - positionY) * 15);
-                        } else {
-                            if (building.ready) {
-                                System.out.println("[Graphics][ERROR]: Image \"" + tex + "\" not found!");
-                            }
-                        }
-                    }
-                } catch (ClassCastException ex2) {
-                    try {
-                        // Ressource?
-                        Ressource res = (Ressource) allList.get(i);
-                        GraphicsImage img = imgMap.get(res.getTex());
-                        if (img != null) {
-                            if (res.position != null) {
-                                if (res.getType() < 3) {
-                                    // Einfach hinzeichnen:
-                                    img.getImage().draw((res.position.X - positionX) * 20, (res.position.Y - positionY) * 15);
-                                } else {
-                                    // Größere Bilder, eins weiter oben zeichnen
-                                    img.getImage().draw((res.position.X - positionX) * 20, (res.position.Y - positionY - 2) * 15);
-                                }
-                            }
-                        }
-                    } catch (ClassCastException ex3) {
-                        // Bullet!
-                        GraphicsBullet bullet = (GraphicsBullet) allList.get(i);
-                        // Bullet sichtbar? (eigene immer anzeigen, ansonsten was sichtbar ist)
-                        int[] renderloc = bullet.getRenderLocation(positionX, positionY);
-                        if (renderloc == null) {
-                            // Bullet ist schon angekommen!
-                            // Das Mapmodul soll die Damage dealen
-                            rgi.mapModule.dealDamage(bullet.target, bullet.damage);
-                            // Bullet löschen
-                            allList.remove(bullet);
-                            i--;
-                            continue;
-                        }
-                        if (bullet.attacker != null) {
-                            if (bullet.attacker.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(rgi.game.getPlayer(bullet.attacker.playerId), rgi.game.getOwnPlayer()) || positionInSight(bullet.getRoundedPosition(positionX, positionY), true)) {
-                                GraphicsImage img = imgMap.get(bullet.texture + bullet.getDirection());
-                                if (img != null) {
-                                    img.getImage().draw(renderloc[0], renderloc[1]);
-                                }
-                            }
-                        } else {
-                            if (bullet.attackerB.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(rgi.game.getPlayer(bullet.attackerB.playerId), rgi.game.getOwnPlayer()) || positionInSight(bullet.getRoundedPosition(positionX, positionY), true)) {
-                                GraphicsImage img = imgMap.get(bullet.texture + bullet.getDirection());
-                                if (img != null) {
-                                    img.getImage().draw(renderloc[0], renderloc[1]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        selectionShadowsB = selectionShadows;
     }
 
     /**
@@ -1720,30 +1339,30 @@ public class GraphicsContent extends BasicGame {
      */
     private boolean positionInSight(Position pos, boolean onFail) {
         try {
-            return (fowmap[pos.X][pos.Y] > 1);
+            return (fowmap[pos.getX()][pos.getY()] > 1);
         } catch (Exception ex) {
             return onFail;
         }
     }
 
     private void renderSelBox(Graphics g2) {
-        // Rendert die SelektionBox
-        g2.setColor(Color.lightGray);
-        int dirX = mouseX - this.boxselectionstart.width;
-        int dirY = mouseY - this.boxselectionstart.height;
-        // Bpxen können nur von links oben nach rechts unten gezogen werden - eventuell Koordinaten tauschen
-        if (dirX < 0 && dirY > 0) {
-            // Nur x Tauschen
-            g2.drawRect(mouseX, this.boxselectionstart.height, this.boxselectionstart.width - mouseX, mouseY - this.boxselectionstart.height);
-        } else if (dirY < 0 && dirX > 0) {
-            // Nur Y tauschen
-            g2.drawRect(this.boxselectionstart.width, mouseY, mouseX - this.boxselectionstart.width, this.boxselectionstart.height - mouseY);
-        } else if (dirX < 0 && dirY < 0) {
-            // Beide tauschen
-            g2.drawRect(mouseX, mouseY, this.boxselectionstart.width - mouseX, this.boxselectionstart.height - mouseY);
-        }
-        // Nichts tauschen
-        g2.drawRect(this.boxselectionstart.width, this.boxselectionstart.height, dirX, dirY);
+//        // Rendert die SelektionBox
+//        g2.setColor(Color.lightGray);
+//        int dirX = mouseX - this.boxselectionstart.width;
+//        int dirY = mouseY - this.boxselectionstart.height;
+//        // Bpxen können nur von links oben nach rechts unten gezogen werden - eventuell Koordinaten tauschen
+//        if (dirX < 0 && dirY > 0) {
+//            // Nur x Tauschen
+//            g2.drawRect(mouseX, this.boxselectionstart.height, this.boxselectionstart.width - mouseX, mouseY - this.boxselectionstart.height);
+//        } else if (dirY < 0 && dirX > 0) {
+//            // Nur Y tauschen
+//            g2.drawRect(this.boxselectionstart.width, mouseY, mouseX - this.boxselectionstart.width, this.boxselectionstart.height - mouseY);
+//        } else if (dirX < 0 && dirY < 0) {
+//            // Beide tauschen
+//            g2.drawRect(mouseX, mouseY, this.boxselectionstart.width - mouseX, this.boxselectionstart.height - mouseY);
+//        }
+//        // Nichts tauschen
+//        g2.drawRect(this.boxselectionstart.width, this.boxselectionstart.height, dirX, dirY);
     }
 
     private void renderHud(Graphics g) {
@@ -1802,12 +1421,12 @@ public class GraphicsContent extends BasicGame {
                         Unit unit = unitList.get(i);
                         // Nur eigene und sichtbare rendern
                         try {
-                            if (unit.playerId == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
                                 if (miniMap != null) {
                                     if (!fowDisabled) {
                                         // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-                                        int bx = (int) (unit.position.X * 20 * maxminscaleX);
-                                        int by = (int) (unit.position.Y * 15 * maxminscaleY);
+                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
+                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
                                         int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
                                         int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
 //                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
@@ -1817,7 +1436,7 @@ public class GraphicsContent extends BasicGame {
                                 }
                             }
                         } catch (ArrayIndexOutOfBoundsException ex) {
-                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.position);
+                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
                         }
                     }
                     fowg2.setDrawMode(Graphics.MODE_ALPHA_MAP);
@@ -1825,12 +1444,12 @@ public class GraphicsContent extends BasicGame {
                         Unit unit = unitList.get(i);
                         // Nur eigene und sichtbare rendern
                         try {
-                            if (unit.playerId == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
                                 if (miniMap != null) {
                                     if (!fowDisabled) {
                                         // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-                                        int bx = (int) (unit.position.X * 20 * maxminscaleX);
-                                        int by = (int) (unit.position.Y * 15 * maxminscaleY);
+                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
+                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
                                         int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
                                         int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
 //                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
@@ -1840,7 +1459,7 @@ public class GraphicsContent extends BasicGame {
                                 }
                             }
                         } catch (ArrayIndexOutOfBoundsException ex) {
-                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.position);
+                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
                         }
                     }
                 }
@@ -1852,13 +1471,13 @@ public class GraphicsContent extends BasicGame {
                     for (int i = 0; i < buildingList.size(); i++) {
                         Building building = buildingList.get(i);
                         // Nur eigene & team
-                        if (building.playerId == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
+                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
                             // "Loch" in den fow-layer schneiden
-                            int bx = (int) ((building.position.X + ((building.z1 + building.z2 - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-                            int by = (int) (building.position.Y * 15 * maxminscaleY);
+                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
+                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
                             // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
+                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
+                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
                             fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                         }
                     }
@@ -1868,13 +1487,13 @@ public class GraphicsContent extends BasicGame {
                     for (int i = 0; i < buildingList.size(); i++) {
                         Building building = buildingList.get(i);
                         // Nur eigene & team
-                        if (building.playerId == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
+                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
                             // "Loch" in den fow-layer schneiden
-                            int bx = (int) ((building.position.X + ((building.z1 + building.z2 - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-                            int by = (int) (building.position.Y * 15 * maxminscaleY);
+                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
+                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
                             // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.getVisrange() + ((building.z1 + building.z2) / 4)) * 15 * maxminscaleY * 2);
+                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
+                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
                             fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
                         }
                     }
@@ -1891,14 +1510,14 @@ public class GraphicsContent extends BasicGame {
                 Unit unit = unitList.get(i);
                 // Nur eigene und sichtbare rendern
                 try {
-                    if (unit.playerId == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.position.X][unit.position.Y] > 1) {
+                    if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.getMainPosition().getX()][unit.getMainPosition().getY()] > 1) {
                         if (miniMap != null) {
-                            setColorToPlayer(unit.playerId, g);
-                            g.fillRect((int) ((unit.position.X * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1) - 1, (int) ((unit.position.Y * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.371428) + 2, 3, 3);
+                            setColorToPlayer(unit.getPlayerId(), g);
+                            g.fillRect((int) ((unit.getMainPosition().getX() * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1) - 1, (int) ((unit.getMainPosition().getY() * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.371428) + 2, 3, 3);
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.position);
+                    System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
                 }
             }
             // Sichtbaren Bereich anzeigen
@@ -1942,518 +1561,518 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void buildInteractiveHud() {
-        // Baut den interaktiven Teil des Huds neu auf - z.B. da wo Einheiten etc angezeigt werden
-        try {
-            int px = -1;
-            int py = 0;
-            Graphics g2 = null;
-            ArrayList<GameObject> selected = rgi.rogGraphics.inputM.selected;
-            if (selected.isEmpty() && this.tempInfoObj == null) {
-                // Hud leeren
-                g2 = interactivehud.getGraphics();
-                g2.setBackground(new org.newdawn.slick.Color(0.0f, 0.0f, 0.0f, 0.0f));
-                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-                g2.clear();
-            }
-            if ((selected.isEmpty() && this.tempInfoObj != null) || selected.size() == 1) {
-                // Hud-Info mode
-                if (selected.size() == 1) {
-                    tempInfoObj = selected.get(0);
-                }
-                g2 = interactivehud.getGraphics();
-                g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-                g2.clear();
-
-                // Spezifische Infos anzeigen:
-                if (tempInfoObj.getClass().equals(Unit.class)) {
-                    // Unit - Infos rendern
-                    Unit unit = (Unit) tempInfoObj;
-                    // Bildchen
-                    GraphicsImage img = imgMap.get(unit.graphicsdata.defaultTexture);
-                    int dx1 = (int) (hudSizeX * 0.15);
-                    int dy1 = (int) (realPixY * 2 / 7 * 0.2); // realPixY * 2/35
-                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5); // hudSizeX * 0.29
-                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4); // realPixY * 3/28
-                    if (img != null) {
-                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-                    }
-                    // Spielername:
-                    g2.setColor(Color.gray);
-                    g2.setFont(fonts[2]);
-                    g2.drawString(rgi.game.getPlayer(unit.playerId).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
-                    // Einheitename
-                    g2.setColor(Color.black);
-                    g2.setFont(fonts[1]);
-                    g2.drawString(unit.name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-                    // HP
-                    g2.setFont(fonts[2]);
-                    g2.drawString("HP:  " + unit.getHitpoints() + " / " + unit.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-                    // Rüstung
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
-                    String atype = "";
-                    if (unit.armortype.equals("lightinf")) {
-                        atype = "Light Infantry";
-                    } else if (unit.armortype.equals("heavyinf")) {
-                        atype = "Heavy Infantry";
-                    } else if (unit.armortype.equals("kav")) {
-                        atype = "Cavalry";
-                    } else if (unit.armortype.equals("vehicle")) {
-                        atype = "Vehicle";
-                    } else if (unit.armortype.equals("tank")) {
-                        atype = "Tank";
-                    } else if (unit.armortype.equals("air")) {
-                        atype = "Air";
-                    }
-                    g2.drawString(atype, (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
-                    //Geschwindigkeit
-                    g2.drawString("Speed: ", dx1, (int) (dy2 * 1.25) - 10);
-                    g2.drawString(String.valueOf(unit.speed), (int) (dx1 * 4.1), (int) (dy2 * 1.25) - 10);
-                    //Reichweite
-                    g2.drawString("Range: ", dx1, (int) (dy2 * 1.4) - 10);
-                    if (unit.getRange() == 2) {
-                        g2.drawString("Melee", (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
-                    } else {
-                        g2.drawString(String.valueOf(unit.getRange()), (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
-                    }
-                    // Schaden:
-                    g2.drawString("Damage: ", dx1, (int) (dy2 * 1.60) - 10);
-                    g2.drawString(String.valueOf(unit.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * 1.60) - 10);
-                    // Special-Schaden gegen Rüstungsklassen:
-                    float yposition = 1.75f;
-                    if (unit.antilightinf != 100) {
-                        g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antiheavyinf != 100) {
-                        g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antikav != 100) {
-                        g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antivehicle != 100) {
-                        g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antitank != 100) {
-                        g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antiair != 0) {
-                        g2.drawString(" vs. Air: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                        yposition += 0.15;
-                    }
-                    if (unit.antibuilding != 100) {
-                        g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * yposition) - 10);
-                        g2.drawString(unit.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-                    }
-
-                } else if (tempInfoObj.getClass().equals(Building.class)) {
-                    // Building - Infos rendern
-                    Building building = (Building) tempInfoObj;
-                    // Bildchen
-                    GraphicsImage img = imgMap.get(building.defaultTexture);
-                    int dx1 = (int) (hudSizeX * 0.15);
-                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
-                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
-                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
-                    if (img != null) {
-                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-                    }
-                    // Spielername:
-                    g2.setColor(Color.gray);
-                    g2.setFont(fonts[2]);
-                    g2.drawString(rgi.game.getPlayer(building.playerId).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
-                    // Gebäudename
-                    g2.setColor(Color.black);
-                    g2.setFont(fonts[1]);
-                    g2.drawString(building.name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-                    // HP
-                    g2.setFont(fonts[2]);
-                    g2.drawString("HP:  " + building.getHitpoints() + " / " + building.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-                    // Rüstung
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
-                    g2.drawString("Building", (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
-                    if (building.isbuilt) {
-                        // Fortschritt anzeigen
-                        g2.drawString("Constructing:  ", dx1, (int) (dy2 * 1.3) - 10);
-                        g2.drawString(Math.round(building.buildprogress * 100) + "%", (int) (dx1 * 4.1), (int) (dy2 * 1.3) - 10);
-                    } else {
-                        double movedown = 1.3;
-                        if (building.limit < 0) {
-                            g2.drawString("Limit: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString("+" + (building.limit * -1), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.2;
-                        }
-                        if (building.maxIntra > 0) {
-                            // Anzahl der Arbeiter im Gebäude
-                            g2.drawString("Harvesters: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.intraUnits.size() + "/" + building.maxIntra, (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.2;
-                        }
-                        if (building.heal > 0) {
-                            // Anzahl der Arbeiter im Gebäude
-                            g2.drawString("Heals: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(String.valueOf(building.heal), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.2;
-                        }
-                        if (building.getDamage() != 0) {
-                            g2.drawString("Range: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(String.valueOf(building.getRange()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                            g2.drawString("Damage: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(String.valueOf(building.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antilightinf != 100) {
-                            g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antiheavyinf != 100) {
-                            g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antikav != 100) {
-                            g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antivehicle != 100) {
-                            g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antitank != 100) {
-                            g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antiair != 0) {
-                            g2.drawString(" vs. Air: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                            movedown += 0.15;
-                        }
-                        if (building.antibuilding != 100) {
-                            g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * movedown) - 10);
-                            g2.drawString(building.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-                        }
-                    }
-
-                } else if (tempInfoObj.getClass().equals(Ressource.class)) {
-                    // Ressource - Infos zeigen, falls weit genug erforscht
-                    Ressource res = (Ressource) tempInfoObj;
-                    boolean showinfo = (res.getType() < 3 || (res.getType() == Ressource.RES_METAL && epoche >= 2) || (res.getType() == Ressource.RES_COINS) && epoche >= 3);
-                    // Bildchen
-                    GraphicsImage img = imgMap.get(res.getTex());
-                    int dx1 = (int) (hudSizeX * 0.15);
-                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
-                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
-                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
-                    if (img != null) {
-                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-                    }
-                    // Name
-                    g2.setColor(Color.black);
-                    g2.setFont(fonts[1]);
-                    String name = "";
-                    if (showinfo) {
-                        switch (res.getType()) {
-                            case 2:
-                                name = "Tree";
-                                break;
-                            case 1:
-                                name = "Berry bush";
-                                break;
-                            case 3:
-                                name = "Metal mine";
-                                break;
-                            case 4:
-                                name = "Gold mine";
-                                break;
-                        }
-                    } else {
-                        name = "???";
-                    }
-                    g2.drawString(name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-                    // Energie:
-                    g2.setFont(fonts[2]);
-                    if (showinfo) {
-                        g2.drawString("Resources left:  " + res.hitpoints, (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-                    } else {
-                        g2.drawString("Resources left:  ???", (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-                    }
-                }
-                // Permanent updaten, damit Hp-Infos etc da bleiben
-                updateInterHud = true;
-            }
-            interSelFields.clear();
-            if (!selected.isEmpty()) {
-                // Altes löschen
-                tempInfoObj = null;
-                // Erstmal die Grundlegende Struktur mit mehreren gleichen zusammenfassen und so
-                ArrayList<ArrayList<GameObject>> prelist = new ArrayList<ArrayList<GameObject>>();
-                for (int i = 0; i < selected.size(); i++) {
-                    GameObject obj = selected.get(i);
-                    // Nachsehen, ob es schon Kategorien mit dieser Einheit gibt:
-                    int res = -1;
-                    for (int k = 0; k < prelist.size(); k++) {
-                        ArrayList<GameObject> list = prelist.get(k);
-                        if (list.get(0).descTypeId == obj.descTypeId) {
-                            res = k;
-                            break;
-                        }
-                    }
-                    if (res != -1) { // Ja das gibts schon, einfach adden
-                        prelist.get(res).add(obj);
-                    } else {
-                        // Neue Kategorie aufmachen
-                        prelist.add(new ArrayList<GameObject>());
-                        prelist.get(prelist.size() - 1).add(obj);
-                    }
-                }
-                // Strucktur für ein späteres finden speichern
-
-                for (ArrayList<GameObject> oblist : prelist) {
-                    GameObject[] obarr = new GameObject[oblist.size()];
-                    oblist.toArray(obarr);
-                    interSelFields.add(obarr);
-                }
-                // Fertig, Struktur ist aufgebaut, jetzt zeichnen
-                if (selected.size() > 1) {
-                    g2 = interactivehud.getGraphics();
-                    g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-                    //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-                    g2.clear();
-                    for (int m = 0; m < interSelFields.size(); m++) {
-                        // Position bestimmen:
-                        px++;
-                        if (px > 3) {
-                            py++;
-                            px = 0;
-                        }
-                        // Dahin zeichnen:
-                        g2.setColor(Color.black);
-                        GameObject rgo = interSelFields.get(m)[0];
-                        String sel;
-                        Image img = null;
-                        // Versuche Gebäude
-                        try {
-                            Unit u = (Unit) rgo;
-                            // Ok, Unit
-                            if ((sel = u.graphicsdata.hudTexture) == null) {
-                                sel = u.graphicsdata.defaultTexture;
-                            }
-                            if (sel != null) {
-                                GraphicsImage rimg = imgMap.get(sel);
-                                if (rimg != null) {
-                                    img = rimg.getImage();
-                                }
-                            }
-                        } catch (java.lang.ClassCastException ex) {
-                            Building b = (Building) rgo;
-                            // Ok, Gebäude
-                            if ((sel = b.hudTexture) == null) {
-                                sel = b.defaultTexture;
-                            }
-                            if (sel != null) {
-                                GraphicsImage rimg = imgMap.get(sel);
-                                if (rimg != null) {
-                                    img = rimg.getImage();
-                                }
-                            }
-                        }
-                        if (img != null) {
-                            // Jetzt Zeichnen
-                            int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
-                            int dy1 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560));
-                            int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
-                            int dy2 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4);
-                            g2.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight());
-                            g2.setColor(Color.black);
-                            g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-                            g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
-                            g2.drawString(String.valueOf(interSelFields.get(m).length), dx1 + 2, dy1);
-                        }
-                    }
-                }
-            }
-            optList.clear();
-            if (selected.size() == 1 || interSelFields.size() == 1) {
-                // Wenn alles von der gleichen Sorte ist
-                // Alle Fähigkeiten dieser "Sorte" einblenden
-                GameObject obj = null;
-                if (interSelFields.size() == 1) {
-                    obj = interSelFields.get(0)[0];
-                } else {
-                    obj = selected.get(0);
-                }
-                if (obj.ready) {
-                    java.util.List<Ability> alist = obj.abilitys;
-                    px = -1;
-                    py = 0;
-                    for (int i = 0; i < alist.size(); i++) {
-                        Ability ability = alist.get(i);
-                        // Entspricht Epoche? - Überhaupt zeichnen?
-                        if ((ability.epoche == this.epoche || ability.epoche == 0) && ability.isVisible()) {
-                            optList.add(ability);
-                            // Position bestimmen:
-                            px++;
-                            if (px > 3) {
-                                py++;
-                                px = 0;
-                            }
-                            // Entweder wir haben gerade die angegebene Epoche, oder es gilt für alle 0
-                            // Bildchen holen
-                            String tex = null;
-                            GraphicsImage img = null;
-                            try {
-                                tex = ability.symbols[epoche];
-                                if (tex == null) {
-                                    tex = ability.symbols[0]; // Wenn für die Spezielle Epoche keins da ist, dann das allgemeine versuchen
-                                }
-                                img = imgMap.get(tex);
-                            } catch (Exception ex) {
-                                rgi.logger("[Graphics][ERROR]: Symbol for ability \"" + ability.name + "\" (epoche " + epoche + ") not found!");
-                            }
-                            if (img != null) {
-                                // Jetzt Zeichnen
-                                int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
-                                int dy1 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560)) + realPixY * 0.257);
-                                int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
-                                int dy2 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4) + realPixY * 0.257);
-                                g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-                                if (!ability.isAvailable()) {
-                                    g2.setColor(fowGray);
-                                    g2.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-                                }
-                                g2.setColor(ability.frameColor);
-                                g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-                                g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
-                                // Fortschritt zeichnen?
-                                if (ability.behaviour != null) {
-                                    float progress = 1.0f;
-                                    int number = -1;
-                                    if (ability.getClass().equals(AbilityRecruit.class)) {
-                                        AbilityRecruit abr = (AbilityRecruit) ability;
-                                        if (abr.behaviour.showProgess(abr.descTypeId)) {
-                                            // Live-Rendern des IA-Huds einschalten
-                                            updateInterHud = true;
-                                            progress = abr.behaviour.getProgress(abr.descTypeId);
-                                            if (abr.behaviour.showNumber(abr.descTypeId)) {
-                                                number = abr.behaviour.getNumber(abr.descTypeId);
-                                            }
-                                        }
-                                    } else if (ability.getClass().equals(AbilityBuild.class)) {
-                                        AbilityBuild abb = (AbilityBuild) ability;
-                                        if (abb.behaviour.showProgess(abb.descTypeId)) {
-                                            // Live-Rendern des IA-Huds einschalten
-                                            updateInterHud = true;
-                                            progress = abb.behaviour.getProgress(0);
-                                        }
-                                    } else {
-                                        if (ability.behaviour.showProgess(0)) {
-                                            updateInterHud = true;
-                                            progress = ability.behaviour.getProgress(0);
-                                            if (ability.behaviour.showNumber(0)) {
-                                                number = ability.behaviour.getNumber(0);
-                                            }
-                                        }
-                                    }
-
-                                    if (progress > -0.001 && progress < 0.001) {
-                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
-                                        g2.fillRect(dx1, dy1, dx2 -dx1, dy2 - dy1);
-                                    } else {
-                                        // Punkt-Darstellung ermitteln:
-                                        Polygon poly = new Polygon();
-                                        // Mittelpunkt adden:
-                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
-                                        if (progress < 0.125) {
-                                            // Den Variablen Punkt:
-                                            // Mitte X + progress * 8 * restX, obenY
-                                            poly.addPoint((int) (((dx1 + dx2) / 2) + ((((dx2 + dx1) / 2) - dx1) * progress * 8)), dy1);
-                                            // Oben rechts
-                                            poly.addPoint(dx2, dy1);
-                                            // Unten Rechts
-                                            poly.addPoint(dx2, dy2);
-                                            // Unten links
-                                            poly.addPoint(dx1, dy2);
-                                            // Oben Links
-                                            poly.addPoint(dx1, dy1);
-                                            // Oben Mitte
-                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-                                        } else if (progress < 0.375) {
-                                            // Den Variablen Punkt
-                                            // X2, Y1 + (progess - 0.125) * 4 * (Y2 - Y1)
-                                            poly.addPoint(dx2, (int) (dy1 + (progress - 0.125) * 4 * (dy2 - dy1)));
-                                            // Unten Rechts
-                                            poly.addPoint(dx2, dy2);
-                                            // Unten links
-                                            poly.addPoint(dx1, dy2);
-                                            // Oben Links
-                                            poly.addPoint(dx1, dy1);
-                                            // Oben Mitte
-                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-                                        } else if (progress < 0.625) {
-                                            // Variabler Punkt
-                                            // (X2 - X1) * (progress - 0.375) * 4 , Y2
-                                            poly.addPoint((int) (dx2 - ((dx2 - dx1) * (progress - 0.375) * 4)), dy2);
-                                            // Unten links
-                                            poly.addPoint(dx1, dy2);
-                                            // Oben Links
-                                            poly.addPoint(dx1, dy1);
-                                            // Oben Mitte
-                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-                                        } else if (progress < 0.875) {
-                                            // Variabler Punkt
-                                            // X1, (dy2 -dy1) * (progress - 0.625) * 4
-                                            poly.addPoint(dx1, (int) (dy2 - (dy2 - dy1) * (progress - 0.625) * 4));
-                                            // Oben Links
-                                            poly.addPoint(dx1, dy1);
-                                            // Oben Mitte
-                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-                                        } else {
-                                            // Variabler Punkt
-                                            // X1 + (X2 - X1) / 2 * (progress - 0.875) * 8, Y1
-                                            poly.addPoint((int) (dx1 + (dx2 - dx1) / 2 * (progress - 0.875) * 8), dy1);
-                                            // Oben Mitte
-                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-                                        }
-                                        // Mittelpunkt wieder adden
-                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
-                                        // Zeichnen
-                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
-                                        g2.fill(poly);
-                                    }
-                                    g2.setColor(Color.black);
-                                    if (number != -1) {
-                                        g2.drawString(Integer.toString(number), dx1 + 2, dy1);
-                                    }
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-            }
-            // Komplett fertig, Struckturiert und alles - prima. Ende
-
-        } catch (org.newdawn.slick.SlickException ex) {
-            ex.printStackTrace();
-        }
+//        // Baut den interaktiven Teil des Huds neu auf - z.B. da wo Einheiten etc angezeigt werden
+//        try {
+//            int px = -1;
+//            int py = 0;
+//            Graphics g2 = null;
+//            ArrayList<GameObject> selected = rgi.rogGraphics.inputM.selected;
+//            if (selected.isEmpty() && this.tempInfoObj == null) {
+//                // Hud leeren
+//                g2 = interactivehud.getGraphics();
+//                g2.setBackground(new org.newdawn.slick.Color(0.0f, 0.0f, 0.0f, 0.0f));
+//                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
+//                g2.clear();
+//            }
+//            if ((selected.isEmpty() && this.tempInfoObj != null) || selected.size() == 1) {
+//                // Hud-Info mode
+//                if (selected.size() == 1) {
+//                    tempInfoObj = selected.get(0);
+//                }
+//                g2 = interactivehud.getGraphics();
+//                g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+//                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
+//                g2.clear();
+//
+//                // Spezifische Infos anzeigen:
+//                if (tempInfoObj.getClass().equals(Unit.class)) {
+//                    // Unit - Infos rendern
+//                    Unit unit = (Unit) tempInfoObj;
+//                    // Bildchen
+//                    GraphicsImage img = imgMap.get(unit.graphicsdata.defaultTexture);
+//                    int dx1 = (int) (hudSizeX * 0.15);
+//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2); // realPixY * 2/35
+//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5); // hudSizeX * 0.29
+//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4); // realPixY * 3/28
+//                    if (img != null) {
+//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
+//                    }
+//                    // Spielername:
+//                    g2.setColor(Color.gray);
+//                    g2.setFont(fonts[2]);
+//                    g2.drawString(rgi.game.getPlayer(unit.getPlayerId()).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
+//                    // Einheitename
+//                    g2.setColor(Color.black);
+//                    g2.setFont(fonts[1]);
+//                    g2.drawString(unit.getName(), (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
+//                    // HP
+//                    g2.setFont(fonts[2]);
+//                    g2.drawString("HP:  " + unit.getHitpoints() + " / " + unit.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+//                    // Rüstung
+//                    g2.setFont(fonts[0]);
+//                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
+//                    String atype = "";
+//                    if (unit.armortype.equals("lightinf")) {
+//                        atype = "Light Infantry";
+//                    } else if (unit.armortype.equals("heavyinf")) {
+//                        atype = "Heavy Infantry";
+//                    } else if (unit.armortype.equals("kav")) {
+//                        atype = "Cavalry";
+//                    } else if (unit.armortype.equals("vehicle")) {
+//                        atype = "Vehicle";
+//                    } else if (unit.armortype.equals("tank")) {
+//                        atype = "Tank";
+//                    } else if (unit.armortype.equals("air")) {
+//                        atype = "Air";
+//                    }
+//                    g2.drawString(atype, (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
+//                    //Geschwindigkeit
+//                    g2.drawString("Speed: ", dx1, (int) (dy2 * 1.25) - 10);
+//                    g2.drawString(String.valueOf(unit.speed), (int) (dx1 * 4.1), (int) (dy2 * 1.25) - 10);
+//                    //Reichweite
+//                    g2.drawString("Range: ", dx1, (int) (dy2 * 1.4) - 10);
+//                    if (unit.getRange() == 2) {
+//                        g2.drawString("Melee", (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
+//                    } else {
+//                        g2.drawString(String.valueOf(unit.getRange()), (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
+//                    }
+//                    // Schaden:
+//                    g2.drawString("Damage: ", dx1, (int) (dy2 * 1.60) - 10);
+//                    g2.drawString(String.valueOf(unit.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * 1.60) - 10);
+//                    // Special-Schaden gegen Rüstungsklassen:
+//                    float yposition = 1.75f;
+//                    if (unit.antilightinf != 100) {
+//                        g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antiheavyinf != 100) {
+//                        g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antikav != 100) {
+//                        g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antivehicle != 100) {
+//                        g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antitank != 100) {
+//                        g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antiair != 0) {
+//                        g2.drawString(" vs. Air: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                        yposition += 0.15;
+//                    }
+//                    if (unit.antibuilding != 100) {
+//                        g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * yposition) - 10);
+//                        g2.drawString(unit.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
+//                    }
+//
+//                } else if (tempInfoObj.getClass().equals(Building.class)) {
+//                    // Building - Infos rendern
+//                    Building building = (Building) tempInfoObj;
+//                    // Bildchen
+//                    GraphicsImage img = imgMap.get(building.defaultTexture);
+//                    int dx1 = (int) (hudSizeX * 0.15);
+//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
+//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
+//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
+//                    if (img != null) {
+//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
+//                    }
+//                    // Spielername:
+//                    g2.setColor(Color.gray);
+//                    g2.setFont(fonts[2]);
+//                    g2.drawString(rgi.game.getPlayer(building.getPlayerId()).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
+//                    // Gebäudename
+//                    g2.setColor(Color.black);
+//                    g2.setFont(fonts[1]);
+//                    g2.drawString(building.getName(), (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
+//                    // HP
+//                    g2.setFont(fonts[2]);
+//                    g2.drawString("HP:  " + building.getHitpoints() + " / " + building.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+//                    // Rüstung
+//                    g2.setFont(fonts[0]);
+//                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
+//                    g2.drawString("Building", (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
+//                    if (building.isbuilt) {
+//                        // Fortschritt anzeigen
+//                        g2.drawString("Constructing:  ", dx1, (int) (dy2 * 1.3) - 10);
+//                        g2.drawString(Math.round(building.buildprogress * 100) + "%", (int) (dx1 * 4.1), (int) (dy2 * 1.3) - 10);
+//                    } else {
+//                        double movedown = 1.3;
+//                        if (building.limit < 0) {
+//                            g2.drawString("Limit: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString("+" + (building.limit * -1), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.2;
+//                        }
+//                        if (building.getMaxIntra() > 0) {
+//                            // Anzahl der Arbeiter im Gebäude
+//                            g2.drawString("Harvesters: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.intraUnits.size() + "/" + building.getMaxIntra(), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.2;
+//                        }
+//                        if (building.heal > 0) {
+//                            // Anzahl der Arbeiter im Gebäude
+//                            g2.drawString("Heals: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(String.valueOf(building.heal), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.2;
+//                        }
+//                        if (building.getDamage() != 0) {
+//                            g2.drawString("Range: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(String.valueOf(building.getRange()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                            g2.drawString("Damage: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(String.valueOf(building.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antilightinf != 100) {
+//                            g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antiheavyinf != 100) {
+//                            g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antikav != 100) {
+//                            g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antivehicle != 100) {
+//                            g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antitank != 100) {
+//                            g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antiair != 0) {
+//                            g2.drawString(" vs. Air: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                            movedown += 0.15;
+//                        }
+//                        if (building.antibuilding != 100) {
+//                            g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * movedown) - 10);
+//                            g2.drawString(building.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
+//                        }
+//                    }
+//
+//                } else if (tempInfoObj.getClass().equals(Ressource.class)) {
+//                    // Ressource - Infos zeigen, falls weit genug erforscht
+//                    Ressource res = (Ressource) tempInfoObj;
+//                    boolean showinfo = (res.getType() < 3 || (res.getType() == Ressource.RES_METAL && epoche >= 2) || (res.getType() == Ressource.RES_COINS) && epoche >= 3);
+//                    // Bildchen
+//                    GraphicsImage img = imgMap.get(res.getTex());
+//                    int dx1 = (int) (hudSizeX * 0.15);
+//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
+//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
+//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
+//                    if (img != null) {
+//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
+//                    }
+//                    // Name
+//                    g2.setColor(Color.black);
+//                    g2.setFont(fonts[1]);
+//                    String name = "";
+//                    if (showinfo) {
+//                        switch (res.getType()) {
+//                            case 2:
+//                                name = "Tree";
+//                                break;
+//                            case 1:
+//                                name = "Berry bush";
+//                                break;
+//                            case 3:
+//                                name = "Metal mine";
+//                                break;
+//                            case 4:
+//                                name = "Gold mine";
+//                                break;
+//                        }
+//                    } else {
+//                        name = "???";
+//                    }
+//                    g2.drawString(name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
+//                    // Energie:
+//                    g2.setFont(fonts[2]);
+//                    if (showinfo) {
+//                        g2.drawString("Resources left:  " + res.hitpoints, (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+//                    } else {
+//                        g2.drawString("Resources left:  ???", (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
+//                    }
+//                }
+//                // Permanent updaten, damit Hp-Infos etc da bleiben
+//                updateInterHud = true;
+//            }
+//            interSelFields.clear();
+//            if (!selected.isEmpty()) {
+//                // Altes löschen
+//                tempInfoObj = null;
+//                // Erstmal die Grundlegende Struktur mit mehreren gleichen zusammenfassen und so
+//                ArrayList<ArrayList<GameObject>> prelist = new ArrayList<ArrayList<GameObject>>();
+//                for (int i = 0; i < selected.size(); i++) {
+//                    GameObject obj = selected.get(i);
+//                    // Nachsehen, ob es schon Kategorien mit dieser Einheit gibt:
+//                    int res = -1;
+//                    for (int k = 0; k < prelist.size(); k++) {
+//                        ArrayList<GameObject> list = prelist.get(k);
+//                        if (list.get(0).descTypeId == obj.descTypeId) {
+//                            res = k;
+//                            break;
+//                        }
+//                    }
+//                    if (res != -1) { // Ja das gibts schon, einfach adden
+//                        prelist.get(res).add(obj);
+//                    } else {
+//                        // Neue Kategorie aufmachen
+//                        prelist.add(new ArrayList<GameObject>());
+//                        prelist.get(prelist.size() - 1).add(obj);
+//                    }
+//                }
+//                // Strucktur für ein späteres finden speichern
+//
+//                for (ArrayList<GameObject> oblist : prelist) {
+//                    GameObject[] obarr = new GameObject[oblist.size()];
+//                    oblist.toArray(obarr);
+//                    interSelFields.add(obarr);
+//                }
+//                // Fertig, Struktur ist aufgebaut, jetzt zeichnen
+//                if (selected.size() > 1) {
+//                    g2 = interactivehud.getGraphics();
+//                    g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+//                    //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
+//                    g2.clear();
+//                    for (int m = 0; m < interSelFields.size(); m++) {
+//                        // Position bestimmen:
+//                        px++;
+//                        if (px > 3) {
+//                            py++;
+//                            px = 0;
+//                        }
+//                        // Dahin zeichnen:
+//                        g2.setColor(Color.black);
+//                        GameObject rgo = interSelFields.get(m)[0];
+//                        String sel;
+//                        Image img = null;
+//                        // Versuche Gebäude
+//                        try {
+//                            Unit u = (Unit) rgo;
+//                            // Ok, Unit
+//                            if ((sel = u.graphicsdata.hudTexture) == null) {
+//                                sel = u.graphicsdata.defaultTexture;
+//                            }
+//                            if (sel != null) {
+//                                GraphicsImage rimg = imgMap.get(sel);
+//                                if (rimg != null) {
+//                                    img = rimg.getImage();
+//                                }
+//                            }
+//                        } catch (java.lang.ClassCastException ex) {
+//                            Building b = (Building) rgo;
+//                            // Ok, Gebäude
+//                            if ((sel = b.hudTexture) == null) {
+//                                sel = b.defaultTexture;
+//                            }
+//                            if (sel != null) {
+//                                GraphicsImage rimg = imgMap.get(sel);
+//                                if (rimg != null) {
+//                                    img = rimg.getImage();
+//                                }
+//                            }
+//                        }
+//                        if (img != null) {
+//                            // Jetzt Zeichnen
+//                            int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
+//                            int dy1 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560));
+//                            int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
+//                            int dy2 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4);
+//                            g2.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight());
+//                            g2.setColor(Color.black);
+//                            g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+//                            g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
+//                            g2.drawString(String.valueOf(interSelFields.get(m).length), dx1 + 2, dy1);
+//                        }
+//                    }
+//                }
+//            }
+//            optList.clear();
+//            if (selected.size() == 1 || interSelFields.size() == 1) {
+//                // Wenn alles von der gleichen Sorte ist
+//                // Alle Fähigkeiten dieser "Sorte" einblenden
+//                GameObject obj = null;
+//                if (interSelFields.size() == 1) {
+//                    obj = interSelFields.get(0)[0];
+//                } else {
+//                    obj = selected.get(0);
+//                }
+//                if (obj.ready) {
+//                    java.util.List<Ability> alist = obj.abilitys;
+//                    px = -1;
+//                    py = 0;
+//                    for (int i = 0; i < alist.size(); i++) {
+//                        Ability ability = alist.get(i);
+//                        // Entspricht Epoche? - Überhaupt zeichnen?
+//                        if ((ability.epoche == this.epoche || ability.epoche == 0) && ability.isVisible()) {
+//                            optList.add(ability);
+//                            // Position bestimmen:
+//                            px++;
+//                            if (px > 3) {
+//                                py++;
+//                                px = 0;
+//                            }
+//                            // Entweder wir haben gerade die angegebene Epoche, oder es gilt für alle 0
+//                            // Bildchen holen
+//                            String tex = null;
+//                            GraphicsImage img = null;
+//                            try {
+//                                tex = ability.symbols[epoche];
+//                                if (tex == null) {
+//                                    tex = ability.symbols[0]; // Wenn für die Spezielle Epoche keins da ist, dann das allgemeine versuchen
+//                                }
+//                                img = imgMap.get(tex);
+//                            } catch (Exception ex) {
+//                                rgi.logger("[Graphics][ERROR]: Symbol for ability \"" + ability.name + "\" (epoche " + epoche + ") not found!");
+//                            }
+//                            if (img != null) {
+//                                // Jetzt Zeichnen
+//                                int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
+//                                int dy1 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560)) + realPixY * 0.257);
+//                                int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
+//                                int dy2 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4) + realPixY * 0.257);
+//                                g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
+//                                if (!ability.isAvailable()) {
+//                                    g2.setColor(fowGray);
+//                                    g2.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+//                                }
+//                                g2.setColor(ability.frameColor);
+//                                g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+//                                g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
+//                                // Fortschritt zeichnen?
+//                                if (ability.behaviour != null) {
+//                                    float progress = 1.0f;
+//                                    int number = -1;
+//                                    if (ability.getClass().equals(AbilityRecruit.class)) {
+//                                        AbilityRecruit abr = (AbilityRecruit) ability;
+//                                        if (abr.behaviour.showProgess(abr.descTypeId)) {
+//                                            // Live-Rendern des IA-Huds einschalten
+//                                            updateInterHud = true;
+//                                            progress = abr.behaviour.getProgress(abr.descTypeId);
+//                                            if (abr.behaviour.showNumber(abr.descTypeId)) {
+//                                                number = abr.behaviour.getNumber(abr.descTypeId);
+//                                            }
+//                                        }
+//                                    } else if (ability.getClass().equals(AbilityBuild.class)) {
+//                                        AbilityBuild abb = (AbilityBuild) ability;
+//                                        if (abb.behaviour.showProgess(abb.descTypeId)) {
+//                                            // Live-Rendern des IA-Huds einschalten
+//                                            updateInterHud = true;
+//                                            progress = abb.behaviour.getProgress(0);
+//                                        }
+//                                    } else {
+//                                        if (ability.behaviour.showProgess(0)) {
+//                                            updateInterHud = true;
+//                                            progress = ability.behaviour.getProgress(0);
+//                                            if (ability.behaviour.showNumber(0)) {
+//                                                number = ability.behaviour.getNumber(0);
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    if (progress > -0.001 && progress < 0.001) {
+//                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
+//                                        g2.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+//                                    } else {
+//                                        // Punkt-Darstellung ermitteln:
+//                                        Polygon poly = new Polygon();
+//                                        // Mittelpunkt adden:
+//                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
+//                                        if (progress < 0.125) {
+//                                            // Den Variablen Punkt:
+//                                            // Mitte X + progress * 8 * restX, obenY
+//                                            poly.addPoint((int) (((dx1 + dx2) / 2) + ((((dx2 + dx1) / 2) - dx1) * progress * 8)), dy1);
+//                                            // Oben rechts
+//                                            poly.addPoint(dx2, dy1);
+//                                            // Unten Rechts
+//                                            poly.addPoint(dx2, dy2);
+//                                            // Unten links
+//                                            poly.addPoint(dx1, dy2);
+//                                            // Oben Links
+//                                            poly.addPoint(dx1, dy1);
+//                                            // Oben Mitte
+//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
+//                                        } else if (progress < 0.375) {
+//                                            // Den Variablen Punkt
+//                                            // X2, Y1 + (progess - 0.125) * 4 * (Y2 - Y1)
+//                                            poly.addPoint(dx2, (int) (dy1 + (progress - 0.125) * 4 * (dy2 - dy1)));
+//                                            // Unten Rechts
+//                                            poly.addPoint(dx2, dy2);
+//                                            // Unten links
+//                                            poly.addPoint(dx1, dy2);
+//                                            // Oben Links
+//                                            poly.addPoint(dx1, dy1);
+//                                            // Oben Mitte
+//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
+//                                        } else if (progress < 0.625) {
+//                                            // Variabler Punkt
+//                                            // (X2 - X1) * (progress - 0.375) * 4 , Y2
+//                                            poly.addPoint((int) (dx2 - ((dx2 - dx1) * (progress - 0.375) * 4)), dy2);
+//                                            // Unten links
+//                                            poly.addPoint(dx1, dy2);
+//                                            // Oben Links
+//                                            poly.addPoint(dx1, dy1);
+//                                            // Oben Mitte
+//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
+//                                        } else if (progress < 0.875) {
+//                                            // Variabler Punkt
+//                                            // X1, (dy2 -dy1) * (progress - 0.625) * 4
+//                                            poly.addPoint(dx1, (int) (dy2 - (dy2 - dy1) * (progress - 0.625) * 4));
+//                                            // Oben Links
+//                                            poly.addPoint(dx1, dy1);
+//                                            // Oben Mitte
+//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
+//                                        } else {
+//                                            // Variabler Punkt
+//                                            // X1 + (X2 - X1) / 2 * (progress - 0.875) * 8, Y1
+//                                            poly.addPoint((int) (dx1 + (dx2 - dx1) / 2 * (progress - 0.875) * 8), dy1);
+//                                            // Oben Mitte
+//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
+//                                        }
+//                                        // Mittelpunkt wieder adden
+//                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
+//                                        // Zeichnen
+//                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
+//                                        g2.fill(poly);
+//                                    }
+//                                    g2.setColor(Color.black);
+//                                    if (number != -1) {
+//                                        g2.drawString(Integer.toString(number), dx1 + 2, dy1);
+//                                    }
+//                                }
+//                            }
+//
+//                        }
+//
+//                    }
+//                }
+//            }
+//            // Komplett fertig, Struckturiert und alles - prima. Ende
+//
+//        } catch (org.newdawn.slick.SlickException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     private void setColorToPlayer(int playerId, Graphics g2) {
@@ -2657,52 +2276,52 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {
-        try {
-            Unit rU = (Unit) rO;
-            // Billigen Balken rendern
-            g2.setColor(Color.black);
-            if (rU.selectionShadow == 1) {
-                g2.fillRect(dX + 9, dY - 1, 7, 7);
-            }
-            // Farbe bestimmen
-            double percent = 1.0 * rU.getHitpoints() / rU.getMaxhitpoints();
-            if (percent >= 0.3) {
-                g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
-            } else {
-                g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
-            }
-            g2.fillRect(dX + 10, dY, 5, 5);
-        } catch (ClassCastException ex) {
-            // Gebäude
-            try {
-                Building rB = (Building) rO;
-                // Balken soll über der Mitte des Gebäudes schweben
-                // Längenfaktor finden
-                int lf = (rB.z1 + rB.z2) * 20;
-                // dX / dY ist der Zeichenursprung
-                // X-Mitte finden (Durchschnitt aus z1 und z2)
-                int cpX = lf / 2 - lf / 4;
-                // Die Anzahl Y-Pixel nur von z1 ab
-                int cpY = rB.z1 * 15 + 10;
-                // Billigen Balken rendern
-                g2.setColor(Color.black);
-                g2.fillRect(dX + cpX, dY - cpY, (lf / 2) + 2, 5);
-                // Farbe bestimmen
-                double percent = 1.0 * rB.getHitpoints() / rB.getMaxhitpoints();
-                if (percent >= 0.5) {
-                    g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
-                }
-                if (percent < 0.5) {
-                    g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
-                }
-                percent *= 100;
-                // Entsprechend viel füllen
-                int fillperc = (int) (percent * (lf / 2) / 100);
-                g2.fillRect(dX + cpX + 1, dY - cpY + 1, fillperc, 3);
-            } catch (ClassCastException ex2) {
-            }
-
-        }
+//        try {
+//            Unit rU = (Unit) rO;
+//            // Billigen Balken rendern
+//            g2.setColor(Color.black);
+//            if (rU.selectionShadow == 1) {
+//                g2.fillRect(dX + 9, dY - 1, 7, 7);
+//            }
+//            // Farbe bestimmen
+//            double percent = 1.0 * rU.getHitpoints() / rU.getMaxhitpoints();
+//            if (percent >= 0.3) {
+//                g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
+//            } else {
+//                g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
+//            }
+//            g2.fillRect(dX + 10, dY, 5, 5);
+//        } catch (ClassCastException ex) {
+//            // Gebäude
+//            try {
+//                Building rB = (Building) rO;
+//                // Balken soll über der Mitte des Gebäudes schweben
+//                // Längenfaktor finden
+//                int lf = (rB.getZ1() + rB.getZ2()) * 20;
+//                // dX / dY ist der Zeichenursprung
+//                // X-Mitte finden (Durchschnitt aus z1 und z2)
+//                int cpX = lf / 2 - lf / 4;
+//                // Die Anzahl Y-Pixel nur von z1 ab
+//                int cpY = rB.getZ1() * 15 + 10;
+//                // Billigen Balken rendern
+//                g2.setColor(Color.black);
+//                g2.fillRect(dX + cpX, dY - cpY, (lf / 2) + 2, 5);
+//                // Farbe bestimmen
+//                double percent = 1.0 * rB.getHitpoints() / rB.getMaxhitpoints();
+//                if (percent >= 0.5) {
+//                    g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
+//                }
+//                if (percent < 0.5) {
+//                    g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
+//                }
+//                percent *= 100;
+//                // Entsprechend viel füllen
+//                int fillperc = (int) (percent * (lf / 2) / 100);
+//                g2.fillRect(dX + cpX + 1, dY - cpY + 1, fillperc, 3);
+//            } catch (ClassCastException ex2) {
+//            }
+//
+//        }
     }
 
     public Dimension getPreferredSize() {
@@ -2899,80 +2518,6 @@ public class GraphicsContent extends BasicGame {
         modi = 3;
         initRun = new Date();// Das mach ich jetzt genau ein mal, das muss in den Gebäudebau-Handling-Code...
 //        try {Thread.sleep(100000);} catch (Exception ex) {}
-    }
-
-    public void initBRSel() {
-        // Das neue, rasend schnelle Gebäude-Selektionssystem.
-        // Großes int-Array Initialisieren
-        brSel = new int[sizeX][];
-        for (int i = 0; i < sizeX; i++) {
-            brSel[i] = new int[sizeY];
-        }
-    }
-
-    /**
-     * Erneuert das komplette BRSel-System.
-     * Normalerweise nur einmal beim Spielstart nötig,
-     * Änderungen werden dann direkt angewendet.
-     */
-    public void refreshBRSel() {
-        // Alles löschen
-        for (int x = 0; x < brSel.length; x++) {
-            for (int y = 0; y < brSel[x].length; y++) {
-                brSel[x][y] = 0;
-            }
-        }
-        // Alles reinschreiben
-        // Hier ist diese Schleife erlaubt, da vor dem Spielstart
-        for (Building b : buildingList) {
-            placeGO(b);
-        }
-        for (Ressource r : resList) {
-            placeGO(r);
-        }
-    }
-
-    /**
-     * Platziert ein GameObject auf dem BRSel
-     * @param obj
-     */
-    public void placeGO(GameObject obj) {
-        if (obj.getClass().equals(Ressource.class)) {
-            Ressource r = (Ressource) obj;
-            brSel[obj.position.X][obj.position.Y] = obj.netID;
-            if (r.getType() > 2) {
-                // Diese Ressourcen sind größer
-                brSel[obj.position.X + 2][obj.position.Y] = obj.netID;
-                brSel[obj.position.X + 1][obj.position.Y + 1] = obj.netID;
-                brSel[obj.position.X + 1][obj.position.Y - 1] = obj.netID;
-            }
-        } else if (obj.getClass().equals(Building.class)) {
-            // Das müssen wir casten, um z1 und z2 zu bekommen
-            Building b = (Building) obj;
-            for (int z1 = 0; z1 < b.z1; z1++) {
-                for (int z2 = 0; z2 < b.z2; z2++) {
-                    brSel[b.position.X + z1 + z2][b.position.Y - z1 + z2] = b.netID;
-                }
-            }
-        }
-    }
-
-    /**
-     * Löscht ein GO vom BRSel
-     * @param obj
-     */
-    public void deleteGO(GameObject obj) {
-        if (obj.getClass().equals(Ressource.class)) {
-            brSel[obj.position.X][obj.position.Y] = 0;
-        } else if (obj.getClass().equals(Building.class)) {
-            // Das müssen wir casten, um z1 und z2 zu bekommen
-            Building b = (Building) obj;
-            for (int z1 = 0; z1 < b.z1; z1++) {
-                for (int z2 = 0; z2 < b.z2; z2++) {
-                    brSel[b.position.X + z1 + z2][b.position.Y - z1 + z2] = 0;
-                }
-            }
-        }
     }
 
     public void scrollUp() {
@@ -3190,8 +2735,6 @@ public class GraphicsContent extends BasicGame {
         return new Position(coordX, coordY);
     }
 
-    
-
     public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
         // Koordinaten finden
         Dimension tempD = searchMiniMid(x, y);
@@ -3215,18 +2758,18 @@ public class GraphicsContent extends BasicGame {
         for (int i = 0; i < wayPath.size(); i++) {
             // Liste durchgehen
             // rendern
-            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).X - positionX) * 20, (wayPath.get(i).Y - positionY) * 15);
+            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 20, (wayPath.get(i).getY() - positionY) * 15);
 
         }
         if (wayOpenList != null) {
             for (int o = 0; o < wayOpenList.size(); o++) {
                 Position pos = (Position) wayOpenList.remove();
-                g2.drawImage(wayPointHighlighting[3], (pos.X - positionX) * 20, (pos.Y - positionY) * 15);
+                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 20, (pos.getY() - positionY) * 15);
             }
         }
         if (wayClosedList != null) {
             for (int u = 0; u < wayClosedList.size(); u++) {
-                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).X - positionX) * 20, (wayClosedList.get(u).Y - positionY) * 15);
+                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 20, (wayClosedList.get(u).getY() - positionY) * 15);
             }
         }
     }
@@ -3269,11 +2812,11 @@ public class GraphicsContent extends BasicGame {
 
             // Einfach noch alle Gebäude mit dem vorgescaleten Bildchen reinrendern
             for (Building building : buildingList) {
-                if (building.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer()) || building.wasSeen) {
-                    for (int z1 = 0; z1 < building.z1; z1++) {
-                        for (int z2 = 0; z2 < building.z2; z2++) {
+                if (building.getPlayerId() == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
+                    for (int z1 = 0; z1 < building.getZ1(); z1++) {
+                        for (int z2 = 0; z2 < building.getZ2(); z2++) {
                             // Hierhin das Bildchen zeichnen
-                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.playerId).getImage(), (int) ((building.position.X + z1 + z2) * 20 * maxminscaleX), (int) ((building.position.Y - z1 + z2) * 15 * maxminscaleY));
+                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 20 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 15 * maxminscaleY));
                         }
                     }
                 }
@@ -3371,29 +2914,6 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public synchronized Unit identifyUnit(int sX, int sY) {
-        // Sucht Einheiten richtig, arbeitet mit shadows
-        for (int i = 0; i < selectionShadows.size(); i += 3) {
-            Dimension t1 = (Dimension) selectionShadows.get(i);
-            Dimension t2 = (Dimension) selectionShadows.get(i + 1);
-            // Wenn im Rahmen dann gut
-            if (sX > t1.width && sY > t1.height && sX < t2.width && sY < t2.height) {
-                return (Unit) selectionShadows.get(i + 2);
-            }
-        }
-        // Nicht gefunden
-        return null;
-    }
-
-    public Building identifyBuilding(int sX, int sY) {
-        // Sucht Gebäude via BRSel
-        try {
-            return rgi.mapModule.getBuildingviaID(brSel[sX][sY]);
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     public void enableWayPointHighlighting(ArrayList<Position> path) {
         // Zeigt den Path an
         wayPath = path;
@@ -3411,7 +2931,7 @@ public class GraphicsContent extends BasicGame {
         for (int i = 0; i < buildingList.size(); i++) {
             Building b = buildingList.get(i);
             // FoW berechnen
-            if (b.playerId == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(b, rgi.game.getOwnPlayer())) {
+            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(b, rgi.game.getOwnPlayer())) {
                 cutSight(b);
             }
         }
@@ -3426,15 +2946,15 @@ public class GraphicsContent extends BasicGame {
 
     private void cutSight(Building b) {
         // Mitte berechnen
-        int x = (int) (b.position.X + ((b.z1 + b.z2 - 2) * 1.0 / 2));
-        int y = b.position.Y;
+        int x = (int) (b.getMainPosition().getX() + ((b.getZ1() + b.getZ2() - 2) * 1.0 / 2));
+        int y = b.getMainPosition().getY();
         // Diese Position als Startfeld überhaupt zulässig?
         if (((int) x + (int) y) % 2 == 1) {
             y++;
         }
         // Dieses Feld selber auch ausschneiden
         fowmap[x][y] = 2;
-        cutCircleFast(b.getVisrange() + ((b.z1 + b.z2) / 4), new Position(x, y), true);
+        cutCircleFast(b.getVisrange() + ((b.getZ1() + b.getZ2()) / 4), new Position(x, y), true);
     }
 
     /**
@@ -3443,8 +2963,8 @@ public class GraphicsContent extends BasicGame {
      */
     public void cutDieingBuildingSight(Building b) {
         // Mitte berechnen
-        int x = (int) (b.position.X + ((b.z1 + b.z2 - 2) * 1.0 / 2));
-        int y = b.position.Y;
+        int x = (int) (b.getMainPosition().getX() + ((b.getZ1() + b.getZ2() - 2) * 1.0 / 2));
+        int y = b.getMainPosition().getY();
         // Diese Position als Startfeld überhaupt zulässig?
         if (((int) x + (int) y) % 2 == 1) {
             y++;
@@ -3452,7 +2972,7 @@ public class GraphicsContent extends BasicGame {
         // Dieses Feld selber auch ausschneiden
         fowmap[x][y] = 3;
         // Schablone holen
-        boolean[][] pattern = fowpatmgr.getPattern(b.getVisrange() + ((b.z1 + b.z2) / 4));
+        boolean[][] pattern = fowpatmgr.getPattern(b.getVisrange() + ((b.getZ1() + b.getZ2()) / 4));
         // Schablone anwenden
         int sx = x - 40;
         int sy = y - 40;
@@ -3471,14 +2991,14 @@ public class GraphicsContent extends BasicGame {
 
     private void cutSight(Unit unit) {
         // Mitte berechnen
-        int x = unit.position.X;
-        int y = unit.position.Y;
+        int x = unit.getMainPosition().getX();
+        int y = unit.getMainPosition().getY();
         // Dieses Feld selber auch ausschneiden
         byte val = fowmap[x][y];
         if (val == 0 || val == 1) {
             fowmap[x][y] = 3;
         }
-        cutCircleFast(unit.getVisrange(),unit.position, false);
+        cutCircleFast(unit.getVisrange(), unit.getMainPosition(), false);
     }
 
     /**
@@ -3492,8 +3012,8 @@ public class GraphicsContent extends BasicGame {
         // Schablone holen
         boolean[][] pattern = fowpatmgr.getPattern(range);
         // Schablone anwenden
-        int sx = origin.X - 40;
-        int sy = origin.Y - 40;
+        int sx = origin.getX() - 40;
+        int sy = origin.getY() - 40;
         for (int x = 0; x < 80; x++) {
             for (int y = 0; y < 80; y++) {
                 if (pattern[x][y]) {
@@ -3539,7 +3059,7 @@ public class GraphicsContent extends BasicGame {
         int ownPlayerId = rgi.game.getOwnPlayer().playerId;
         for (int i = 0; i < unitList.size(); i++) {
             Unit unit = unitList.get(i);
-            if (unit.playerId != ownPlayerId && !rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+            if (unit.getPlayerId() != ownPlayerId && !rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
                 // Nur eigene Einheiten decken den Nebel des Krieges auf
                 continue;
             }
@@ -3548,52 +3068,52 @@ public class GraphicsContent extends BasicGame {
     }
 
     public void calcSelClicked(final int button, final int x, final int y, int clickCount, List<InteractableGameElement> list, boolean select) {
-        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
-        int kX = x;
-        int kY = y;
-        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X erstzen kann
-        // Spalten - Xwerte
-        if (kX >= hudX + (int) (hudSizeX * 0.15) && kX <= hudX + (hudSizeX * 0.15 + hudSizeX * 0.7 / 5)) {
-            calc = 0;
-        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-            calc = 1;
-        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-            calc = 2;
-        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-            calc = 3;
-        }
-        // Reihen
-        if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
-            calc += 4;
-        } else if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
-            calc += 8;
-        }
-        if (calc >= 0) {
-            // Gut wir haben da was!
-            if (calc < interSelFields.size()) {
-                GameObject[] klicked = interSelFields.get(calc);
-                if (klicked != null) {
-                    if (select) {
-                        // Gut, diese Kategorie gibts auch, nur diese Anwählen
-                        // Erstmal alle löschen
-                        for (GameObject obj : list) {
-                            obj.isSelected = false;
-                        }
-                        list.clear();
-                        for (GameObject newobj : klicked) {
-                            list.add(newobj);
-                            newobj.isSelected = true;
-                        }
-                        // Fertig
-                    } else {
-                        for (GameObject newobj : klicked) {
-                            list.remove(newobj);
-                            newobj.isSelected = false;
-                        }
-                    }
-                }
-            }
-        }
+//        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
+//        int kX = x;
+//        int kY = y;
+//        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X erstzen kann
+//        // Spalten - Xwerte
+//        if (kX >= hudX + (int) (hudSizeX * 0.15) && kX <= hudX + (hudSizeX * 0.15 + hudSizeX * 0.7 / 5)) {
+//            calc = 0;
+//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
+//            calc = 1;
+//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
+//            calc = 2;
+//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
+//            calc = 3;
+//        }
+//        // Reihen
+//        if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
+//            calc += 4;
+//        } else if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
+//            calc += 8;
+//        }
+//        if (calc >= 0) {
+//            // Gut wir haben da was!
+//            if (calc < interSelFields.size()) {
+//                GameObject[] klicked = interSelFields.get(calc);
+//                if (klicked != null) {
+//                    if (select) {
+//                        // Gut, diese Kategorie gibts auch, nur diese Anwählen
+//                        // Erstmal alle löschen
+//                        for (GameObject obj : list) {
+//                            obj.isSelected = false;
+//                        }
+//                        list.clear();
+//                        for (GameObject newobj : klicked) {
+//                            list.add(newobj);
+//                            newobj.isSelected = true;
+//                        }
+//                        // Fertig
+//                    } else {
+//                        for (GameObject newobj : klicked) {
+//                            list.remove(newobj);
+//                            newobj.isSelected = false;
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     public void preCalcMiniMapElements(double scalefactorX, double scalefactorY) {
@@ -3619,59 +3139,59 @@ public class GraphicsContent extends BasicGame {
     }
 
     public void calcOptClicked(final int button, final int x, final int y, final int clickCount, ArrayList<GameObject> list) {
-        mouseX = x;
-        mouseY = y;
-        Ability ab = searchOptFast();
-        if (ab != null && list.get(0).ready) {
-            // Mouse weg, damit Hover verschwindet:
-            if (ab.removeHoverAfterUse) {
-                mouseX = 50;
-                mouseY = 50;
-            }
-            // Für die Erste GO ausführen
-            // Invoker setzen
-            ab.setInvoker(list.get(0));
-            // Fähigkeit starten
-            if (button == 0) {
-                if (rgi.rogGraphics.inputM.shiftDown) {
-                    for (int i = 0; i < 5; i++) {
-                        if (ab.isAvailable()) {
-                            ab.perform(list.get(0));
-                        }
-                    }
-                } else {
-                    if (ab.isAvailable()) {
-                        ab.perform(list.get(0));
-                    }
-                }
-            } else if (button == 1) {
-                if (rgi.rogGraphics.inputM.shiftDown) {
-                    for (int i = 0; i < 5; i++) {
-                        ab.antiperform(list.get(0));
-                    }
-                } else {
-                    ab.antiperform(list.get(0));
-                }
-            }
-            // Für noch mehr ausführen?
-            if (ab.useForAll) {
-                for (int i = 1; i < list.size(); i++) {
-                    Ability abr = list.get(i).abilitys.get(optList.indexOf(ab));
-                    if (abr != null) {
-                        if (button == 0) {
-                            if (abr.isAvailable()) {
-                                abr.perform(list.get(i));
-                            }
-                        } else if (button == 1) {
-                            abr.antiperform(list.get(i));
-                        }
-                    }
-                }
-            }
-            // IA-Hud triggern, wegen eventuellem Progress-Rendern
-            this.updateInterHud = true;
-
-        }
+//        mouseX = x;
+//        mouseY = y;
+//        Ability ab = searchOptFast();
+//        if (ab != null && list.get(0).ready) {
+//            // Mouse weg, damit Hover verschwindet:
+//            if (ab.removeHoverAfterUse) {
+//                mouseX = 50;
+//                mouseY = 50;
+//            }
+//            // Für die Erste GO ausführen
+//            // Invoker setzen
+//            ab.setInvoker(list.get(0));
+//            // Fähigkeit starten
+//            if (button == 0) {
+//                if (rgi.rogGraphics.inputM.shiftDown) {
+//                    for (int i = 0; i < 5; i++) {
+//                        if (ab.isAvailable()) {
+//                            ab.perform(list.get(0));
+//                        }
+//                    }
+//                } else {
+//                    if (ab.isAvailable()) {
+//                        ab.perform(list.get(0));
+//                    }
+//                }
+//            } else if (button == 1) {
+//                if (rgi.rogGraphics.inputM.shiftDown) {
+//                    for (int i = 0; i < 5; i++) {
+//                        ab.antiperform(list.get(0));
+//                    }
+//                } else {
+//                    ab.antiperform(list.get(0));
+//                }
+//            }
+//            // Für noch mehr ausführen?
+//            if (ab.useForAll) {
+//                for (int i = 1; i < list.size(); i++) {
+//                    Ability abr = list.get(i).abilitys.get(optList.indexOf(ab));
+//                    if (abr != null) {
+//                        if (button == 0) {
+//                            if (abr.isAvailable()) {
+//                                abr.perform(list.get(i));
+//                            }
+//                        } else if (button == 1) {
+//                            abr.antiperform(list.get(i));
+//                        }
+//                    }
+//                }
+//            }
+//            // IA-Hud triggern, wegen eventuellem Progress-Rendern
+//            this.updateInterHud = true;
+//
+//        }
     }
 
     /**
@@ -3680,43 +3200,43 @@ public class GraphicsContent extends BasicGame {
      * @return
      */
     private Ability searchOptFast() {
-        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
-        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X ersetzen kann
-        // Rechenzeit sparen durch vorrechnen
-        int hsx1 = (int) (hudSizeX * 0.15);
-        int hsx2 = (int) (hudSizeX * 14 / 75);
-        // Spalten - Xwerte
-        if (mouseX >= hudX + (int) (hsx1) && mouseX <= hudX + (hsx1 + hudSizeX * 0.7 / 5)) {
-            calc = 0;
-        } else if (mouseX >= hudX + (int) (hsx1 + 1 * hsx2) && mouseX <= hudX + (hsx1 + 1 * hsx2 + hudSizeX * 0.7 / 5)) {
-            calc = 1;
-        } else if (mouseX >= hudX + (int) (hsx1 + 2 * hsx2) && mouseX <= hudX + (hsx1 + 2 * hsx2 + hudSizeX * 0.7 / 5)) {
-            calc = 2;
-        } else if (mouseX >= hudX + (int) (hsx1 + 3 * hsx2) && mouseX <= hudX + (hsx1 + 3 * hsx2 + hudSizeX * 0.7 / 5)) {
-            calc = 3;
-        }
-        // Reihen
-        if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4))) {
-            // Nix
-        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 1.5)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 2.5))) {
-            calc += 4;
-        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 3)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8)))) {
-            calc += 8;
-        } else {
-            calc = -500;
-        }
-        if (calc >= 0 && calc < optList.size()) {
-            // Gut wir haben da was!
-            // Fähigkeit holen
-            Ability ab = null;
-            try {
-                ab = optList.get(calc);
-                if (rgi.rogGraphics.inputM.selected.get(0).ready) {
-                    return ab;
-                }
-            } catch (java.lang.IndexOutOfBoundsException ex) {
-            }
-        }
+//        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
+//        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X ersetzen kann
+//        // Rechenzeit sparen durch vorrechnen
+//        int hsx1 = (int) (hudSizeX * 0.15);
+//        int hsx2 = (int) (hudSizeX * 14 / 75);
+//        // Spalten - Xwerte
+//        if (mouseX >= hudX + (int) (hsx1) && mouseX <= hudX + (hsx1 + hudSizeX * 0.7 / 5)) {
+//            calc = 0;
+//        } else if (mouseX >= hudX + (int) (hsx1 + 1 * hsx2) && mouseX <= hudX + (hsx1 + 1 * hsx2 + hudSizeX * 0.7 / 5)) {
+//            calc = 1;
+//        } else if (mouseX >= hudX + (int) (hsx1 + 2 * hsx2) && mouseX <= hudX + (hsx1 + 2 * hsx2 + hudSizeX * 0.7 / 5)) {
+//            calc = 2;
+//        } else if (mouseX >= hudX + (int) (hsx1 + 3 * hsx2) && mouseX <= hudX + (hsx1 + 3 * hsx2 + hudSizeX * 0.7 / 5)) {
+//            calc = 3;
+//        }
+//        // Reihen
+//        if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4))) {
+//            // Nix
+//        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 1.5)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 2.5))) {
+//            calc += 4;
+//        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 3)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8)))) {
+//            calc += 8;
+//        } else {
+//            calc = -500;
+//        }
+//        if (calc >= 0 && calc < optList.size()) {
+//            // Gut wir haben da was!
+//            // Fähigkeit holen
+//            Ability ab = null;
+//            try {
+//                ab = optList.get(calc);
+//                if (rgi.rogGraphics.inputM.selected.get(0).ready) {
+//                    return ab;
+//                }
+//            } catch (java.lang.IndexOutOfBoundsException ex) {
+//            }
+//        }
         return null;
     }
 
@@ -3740,8 +3260,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     public GraphicsContent() {
-        super("Centuries of Rage BETA");
-        selectionShadows = new ArrayList();
+        super("Centuries of Rage 2: pre-Alpha");
         interSelFields = new ArrayList<GameObject[]>();
         coloredImgMap = new HashMap<String, GraphicsImage>();
         wayPointHighlighting = new Image[4];
@@ -3878,7 +3397,7 @@ public class GraphicsContent extends BasicGame {
         try {
             if (lastInputEvent == 1) {
                 // CalcOptClicked
-                this.calcOptClicked(lastInputButton, lastInputX, lastInputY, 1, rgi.rogGraphics.inputM.selected);
+              //  this.calcOptClicked(lastInputButton, lastInputX, lastInputY, 1, rgi.rogGraphics.inputM.selected);
             }
         } finally {
             lastInputEvent = 0;
