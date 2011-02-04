@@ -39,9 +39,11 @@ import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import thirteenducks.cor.game.NetPlayer;
+import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.server.behaviour.impl.ServerBehaviourMove;
@@ -624,11 +626,11 @@ public class ServerMapModule {
                             // Fertig, in HashMap speichern
                             if (mode.equals("U")) {
                                 rU.setDescTypeId(id);
-                                descTypeUnit.put(id, new Unit(rU));
+                                descTypeUnit.put(id, new Unit2x2(rU));
                                 inDesc = false;
                             } else if (mode.equals("B")) {
                                 rB.setDescTypeId(id);
-                                descTypeBuilding.put(id, new Building(rB));
+                                descTypeBuilding.put(id, new PlayersBuilding(rB));
                                 inDesc = false;
                             }
                         }
