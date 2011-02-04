@@ -30,7 +30,6 @@ import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Robot;
@@ -110,6 +109,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             public void update(GameContainer container, int delta) throws SlickException {
             }
 
+            @Override
             public void render(GameContainer container, Graphics g) throws SlickException {
             }
 
@@ -237,6 +237,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 if (folder.isDirectory()) {
                     File[] images = folder.listFiles(new FileFilter() {
 
+                        @Override
                         public boolean accept(File pathname) {
                             if (pathname.getName().endsWith(".png")) {
                                 return !blackList.contains(pathname.getPath());
@@ -427,9 +428,11 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             public void inputEnded() {
             }
 
+            @Override
             public void mouseDragged(int i, int i1, int i2, int i3) {
             }
 
+            @Override
             public void inputStarted() {
             }
         });
@@ -460,6 +463,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             public void inputEnded() {
             }
 
+            @Override
             public void inputStarted() {
             }
         });
@@ -1311,7 +1315,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         // Läd die Submodule
         // Inputmodul
         rgi.logger("[Graphics]: Init Sub: RogInput...");
-        inputM.initAsSub(this);
+        inputM.initAsSub(this, content.visMap.length, content.visMap[0].length);
     }
 
     public void activateMap(CoRMapElement[][] newVisMap) {
@@ -1400,10 +1404,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 content.allListLock.unlock();
             }
         }
-        // Zum Gegner hindrehen, falls wir gerade net laufen
-        if (!b.attacker.isMoving() && b.attacker.anim != null) {
-            b.attacker.anim.dir = b.getTargetPos().subtract(b.sourcePos).transformToIntVector();
-        }
     }
 
     public void addBulletB(GraphicsBullet b) {
@@ -1422,8 +1422,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Benötigt ein ansonsten praktisch zu 100% geladenes Spiel
      */
     public void finalPrepare() {
-        // Input-Select syncen
-        content.selectedObjects = this.inputM.selected;
         // Grafikausgabe einrichten
         content.byPass = true; // Game-rendering darf das
         content.epoche = 1;
@@ -1453,8 +1451,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.initMiniMap();
         // Ansicht zum Hauptgebäude des Spielers scrollen (1. Gebäude mit seiner playerId in der Liste)
         for (Building b : buildingList) {
-            if (b.playerId == rgi.game.getOwnPlayer().playerId) {
-                rgi.rogGraphics.jumpTo((b.position.X + 6) - (rgi.rogGraphics.content.viewX / 2), b.position.Y - (rgi.rogGraphics.content.viewY / 2));
+            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
+                rgi.rogGraphics.jumpTo((b.getMainPosition().getX() + 6) - (rgi.rogGraphics.content.viewX / 2), b.getMainPosition().getY() - (rgi.rogGraphics.content.viewY / 2));
                 break;
             }
         }
@@ -1598,15 +1596,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 JOptionPane.WARNING_MESSAGE);
     }
 
-    public ArrayList<Unit> getBoxSelected(final int button, final int x, final int y) {
-        // Holt alle derzeit in der Box selektieren Einheiten
-        if (content.dragSelectionBox) {
-            return content.getBoxSelected(button, x, y);
-        } else {
-            return null;
-        }
-    }
-
     public void startRightScrolling() {
         rightScrollStart = System.currentTimeMillis();
         this.setMouseGrabbed(true);
@@ -1659,79 +1648,71 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     public void notifyUnitDieing(final Unit unit) {
         // Muss aufgerufen werden, damit eine Einheit korrekt entfernt, aber davor noch eine Todesanimation abgespielt wird.
-        if (unit.anim != null && unit.anim.isDieingAnimated()) {
-            // Unit klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
-            unit.alive = false;
-            /*    for (RogUnitBehaviour behaviour : unit.behaviours) {
-            behaviour.active = false;
-            } */
-            unit.movingtarget = null;
-            unit.isSelected = false;
-            unit.setPlayerId(0);
-
-            rgi.mapModule.setCollision(unit.position, collision.free);
-            rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
-            new Timer().schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    try {
-                        content.allListLock.lock();
-                        content.allList.remove(unit);
-                    } finally {
-                        content.allListLock.unlock();
-                    }
-                }
-            }, unit.anim.getDieingDuration());
-        } else {
-            rgi.mapModule.setCollision(unit.position, collision.free);
-            rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
+//        if (unit.anim != null && unit.anim.isDieingAnimated()) {
+//            // Unit klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
+//            unit.alive = false;
+//            /*    for (RogUnitBehaviour behaviour : unit.behaviours) {
+//            behaviour.active = false;
+//            } */
+//            unit.movingtarget = null;
+//            unit.isSelected = false;
+//            unit.setPlayerId(0);
+//
+//            rgi.mapModule.setCollision(unit.position, collision.free);
+//            rgi.mapModule.setUnitRef(unit.position, null, unit.playerId);
+//            new Timer().schedule(new TimerTask() {
+//
+//                @Override
+//                public void run() {
+//                    try {
+//                        content.allListLock.lock();
+//                        content.allList.remove(unit);
+//                    } finally {
+//                        content.allListLock.unlock();
+//                    }
+//                }
+//            }, unit.anim.getDieingDuration());
+//        } else {
             try {
                 content.allListLock.lock();
                 content.allList.remove(unit);
             } finally {
                 content.allListLock.unlock();
             }
-        }
+       // }
     }
 
     public void notifyBuildingDieing(final Building building) {
-        // Muss aufgerufen werden, damit ein Gebäude korrekt entfernt, aber davor noch eine Todesanimation abgespielt wird.
-        if (building.anim != null && building.anim.isDieingAnimated()) {
-            // Gebäude klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
-            building.alive = false;
-            /* for (RogUnitBehaviour behaviour : building.behaviours) {
-            behaviour.active = false;
-            } */
-            building.ready = false;
-            building.isSelected = false;
-            building.setPlayerId(0);
-            this.builingsChanged();
-            new Timer().schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    try {
-                        content.allListLock.lock();
-                        content.allList.remove(building);
-                    } finally {
-                        content.allListLock.unlock();
-                    }
-                    // Kollsion entfernen
-                    for (int z1 = 0; z1 < building.z1; z1++) {
-                        for (int z2 = 0; z2 < building.z2; z2++) {
-                            rgi.mapModule.setCollision(building.position.X + z1 + z2, building.position.Y - z1 + z2, collision.free);
-                        }
-                    }
-                }
-            }, building.anim.getDieingDuration());
-        } else {
-            // Kollsion entfernen
-            for (int z1 = 0; z1 < building.z1; z1++) {
-                for (int z2 = 0; z2 < building.z2; z2++) {
-                    rgi.mapModule.setCollision(building.position.X + z1 + z2, building.position.Y - z1 + z2, collision.free);
-                }
-            }
+//        // Muss aufgerufen werden, damit ein Gebäude korrekt entfernt, aber davor noch eine Todesanimation abgespielt wird.
+//        if (building.anim != null && building.anim.isDieingAnimated()) {
+//            // Gebäude klinisch töten, alle Behaviour abstellen und sie unselectierbar machen
+//            building.alive = false;
+//            /* for (RogUnitBehaviour behaviour : building.behaviours) {
+//            behaviour.active = false;
+//            } */
+//            building.ready = false;
+//            building.isSelected = false;
+//            building.setPlayerId(0);
+//            this.builingsChanged();
+//            new Timer().schedule(new TimerTask() {
+//
+//                @Override
+//                public void run() {
+//                    try {
+//                        content.allListLock.lock();
+//                        content.allList.remove(building);
+//                    } finally {
+//                        content.allListLock.unlock();
+//                    }
+//                    // Kollsion entfernen
+//                    for (int z1 = 0; z1 < building.z1; z1++) {
+//                        for (int z2 = 0; z2 < building.z2; z2++) {
+//                            rgi.mapModule.setCollision(building.position.X + z1 + z2, building.position.Y - z1 + z2, collision.free);
+//                        }
+//                    }
+//                }
+//            }, building.anim.getDieingDuration());
+//        } else {
             try {
                 content.allListLock.lock();
                 content.allList.remove(building);
@@ -1739,7 +1720,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 content.allListLock.unlock();
             }
             this.builingsChanged();
-        }
+       // }
 
     }
 
@@ -1843,7 +1824,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.pauseMode = true;
         //rgf.setIgnoreRepaint(false);
         for (int i = 0; i < content.allList.size(); i++) {
-            GraphicsRenderable r = content.allList.get(i);
+            Sprite r = content.allList.get(i);
             if (r.getClass().equals(GraphicsBullet.class)) {
                 ((GraphicsBullet) r).pause();
             }
@@ -1855,7 +1836,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         pauseMod = false;
         content.pauseMode = false;
         for (int i = 0; i < content.allList.size(); i++) {
-            GraphicsRenderable r = content.allList.get(i);
+            Sprite r = content.allList.get(i);
             if (r.getClass().equals(GraphicsBullet.class)) {
                 ((GraphicsBullet) r).unpause();
             }
