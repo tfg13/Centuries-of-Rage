@@ -43,7 +43,7 @@ public class S037_UPGRADE_DELTA extends ServerCommand {
         GameObject go37 = rgi.netmap.getGameObjectviaID(rgi.readInt(data, 1));
         if (go37 != null) {
             // Ability suchen
-            ServerAbilityUpgrade up = rgi.game.getPlayer(go37.playerId).serverDescAbilities.get(rgi.readInt(data, 2));
+            ServerAbilityUpgrade up = rgi.game.getPlayer(go37.getPlayerId()).serverDescAbilities.get(rgi.readInt(data, 2));
             if (up != null) {
                 up.perform(go37);
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 37, go37.netID, rgi.readInt(data, 2), 0, 0));
