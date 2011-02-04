@@ -27,7 +27,6 @@ package thirteenducks.cor.networks.server;
 
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.game.NetPlayer.races;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -171,7 +170,7 @@ public class ServerNetController implements Runnable {
         // Checken
         if (path != null && path.size() > 1) {
             // Kommando, netId & Ziel schicken
-            this.broadcastDATA(rgi.packetFactory((byte) 23, netID, 0, path.get(path.size() - 1).X, path.get(path.size() - 1).Y));
+            this.broadcastDATA(rgi.packetFactory((byte) 23, netID, 0, path.get(path.size() - 1).getX(), path.get(path.size() - 1).getY()));
             // Jetzt den Pfad als ganzes schicken
             int cmd = 24;
             if (asAppend) {
@@ -179,14 +178,14 @@ public class ServerNetController implements Runnable {
             }
             boolean sendFinal = false;
             for (int i = 0; i < path.size(); i += 2) {
-                int x1 = path.get(i).X;
-                int y1 = path.get(i).Y;
+                int x1 = path.get(i).getX();
+                int y1 = path.get(i).getY();
                 int x2 = 0;
                 int y2 = 0;
                 // Noch eins da?
                 if ((i + 1) < path.size()) {
-                    x2 = path.get(i + 1).X;
-                    y2 = path.get(i + 1).Y;
+                    x2 = path.get(i + 1).getX();
+                    y2 = path.get(i + 1).getY();
                     sendFinal = true;
                 } else {
                     x2 = -1;
@@ -426,12 +425,9 @@ public class ServerNetController implements Runnable {
             cmdMap[30] = new thirteenducks.cor.networks.cmd.server.S030_KILL_BUILDING();
             cmdMap[32] = new thirteenducks.cor.networks.cmd.server.S032_GROUP_ATTACK_GO();
             cmdMap[33] = new thirteenducks.cor.networks.cmd.server.S033_KILL_RES();
-            cmdMap[34] = new thirteenducks.cor.networks.cmd.server.S034_HARVEST_START();
-            cmdMap[35] = new thirteenducks.cor.networks.cmd.server.S035_HARVEST_STOP();
             cmdMap[36] = new thirteenducks.cor.networks.cmd.server.S036_UPGRADE_TODESC();
             cmdMap[37] = new thirteenducks.cor.networks.cmd.server.S037_UPGRADE_DELTA();
             cmdMap[38] = new thirteenducks.cor.networks.cmd.server.S038_UPGRADE_EPOCHE();
-            cmdMap[41] = new thirteenducks.cor.networks.cmd.server.S041_UNIT_JUMP();
             cmdMap[42] = new thirteenducks.cor.networks.cmd.server.S042_EVACUATE_UNIT();
             cmdMap[44] = new thirteenducks.cor.networks.cmd.server.S044_CHAT_MESSAGE();
             cmdMap[45] = new thirteenducks.cor.networks.cmd.server.S045_INIT_CHAT();
