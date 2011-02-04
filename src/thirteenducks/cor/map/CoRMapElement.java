@@ -31,7 +31,6 @@ import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.map.CoRMapElement.collision;
 import java.io.Serializable;
 import java.util.HashMap;
-import thirteenducks.cor.game.Ressource;
 
 /**
  *
@@ -55,7 +54,6 @@ public class CoRMapElement implements Serializable {
 
     public collision collision;
     public Unit[] unitref; // Referenz auf die Einheit die das Feld gerade besetzt - Array mit Spielern
-    public Ressource resref; // Referenz auf die Ressource, die hier steht. Client only.
 
     private HashMap<String,String> properties; // Eigenschaften für das Feld, Textur, Misc etc...
     private HashMap<String,Object> objProperties; // Alle Eigenschaften, die als Objekt gespeichert werden.
