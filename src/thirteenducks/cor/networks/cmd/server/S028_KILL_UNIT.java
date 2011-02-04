@@ -43,7 +43,7 @@ public class S028_KILL_UNIT extends ServerCommand {
         if (unit28 != null) {
             // Weg damit
             rgi.netmap.killUnit(unit28);
-            rgi.serverstats.trackUnitdelete(unit28.playerId);
+            rgi.serverstats.trackUnitdelete(unit28.getPlayerId());
         } else {
             System.out.println("SFixMe: Unit ID mismatch (cmd 28)");
         }
