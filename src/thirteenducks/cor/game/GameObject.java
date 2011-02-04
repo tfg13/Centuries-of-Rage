@@ -1237,4 +1237,12 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void setHitpoints(int hitpoints) {
         this.hitpoints = hitpoints;
     }
+
+    /**
+     * Enthält alle Grafik- & Animationsdaten
+     * @return the graphicsData
+     */
+    public GOGraphicsData getGraphicsData() {
+        return graphicsData;
+    }
 }
