@@ -41,12 +41,10 @@ public class S027_SET_WAYPOINT extends ServerCommand {
         // Gebäude suchen
         GameObject go27 = rgi.netmap.getGameObjectviaID(rgi.readInt(data, 1));
         if (go27 != null) {
-            go27.waypoint = rgi.readPosition(data, 2);
-            go27.wayBuilding = rgi.netmap.getBuildingviaID(rgi.readInt(data, 2));
-            go27.wayRessource = rgi.netmap.getRessourceviaID(rgi.readInt(data, 2));
+            go27.setWaypoint(rgi.readPosition(data, 2));
             // Broadcasten
-            if (go27.waypoint != null) {
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, go27.netID, rgi.readInt(data, 2), go27.waypoint.X, go27.waypoint.Y));
+            if (go27.getWaypoint() != null) {
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, go27.netID, rgi.readInt(data, 2), go27.getWaypoint().getX(), go27.getWaypoint().getY()));
             }
         } else {
             System.out.println("FixMe: Object ID mismatch (cmd 27)");
