@@ -29,11 +29,6 @@
 // wenns nich laeuft ist wer anders schuld
 package thirteenducks.cor.tools;
 
-import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.server.behaviour.ServerBehaviour;
-import thirteenducks.cor.graphics.input.InteractableGameElement;
-import thirteenducks.cor.graphics.input.SelectionMarker;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Unit;
@@ -41,12 +36,9 @@ import thirteenducks.cor.map.CoRMapElement.collision;
 import java.util.*;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
-import thirteenducks.cor.graphics.BuildingAnimator;
-import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.map.MapIO;
-import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 
 public class RandomMapBuilder {
 
@@ -1178,9 +1170,9 @@ public class RandomMapBuilder {
             
             Building tmp = new Building(param);
             Building Haus = new Building(getNewNetID(), tmp);
-            Haus.offsetY = 4;
+            Haus.getGraphicsData().offsetY = 4;
             Haus.setPlayerId(i);
-            Haus.defaultTexture = "img/buildings/human_main_e1.png";
+            Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
             Haus.setMainPosition(new Position(x, y));
             RandomRogMap.visMap[x + 5][y - 5].setCollision(collision.blocked);
             RandomRogMap.visMap[x + 4][y - 4].setCollision(collision.blocked);
