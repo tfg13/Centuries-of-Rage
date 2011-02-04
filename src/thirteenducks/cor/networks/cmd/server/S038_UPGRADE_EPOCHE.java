@@ -25,7 +25,6 @@
  */
 package thirteenducks.cor.networks.cmd.server;
 
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.networks.server.ServerNetController.ServerHandler;
@@ -42,9 +41,7 @@ public class S038_UPGRADE_EPOCHE extends ServerCommand {
         // Ability suchen
         ServerAbilityUpgrade up = rgi.game.getPlayer(rgi.readInt(data, 2)).serverDescAbilities.get(rgi.readInt(data, 1));
         if (up != null) {
-            GameObject obj = new GameObject(-1);
-            obj.setPlayerId(handler.client.playerId);
-            up.perform(obj);
+            System.out.println("W00t? PFUSCH!!!");
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 38, up.myId, rgi.readInt(data, 2), 0, 0));
         } else {
             System.out.println("FixMe: Ability ID mismatch (cmd38)");
