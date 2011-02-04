@@ -48,7 +48,8 @@ public class S026_MOVE_UNIT_TO_BUILDING extends ServerCommand {
             if (building26 != null) {
                 // Angreiffen abbrechen
                 unit26.attackManager.deactivate();
-                unit26.moveToBuilding(building26, rgi, false);
+                //unit26.moveToBuilding(building26, rgi, false);
+                System.out.println("AddMe: Move to building!");
             } else {
                 System.out.println("FixMe: Building ID mismatch (cmd 26)");
             }
