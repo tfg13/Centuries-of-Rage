@@ -43,11 +43,11 @@ public class S022_RECRUIT_DEL extends ServerCommand {
         try {
             GameObject caster = rgi.netmap.getGameObjectviaID(rgi.readInt(data, 1));
             // Behaviour ID 6
-            ServerBehaviour be = caster.getbehaviourS(6);
+            ServerBehaviour be = caster.getServerBehaviour(6);
             if (be == null) {
                 // Neu anlegen
                 be = new ServerBehaviourRecruit(rgi, caster, 20);
-                caster.sbehaviours.add(be);
+                caster.addServerBehaviour(be);
             }
             be.gotSignal(data);
         } catch (Exception ex) {
