@@ -576,10 +576,10 @@ public class GraphicsComponent extends JLabel {
                     // Fortschritt anzeigen
                     g2.drawString("Constructing:  ", dx1, (int) (dy2 * 1.3));
                     g2.drawString(Math.round(building.buildprogress * 100) + "%", (int) ((dx2 - dx1) * 5), (int) (dy2 * 1.3));
-                } else if (building.maxIntra > 0) {
+                } else if (building.getMaxIntra() > 0) {
                     // Anzahl der Arbeiter im Gebäude
                     g2.drawString("Harvesters: ", dx1, (int) (dy2 * 1.3));
-                    g2.drawString(building.intraUnits.size() + "/" + building.maxIntra, (int) ((dx2 - dx1) * 5), (int) (dy2 * 1.3));
+                    g2.drawString(building.intraUnits.size() + "/" + building.getMaxIntra(), (int) ((dx2 - dx1) * 5), (int) (dy2 * 1.3));
                 }
             } else if (tempInfoObj.getClass().equals(Ressource.class)) {
                 // Unit - Infos rendern

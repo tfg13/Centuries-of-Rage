@@ -359,4 +359,12 @@ public abstract class Building extends GameObject {
     public int getDamageWhileContruction() {
         return damageWhileContruction;
     }
+
+    /**
+     * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
+     * @return the maxIntra
+     */
+    public int getMaxIntra() {
+        return maxIntra;
+    }
 }
