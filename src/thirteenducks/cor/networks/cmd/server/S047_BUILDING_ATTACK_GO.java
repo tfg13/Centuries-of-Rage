@@ -49,12 +49,12 @@ public class S047_BUILDING_ATTACK_GO extends ServerCommand {
                 try {
                     Unit unittarget47 = (Unit) target47;
                     // Einheit angreiffen
-                    b47.attackManagerB.attackUnit(unittarget47, (rgi.readInt(data, 3) == 1));
+                    b47.attackManager.attackUnit(unittarget47);
                 } catch (ClassCastException ex47) {
                     // Nein, Gebäude?
                     try {
                         Building buildingtarget47 = (Building) target47;
-                        b47.attackManagerB.attackBuilding(buildingtarget47, (rgi.readInt(data, 3) == 1));
+                        b47.attackManager.attackBuilding(buildingtarget47);
                     } catch (ClassCastException ex) {
                         // Gar nix, Error
                         System.out.println("FixMe: Ziel ist nicht angreiffbar (cmd47), Ziel: " + target47);
