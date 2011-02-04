@@ -32,13 +32,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.particles.ParticleEmitter;
 import org.newdawn.slick.particles.ParticleSystem;
 import thirteenducks.cor.graphics.impl.FireEmitter;
 import thirteenducks.cor.game.Building;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.client.ClientCore;
 
 /**
@@ -64,7 +62,7 @@ public class GraphicsFireManager {
         // Natürlich nicht für gestorbene
         if (b.getHitpoints() > 0) {
 
-            ParticleSettings settings = fireSettings.get(b.descTypeId);
+            ParticleSettings settings = fireSettings.get(b.getDescTypeId());
             if (settings != null) {
                 // Es gibt einstellungen, haben wir schon einen Partikelemitter für dieses Gebäude?
                 ParticleSystem sys = fireMap.get(b);
@@ -77,8 +75,8 @@ public class GraphicsFireManager {
                 int targetFires = settings.getMaxFires(epoche);
 
                 int useDamage = b.getHitpoints();
-                if (!b.ready) { // Gebäude, die gerade Gebäud werden, haben ein anderes Schadenslevel
-                    useDamage = b.getHitpoints() - b.damageWhileContruction;
+                if (b.getLifeStatus() == GameObject.LIFESTATUS_UNBORN) { // Gebäude, die gerade Gebäud werden, haben ein anderes Schadenslevel
+                    useDamage = b.getHitpoints() - b.getDamageWhileContruction();
                 }
 
                 // Berechnen, wie viele Feuer wir beim derzeitigen Gesundheitszustand haben sollten
@@ -128,12 +126,12 @@ public class GraphicsFireManager {
             ParticleSystem sys = fireMap.get(b);
             if (sys != null) {
                 // Sichtbar?
-                if (rgi.game.getOwnPlayer().playerId == b.playerId || rgi.game.shareSight(b, rgi.game.getOwnPlayer()) || b.wasSeen) {
+                if (rgi.game.getOwnPlayer().playerId == b.getPlayerId() || rgi.game.shareSight(b, rgi.game.getOwnPlayer())) {
                     // Grundsätzlich ja, aber ist es jetzt im Moment sichtbar?
-                    if (rgi.rogGraphics.isInSight(b.position.X, b.position.Y)) {
+                    if (rgi.rogGraphics.isInSight(b.getMainPosition().getX(), b.getMainPosition().getY())) {
                         // Effekt rendern
                         sys.update(delta);
-                        sys.render((b.position.X - b.offsetX - positionX) * 20, (b.position.Y - b.offsetY - positionY) * 15);
+                        sys.render((b.getMainPosition().getX() - positionX) * 20, (b.getMainPosition().getY() - positionY) * 15);
                     }
                 }
             }
@@ -191,7 +189,7 @@ public class GraphicsFireManager {
     private FireEmitter createEmitter(Building b) {
 
         // Settings laden - ohne gehts nicht+
-        ParticleSettings settings = fireSettings.get(b.descTypeId);
+        ParticleSettings settings = fireSettings.get(b.getDescTypeId());
         if (settings != null) {
             // Es gibt einstellungen, haben wir schon einen Partikelemitter für dieses Gebäude?
             ParticleSystem sys = fireMap.get(b);
