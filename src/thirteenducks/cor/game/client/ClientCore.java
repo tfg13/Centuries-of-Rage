@@ -37,8 +37,6 @@ import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.SlickException;
 import thirteenducks.cor.graphics.ClientChat;
 import thirteenducks.cor.game.Core;
-import thirteenducks.cor.ai.AIModule;
-import thirteenducks.cor.ai.AISurrogateGraphics;
 import thirteenducks.cor.graphics.CoreGraphics;
 import thirteenducks.cor.networks.lobby.Lobby;
 import thirteenducks.cor.sound.SoundModule;
@@ -69,7 +67,6 @@ public class ClientCore extends Core {
     String playername;
     Lobby lobby;
     ClientStatistics cs;
-    AIModule theAiModule;
     boolean isAIClient;
 
 
@@ -117,16 +114,8 @@ public class ClientCore extends Core {
         rgi.logger("[CoreInit] Loading graphicsengine");
 
         // Grafik initialisieren(und KI):
-        if(isAIClient){
-            theAiModule = new AIModule(this.rgi);
-
-            System.out.println("AI Client, using SurrogateGraphics.");
-            //rGraphics = new AISurrogateGraphics(this.rgi);
-            rGraphics = new thirteenducks.cor.graphics.CoreGraphics(rgi, new Dimension(800, 600), false);
-        }
-        else{
             rGraphics = new thirteenducks.cor.graphics.CoreGraphics(rgi, new Dimension(mode.getWidth(), mode.getHeight()), fullScreen);
-        }
+        
 
 
         rgi.logger("[CoreInit]: Loading lobby...");
@@ -215,7 +204,6 @@ public class ClientCore extends Core {
         public SoundModule rogSound;
         public String lastlog = "";
         public boolean isAIClient;
-        public AIModule aiModule;
         public TeamSelector teamSel;
 
         public InnerClient(){}
@@ -234,7 +222,6 @@ public class ClientCore extends Core {
             game = gamectrl;
             chat = cchat;
 	    clientstats = cs;
-            aiModule = theAiModule;
             teamSel = new TeamSelector(this);
             //rogGameLogic = rGameLogic;
             //rogSound = rSound; */
