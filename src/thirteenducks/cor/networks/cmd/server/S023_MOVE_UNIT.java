@@ -41,10 +41,7 @@ public class S023_MOVE_UNIT extends ServerCommand {
         // Bewegungsbefehl
         Unit unit23 = rgi.netmap.getUnitviaID(rgi.readInt(data, 1));
         if (unit23 != null) {
-            if (System.currentTimeMillis() - unit23.jumpSetTime > 150) {
-                System.out.println("WARNING: Using old sync mechanism for jumps, probably will fail.");
-                unit23.jumpTo = 0;
-            }
+            System.out.println("AddMe: (Server) Check for jumps!");
             Position pos23 = rgi.readPosition(data, 2);
             rgi.moveMan.humanSingleMove(unit23, pos23, rgi.readInt(data, 2) == 0);
         } else {
