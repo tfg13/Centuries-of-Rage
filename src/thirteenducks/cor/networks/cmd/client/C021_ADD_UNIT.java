@@ -42,12 +42,6 @@ public class C021_ADD_UNIT extends ClientCommand {
         if (unit != null) {
             unit.setMainPosition((rgi.readPosition(data, 2)));
             rgi.mapModule.addUnit(unit);
-
-            // Event an KI-Modul weiterleiten:
-            if(rgi.isAIClient)
-            {
-                rgi.aiModule.unitCreationEvent(unit);
-            }
         }
     }
 }

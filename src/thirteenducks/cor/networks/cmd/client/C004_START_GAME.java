@@ -42,11 +42,6 @@ public class C004_START_GAME extends ClientCommand {
         rgi.rogGraphics.content.initState = 3;
         //rgi.rogGraphics.startRendering();
 
-        // der KI den Spielstart mitteilen:
-        if (rgi.isAIClient) {
-            rgi.aiModule.gameStartEvent();
-        }
-
         // Lobby verbergen:
         rgi.netctrl.lobby.setVisible(false);
     }

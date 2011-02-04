@@ -50,10 +50,5 @@ public class C003_PREP_START extends ClientCommand {
             rgi.setDebug(false);
         }
         rgi.game.prepareStart(rgi.readInt(data, 1));
-
-        // KI initialisieren:
-        if (rgi.isAIClient) {
-            rgi.aiModule.initAIModule();
-        }
     }
 }

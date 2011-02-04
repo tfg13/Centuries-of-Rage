@@ -52,11 +52,6 @@ public class C015_CONSTRUCT_DONE extends ClientCommand {
             }
             ClientBehaviourConstruct con = (ClientBehaviourConstruct)be;
 
-            // KI-Modul benachrichtigen:
-            if(rgi.isAIClient)
-            {
-                rgi.aiModule.buildingConstructedEvent(con.getBuilding(), unit);
-            }
             be.gotSignal(data);
         } catch (Exception ex) {
             System.out.println("FixMe: Unit ID mismatch (cmd15,16)");

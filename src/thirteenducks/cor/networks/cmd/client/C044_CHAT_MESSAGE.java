@@ -44,12 +44,7 @@ public class C044_CHAT_MESSAGE extends ClientCommand {
             if (c44 != '\0') {
                 handler.stringb44 = handler.stringb44 + c44;
             } else {
-                // Fertig, Chat-Input verarbeiten
-                if (rgi.isAIClient) {
-                    rgi.aiModule.chatMessageEvent(handler.stringb44, handler.playerId45);
-                } else {
-                    rgi.chat.addMessage(handler.stringb44, handler.playerId45);
-                }
+                rgi.chat.addMessage(handler.stringb44, handler.playerId45);
                 handler.stringb44 = "";
                 break;
             }
