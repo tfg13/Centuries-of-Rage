@@ -44,11 +44,11 @@ public class S017_CONSTRUCT_START extends ServerCommand {
         try {
             Unit unit = rgi.netmap.getUnitviaID(rgi.readInt(data, 1));
             // Behaviour ID 5
-            ServerBehaviour be = unit.getbehaviourS(5);
+            ServerBehaviour be = unit.getServerBehaviour(5);
             if (be == null) {
                 // Neu anlegen
                 be = new ServerBehaviourConstruct(rgi, unit, 2);
-                unit.sbehaviours.add(be);
+                unit.addServerBehaviour(be);
             }
             be.gotSignal(data);
         } catch (Exception ex) {
