@@ -28,6 +28,9 @@ package thirteenducks.cor.game;
 
 /**
  * Objekte mit Mainloop bzw. Zeitkritischen Behaviours implementieren dies.
+ * Achtung!
+ * Es kommt häufig vor, dass für einen Pause-Vorgang mehrfach pause bzw unpause aufgerufen wird!
+ * Das muss von der Methode also entsprechend behandelt werden.
  *
  * @author tfg
  */
