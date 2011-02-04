@@ -476,18 +476,12 @@ public class ServerMapModule {
                                 // Gebäude
                                 if (v1.equals("name")) {
                                     rB.setDescName(v2);
-                                } else if (v1.equals("defaultTexture")) {
-                                    rB.defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
                                     rB.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
                                     rB.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("Gdesc")) {
                                     rB.setDescDescription(v2);
-                                } else if (v1.equals("offsetX")) {
-                                    rB.offsetX = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("offsetY")) {
-                                    rB.offsetY = saveStrtoInt(v2, zeile, line);
                                 } else if (v1.equals("z1")) {
                                     rB.setZ1(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("z2")) {
@@ -542,8 +536,6 @@ public class ServerMapModule {
                                 // Einheiten
                                 if (v1.equals("name")) {
                                     rU.setDescName(v2);
-                                } else if (v1.equals("defaultTexture")) {
-                                    rU.graphicsdata.defaultTexture = v2;
                                 } else if (v1.equals("hitpoints")) {
                                     rU.setHitpoints(saveStrtoInt(v2, zeile, line));
                                 } else if (v1.equals("maxhitpoints")) {
