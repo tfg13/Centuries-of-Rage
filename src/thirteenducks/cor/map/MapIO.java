@@ -54,8 +54,10 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.game.GameObject;
+import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
+import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
@@ -330,11 +332,11 @@ public class MapIO {
                                     // Fertig, in HashMap speichern
                                     if (mode.equals("U")) {
                                         rU.setDescTypeId(id);
-                                        descTypeUnit.put(id, new Unit(rU));
+                                        descTypeUnit.put(id, new Unit2x2(rU));
                                         inDesc = false;
                                     } else if (mode.equals("B")) {
                                         rB.setDescTypeId(id);
-                                        descTypeBuilding.put(id, new Building(rB));
+                                        descTypeBuilding.put(id, new PlayersBuilding(rB));
                                         inDesc = false;
                                     }
                                 }
