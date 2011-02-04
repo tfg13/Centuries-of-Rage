@@ -177,6 +177,7 @@ public class RogMainMenuJoinServerControl extends javax.swing.JPanel {
             ex.printStackTrace();
         } catch (java.lang.UnsatisfiedLinkError ur) {
             JOptionPane.showMessageDialog(new JFrame(), "Can't find native librarys. See README for more information", "no native libs", JOptionPane.ERROR_MESSAGE);
+            ur.printStackTrace();
         }
 
         readCfg();

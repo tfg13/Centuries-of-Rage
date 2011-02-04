@@ -298,6 +298,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.abilitys = new ArrayList<Ability>();
         this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
         this.status = GameObject.STATUS_IDLE;
+        this.graphicsData = new GOGraphicsData();
     }
 
     /**
@@ -364,7 +365,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.descPro = par.getDescPro();
         this.descTypeId = par.getDescTypeId();
         this.fireDelay = par.getFireDelay();
-        this.graphicsData = par.getGraphicsData().clone();
+        this.graphicsData = par.getGraphicsData()/*.clone()*/;
         this.healRate = par.getHealRate();
         this.hitpoints = par.getHitpoints();
         this.maxhitpoints = par.getMaxhitpoints();

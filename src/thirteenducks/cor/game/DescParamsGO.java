@@ -137,9 +137,10 @@ public class DescParamsGO {
      */
     private int healRate = 0;
 
-    public void DescParamsGO() {
+    public DescParamsGO() {
         damageFactors = new int[7];
         abilitys = new ArrayList<Ability>();
+        graphicsData = new GOGraphicsData();
     }
 
     /**

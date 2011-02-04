@@ -167,4 +167,8 @@ public class DescParamsBuilding extends DescParamsGO {
     public void setAccepts(int accepts) {
         this.accepts = accepts;
     }
+
+    public DescParamsBuilding() {
+        super();
+    }
 }

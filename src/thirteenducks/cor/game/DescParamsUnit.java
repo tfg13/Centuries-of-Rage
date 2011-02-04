@@ -60,4 +60,8 @@ public class DescParamsUnit extends DescParamsGO {
         this.speed = speed;
     }
 
+    public DescParamsUnit() {
+        super();
+    }
+
 }
