@@ -19,3 +19,4 @@ map/*
 sound/*
 manifest.mf
 testdata*
+natives/*
