@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.graphics;
 
+import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Building;
@@ -48,7 +49,7 @@ import thirteenducks.cor.game.Unit;
  *
  * @author tfg
  */
-public class GraphicsBullet implements Pauseable, GraphicsRenderable {
+public class GraphicsBullet implements Pauseable, Sprite {
 
     public Position sourcePos;
     public Unit attacker;
@@ -363,5 +364,15 @@ public class GraphicsBullet implements Pauseable, GraphicsRenderable {
 	mx += ((victim.z2 - 1) * 1.0f / 2);
 	my += ((victim.z2 - 1) * 1.0f / 2);
 	return new Position((int) mx, (int) my);
+    }
+
+    @Override
+    public void renderSprite(Graphics g, int x, int y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Position[] getVisisbilityPositions() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
