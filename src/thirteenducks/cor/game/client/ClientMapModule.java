@@ -40,6 +40,7 @@ import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import thirteenducks.cor.game.NetPlayer;
+import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityBuild;
 import thirteenducks.cor.game.ability.AbilityIntraManager;
@@ -50,6 +51,7 @@ import thirteenducks.cor.graphics.UnitAnimator;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
+import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.map.MapIO;
@@ -826,11 +828,11 @@ public class ClientMapModule {
                         // Fertig, in HashMap speichern
                         if (mode.equals("U")) {
                             rU.setDescTypeId(id);
-                            descUnit.put(id, new Unit(rU));
+                            descUnit.put(id, new Unit2x2(rU));
                             inDesc = false;
                         } else if (mode.equals("B")) {
                             rB.setDescTypeId(id);
-                            descBuilding.put(id, new Building(rB));
+                            descBuilding.put(id, new PlayersBuilding(rB));
                             inDesc = false;
                         }
                     }
