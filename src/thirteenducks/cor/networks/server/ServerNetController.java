@@ -424,7 +424,6 @@ public class ServerNetController implements Runnable {
             cmdMap[29] = new thirteenducks.cor.networks.cmd.server.S029_UNIT_ATTACK_GO();
             cmdMap[30] = new thirteenducks.cor.networks.cmd.server.S030_KILL_BUILDING();
             cmdMap[32] = new thirteenducks.cor.networks.cmd.server.S032_GROUP_ATTACK_GO();
-            cmdMap[33] = new thirteenducks.cor.networks.cmd.server.S033_KILL_RES();
             cmdMap[36] = new thirteenducks.cor.networks.cmd.server.S036_UPGRADE_TODESC();
             cmdMap[37] = new thirteenducks.cor.networks.cmd.server.S037_UPGRADE_DELTA();
             cmdMap[38] = new thirteenducks.cor.networks.cmd.server.S038_UPGRADE_EPOCHE();
