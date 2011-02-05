@@ -90,7 +90,6 @@ public class GraphicsContent extends BasicGame {
     java.util.List<Unit> unitList;
     java.util.List<Building> buildingList;
     public List<Sprite> allList;
-    public ArrayList<GameObject> selectedObjects;
     boolean newMode = true; // Units in Liste statt als Textur
     ArrayList<Position> wayPath; // Ein weg
     boolean enableWaypointHighlighting;
@@ -1366,198 +1365,198 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderHud(Graphics g) {
-        try {
-            // Allgemeines Hud-backgroundbild
-            hudGround.draw(hudX, 0);
-            // Gebäude-Layer
-            buildingLayer.draw((int) (hudX + hudSizeX * 0.1), (int) (realPixY / 7 * 1.4));
-
-            boolean reCalcFow = false;
-            if (System.currentTimeMillis() - lastFowMiniRender > 1000) {
-                reCalcFow = true;
-                lastFowMiniRender = System.currentTimeMillis();
-            }
-            // Minimap - Grund-Minimap schon im Hud drin, Rest kommt jetzt dazu
-            // Fow-Layer kopieren (von 1 auf 2)
-            Graphics fowg1 = null;
-            Graphics fowg2 = null;
-            if (!fowDisabled && reCalcFow) {
-                if (fowMiniLayer2 == null) {
-                    fowMiniLayer2 = new Image(fowMiniLayer.getWidth(), fowMiniLayer.getHeight());
-                }
-                fowg2 = fowMiniLayer2.getGraphics();
-                fowg2.clear();
-                fowg2.setColor(new Color(0, 0, 0, 0.7f));
-                fowg2.fillRect(0, 0, fowMiniLayer2.getWidth(), fowMiniLayer2.getHeight());
-                fowg1 = fowMiniLayer.getGraphics();
-            }
-            int myPlayerId = rgi.game.getOwnPlayer().playerId;
-
-            /*
-             *  Hinweis zur Fow-Berechnung.
-             *
-             * Leider frisst das herausschneiden der Einheitensichweiten massiv Leistung
-             * - Teilweise bis zu 80% der Prozessorlaufzeit
-             * Das Herausstanzen mit Schablonen auf Image-Basis hat leider auch nicht funktioniert
-             *
-             * Daher jetzt folgendes:
-             *
-             * Schattenberechnung nurnoch 1-2mal pro Sekunde
-             * Mehrfache durchläufe der unit/und buildingList, jedes Mal nur einen Layer ausschneiden.
-             * Das ist schneller, als zwischen jedem Aufruf die Farbe und den DrawMode (ALPHA_MAP) zu ändern
-             * Ja, es ist Pfusch, aber ich hab leider keine bessere Idee.
-             *
-             */
-
-            if (unitList != null) {
-                if (!fowDisabled && reCalcFow) {
-
-                    fowg1.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
-                    fowg2.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
-
-                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
-                    // Jetzt Fow-Layer schneiden
-                    for (int i = 0; i < unitList.size(); i++) {
-                        Unit unit = unitList.get(i);
-                        // Nur eigene und sichtbare rendern
-                        try {
-                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
-                                if (miniMap != null) {
-                                    if (!fowDisabled) {
-                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
-                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
-                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
-                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
-//                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-//                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-                                        fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-                                    }
-                                }
-                            }
-                        } catch (ArrayIndexOutOfBoundsException ex) {
-                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-                        }
-                    }
-                    fowg2.setDrawMode(Graphics.MODE_ALPHA_MAP);
-                    for (int i = 0; i < unitList.size(); i++) {
-                        Unit unit = unitList.get(i);
-                        // Nur eigene und sichtbare rendern
-                        try {
-                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
-                                if (miniMap != null) {
-                                    if (!fowDisabled) {
-                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
-                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
-                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
-                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
-//                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-//                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-                                        fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-                                    }
-                                }
-                            }
-                        } catch (ArrayIndexOutOfBoundsException ex) {
-                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-                        }
-                    }
-                }
-            }
-            if (!fowDisabled && reCalcFow) {
-                // Gebäude schneiden (fow2)
-                if (buildingList != null) {
-
-                    for (int i = 0; i < buildingList.size(); i++) {
-                        Building building = buildingList.get(i);
-                        // Nur eigene & team
-                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
-                            // "Loch" in den fow-layer schneiden
-                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
-                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
-                            fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-                        }
-                    }
-
-                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
-
-                    for (int i = 0; i < buildingList.size(); i++) {
-                        Building building = buildingList.get(i);
-                        // Nur eigene & team
-                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
-                            // "Loch" in den fow-layer schneiden
-                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
-                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
-                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
-                            fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-                        }
-                    }
-                }
-                fowg1.flush();
-                fowg2.flush();
-            }
-            if (!fowDisabled) {
-                // FoW-Layer auf die Minimap
-                fowMiniLayer2.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
-                fowMiniLayer.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
-            }
-            for (int i = 0; i < unitList.size(); i++) {
-                Unit unit = unitList.get(i);
-                // Nur eigene und sichtbare rendern
-                try {
-                    if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.getMainPosition().getX()][unit.getMainPosition().getY()] > 1) {
-                        if (miniMap != null) {
-                            setColorToPlayer(unit.getPlayerId(), g);
-                            g.fillRect((int) ((unit.getMainPosition().getX() * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1) - 1, (int) ((unit.getMainPosition().getY() * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.371428) + 2, 3, 3);
-                        }
-                    }
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-                }
-            }
-            // Sichtbaren Bereich anzeigen
-            g.setColor(Color.lightGray);
-            g.drawRect((int) ((positionX * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1), (int) ((positionY * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.4), miniMapViewSizeX, miniMapViewSizeY);
-            int newHash = 0;
-            try {
-                newHash = selectedObjects.hashCode();
-            } catch (ConcurrentModificationException ex) {
-                System.out.println("Catched: CME in Hud-Hashcode-Check - ignore if rare");
-            }
-            if (newHash != lastMenuHash || updateInterHud) {
-                lastMenuHash = newHash;
-                // Menü neu berechnen:
-                updateInterHud = false;
-                buildInteractiveHud();
-            }
-            // Interaktives Hud zeichnen
-            g.drawImage(interactivehud, hudX, realPixY * 3 / 7);
-
-            // Ressourcen & Truppenlimit reinschreiben
-            g.setColor(Color.black);
-            g.setFont(fonts[1]);
-            try {
-                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res1), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.015));
-                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res2), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.015));
-                g.setColor(epoche > 1 ? Color.black : Color.lightGray);
-                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res3), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.063));
-                g.setColor(epoche > 2 ? Color.black : Color.lightGray);
-                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res4), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.063));
-                g.setColor(epoche > 5 ? Color.black : Color.lightGray);
-                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res5), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.11));
-                g.setColor(Color.black);
-                g.drawString(rgi.game.getOwnPlayer().currentlimit + "/" + Math.min(rgi.game.getOwnPlayer().maxlimit, 100), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.11));
-            } catch (NullPointerException ex) {
-            }
-
-        } catch (org.newdawn.slick.SlickException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            // Allgemeines Hud-backgroundbild
+//            hudGround.draw(hudX, 0);
+//            // Gebäude-Layer
+//            buildingLayer.draw((int) (hudX + hudSizeX * 0.1), (int) (realPixY / 7 * 1.4));
+//
+//            boolean reCalcFow = false;
+//            if (System.currentTimeMillis() - lastFowMiniRender > 1000) {
+//                reCalcFow = true;
+//                lastFowMiniRender = System.currentTimeMillis();
+//            }
+//            // Minimap - Grund-Minimap schon im Hud drin, Rest kommt jetzt dazu
+//            // Fow-Layer kopieren (von 1 auf 2)
+//            Graphics fowg1 = null;
+//            Graphics fowg2 = null;
+//            if (!fowDisabled && reCalcFow) {
+//                if (fowMiniLayer2 == null) {
+//                    fowMiniLayer2 = new Image(fowMiniLayer.getWidth(), fowMiniLayer.getHeight());
+//                }
+//                fowg2 = fowMiniLayer2.getGraphics();
+//                fowg2.clear();
+//                fowg2.setColor(new Color(0, 0, 0, 0.7f));
+//                fowg2.fillRect(0, 0, fowMiniLayer2.getWidth(), fowMiniLayer2.getHeight());
+//                fowg1 = fowMiniLayer.getGraphics();
+//            }
+//            int myPlayerId = rgi.game.getOwnPlayer().playerId;
+//
+//            /*
+//             *  Hinweis zur Fow-Berechnung.
+//             *
+//             * Leider frisst das herausschneiden der Einheitensichweiten massiv Leistung
+//             * - Teilweise bis zu 80% der Prozessorlaufzeit
+//             * Das Herausstanzen mit Schablonen auf Image-Basis hat leider auch nicht funktioniert
+//             *
+//             * Daher jetzt folgendes:
+//             *
+//             * Schattenberechnung nurnoch 1-2mal pro Sekunde
+//             * Mehrfache durchläufe der unit/und buildingList, jedes Mal nur einen Layer ausschneiden.
+//             * Das ist schneller, als zwischen jedem Aufruf die Farbe und den DrawMode (ALPHA_MAP) zu ändern
+//             * Ja, es ist Pfusch, aber ich hab leider keine bessere Idee.
+//             *
+//             */
+//
+//            if (unitList != null) {
+//                if (!fowDisabled && reCalcFow) {
+//
+//                    fowg1.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
+//                    fowg2.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
+//
+//                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
+//                    // Jetzt Fow-Layer schneiden
+//                    for (int i = 0; i < unitList.size(); i++) {
+//                        Unit unit = unitList.get(i);
+//                        // Nur eigene und sichtbare rendern
+//                        try {
+//                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+//                                if (miniMap != null) {
+//                                    if (!fowDisabled) {
+//                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
+//                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
+//                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
+//                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
+//                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
+////                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
+////                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
+//                                        fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
+//                                    }
+//                                }
+//                            }
+//                        } catch (ArrayIndexOutOfBoundsException ex) {
+//                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
+//                        }
+//                    }
+//                    fowg2.setDrawMode(Graphics.MODE_ALPHA_MAP);
+//                    for (int i = 0; i < unitList.size(); i++) {
+//                        Unit unit = unitList.get(i);
+//                        // Nur eigene und sichtbare rendern
+//                        try {
+//                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+//                                if (miniMap != null) {
+//                                    if (!fowDisabled) {
+//                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
+//                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
+//                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
+//                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
+//                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
+////                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
+////                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
+//                                        fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
+//                                    }
+//                                }
+//                            }
+//                        } catch (ArrayIndexOutOfBoundsException ex) {
+//                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
+//                        }
+//                    }
+//                }
+//            }
+//            if (!fowDisabled && reCalcFow) {
+//                // Gebäude schneiden (fow2)
+//                if (buildingList != null) {
+//
+//                    for (int i = 0; i < buildingList.size(); i++) {
+//                        Building building = buildingList.get(i);
+//                        // Nur eigene & team
+//                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
+//                            // "Loch" in den fow-layer schneiden
+//                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
+//                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
+//                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
+//                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
+//                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
+//                            fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
+//                        }
+//                    }
+//
+//                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
+//
+//                    for (int i = 0; i < buildingList.size(); i++) {
+//                        Building building = buildingList.get(i);
+//                        // Nur eigene & team
+//                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
+//                            // "Loch" in den fow-layer schneiden
+//                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
+//                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
+//                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
+//                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
+//                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
+//                            fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
+//                        }
+//                    }
+//                }
+//                fowg1.flush();
+//                fowg2.flush();
+//            }
+//            if (!fowDisabled) {
+//                // FoW-Layer auf die Minimap
+//                fowMiniLayer2.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
+//                fowMiniLayer.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
+//            }
+//            for (int i = 0; i < unitList.size(); i++) {
+//                Unit unit = unitList.get(i);
+//                // Nur eigene und sichtbare rendern
+//                try {
+//                    if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.getMainPosition().getX()][unit.getMainPosition().getY()] > 1) {
+//                        if (miniMap != null) {
+//                            setColorToPlayer(unit.getPlayerId(), g);
+//                            g.fillRect((int) ((unit.getMainPosition().getX() * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1) - 1, (int) ((unit.getMainPosition().getY() * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.371428) + 2, 3, 3);
+//                        }
+//                    }
+//                } catch (ArrayIndexOutOfBoundsException ex) {
+//                    System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
+//                }
+//            }
+//            // Sichtbaren Bereich anzeigen
+//            g.setColor(Color.lightGray);
+//            g.drawRect((int) ((positionX * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1), (int) ((positionY * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.4), miniMapViewSizeX, miniMapViewSizeY);
+//            int newHash = 0;
+//            try {
+//                newHash = selectedObjects.hashCode();
+//            } catch (ConcurrentModificationException ex) {
+//                System.out.println("Catched: CME in Hud-Hashcode-Check - ignore if rare");
+//            }
+//            if (newHash != lastMenuHash || updateInterHud) {
+//                lastMenuHash = newHash;
+//                // Menü neu berechnen:
+//                updateInterHud = false;
+//                buildInteractiveHud();
+//            }
+//            // Interaktives Hud zeichnen
+//            g.drawImage(interactivehud, hudX, realPixY * 3 / 7);
+//
+//            // Ressourcen & Truppenlimit reinschreiben
+//            g.setColor(Color.black);
+//            g.setFont(fonts[1]);
+//            try {
+//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res1), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.015));
+//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res2), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.015));
+//                g.setColor(epoche > 1 ? Color.black : Color.lightGray);
+//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res3), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.063));
+//                g.setColor(epoche > 2 ? Color.black : Color.lightGray);
+//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res4), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.063));
+//                g.setColor(epoche > 5 ? Color.black : Color.lightGray);
+//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res5), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.11));
+//                g.setColor(Color.black);
+//                g.drawString(rgi.game.getOwnPlayer().currentlimit + "/" + Math.min(rgi.game.getOwnPlayer().maxlimit, 100), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.11));
+//            } catch (NullPointerException ex) {
+//            }
+//
+//        } catch (org.newdawn.slick.SlickException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     private void buildInteractiveHud() {
