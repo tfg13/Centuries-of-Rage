@@ -93,10 +93,7 @@ public class Unit2x2 extends Unit {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public int compareTo(Sprite o) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 
     @Override
     public boolean gotClientBehaviours() {
@@ -176,6 +173,11 @@ public class Unit2x2 extends Unit {
     @Override
     public boolean renderInNullFog() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Position getSortPosition() {
+        return this.getMainPosition();
     }
 
 }

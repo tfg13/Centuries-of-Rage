@@ -1248,4 +1248,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public GOGraphicsData getGraphicsData() {
         return graphicsData;
     }
+
+    @Override
+    public int compareTo(Sprite o) {
+        return this.getSortPosition().compareTo(o.getSortPosition());
+    }
 }

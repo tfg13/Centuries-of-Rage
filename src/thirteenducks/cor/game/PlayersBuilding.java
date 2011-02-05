@@ -111,11 +111,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public int compareTo(Sprite o) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void pause() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -203,6 +198,11 @@ public class PlayersBuilding extends Building {
     @Override
     public boolean renderInNullFog() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Position getSortPosition() {
+        return this.getMainPosition();
     }
 
 }
