@@ -299,6 +299,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
         this.status = GameObject.STATUS_IDLE;
         this.graphicsData = new GOGraphicsData();
+        this.sbehaviours = new ArrayList<ServerBehaviour>();
+        this.cbehaviours = new ArrayList<ClientBehaviour>();
     }
 
     /**
