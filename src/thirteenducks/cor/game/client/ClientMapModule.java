@@ -1066,13 +1066,13 @@ public class ClientMapModule {
 
     public void insertUnitAnimator(int desc, UnitAnimator rgua) {
         // Speichert einen vorkonfigurierten Animator in die DESC-Datenbank ein
-        System.out.println("AddMe: Instert Unit Animator");
+        System.out.println("AddMe: Insert Unit Animator");
         // rgi.game.getOwnPlayer().descUnit.get(desc).anim = rgua;
     }
 
     public void insertBuildingAnimator(int desc, BuildingAnimator rgba) {
         // Speichert eien vorkonfigurierten Animator in die DESC-Datenbank ein
-        System.out.println("AddMe: Instert Building Animator");
+        System.out.println("AddMe: Insert Building Animator");
         // rgi.game.getOwnPlayer().descBuilding.get(desc).anim = rgba;
     }
 
