@@ -66,7 +66,7 @@ public class PlayersBuilding extends Building {
      * @param newNetId Die netId des neuen Gebäudes
      * @param copyFrom Das Gebäude, dessen Parameter kopiert werden sollen
      */
-    public PlayersBuilding(int newNetId, Building copyFrom) {
+    public PlayersBuilding(int newNetId, PlayersBuilding copyFrom) {
         super(newNetId, copyFrom);
     }
 
@@ -87,7 +87,7 @@ public class PlayersBuilding extends Building {
 
     @Override
     public GameObject getCopy(int newNetId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new PlayersBuilding(newNetId, this);
     }
 
     @Override
@@ -107,11 +107,6 @@ public class PlayersBuilding extends Building {
 
     @Override
     public Position[] getVisisbilityPositions() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public int compareTo(Sprite o) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -203,6 +198,11 @@ public class PlayersBuilding extends Building {
     @Override
     public boolean renderInNullFog() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Position getSortPosition() {
+        return this.getMainPosition();
     }
 
 }

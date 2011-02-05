@@ -53,4 +53,12 @@ public interface Sprite extends Comparable<Sprite>, Pauseable {
      * @return alle Positionen, auf denen sich etwas sichbares (wichtiges) diese Objekts befindet.
      */
     public Position[] getVisisbilityPositions();
+
+    /**
+     * Liefert eine Position, anhand derer dieses Sprite mit anderen verglichen werden kann.
+     * Wird benötigt, um die Perspektiven-Reihenfolge ausrechnen zu können.
+     * Bei Quardatischen Objekten sollte das in der Regel die Zuordnungsposition sein.
+     * @return eine Position, anhand derer dieses Sprite mit anderen verglichen werden kann.
+     */
+    public Position getSortPosition();
 }

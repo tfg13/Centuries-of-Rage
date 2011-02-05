@@ -265,4 +265,11 @@ public class GraphicsBullet implements Pauseable, Sprite {
         System.out.println("AddMe: Compare Sprite!");
         return 1;
     }
+
+    @Override
+    public Position getSortPosition() {
+        return sourcePos;
+    }
+
+
 }

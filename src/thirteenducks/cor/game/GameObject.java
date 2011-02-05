@@ -299,6 +299,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
         this.status = GameObject.STATUS_IDLE;
         this.graphicsData = new GOGraphicsData();
+        this.sbehaviours = new ArrayList<ServerBehaviour>();
+        this.cbehaviours = new ArrayList<ClientBehaviour>();
     }
 
     /**
@@ -1245,5 +1247,10 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     public GOGraphicsData getGraphicsData() {
         return graphicsData;
+    }
+
+    @Override
+    public int compareTo(Sprite o) {
+        return this.getSortPosition().compareTo(o.getSortPosition());
     }
 }
