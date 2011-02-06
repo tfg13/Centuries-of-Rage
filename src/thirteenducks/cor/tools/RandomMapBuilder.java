@@ -1170,8 +1170,8 @@ public class RandomMapBuilder {
             param.setZ2(6);
             
             
-            Building tmp = new PlayersBuilding(param);
-            Building Haus = new PlayersBuilding(getNewNetID(), tmp);
+            PlayersBuilding tmp = new PlayersBuilding(param);
+            PlayersBuilding Haus = new PlayersBuilding(getNewNetID(), tmp);
             Haus.getGraphicsData().offsetY = 4;
             Haus.setPlayerId(i);
             Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
@@ -1241,39 +1241,39 @@ public class RandomMapBuilder {
 
         DescParamsUnit workerP = new DescParamsUnit();
         workerP.setDescTypeId(401);
-        Unit worker = new Unit2x2(workerP);
+        Unit2x2 worker = new Unit2x2(workerP);
 
         DescParamsUnit kundschafterP = new DescParamsUnit();
         kundschafterP.setDescTypeId(402);
-        Unit kundschafter = new Unit2x2(kundschafterP);
+        Unit2x2 kundschafter = new Unit2x2(kundschafterP);
 
         for (int i = 0; i < StartG.size(); i++) {	//für jeden Spieler 4 Starteinheiten setzen
 
-            Unit Einheit = new Unit2x2(getNewNetID(), worker);
+            Unit2x2 Einheit = new Unit2x2(getNewNetID(), worker);
             Einheit.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 4, StartG.get(i).getMainPosition().getY() + 6));
             Einheit.setPlayerId(i + 1);
             StartU.add(Einheit);
             RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit Einheit2 = new Unit2x2(getNewNetID(), worker);
+            Unit2x2 Einheit2 = new Unit2x2(getNewNetID(), worker);
             Einheit2.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 5, StartG.get(i).getMainPosition().getY() + 7));
             Einheit2.setPlayerId(i + 1);
             StartU.add(Einheit2);
             RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit Einheit3 = new Unit2x2(getNewNetID(), worker);
+            Unit2x2 Einheit3 = new Unit2x2(getNewNetID(), worker);
             Einheit3.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 6, StartG.get(i).getMainPosition().getY() + 6));
             Einheit3.setPlayerId(i + 1);
             StartU.add(Einheit3);
             RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit Einheit4 = new Unit2x2(getNewNetID(), worker);
+            Unit2x2 Einheit4 = new Unit2x2(getNewNetID(), worker);
             Einheit4.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 3, StartG.get(i).getMainPosition().getY() + 5));
             Einheit4.setPlayerId(i + 1);
             StartU.add(Einheit4);
             RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit Einheit5 = new Unit2x2(getNewNetID(), kundschafter);
+            Unit2x2 Einheit5 = new Unit2x2(getNewNetID(), kundschafter);
             Einheit5.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 8, StartG.get(i).getMainPosition().getY() + 4));
             Einheit5.setPlayerId(i + 1);
             StartU.add(Einheit5);
