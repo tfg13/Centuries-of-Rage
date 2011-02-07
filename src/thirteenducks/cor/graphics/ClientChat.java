@@ -257,7 +257,7 @@ public class ClientChat  extends Overlay {
      * @param chatX X-Koordinate des Chatfensters (das nicht immer gezeinet wird)
      * @param chatY Y-Koordinate des Chatfensters (das nicht immer gezeinet wird)
      */
-    public void renderChat(Graphics g2, int chatX, int chatY) {
+    private void renderChat(Graphics g2, int chatX, int chatY) {
         // Der Chat zeigt immer die letzen paar Zeilen an, egal in welchem Modus.
         // Daher muss erst der eventuell vorhandene Hintergrund gezeichnet werden, und dann der Text
         if (mode == ClientChat.ENTER_MODE) {
@@ -518,7 +518,7 @@ public class ClientChat  extends Overlay {
     }
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, int hudX) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         renderChat(g, 10, (int) (0.65 * fullResY));
     }
 
