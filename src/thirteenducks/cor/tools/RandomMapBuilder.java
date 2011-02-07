@@ -252,7 +252,7 @@ public class RandomMapBuilder {
         }
 
         // Jetzt "Oasen" suchen und einfärben
-        zOasen(Theme);
+        //zOasen(Theme);
 
         // Abschließend nocheinmal die Bodentexturen kopieren.
         // Nachfolgende Änderungen an dem workArray werden nichtmehr berücksichtigt
