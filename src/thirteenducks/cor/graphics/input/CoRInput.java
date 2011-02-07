@@ -167,7 +167,7 @@ public class CoRInput implements Pauseable {
 
             @Override
             public void mousePressed(int button, int x, int y) {
-                if (!graphics.content.pauseMode) {
+            /*    if (!graphics.content.pauseMode) {
                     // Hud, Minimap?
                     if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
                         if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
@@ -175,7 +175,7 @@ public class CoRInput implements Pauseable {
                             graphics.miniMapScrolling = true;
                         }
                     }
-                }
+                } */
             }
 
             @Override
@@ -256,7 +256,7 @@ public class CoRInput implements Pauseable {
                         @Override
                         public void run() {
                             // Im Hud oder im Game-Bereich
-                            if (x > graphics.content.hudX) {
+                         /*   if (x > graphics.content.hudX) {
                                 // Im Hud
                                 // Auf MiniMap?
                                 if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
@@ -288,7 +288,7 @@ public class CoRInput implements Pauseable {
                                     }
                                 }
                                 //TODO - klicks ins hud behandeln
-                            } else {
+                            } else { */
                                 // Rechts, oder Linksklick?
                                 if (button == 0) {
                                     // Normaler Linksklick
@@ -299,7 +299,7 @@ public class CoRInput implements Pauseable {
                                     // Rechts geklickt
                                     // Wird bei MouseReleased angeklickt
                                 }
-                            }
+                           // }
                         }
                     });
 
@@ -313,7 +313,7 @@ public class CoRInput implements Pauseable {
             public void mousePressed(int button, int x, int y) {
                 if (!graphics.content.pauseMode) {
                     // Hud oder Game?
-                    if (x > graphics.content.hudX) {
+                /*    if (x > graphics.content.hudX) {
                         // Hud, Minimap?
                         if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
                             if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
@@ -323,7 +323,7 @@ public class CoRInput implements Pauseable {
                                 }
                             }
                         }
-                    } else {
+                    } else { */
                         // Im Game.
                         // Selektionskästchen ziehen
                         if (button == 0) {
@@ -335,7 +335,7 @@ public class CoRInput implements Pauseable {
                                 graphics.startRightScrolling();
                             }
                         }
-                    }
+                //    }
                 }
             }
 
@@ -374,15 +374,13 @@ public class CoRInput implements Pauseable {
                                     }
                                 } else {
                                     // Kein Rahmen, normaler klick
-                                    if (x < graphics.content.hudX) {
-                                        CoRInput.this.mouseKlickedLeft(button, x, y, 1);
-                                    }
+                                    CoRInput.this.mouseKlickedLeft(button, x, y, 1);
                                 }
                                 // Das auf jeden Fall machen:
                                 stopSelectionBox();
                             }
                             if (button == 1 && !rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200)) {
-                                if (x > graphics.content.hudX) {
+                            /*    if (x > graphics.content.hudX) {
                                     // Auf Minimap?
                                     if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
                                         if (y > (graphics.content.realPixY / 7 * 1.4) && y < graphics.content.realPixY / 7 * 3) {
@@ -390,9 +388,9 @@ public class CoRInput implements Pauseable {
                                             mouseKlickedRightMiniMap(button, x, y);
                                         }
                                     }
-                                } else {
+                                } else { */
                                     mouseKlickedRight(button, x, y);
-                                }
+                              //  }
                             }
                         }
                     });
@@ -732,29 +730,29 @@ public class CoRInput implements Pauseable {
         }
     }
 
-    /**
-     * Wird beim Rechtsklick auf die Minimap aufgerufen
-     * @param e
-     */
-    private void mouseKlickedRightMiniMap(final int button, final int x, final int y) {
-        // Nur bei selektieren Einheiten
-        if (!selected.isEmpty() && selected.get(0).getClass().equals(Unit.class)) {
-            // Alle da hin schicken, immer mit der Zielsuch-Logik
-            // Erstmal grundlegendes Ziel berechnen
-            Dimension selField = rgi.rogGraphics.content.searchMiniMid(x, y);
-            // Auf 2er-Raster anpassen
-            if ((selField.width + selField.height) % 2 == 1) {
-                selField.height--;
-            }
-
-            for (int i = 0; i < selected.size(); i++) {
-                Unit tmpUnit = (Unit) selected.get(i);
-                Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
-                tmpUnit.sendToPosition(target, rgi, true);
-            }
-
-        }
-    }
+//    /**
+//     * Wird beim Rechtsklick auf die Minimap aufgerufen
+//     * @param e
+//     */
+//    private void mouseKlickedRightMiniMap(final int button, final int x, final int y) {
+//        // Nur bei selektieren Einheiten
+//        if (!selected.isEmpty() && selected.get(0).getClass().equals(Unit.class)) {
+//            // Alle da hin schicken, immer mit der Zielsuch-Logik
+//            // Erstmal grundlegendes Ziel berechnen
+//            Dimension selField = rgi.rogGraphics.content.searchMiniMid(x, y);
+//            // Auf 2er-Raster anpassen
+//            if ((selField.width + selField.height) % 2 == 1) {
+//                selField.height--;
+//            }
+//
+//            for (int i = 0; i < selected.size(); i++) {
+//                Unit tmpUnit = (Unit) selected.get(i);
+//                Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
+//                tmpUnit.sendToPosition(target, rgi, true);
+//            }
+//
+//        }
+//    }
 
     /**
      * Wird bei Linksklick aufgerufen. Behandelt an/abwählen von Einheiten, Gebäuden.
