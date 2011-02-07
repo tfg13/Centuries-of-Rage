@@ -1214,21 +1214,21 @@ public class RandomMapBuilder {
 //            RandomRogMap.visMap[x + 5][y + 5].setCollision(collision.blocked);
 //
 //            RandomRogMap.visMap[x - 2][y].setCollision(collision.blocked);
-            Reserviert.add(new Position(x - 2, y));
-//            RandomRogMap.visMap[x + 12][y].setCollision(collision.blocked);
-            Reserviert.add(new Position(x + 12, y));
-            for (int k = -1; k <= 5; k++) {
-//                RandomRogMap.visMap[x + k][y + k + 2].setCollision(collision.blocked);
-                Reserviert.add(new Position(x + k, y + k + 2));
-//                RandomRogMap.visMap[x + k][y - 2 - k].setCollision(collision.blocked);
-                Reserviert.add(new Position(x + k, y - 2 - k));
-            }
-            for (int k = 6; k <= 11; k++) {
-//                RandomRogMap.visMap[x + k][y - k + 12].setCollision(collision.blocked);
-                Reserviert.add(new Position(x + k, y - k + 12));
-//                RandomRogMap.visMap[x + k][k + y - 12].setCollision(collision.blocked);
-                Reserviert.add(new Position(x + k, k + y - 12));
-            }
+//            Reserviert.add(new Position(x - 2, y));
+////            RandomRogMap.visMap[x + 12][y].setCollision(collision.blocked);
+//            Reserviert.add(new Position(x + 12, y));
+//            for (int k = -1; k <= 5; k++) {
+////                RandomRogMap.visMap[x + k][y + k + 2].setCollision(collision.blocked);
+//                Reserviert.add(new Position(x + k, y + k + 2));
+////                RandomRogMap.visMap[x + k][y - 2 - k].setCollision(collision.blocked);
+//                Reserviert.add(new Position(x + k, y - 2 - k));
+//            }
+//            for (int k = 6; k <= 11; k++) {
+////                RandomRogMap.visMap[x + k][y - k + 12].setCollision(collision.blocked);
+//                Reserviert.add(new Position(x + k, y - k + 12));
+////                RandomRogMap.visMap[x + k][k + y - 12].setCollision(collision.blocked);
+//                Reserviert.add(new Position(x + k, k + y - 12));
+//            }
 
 
             StartG.add(Haus); //Startgebäude in Arraylist eintragen
