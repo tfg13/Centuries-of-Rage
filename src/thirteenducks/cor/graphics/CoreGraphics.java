@@ -343,7 +343,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             nolimits = true;
         }
         this.setLoadStatus(5);
-        readAnimations();
+        //readAnimations();
         rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
         this.triggerStatusWaiting();
         // LOAD abgeschlossen, dem Server mitteilen
