@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
@@ -35,7 +36,7 @@ import thirteenducks.cor.map.CoRMapElement.collision;
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
  * Enthält Variablen und Mechanismen, um die aktuelle Position der Einheit auf dem Weg zu bestimmen/speichern
  */
-public class Path implements Pauseable {
+public class Path implements Pauseable, Serializable {
 
     /**
      * Die Position auf der die Bewegung begonnen hat.
