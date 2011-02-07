@@ -107,7 +107,6 @@ public class GraphicsContent extends BasicGame {
     private Image fowMiniLayer;  // FoW der Minimap
     private Image fowMiniLayer2;  // FoW der Minimap
     public int epoche = 2; // Null ist keine Epoche, also kein Gescheites Grundbild..
-    public int hudX; // X-Koordinate vom Hud, damits nicht dauernd neu ausgerechnet werden muss...
     public int hudSizeX; // Hängt vom oberen ab
     private Image miniMap; // Hud-Minimap
     private ClientCore.InnerClient rgi;
@@ -214,7 +213,7 @@ public class GraphicsContent extends BasicGame {
                 //g3 = tempImg.getGraphics();
                 // Alles löschen
                 g.setColor(Color.black);
-                g.fillRect(0, 0, hudX, realPixY);
+                g.fillRect(0, 0, realPixX, realPixY);
 
                 renderBackground();
                 if (beautyDraw) {
@@ -243,9 +242,7 @@ public class GraphicsContent extends BasicGame {
                     if (unitDestMode != 0) {
                         renderUnitDest(g);
                     }
-                    g.setWorldClip(0, 0, hudX, realPixY);
                     //renderGraphicElements(g);
-                    g.clearWorldClip();
 
                 }
 
@@ -297,7 +294,7 @@ public class GraphicsContent extends BasicGame {
                     if (gameDone == 3) {
                         // DEFEATED einblenden - ne Weile groß in der Mitte, dann kleiner - man kann nämlich noch spec sein
                         if (System.currentTimeMillis() - endTime < 5000) {
-                            g.drawImage(hudX >= 800 ? imgMap.get("img/game/finish_defeat_spec.png").getImage() : imgMap.get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(hudX, (int) ((1.0 * hudX / 800) * 600)), hudX >= 800 ? (hudX / 2) - 400 : 0, hudX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * hudX / 800) * 600)) / 2);
+                            g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_spec.png").getImage() : imgMap.get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                         } else {
                             g.setColor(Color.black);
                             g.setFont(fonts[5]);
@@ -305,10 +302,10 @@ public class GraphicsContent extends BasicGame {
                         }
                     } else if (gameDone == 2) {
                         // DEFEATED einblenden - bis der Spieler das Spiel beendet
-                        g.drawImage(hudX >= 800 ? imgMap.get("img/game/finish_defeat_gameover.png").getImage() : imgMap.get("img/game/finish_defeat_gameover.png").getImage().getScaledCopy(hudX, (int) ((1.0 * hudX / 800) * 600)), hudX >= 800 ? (hudX / 2) - 400 : 0, hudX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * hudX / 800) * 600)) / 2);
+                        g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_gameover.png").getImage() : imgMap.get("img/game/finish_defeat_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     } else if (gameDone == 1) {
                         // VICTORY
-                        g.drawImage(hudX >= 800 ? imgMap.get("img/game/finish_victory_gameover.png").getImage() : imgMap.get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(hudX, (int) ((1.0 * hudX / 800) * 600)), hudX >= 800 ? (hudX / 2) - 400 : 0, hudX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * hudX / 800) * 600)) / 2);
+                        g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_victory_gameover.png").getImage() : imgMap.get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     }
                 }
 
@@ -367,7 +364,7 @@ public class GraphicsContent extends BasicGame {
         // Zeichnet alle Overlays.
         for (int i = 0; i < overlays.size(); i++) {
             try {
-                overlays.get(i).renderOverlay(g2, realPixX, realPixY, hudX);
+                overlays.get(i).renderOverlay(g2, realPixX, realPixY);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -868,7 +865,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderMouseHover(Graphics g2) {
-        // Muss überhaupt was gezeichnet werden?
+      /*  // Muss überhaupt was gezeichnet werden?
         if (mouseX > hudX && rgi.rogGraphics.clickedInOpt(mouseX, mouseY)) {
             // Zugehörige Ability finden:
             Ability ability = this.searchOptFast();
@@ -1324,7 +1321,7 @@ public class GraphicsContent extends BasicGame {
                 }
             }
         }
-
+*/
     }
 
     /**
@@ -2118,7 +2115,7 @@ public class GraphicsContent extends BasicGame {
             // Neu berechnen:
             try {
                 if (renderBackground == null) {
-                    renderBackground = new Image(hudX, realPixY);
+                    renderBackground = new Image(realPixX, realPixY);
                 }
                 Graphics g3 = renderBackground.getGraphics();
                 rBvX = positionX;
@@ -2428,15 +2425,8 @@ public class GraphicsContent extends BasicGame {
 
     public void setVisibleArea(int vX, int vY) {
         //Setzt die Größe des sichtbaren Bereichs
-        double hudxxrelation = (realPixX - (realPixY / 2.5)) / realPixX;
-        if (byPass) {
-            viewX = (int) (vX * hudxxrelation); // Hud hat feste Größe
-        } else {
-            viewX = vX;
-        }
+        viewX = vX;
         viewY = vY;
-        hudX = (int) (realPixX * hudxxrelation) + 1; // Erster Pixel vom Hud.
-        hudSizeX = realPixX - hudX + 1;
         if (modi != 3) { // Im echten Rendern refreshed die Mainloop
             repaint();
         }
@@ -2734,7 +2724,7 @@ public class GraphicsContent extends BasicGame {
         return new Position(coordX, coordY);
     }
 
-    public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
+ /*   public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
         // Koordinaten finden
         Dimension tempD = searchMiniMid(x, y);
         // Sicht auf Mitte davon setzen
@@ -2746,7 +2736,7 @@ public class GraphicsContent extends BasicGame {
         Dimension tempD = searchMiniMid(x, y);
         // Sicht auf Mitte davon setzen
         rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
-    }
+    } */
 
     public int getModi() {
         // liefert den aktuellen renderModus zurück
@@ -2839,11 +2829,11 @@ public class GraphicsContent extends BasicGame {
          * */
     }
 
-    public Dimension searchMiniMid(int cX, int cY) {
+  /*  public Dimension searchMiniMid(int cX, int cY) {
         // Sucht die Koordinaten eines Klicks auf die Minimap, also die Koordinaten des Feldes in der Mitte der Scollbox
         // Input muss auf Minimap gefiltert sein, sonst kommt nur Müll raus
         return new Dimension((int) (((cX - (hudX + hudSizeX * 0.1)) / (hudSizeX * 0.8)) * sizeX), (int) (((cY - realPixY / 7 * 1.4) / (realPixY / 7 * 2 * 0.8)) * sizeY));
-    }
+    }*/
 
     public void startDebugMode() {
         modi = 4;
