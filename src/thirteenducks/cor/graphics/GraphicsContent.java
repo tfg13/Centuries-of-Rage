@@ -77,7 +77,7 @@ public class GraphicsContent extends BasicGame {
     int backupViewY;
     public int realPixX; // Echte, ganze X-Pixel
     public int realPixY; // Echte, ganze Y-Pixel
-    public HashMap<String, GraphicsImage> imgMap; // Enthält alle Bilder
+    private HashMap<String, GraphicsImage> imgMap; // Enthält alle Bilder
     public HashMap<String, GraphicsImage> coloredImgMap;
     Image renderBackground = null; // Bodentextur, nur Bild-Auflösung
     int rBvX; // Position während der letzen Bildberechnung
@@ -187,13 +187,6 @@ public class GraphicsContent extends BasicGame {
         if (modi == -1) {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
-        } else if (modi == 0) {
-            // Gar nix rendern
-        } else if (modi == 1) {
-            // Bestimmted Bild (defaultimage) rendern
-            g.drawImage(defaultimage.getImage(), 0, 0);
-        } else if (modi == 2) {
-            // Editor Mode. Done by GraphicsComponent&Java2D
         } else if (modi == 3) {
             try {
                 if (pauseMode) {
@@ -212,7 +205,7 @@ public class GraphicsContent extends BasicGame {
                 }
                 //g3 = tempImg.getGraphics();
                 // Alles löschen
-                g.setColor(Color.black);
+                g.setColor(Color.white);
                 g.fillRect(0, 0, realPixX, realPixY);
 
                 renderBackground();
@@ -314,22 +307,12 @@ public class GraphicsContent extends BasicGame {
                     renderLoadScreen(g);
                 }
 
-
-                //g.drawImage(tempImg, 0, 0);
-                // Fertig, Volatiles prüfen
-                /*if (!saveMode) {
-                checkVolatile();
-                } */
-
             } catch (Exception ex) {
                 System.out.println("Error while rendering frame, dropping.");
                 ex.printStackTrace();
             }
             // Pause zurücksetzten
             pause = 0;
-        } else if (modi == 4) {
-            // Debug-zeichnen
-            paint_debug(g);
         }
     }
 
@@ -2084,11 +2067,6 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    private void paint_debug(Graphics g2) {
-        System.out.println("Printing Debug-Tree to 0,0");
-        g2.drawImage(imgMap.get("img/fix/testtree1.png").getImage(), 0, 0);
-    }
-
     private void renderBackground() {
         /*if (modi != 3) {
         g2.drawImage(renderBackground, 0, 0);
@@ -2120,11 +2098,11 @@ public class GraphicsContent extends BasicGame {
                 Graphics g3 = renderBackground.getGraphics();
                 rBvX = positionX;
                 rBvY = positionY;
-                g3.setColor(Color.black);
+                g3.setColor(Color.white);
                 g3.fillRect(0, 0, renderBackground.getWidth(), renderBackground.getHeight());
 
-                for (int x = -1; x < sizeX && x < (viewX + 1); x++) {
-                    for (int y = -2; y < sizeY && y < (viewY + 1); y++) {
+                for (int x = -2; x < sizeX && x < (viewX + 1); x+=1) {
+                    for (int y = -2; y < sizeY && y < (viewY + 1); y+=1) {
                         if ((x + y) % 2 == 1) {
                             continue;
                         }
@@ -2144,7 +2122,7 @@ public class GraphicsContent extends BasicGame {
                             GraphicsImage tempImage = imgMap.get(ground);
 
                             if (tempImage != null) {
-                                g3.drawImage(tempImage.getImage(), x * 10, (float) (y * 7.5));
+                                g3.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5));
                             } else {
                                 System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
                             }
@@ -2153,7 +2131,7 @@ public class GraphicsContent extends BasicGame {
                                 GraphicsImage fixImage = imgMap.get(fix);
 
                                 if (fixImage != null) {
-                                    g3.drawImage(fixImage.getImage(), x * 10, (float) (y * 7.5));
+                                    g3.drawImage(fixImage.getImage(), x * 10, (int) (y * 7.5));
                                 } else {
                                     System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
                                 }
@@ -2192,7 +2170,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 10, (float) (y * 7.5));
+                        colModeImage.getImage().draw(x * 10, (int) (y * 7.5));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -2205,7 +2183,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 10, (float) (y * 7.5));
+                        colModeImage.getImage().draw(x * 10, (int) (y * 7.5));
                     }
                 } catch (Exception ex) {
                 }
@@ -2228,7 +2206,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (float) (y * 7.5));
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (int) (y * 7.5));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -2241,7 +2219,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (float) (y * 7.5));
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (int) (y * 7.5));
                     }
                 } catch (Exception ex) {
                 }
@@ -2261,12 +2239,12 @@ public class GraphicsContent extends BasicGame {
         // Rendert die rote Kollisionsfarbe
         for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (float) (y * 7.5) + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (int) (y * 7.5) + 20);
             }
         }
         for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
             for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (float) (y * 7.5) + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (int) (y * 7.5) + 20);
             }
         }
     }
@@ -2747,18 +2725,18 @@ public class GraphicsContent extends BasicGame {
         for (int i = 0; i < wayPath.size(); i++) {
             // Liste durchgehen
             // rendern
-            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 10, (float) ((wayPath.get(i).getY() - positionY) * 7.5));
+            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 10, (int) ((wayPath.get(i).getY() - positionY) * 7.5));
 
         }
         if (wayOpenList != null) {
             for (int o = 0; o < wayOpenList.size(); o++) {
                 Position pos = (Position) wayOpenList.remove();
-                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 10, (float) ((pos.getY() - positionY) * 7.5));
+                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 10, (int) ((pos.getY() - positionY) * 7.5));
             }
         }
         if (wayClosedList != null) {
             for (int u = 0; u < wayClosedList.size(); u++) {
-                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 10, (float) ((wayClosedList.get(u).getY() - positionY) * 7.5));
+                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 10, (int) ((wayClosedList.get(u).getY() - positionY) * 7.5));
             }
         }
     }
@@ -2805,7 +2783,7 @@ public class GraphicsContent extends BasicGame {
                     for (int z1 = 0; z1 < building.getZ1(); z1++) {
                         for (int z2 = 0; z2 < building.getZ2(); z2++) {
                             // Hierhin das Bildchen zeichnen
-                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 10 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 7.5 * maxminscaleY));
+                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 20 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 15 * maxminscaleY));
                         }
                     }
                 }

@@ -55,7 +55,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public GraphicsContent content;
     Dimension displaySize;
     // RogGraphicsComponent content;
-    HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
+    private HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
     HashMap imgInput;
     int imgInputNumber = 0;
     List<Unit> unitList; //Alle Einheiten
