@@ -181,7 +181,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.byPass = true;
         content.realPixX = displaySize.width;
         content.realPixY = displaySize.height;
-        content.setVisibleArea((displaySize.width / 20), (displaySize.height / 15));
+        content.setVisibleArea((displaySize.width / 10), (int) (displaySize.height / 7.5));
         content.modi = -1;
     }
 
@@ -1427,8 +1427,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.epoche = 1;
 
         // Jetzt ist die Größe gesetzt, scalefaktor fürs Hud bestimmen und Bildchen skalieren lassen
-        double scalefactorX = (content.hudSizeX * 0.8) / (content.sizeX * 20);
-        double scalefactorY = (content.realPixY / 7 * 2 * 0.8) / (content.sizeY * 15);
+        double scalefactorX = (content.hudSizeX * 0.8) / (content.sizeX * 10);
+        double scalefactorY = (content.realPixY / 7 * 2 * 0.8) / (content.sizeY * 7.5);
         content.preCalcMiniMapElements(scalefactorX, scalefactorY);
 
         rgi.logger("[Graphics]: Calcing selection markers...");
