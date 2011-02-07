@@ -711,54 +711,54 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderFogOfWar(Graphics g) {
-        // Rendert den Fog of War. Liest ihn dazu einfach aus der fowmap aus.
-        // Das Festlegen der fog-Map wird anderswo erledigt...
-        // Murks, aber die position müssen gerade sein...
-        if (positionX % 2 == 1) {
-            positionX--;
-        }
-        if (positionY % 2 == 1) {
-            positionY--;
-        }
-        for (int x = 0; x < (sizeX) && x < (viewX); x = x + 2) {
-            for (int y = 0; y < (sizeY) && y < (viewY + 2); y = y + 2) {
-                // Ist hier Schatten?
-                try {
-                    byte fow = fowmap[x + positionX][y + positionY - 2];
-                    if (fow < 2) {
-                        if (fow == 0) {
-                            g.setColor(Color.black);
-                        } else {
-                            g.setColor(fowGray);
-                        }
-                        //g.fill(fowShape);
-                        g.fillRect(x * 20, (y - 2) * 15 + 10, 40, 30);
-                    }
-                } catch (ArrayIndexOutOfBoundsException ar) {
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        for (int x = 1; x < (sizeX) && x < (viewX + 4); x = x + 2) {
-            for (int y = 1; y < (sizeY) && y < (viewY + 2); y = y + 2) {
-                // Ist hier Schatten?
-                try {
-                    byte fow = fowmap[x + positionX - 2][y + positionY - 2];
-                    if (fow < 2) {
-                        if (fow == 0) {
-                            g.setColor(Color.black);
-                        } else {
-                            g.setColor(fowGray);
-                        }
-                        g.fillRect((x - 2) * 20, (y - 2) * 15 + 10, 40, 30);
-                    }
-                } catch (ArrayIndexOutOfBoundsException ar) {
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+//        // Rendert den Fog of War. Liest ihn dazu einfach aus der fowmap aus.
+//        // Das Festlegen der fog-Map wird anderswo erledigt...
+//        // Murks, aber die position müssen gerade sein...
+//        if (positionX % 2 == 1) {
+//            positionX--;
+//        }
+//        if (positionY % 2 == 1) {
+//            positionY--;
+//        }
+//        for (int x = 0; x < (sizeX) && x < (viewX); x = x + 2) {
+//            for (int y = 0; y < (sizeY) && y < (viewY + 2); y = y + 2) {
+//                // Ist hier Schatten?
+//                try {
+//                    byte fow = fowmap[x + positionX][y + positionY - 2];
+//                    if (fow < 2) {
+//                        if (fow == 0) {
+//                            g.setColor(Color.black);
+//                        } else {
+//                            g.setColor(fowGray);
+//                        }
+//                        //g.fill(fowShape);
+//                        g.fillRect(x * 20, (y - 2) * 15 + 10, 40, 30);
+//                    }
+//                } catch (ArrayIndexOutOfBoundsException ar) {
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
+//        for (int x = 1; x < (sizeX) && x < (viewX + 4); x = x + 2) {
+//            for (int y = 1; y < (sizeY) && y < (viewY + 2); y = y + 2) {
+//                // Ist hier Schatten?
+//                try {
+//                    byte fow = fowmap[x + positionX - 2][y + positionY - 2];
+//                    if (fow < 2) {
+//                        if (fow == 0) {
+//                            g.setColor(Color.black);
+//                        } else {
+//                            g.setColor(fowGray);
+//                        }
+//                        g.fillRect((x - 2) * 20, (y - 2) * 15 + 10, 40, 30);
+//                    }
+//                } catch (ArrayIndexOutOfBoundsException ar) {
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     private void renderPause(Graphics g2) {
@@ -2080,7 +2080,7 @@ public class GraphicsContent extends BasicGame {
         if (renderPicCursor) {
             // Pic-Cursor
             // Einfach Bild an die gerasterte Cursorposition rendern.
-            renderPic.getImage().draw(framePos.width * 20, framePos.height * 15);
+            renderPic.getImage().draw(framePos.width * 10, (int) (framePos.height * 7.5));
         }
     }
 
@@ -2144,7 +2144,7 @@ public class GraphicsContent extends BasicGame {
                             GraphicsImage tempImage = imgMap.get(ground);
 
                             if (tempImage != null) {
-                                g3.drawImage(tempImage.getImage(), x * 20, y * 15);
+                                g3.drawImage(tempImage.getImage(), x * 10, (float) (y * 7.5));
                             } else {
                                 System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
                             }
@@ -2153,7 +2153,7 @@ public class GraphicsContent extends BasicGame {
                                 GraphicsImage fixImage = imgMap.get(fix);
 
                                 if (fixImage != null) {
-                                    g3.drawImage(fixImage.getImage(), x * 20, y * 15);
+                                    g3.drawImage(fixImage.getImage(), x * 10, (float) (y * 7.5));
                                 } else {
                                     System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
                                 }
@@ -2192,7 +2192,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 20, y * 15);
+                        colModeImage.getImage().draw(x * 10, (float) (y * 7.5));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -2205,7 +2205,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 20, y * 15);
+                        colModeImage.getImage().draw(x * 10, (float) (y * 7.5));
                     }
                 } catch (Exception ex) {
                 }
@@ -2228,7 +2228,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 20, y * 15);
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (float) (y * 7.5));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -2241,7 +2241,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 20, y * 15);
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (float) (y * 7.5));
                     }
                 } catch (Exception ex) {
                 }
@@ -2261,12 +2261,12 @@ public class GraphicsContent extends BasicGame {
         // Rendert die rote Kollisionsfarbe
         for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 20 + 10, y * 15 + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (float) (y * 7.5) + 20);
             }
         }
         for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
             for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 20 + 10, y * 15 + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (float) (y * 7.5) + 20);
             }
         }
     }
@@ -2325,7 +2325,7 @@ public class GraphicsContent extends BasicGame {
             return new Dimension(defaultimage.getImage().getWidth(), defaultimage.getImage().getHeight()); // Größe vom Bild
         } else if (modi == 2) {
             // return new Dimension(12000,12000); // Nur ein TEST
-            return new Dimension(sizeX * 20, (sizeY * 15) + 10); // Echtes rendern
+            return new Dimension(sizeX * 10, (int) ((sizeY * 7.5) + 10)); // Echtes rendern
         } else { // Modi == 0;
             return new Dimension(100, 100); // Einfach irgendwas
         }
@@ -2673,8 +2673,8 @@ public class GraphicsContent extends BasicGame {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 20;
-        int coordY = selY / 15;
+        int coordX = selX / 10;
+        int coordY = (int) (selY / 7.5);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
@@ -2694,8 +2694,8 @@ public class GraphicsContent extends BasicGame {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 20;
-        int coordY = selY / 15;
+        int coordX = selX / 10;
+        int coordY = (int) (selY / 7.5);
         // Scrollposition addieren
         boolean xg = (coordX % 2 == 0);
         boolean yg = (coordY % 2 == 0);
@@ -2710,8 +2710,8 @@ public class GraphicsContent extends BasicGame {
         // Versatz beachten
         x = x - 10;
         y = y - 15;
-        int coordX = x / 20;
-        int coordY = y / 15;
+        int coordX = x / 10;
+        int coordY = (int) (y / 7.5);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
@@ -2747,18 +2747,18 @@ public class GraphicsContent extends BasicGame {
         for (int i = 0; i < wayPath.size(); i++) {
             // Liste durchgehen
             // rendern
-            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 20, (wayPath.get(i).getY() - positionY) * 15);
+            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 10, (float) ((wayPath.get(i).getY() - positionY) * 7.5));
 
         }
         if (wayOpenList != null) {
             for (int o = 0; o < wayOpenList.size(); o++) {
                 Position pos = (Position) wayOpenList.remove();
-                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 20, (pos.getY() - positionY) * 15);
+                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 10, (float) ((pos.getY() - positionY) * 7.5));
             }
         }
         if (wayClosedList != null) {
             for (int u = 0; u < wayClosedList.size(); u++) {
-                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 20, (wayClosedList.get(u).getY() - positionY) * 15);
+                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 10, (float) ((wayClosedList.get(u).getY() - positionY) * 7.5));
             }
         }
     }
@@ -2805,7 +2805,7 @@ public class GraphicsContent extends BasicGame {
                     for (int z1 = 0; z1 < building.getZ1(); z1++) {
                         for (int z2 = 0; z2 < building.getZ2(); z2++) {
                             // Hierhin das Bildchen zeichnen
-                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 20 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 15 * maxminscaleY));
+                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 10 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 7.5 * maxminscaleY));
                         }
                     }
                 }
@@ -2951,31 +2951,31 @@ public class GraphicsContent extends BasicGame {
      * @param b
      */
     public void cutDieingBuildingSight(Building b) {
-        // Mitte berechnen
-        int x = (int) (b.getMainPosition().getX() + ((b.getZ1() + b.getZ2() - 2) * 1.0 / 2));
-        int y = b.getMainPosition().getY();
-        // Diese Position als Startfeld überhaupt zulässig?
-        if (((int) x + (int) y) % 2 == 1) {
-            y++;
-        }
-        // Dieses Feld selber auch ausschneiden
-        fowmap[x][y] = 3;
-        // Schablone holen
-        boolean[][] pattern = fowpatmgr.getPattern(b.getVisrange() + ((b.getZ1() + b.getZ2()) / 4));
-        // Schablone anwenden
-        int sx = x - 40;
-        int sy = y - 40;
-        for (int x2 = 0; x2 < 80; x2++) {
-            for (int y2 = 0; y2 < 80; y2++) {
-                if (pattern[x2][y2]) {
-                    try {
-                        fowmap[sx + x2][sy + y2] = 3;
-                    } catch (ArrayIndexOutOfBoundsException ex) {
-                        // Nix tun, ein Kreis kann ja den Maprand schneiden, da gibts natürlich dann kein FoW-Raster...
-                    }
-                }
-            }
-        }
+//        // Mitte berechnen
+//        int x = (int) (b.getMainPosition().getX() + ((b.getZ1() + b.getZ2() - 2) * 1.0 / 2));
+//        int y = b.getMainPosition().getY();
+//        // Diese Position als Startfeld überhaupt zulässig?
+//        if (((int) x + (int) y) % 2 == 1) {
+//            y++;
+//        }
+//        // Dieses Feld selber auch ausschneiden
+//        fowmap[x][y] = 3;
+//        // Schablone holen
+//        boolean[][] pattern = fowpatmgr.getPattern(b.getVisrange() + ((b.getZ1() + b.getZ2()) / 4));
+//        // Schablone anwenden
+//        int sx = x - 40;
+//        int sy = y - 40;
+//        for (int x2 = 0; x2 < 80; x2++) {
+//            for (int y2 = 0; y2 < 80; y2++) {
+//                if (pattern[x2][y2]) {
+//                    try {
+//                        fowmap[sx + x2][sy + y2] = 3;
+//                    } catch (ArrayIndexOutOfBoundsException ex) {
+//                        // Nix tun, ein Kreis kann ja den Maprand schneiden, da gibts natürlich dann kein FoW-Raster...
+//                    }
+//                }
+//            }
+//        }
     }
 
     private void cutSight(Unit unit) {
@@ -2998,18 +2998,18 @@ public class GraphicsContent extends BasicGame {
      * @param building Für Gebäude (true) oder Einheit (false)
      */
     public void cutCircleFast(int range, Position origin, boolean building) {
-        // Schablone holen
-        boolean[][] pattern = fowpatmgr.getPattern(range);
-        // Schablone anwenden
-        int sx = origin.getX() - 40;
-        int sy = origin.getY() - 40;
-        for (int x = 0; x < 80; x++) {
-            for (int y = 0; y < 80; y++) {
-                if (pattern[x][y]) {
-                    directCut(sx + x, sy + y, !building);
-                }
-            }
-        }
+//        // Schablone holen
+//        boolean[][] pattern = fowpatmgr.getPattern(range);
+//        // Schablone anwenden
+//        int sx = origin.getX() - 40;
+//        int sy = origin.getY() - 40;
+//        for (int x = 0; x < 80; x++) {
+//            for (int y = 0; y < 80; y++) {
+//                if (pattern[x][y]) {
+//                    directCut(sx + x, sy + y, !building);
+//                }
+//            }
+//        }
     }
 
     private void directCut(int X, int Y, boolean checkUp) {
@@ -3106,25 +3106,25 @@ public class GraphicsContent extends BasicGame {
     }
 
     public void preCalcMiniMapElements(double scalefactorX, double scalefactorY) {
-        // Alle Bilder gemäß des Scale-Faktors skalieren und einfügen
-        // Scalefacor = MiniMap-Auflösung / Volle Hudgroundauflösung
-        // Größe der Bilder errechnen:
-        try {
-            int tarX = (int) (40 * scalefactorX);
-            int tarY = (int) (40 * scalefactorY);
-            // Bilder anlegen & gleich reinrendern
-            Image nimg = new Image(tarX + 1, tarY + 1);
-            Graphics g = nimg.getGraphics();
-            g.drawImage(coloredImgMap.get("img/game/ground.png").getImage(), 0, 0, nimg.getWidth(), nimg.getHeight(), 0, 0, 40, 40);
-            GraphicsImage timg = new GraphicsImage(nimg);
-            timg.setImageName("img/game/ground.png");
-            coloredImgMap.put("img/game/ground.png", timg);
-            maxminscaleX = scalefactorX;
-            maxminscaleY = scalefactorY;
-            // Fertig
-        } catch (org.newdawn.slick.SlickException ex) {
-            ex.printStackTrace();
-        }
+//        // Alle Bilder gemäß des Scale-Faktors skalieren und einfügen
+//        // Scalefacor = MiniMap-Auflösung / Volle Hudgroundauflösung
+//        // Größe der Bilder errechnen:
+//        try {
+//            int tarX = (int) (40 * scalefactorX);
+//            int tarY = (int) (40 * scalefactorY);
+//            // Bilder anlegen & gleich reinrendern
+//            Image nimg = new Image(tarX + 1, tarY + 1);
+//            Graphics g = nimg.getGraphics();
+//            g.drawImage(coloredImgMap.get("img/game/ground.png").getImage(), 0, 0, nimg.getWidth(), nimg.getHeight(), 0, 0, 40, 40);
+//            GraphicsImage timg = new GraphicsImage(nimg);
+//            timg.setImageName("img/game/ground.png");
+//            coloredImgMap.put("img/game/ground.png", timg);
+//            maxminscaleX = scalefactorX;
+//            maxminscaleY = scalefactorY;
+//            // Fertig
+//        } catch (org.newdawn.slick.SlickException ex) {
+//            ex.printStackTrace();
+//        }
     }
 
     public void calcOptClicked(final int button, final int x, final int y, final int clickCount, ArrayList<GameObject> list) {
