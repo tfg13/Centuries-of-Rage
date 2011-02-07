@@ -61,18 +61,19 @@ public class AbilityBuild extends Ability {
             @Override
             public void mouseMoved(int oldx, int oldy, int newx, int newy) {
                 // Wenn im Hud, dann normale Maus, sonst rendercursor
-                if (newx > rgi.rogGraphics.content.hudX) {
+           /*     if (newx > rgi.rogGraphics.content.hudX) {
                     if (rgi.rogGraphics.content.renderPicCursor) {
                         rgi.rogGraphics.content.setCursor(false);
                         rgi.rogGraphics.content.renderPicCursor = false;
                     }
-                } else {
+                } else { */
                     if (!rgi.rogGraphics.content.renderPicCursor) {
                         rgi.rogGraphics.content.renderPicCursor = true;
                         rgi.rogGraphics.content.setCursor(true);
                     }
                     rgi.rogGraphics.content.setFramePosition(rgi.rogGraphics.content.getSpecialSelectedField(newx, newy));
-                }
+               // }
+                    System.out.println("AddMe: Auto-Hide cursor on overlays!");
             }
 
             @Override
@@ -80,7 +81,7 @@ public class AbilityBuild extends Ability {
                 // Rechtsklick?
                 if (button == 0) {
                     // Ist der Cursor innerhalb der Game-Area?
-                    if (x < rgi.rogGraphics.content.hudX) {
+                //    if (x < rgi.rogGraphics.content.hudX) {
                         // Welches Gebäude soll geholt werden:
                         Building building = rgi.mapModule.getDescBuilding(descTypeId, -1, rgi.game.getOwnPlayer().playerId);
                         // Ok, User will bauen, checken ob er das darf:
@@ -148,7 +149,7 @@ public class AbilityBuild extends Ability {
                                 System.out.println("FixMe: Error, can't build building, is was not found.");
                             }
                         }
-                    }
+                   // }
                 } else {
                     // Abbrechen
                     rgi.rogGraphics.inputM.removeSpecialMode();
