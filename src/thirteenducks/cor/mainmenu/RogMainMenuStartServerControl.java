@@ -64,7 +64,6 @@ public class RogMainMenuStartServerControl extends javax.swing.JPanel implements
             public boolean accept(File dir, String name) {
                 return name.endsWith(".map") || name.endsWith(".MAP");
             }
-
         });
 
         for (int i = 0; i < maps.length; i++) {
@@ -182,9 +181,11 @@ public class RogMainMenuStartServerControl extends javax.swing.JPanel implements
         if ((new File(mapdatei)).exists()) {
             Image img = MapIO.loadPreview(mapdatei);
             // Bissle skalieren:
-            img = img.getScaledInstance(209, 155, Image.SCALE_FAST);
-            ImageIcon icon = new ImageIcon(img);
-            this.jLabel4.setIcon(icon);
+            if (img != null) {
+                img = img.getScaledInstance(209, 155, Image.SCALE_FAST);
+                ImageIcon icon = new ImageIcon(img);
+                this.jLabel4.setIcon(icon);
+            }
         } else {
             ImageIcon icon = new ImageIcon("img/map/default.png");
             this.jLabel4.setIcon(icon);
