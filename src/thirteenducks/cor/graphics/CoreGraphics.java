@@ -1358,37 +1358,37 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.gameDone = 2;
     }
 
-    public boolean clickedInSel(final int button, final int x, final int y, int clickCount) {
-        // Überprüft, ob ein Aufruf in die Einheiten-Selektions-Zone fiel
-        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-            if (y > (content.realPixY * 3 / 7 + content.realPixY * 2 / 7 * 0.2) && y < (content.realPixY * 5 / 7)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean clickedInOpt(int x, int y) {
-        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
-        // Auf Geschwindigkeit optimiert
-        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-            if (y > (content.realPixY * 0.742714) && y < (content.realPixY * 0.9712857)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean clickedInOpt(final int button, final int x, final int y, final int clickCount) {
-        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
-        // Auf Geschwindigkeit optimiert
-        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-            if (y > (content.realPixY * 0.1248285) && y < (content.realPixY * 0.9712857)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean clickedInSel(final int button, final int x, final int y, int clickCount) {
+//        // Überprüft, ob ein Aufruf in die Einheiten-Selektions-Zone fiel
+//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+//            if (y > (content.realPixY * 3 / 7 + content.realPixY * 2 / 7 * 0.2) && y < (content.realPixY * 5 / 7)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public boolean clickedInOpt(int x, int y) {
+//        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+//        // Auf Geschwindigkeit optimiert
+//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+//            if (y > (content.realPixY * 0.742714) && y < (content.realPixY * 0.9712857)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public boolean clickedInOpt(final int button, final int x, final int y, final int clickCount) {
+//        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+//        // Auf Geschwindigkeit optimiert
+//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+//            if (y > (content.realPixY * 0.1248285) && y < (content.realPixY * 0.9712857)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     /*
      * Fügt ein Bullet zur Grafikengine hinzu.
@@ -1775,10 +1775,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         if (!seenPause) {
             content.paintComponent(g);
         }
-        if (miniMapScrolling) {
-            // Wie klick auf MiniMap behandeln
-            content.klickedOnMiniMap(content.mouseX, content.mouseY);
-        }
+//        if (miniMapScrolling) {
+//            // Wie klick auf MiniMap behandeln
+//            content.klickedOnMiniMap(content.mouseX, content.mouseY);
+//        }
         // Eventuell neue Bullets adden:
         manageBullets();
         if (!this.rightScrolling) {
