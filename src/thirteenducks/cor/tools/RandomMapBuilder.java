@@ -1176,57 +1176,57 @@ public class RandomMapBuilder {
             Haus.setPlayerId(i);
             Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
             Haus.setMainPosition(new Position(x, y));
-            RandomRogMap.visMap[x + 5][y - 5].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 4][y - 4].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 6][y - 4].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 3][y - 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 5][y - 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 7][y - 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 2][y - 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 4][y - 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 6][y - 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 8][y - 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 1][y - 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 3][y - 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 5][y - 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 7][y - 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 9][y - 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 2][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 4][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 6][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 8][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 10][y].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 1][y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 3][y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 5][y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 7][y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 9][y + 1].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 2][y + 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 4][y + 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 6][y + 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 8][y + 2].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 3][y + 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 5][y + 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 7][y + 3].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 4][y + 4].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 6][y + 4].setCollision(collision.blocked);
-            RandomRogMap.visMap[x + 5][y + 5].setCollision(collision.blocked);
-
-            RandomRogMap.visMap[x - 2][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y - 5].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 4][y - 4].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 6][y - 4].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 3][y - 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y - 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 7][y - 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 2][y - 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 4][y - 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 6][y - 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 8][y - 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 1][y - 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 3][y - 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y - 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 7][y - 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 9][y - 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 2][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 4][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 6][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 8][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 10][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 1][y + 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 3][y + 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y + 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 7][y + 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 9][y + 1].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 2][y + 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 4][y + 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 6][y + 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 8][y + 2].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 3][y + 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y + 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 7][y + 3].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 4][y + 4].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 6][y + 4].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 5][y + 5].setCollision(collision.blocked);
+//
+//            RandomRogMap.visMap[x - 2][y].setCollision(collision.blocked);
             Reserviert.add(new Position(x - 2, y));
-            RandomRogMap.visMap[x + 12][y].setCollision(collision.blocked);
+//            RandomRogMap.visMap[x + 12][y].setCollision(collision.blocked);
             Reserviert.add(new Position(x + 12, y));
             for (int k = -1; k <= 5; k++) {
-                RandomRogMap.visMap[x + k][y + k + 2].setCollision(collision.blocked);
+//                RandomRogMap.visMap[x + k][y + k + 2].setCollision(collision.blocked);
                 Reserviert.add(new Position(x + k, y + k + 2));
-                RandomRogMap.visMap[x + k][y - 2 - k].setCollision(collision.blocked);
+//                RandomRogMap.visMap[x + k][y - 2 - k].setCollision(collision.blocked);
                 Reserviert.add(new Position(x + k, y - 2 - k));
             }
             for (int k = 6; k <= 11; k++) {
-                RandomRogMap.visMap[x + k][y - k + 12].setCollision(collision.blocked);
+//                RandomRogMap.visMap[x + k][y - k + 12].setCollision(collision.blocked);
                 Reserviert.add(new Position(x + k, y - k + 12));
-                RandomRogMap.visMap[x + k][k + y - 12].setCollision(collision.blocked);
+//                RandomRogMap.visMap[x + k][k + y - 12].setCollision(collision.blocked);
                 Reserviert.add(new Position(x + k, k + y - 12));
             }
 
@@ -1253,31 +1253,31 @@ public class RandomMapBuilder {
             Einheit.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 4, StartG.get(i).getMainPosition().getY() + 6));
             Einheit.setPlayerId(i + 1);
             StartU.add(Einheit);
-            RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
+//            RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit2x2 Einheit2 = new Unit2x2(getNewNetID(), worker);
             Einheit2.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 5, StartG.get(i).getMainPosition().getY() + 7));
             Einheit2.setPlayerId(i + 1);
             StartU.add(Einheit2);
-            RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
+//            RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit2x2 Einheit3 = new Unit2x2(getNewNetID(), worker);
             Einheit3.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 6, StartG.get(i).getMainPosition().getY() + 6));
             Einheit3.setPlayerId(i + 1);
             StartU.add(Einheit3);
-            RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
+//            RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit2x2 Einheit4 = new Unit2x2(getNewNetID(), worker);
             Einheit4.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 3, StartG.get(i).getMainPosition().getY() + 5));
             Einheit4.setPlayerId(i + 1);
             StartU.add(Einheit4);
-            RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
+//            RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
 
             Unit2x2 Einheit5 = new Unit2x2(getNewNetID(), kundschafter);
             Einheit5.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 8, StartG.get(i).getMainPosition().getY() + 4));
             Einheit5.setPlayerId(i + 1);
             StartU.add(Einheit5);
-            RandomRogMap.visMap[Einheit5.getMainPosition().getX()][Einheit5.getMainPosition().getY()].setCollision(collision.occupied);
+//            RandomRogMap.visMap[Einheit5.getMainPosition().getX()][Einheit5.getMainPosition().getY()].setCollision(collision.occupied);
         }
 
         return StartU;
