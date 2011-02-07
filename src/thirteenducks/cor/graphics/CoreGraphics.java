@@ -97,36 +97,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     Robot robot;
     int imgLoadCounter = 0;
 
-    // Konstruktor für erweiternde Klasse RogAISurrogateGraphics
-    public CoreGraphics(ClientCore.InnerClient inner) throws SlickException {
-        super(new BasicGame("surrogategraphics") {
-
-            @Override
-            public void init(GameContainer container) throws SlickException {
-            }
-
-            @Override
-            public void update(GameContainer container, int delta) throws SlickException {
-            }
-
-            @Override
-            public void render(GameContainer container, Graphics g) throws SlickException {
-            }
-
-            @Override
-            public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void inputStarted() {
-            }
-        });
-
-        newBullets = null;
-        content = new GraphicsContent();
-        inputM = new CoRInput(this.rgi, this.getInput());
-        rgi = inner; // Die Innere Klasse übernehmen
-    }
+    
 
     public CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
         super(new GraphicsContent(), size.width, size.height, fullScreen);
