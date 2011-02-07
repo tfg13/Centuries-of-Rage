@@ -38,10 +38,6 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import thirteenducks.cor.game.ability.Ability;
-import thirteenducks.cor.game.ability.AbilityBuild;
-import thirteenducks.cor.game.ability.AbilityIntraManager;
-import thirteenducks.cor.game.ability.AbilityRecruit;
-import thirteenducks.cor.game.ability.AbilityUpgrade;
 import thirteenducks.cor.tools.mapeditor.MapEditorCursor;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
@@ -832,16 +828,16 @@ public class GraphicsContent extends BasicGame {
                 continue;
             }
             // Startkoordinaten
-            int x = (b.getMainPosition().getX() - positionX) * 20;
-            int y = ((b.getMainPosition().getY() - positionY) * 15) + 25;
+            int x = (b.getMainPosition().getX() - positionX) * 10;
+            int y = (int) ((b.getMainPosition().getY() - positionY) * 7.5);
             // Linien ziehen
             g2.setLineWidth(4);
             //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
             g2.setColor(rgi.game.getPlayer(b.getPlayerId()).color);
-            g2.drawLine(x, y, x + (b.getZ1() * 20), y - (b.getZ1() * 15));
-            g2.drawLine(x, y, x + (b.getZ2() * 20), y + (b.getZ2() * 15));
-            g2.drawLine(x + (b.getZ1() * 20), y - (b.getZ1() * 15), x + (b.getZ1() * 20) + (b.getZ2() * 20), y - (b.getZ1() * 15) + (b.getZ2() * 15));
-            g2.drawLine(x + (b.getZ2() * 20), y + (b.getZ2() * 15), x + (b.getZ1() * 20) + (b.getZ2() * 20), y - (b.getZ1() * 15) + (b.getZ2() * 15));
+            g2.drawLine(x, y, x + (b.getZ1() * 10), (int) (y - (b.getZ1() * 7.5)));
+            g2.drawLine(x, y, x + (b.getZ2() * 10), (int) (y + (b.getZ2() * 7.5)));
+            g2.drawLine((int) (x + (b.getZ1() * 10)),(int) (y - (b.getZ1() * 7.5)),(int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
+            g2.drawLine((int) (x + (b.getZ2() * 10)), (int) (y + (b.getZ2() * 7.5)), (int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
         }
         g2.setLineWidth(1);
         //g2.setStroke(new BasicStroke(1));
