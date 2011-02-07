@@ -31,7 +31,6 @@ import thirteenducks.cor.graphics.input.CoRInputMode;
 import thirteenducks.cor.graphics.Overlay;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Polygon;
 
@@ -86,7 +85,7 @@ public class TeamSelector extends Overlay {
     int players = 0;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, int hudX) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         if (active) {
             // Einmalig die Spielerzahl berechnen
             if (players == 0) {
@@ -98,11 +97,11 @@ public class TeamSelector extends Overlay {
                     }
                 }
                 // Dein eigenen nicht
-                contentSizeX = (int) (0.90 * hudX);
+                contentSizeX = (int) (0.90 * fullResX);
                 gap = (int) (WINDOW_OVER_CONTENT * fullResY);
                 seqY = font.getLineHeight();
                 contentSizeY = (players - 1) * seqY;
-                oriX = (hudX / 2) - ((contentSizeX + 2 * gap) / 2);
+                oriX = (fullResX / 2) - ((contentSizeX + 2 * gap) / 2);
                 oriY = (fullResY / 2) - ((contentSizeY + 3 * gap + seqY) / 2);
 
             }
