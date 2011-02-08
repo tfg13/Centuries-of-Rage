@@ -28,7 +28,6 @@ package thirteenducks.cor.graphics;
 
 import java.util.Map;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import thirteenducks.cor.game.Hideable;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.Position;
@@ -47,7 +46,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      */
-    public void renderSprite(Graphics g, int x, int y, Map<String, Image> imgMap);
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap);
 
     /**
      * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
