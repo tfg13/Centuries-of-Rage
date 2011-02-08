@@ -103,7 +103,7 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - (getGraphicsData().offsetX * 10), (int) (y - (getGraphicsData().offsetY * 7.5)));
+        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - (getGraphicsData().offsetX * 10), (int) (y - (getGraphicsData().offsetY * 10)));
     }
 
     @Override
