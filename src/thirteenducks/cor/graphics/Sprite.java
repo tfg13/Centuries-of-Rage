@@ -48,6 +48,14 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
     public void renderSprite(Graphics g, int x, int y);
 
     /**
+     * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
+     * Das Grafiksystem wird diese Position verwenden, um die in der renderSprite-Methode übergebenen Koordinaten zu berechnen.
+     * In der Regel ist dies die Zuordnungsposition.
+     * @return
+     */
+    public Position getMainPositionForRenderOrigin();
+
+    /**
      * Liefert alle Position zurück, auf denen sich tatsächlich etwas von diesem Objekt befindet.
      * Wird z.B. für den FoW-Abgleich verwendet.
      * Liefert keine bestimmte Sortierung der Felder
