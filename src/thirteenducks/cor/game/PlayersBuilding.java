@@ -103,7 +103,7 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x, y);
     }
 
     @Override
