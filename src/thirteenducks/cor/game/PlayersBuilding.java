@@ -105,11 +105,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public Position[] getVisisbilityPositions() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void pause() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
