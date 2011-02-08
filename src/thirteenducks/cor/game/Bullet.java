@@ -23,12 +23,13 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.graphics;
+package thirteenducks.cor.game;
 
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.GameObject;
+import thirteenducks.cor.graphics.Sprite;
 
 /**
  * Ein Geschoss (Kugel/Pfeil)
@@ -47,7 +48,7 @@ import thirteenducks.cor.game.GameObject;
  *
  * @author tfg
  */
-public class GraphicsBullet implements Pauseable, Sprite {
+public class Bullet implements Pauseable, Sprite {
 
     public Position sourcePos;
     public GameObject attacker;
@@ -64,7 +65,7 @@ public class GraphicsBullet implements Pauseable, Sprite {
     int lastY;
     String texture;
 
-    public GraphicsBullet(GameObject attacker, GameObject victim, int dmg, int dly) {
+    public Bullet(GameObject attacker, GameObject victim, int dmg, int dly) {
         sourcePos = attacker.getMainPosition();
         this.attacker = attacker;
         target = victim;
@@ -269,6 +270,26 @@ public class GraphicsBullet implements Pauseable, Sprite {
     @Override
     public Position getSortPosition() {
         return sourcePos;
+    }
+
+    @Override
+    public Position getMainPositionForRenderOrigin() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean renderInFullFog() {
+        return false;
+    }
+
+    @Override
+    public boolean renderInHalfFog() {
+        return false; // Im Halbschatten sieht man Geschosse nicht.
+    }
+
+    @Override
+    public boolean renderInNullFog() {
+        return true; // Geschosse sind grundsätzlich nicht unsichtbar.
     }
 
 

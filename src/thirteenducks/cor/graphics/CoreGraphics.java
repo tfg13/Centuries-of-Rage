@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.graphics;
 
+import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
@@ -83,7 +84,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     long lastFowCalc;
     boolean seenPause = false;
     Thread slickGraphics;
-    final List<GraphicsBullet> newBullets;
+    final List<Bullet> newBullets;
     public boolean rightScrollingEnabled = false;
     public boolean rightScrolling = false;
     public long rightScrollStart;
@@ -104,7 +105,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content = (GraphicsContent) super.game;
         rgi = inner; // Die Innere Klasse übernehmen
         displaySize = size;
-        newBullets = Collections.synchronizedList(new ArrayList<GraphicsBullet>());
+        newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
     }
 
     /**
@@ -1366,7 +1367,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Mehr muss nicht getan werden, Animation und Schaden werden automatisch berechnet, solange die Grafik läuft.
      * Nur scheduling, wird erst eingefügt, wenn gerade kein Frame gerendert wird.
      */
-    public void addBullet(GraphicsBullet b) {
+    public void addBullet(Bullet b) {
         synchronized (newBullets) {
             try {
                 content.allListLock.lock();
@@ -1377,7 +1378,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-    public void addBulletB(GraphicsBullet b) {
+    public void addBulletB(Bullet b) {
         synchronized (newBullets) {
             try {
                 content.allListLock.lock();
@@ -1796,8 +1797,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         //rgf.setIgnoreRepaint(false);
         for (int i = 0; i < content.allList.size(); i++) {
             Sprite r = content.allList.get(i);
-            if (r.getClass().equals(GraphicsBullet.class)) {
-                ((GraphicsBullet) r).pause();
+            if (r.getClass().equals(Bullet.class)) {
+                ((Bullet) r).pause();
             }
         }
     }
@@ -1808,8 +1809,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.pauseMode = false;
         for (int i = 0; i < content.allList.size(); i++) {
             Sprite r = content.allList.get(i);
-            if (r.getClass().equals(GraphicsBullet.class)) {
-                ((GraphicsBullet) r).unpause();
+            if (r.getClass().equals(Bullet.class)) {
+                ((Bullet) r).unpause();
             }
         }
     }
