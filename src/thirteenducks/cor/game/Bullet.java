@@ -26,9 +26,6 @@
 package thirteenducks.cor.game;
 
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.Pauseable;
-import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.graphics.Sprite;
 
 /**
