@@ -189,22 +189,21 @@ public class GraphicsContent extends BasicGame {
                     // Pause für diesen Frame freischalten:
                     pause = rgi.rogGraphics.getPauseTime();
                 }
-                // FoW updaten?
-                if (!fowDisabled && updateBuildingsFow) {
-                    updateBuildingsFow = false;
-                    this.updateBuildingFoW();
-                }
-                g.setAntiAlias(false);
-                // Für die Haupt-grafikausgabe
-                if (useAntialising) {
-                    g.setAntiAlias(true);
-                }
-                //g3 = tempImg.getGraphics();
+//                // FoW updaten?
+//                if (!fowDisabled && updateBuildingsFow) {
+//                    updateBuildingsFow = false;
+//                    this.updateBuildingFoW();
+//                }
+                g.setAntiAlias(useAntialising);
+                
                 // Alles löschen
                 g.setColor(Color.white);
                 g.fillRect(0, 0, realPixX, realPixY);
 
+                // Boden und Fix rendern
                 renderBackground();
+                
+                // Einheiten nach ihrer Y-Enfernung sortieren, erzeugt räumlichen Eindruck.
                 if (beautyDraw) {
                     try {
                         allListLock.lock();
@@ -215,34 +214,39 @@ public class GraphicsContent extends BasicGame {
                         allListLock.unlock();
                     }
                 }
-                //renderUnits(g3);
-                //renderBuildings(g3);
+                
+                // @TODO: buildingwaypoint als groundeffect rendern
                 renderBuildingWaypoint();
 
-                if (mouseX != lastHovMouseX || mouseY != lastHovMouseY) {
-                    // Wenn sichs geändert hat neu suchen
-                  //  hoveredUnit = identifyUnit(mouseX, mouseY);
-                    lastHovMouseX = mouseX;
-                    lastHovMouseY = mouseY;
-                }
-
-                synchronized (this) {
+                // Input-Modul-Hover holen
+//                if (mouseX != lastHovMouseX || mouseY != lastHovMouseY) {
+//                    // Wenn sichs geändert hat neu suchen
+//                  //  hoveredUnit = identifyUnit(mouseX, mouseY);
+//                    lastHovMouseX = mouseX;
+//                    lastHovMouseY = mouseY;
+//                }
+                
+                    //@TODO: buildingmarkers als groundeffect rendern
                     renderBuildingMarkers(g);
+                    
+                    //@TODO: Einheitenziel als groundeffect rendern
                     if (unitDestMode != 0) {
                         renderUnitDest(g);
                     }
-                    //renderGraphicElements(g);
+                    
+                    // Jetzt alle Sprites rendern
+                    renderSprites(g);
 
-                }
-
+                //@TODO: fireeffects als skyeffect rendern
                 fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
 
 
                 // renderHealthBars(g);
                 // Fog of War rendern, falls aktiv
-                if (renderFogOfWar) {
-                    renderFogOfWar(g);
-                }
+//                if (renderFogOfWar) {
+//                    renderFogOfWar(g);
+//                }
+                
                 if (renderPicCursor) {
                     renderCursor();
                 }
@@ -265,7 +269,7 @@ public class GraphicsContent extends BasicGame {
                 g.setColor(Color.darkGray);
                 g.setFont(fonts[0]);
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
-                g.drawString("13 Ducks Entertainment's: Centuries of Rage BETA", 10, realPixY - 20);
+                g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, realPixY - 20);
                 if (colMode) {
                     this.renderCol();
                 }
@@ -310,6 +314,57 @@ public class GraphicsContent extends BasicGame {
             // Pause zurücksetzten
             pause = 0;
         }
+    }
+
+    /**
+     * Zeichnet alle Sprites auf den Bildschirm, falls diese derzeit im sichtbaren Bereich liegen,
+     * gemäß dem FOW gezeichnet werden sollen und sich nicht verstecken.
+     * @param g
+     */
+    private void renderSprites(Graphics g) {
+        for (int i = 0; i < allList.size(); i++) {
+            Sprite sprite = allList.get(i);
+            if (spriteInSight(sprite)) {
+                //@TODO: FOW-Behandlung einbauen
+                if (sprite.renderInNullFog()) {
+                    Position mainPos = sprite.getMainPositionForRenderOrigin();
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5));
+                }
+            }
+        }
+    }
+
+    /**
+     * Findet heraus, ob ein Sprite gerade im sichtbaren Bereich liegt.
+     * Reine Scroll-Überprüfung, macht nichts mit FOW oder verstecken.
+     * @param s
+     * @return
+     */
+    private boolean spriteInSight(Sprite s) {
+        Position[] visPos = s.getVisisbilityPositions();
+        for (Position pos : visPos) {
+            if (positionInSight(pos)) {
+                // Wenn irgendwas sichtbar ist, dann true
+                return true;
+            }
+        }
+        // Kein einziges Feld im sichtbaren --> false
+        return false;
+    }
+
+    /**
+     * Findet heraus, ob eine Position (ein Feld) derzeit im sichtbaren Bereich liegt.
+     * Reine Scroll-Überprüfung, macht nichts mit FOW.
+     * @param s
+     * @return
+     */
+    private boolean positionInSight(Position s) {
+        if (s.getX() >= positionX && s.getY() < positionX + viewX) {
+            if (s.getY() >= positionY && s.getY() < positionY + viewY) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -3379,4 +3434,6 @@ public class GraphicsContent extends BasicGame {
     @Override
     public void inputStarted() {
     }
+
+    
 }
