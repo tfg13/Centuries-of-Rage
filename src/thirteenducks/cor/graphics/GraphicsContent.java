@@ -2233,14 +2233,14 @@ public class GraphicsContent extends BasicGame {
         }
         g2.setFont(fonts[4]);
         // Rendert die rote Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
+        for (int x = 0; x < sizeX && x < viewX; x = x + 4) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (int) (y * 7.5) + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 5, (int) (y * 7.5) + 10);
             }
         }
-        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
+        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 4) {
             for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 10, (int) (y * 7.5) + 20);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 5, (int) (y * 7.5) + 10);
             }
         }
     }
