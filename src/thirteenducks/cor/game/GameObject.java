@@ -1253,4 +1253,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public int compareTo(Sprite o) {
         return this.getSortPosition().compareTo(o.getSortPosition());
     }
+
+    @Override
+    public Position getMainPositionForRenderOrigin() {
+        return mainPosition;
+    }
 }

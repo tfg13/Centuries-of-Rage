@@ -178,10 +178,4 @@ public class Unit2x2 extends Unit {
     public Position getSortPosition() {
         return this.getMainPosition();
     }
-
-    @Override
-    public Position getMainPositionForRenderOrigin() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }
