@@ -448,6 +448,22 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return ("Unit \"" + this.getName() + "\" ID: " + this.netID);
     }
 
+    @Override
+    public boolean renderInFullFog() {
+        return false;
+    }
+
+    @Override
+    public boolean renderInHalfFog() {
+        //@TODO: Gebäude müssen sichtbar bleiben, wenn man sie einmal gesehen hat.
+        return false;
+    }
+
+    @Override
+    public boolean renderInNullFog() {
+        return true;
+    }
+
     /**
      * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
      * @return the isIntra

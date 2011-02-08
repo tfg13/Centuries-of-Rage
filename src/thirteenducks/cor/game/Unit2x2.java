@@ -9,7 +9,6 @@ import java.util.List;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
-import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
@@ -161,23 +160,13 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public boolean renderInFullFog() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean renderInHalfFog() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean renderInNullFog() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Position getSortPosition() {
         return this.getMainPosition();
+    }
+
+    @Override
+    public Position getMainPositionForRenderOrigin() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
