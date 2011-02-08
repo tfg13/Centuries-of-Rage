@@ -27,6 +27,7 @@
 package thirteenducks.cor.graphics;
 
 import org.newdawn.slick.Graphics;
+import thirteenducks.cor.game.Hideable;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.Position;
 
@@ -34,7 +35,7 @@ import thirteenducks.cor.game.Position;
  * Ein Sprite ist ein zum Spiel gehörendes Objekt.
  * Die Grafikengine zeichnet Sprites automatisch, sofern sie in Sichtweite sind etc.
  */
-public interface Sprite extends Comparable<Sprite>, Pauseable {
+public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
 
     /**
      * Zeichnet dieses Sprite nach x, y auf den Bildschirm.
