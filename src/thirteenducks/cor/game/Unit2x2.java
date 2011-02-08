@@ -19,8 +19,15 @@ import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
  */
 public class Unit2x2 extends Unit {
 
+    /**
+     * Die Positionen auf denen die Einheit derzeit sichtbar ist.
+     * Wird aus Performance-Gründen gecached.
+     */
+    private Position[] positions;
+
      public Unit2x2(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
+        positions = new Position[4];
     }
 
     /**
@@ -40,6 +47,16 @@ public class Unit2x2 extends Unit {
      */
     public Unit2x2(int newNetId, Unit2x2 copyFrom) {
         super(newNetId, copyFrom);
+        positions = new Position[4];
+    }
+
+    @Override
+    public void setMainPosition(Position mainPosition) {
+        super.setMainPosition(mainPosition);
+        positions[0] = mainPosition;
+        positions[1] = mainPosition.add(new Position(mainPosition.getX() + 1, mainPosition.getY() - 1));
+        positions[2] = mainPosition.add(new Position(mainPosition.getX() + 1, mainPosition.getY() + 1));
+        positions[3] = mainPosition.add(new Position(mainPosition.getX() + 2, mainPosition.getY()));
     }
 
     @Override
@@ -89,10 +106,8 @@ public class Unit2x2 extends Unit {
 
     @Override
     public Position[] getVisisbilityPositions() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return positions;
     }
-
-    
 
     @Override
     public boolean gotClientBehaviours() {
