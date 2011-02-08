@@ -26,7 +26,9 @@
 package thirteenducks.cor.game;
 
 import java.util.List;
+import java.util.Map;
 import org.newdawn.slick.Graphics;
+import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
@@ -100,7 +102,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y) {
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -6,8 +6,10 @@
 package thirteenducks.cor.game;
 
 import java.util.List;
+import java.util.Map;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
@@ -100,8 +102,8 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x, y);
     }
 
     @Override
