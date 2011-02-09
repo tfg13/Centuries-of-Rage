@@ -28,7 +28,6 @@ package thirteenducks.cor.graphics;
 import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -1766,7 +1765,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     public void showstatistics() {
         statisticsMod = true;
-        content.statisticsMode = true;
         content.gameDone = 0;
+        System.out.println("AddMe: Start statistic!");
     }
 }
