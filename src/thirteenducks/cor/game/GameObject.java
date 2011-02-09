@@ -596,7 +596,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
             ((Unit) this).anim = rgua; */
             System.out.println("AddMe: Upgrade GraphicsData & Animator");
         }
-        rgi.rogGraphics.triggerUpdateHud();
     }
 
     /**

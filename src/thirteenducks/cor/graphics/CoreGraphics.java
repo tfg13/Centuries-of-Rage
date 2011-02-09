@@ -26,7 +26,6 @@
 package thirteenducks.cor.graphics;
 
 import thirteenducks.cor.game.Bullet;
-import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
@@ -150,7 +149,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 rgi.logger("[Graphics][ERROR]: Can't load loadingscreen!");
             }
         }
-        content.byPass = true;
         content.realPixX = displaySize.width;
         content.realPixY = displaySize.height;
         content.setVisibleArea((displaySize.width / 10), (int) (displaySize.height / 7.5));
@@ -523,22 +521,22 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     private void importHuds() {
-        try {
-            // Liest alle Huds aus img/hud/ ein und schickt sie an RogGraphicsComponent
-            // Epochennummer ist Bildname
-            Image ep1 = new Image("img/hud/e1.png");
-            Image ep2 = new Image("img/hud/e2.png");
-            Image ep3 = new Image("img/hud/e3.png");
-            // Bilder geladen in Array packen und ab
-            content.huds = new Image[10];
-            content.huds[1] = ep1;
-            content.huds[2] = ep2;
-            content.huds[3] = ep3;
-        } catch (SlickException ex) {
-            System.out.println("ERROR: Can't load Huds!");
-            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
-            rgi.logger(ex);
-        }
+//        try {
+//            // Liest alle Huds aus img/hud/ ein und schickt sie an RogGraphicsComponent
+//            // Epochennummer ist Bildname
+//            Image ep1 = new Image("img/hud/e1.png");
+//            Image ep2 = new Image("img/hud/e2.png");
+//            Image ep3 = new Image("img/hud/e3.png");
+//            // Bilder geladen in Array packen und ab
+//            content.huds = new Image[10];
+//            content.huds[1] = ep1;
+//            content.huds[2] = ep2;
+//            content.huds[3] = ep3;
+//        } catch (SlickException ex) {
+//            System.out.println("ERROR: Can't load Huds!");
+//            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
+//            rgi.logger(ex);
+//        }
 
     }
 
@@ -1395,13 +1393,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void finalPrepare() {
         // Grafikausgabe einrichten
-        content.byPass = true; // Game-rendering darf das
         content.epoche = 1;
-
-        // Jetzt ist die Größe gesetzt, scalefaktor fürs Hud bestimmen und Bildchen skalieren lassen
-        double scalefactorX = (content.hudSizeX * 0.8) / (content.sizeX * 10);
-        double scalefactorY = (content.realPixY / 7 * 2 * 0.8) / (content.sizeY * 7.5);
-        content.preCalcMiniMapElements(scalefactorX, scalefactorY);
 
         rgi.logger("[Graphics]: Calcing selection markers...");
         Color[] playercolors = new Color[rgi.game.playerList.size()];
@@ -1412,15 +1404,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.calcColoredMaps(playercolors);
         // Nötige Variablen syncronisieren
         content.allList = rgi.mapModule.allList;
-
-        try {
-            content.interactivehud = new Image(content.hudSizeX, content.realPixY / 7 * 4);
-        } catch (org.newdawn.slick.SlickException ex) {
-            rgi.logger(ex);
-        }
         content.buildingsChanged();
-        //content.renderBackgroundChanged(); // Für MiniMaperstellung etc..
-        content.initMiniMap();
         // Ansicht zum Hauptgebäude des Spielers scrollen (1. Gebäude mit seiner playerId in der Liste)
         for (Building b : buildingList) {
             if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
@@ -1534,24 +1518,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         return false;
     }
 
-    public void refreshMap() {
-    }
-
-    public void updateUnits(List<Unit> nL) {
-        unitList = nL;
-        content.updateUnits(unitList);
-    }
-
-    public void updateBuildings(List<Building> nL) {
-        buildingList = nL;
-        content.updateBuildings(nL);
-    }
-
-    public void showCalculatedRoute(ArrayList<Position> path) {
-        // Zeigt den von der Wegfindung berechneten Weg an, zum Wegfindung-DEBUGGEN
-        content.enableWayPointHighlighting(path);
-    }
-
     public void displayError(String s) {
         // Zeigt eine Fehlermeldung grafisch an, zum Wegklicken mit OK
         JOptionPane.showMessageDialog(new JFrame().getComponent(0),
@@ -1605,17 +1571,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void setAlwaysShowEnergyBars(boolean b) {
         content.alwaysshowenergybars = b;
-    }
-
-    /**
-     * Zeigt Infos über Einheiten / Gebäude / Ressourcen an, die einem nicht gehören.
-     * Funktioniert nur, solange selected leer ist.
-     * Ansonsten wird dieses hier sofort gelöscht.
-     * @param das zu zeigende Objekt.
-     */
-    public void triggerTempStatus(GameObject obj) {
-        content.tempInfoObj = obj;
-        triggerUpdateHud();
     }
 
     public void notifyUnitDieing(final Unit unit) {
@@ -1696,15 +1651,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     }
 
-    /**
-     * Lässt die Grafik den interaktiven Teil des Huds neu zeichnen
-     * Geschieht sofort mit dem nächsten Frame
-     *
-     */
-    public void triggerUpdateHud() {
-        content.updateInterHud = true;
-    }
-
     public void triggerRefreshFow() {
         fowtrigger = true;
     }
@@ -1714,10 +1660,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void epocheChanged() {
         content.epocheChanged = true;
-        this.triggerUpdateHud();
         builingsChanged();
         // Feuer neu auf den Gebäuden verteilen
-        content.fireMan.epocheChanged(content.epoche, content.buildingList);
+        //content.fireMan.epocheChanged(content.epoche, content.buildingList);
         // Allen mitteilen
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 45, -2, content.epoche, 0, 0));
     }

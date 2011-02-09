@@ -27,9 +27,7 @@ package thirteenducks.cor.networks.client.behaviour.impl;
 
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -114,7 +112,6 @@ public class ClientBehaviourRecruit extends ClientBehaviour implements ShowsProg
                 rgi.game.getOwnPlayer().res5 -= abr.costs[4];
 
                 abr.behaviour = this;
-                rgi.rogGraphics.triggerUpdateHud();
                 break;
             case 22:
                 // Job löschen

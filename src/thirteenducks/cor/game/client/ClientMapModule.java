@@ -934,8 +934,6 @@ public class ClientMapModule {
         rgi.logger("[MapModul] Map \"" + mapFileName + "\" loaded.");
         createIDList();
         rgi.rogGraphics.activateMap(theMap.getVisMap());
-        rgi.rogGraphics.updateBuildings(buildingList);
-        rgi.rogGraphics.updateUnits(unitList);
         createAllList();
         rgi.game.registerBuildingList(buildingList);
         rgi.game.registerUnitList(unitList);
@@ -1321,9 +1319,6 @@ public class ClientMapModule {
             this.unitList.remove(unit);
             this.netIDList.remove(unit.netID);
             rgi.rogGraphics.inputM.removeFromSelection(unit);
-            if (rgi.rogGraphics.content.tempInfoObj == unit) {
-                rgi.rogGraphics.content.tempInfoObj = null;
-            }
         }
     }
 
@@ -1371,9 +1366,6 @@ public class ClientMapModule {
             this.netIDList.remove(building.netID);
             rgi.rogGraphics.notifyBuildingDieing(building);
             rgi.rogGraphics.inputM.removeFromSelection(building);
-            if (rgi.rogGraphics.content.tempInfoObj == building) {
-                rgi.rogGraphics.content.tempInfoObj = null;
-            }
             // Effekte entfernen
         }
     }

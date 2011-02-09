@@ -541,11 +541,6 @@ public class CoRInput implements Pauseable {
                                 CoRInput.this.removeSpecialMode();
                                 break;
                             case Input.KEY_F2:
-                                // Kollisionsmodus
-                                rgi.netctrl.broadcastString("F2", (byte) 44);
-                                if (rgi.isInDebugMode()) {
-                                    rgi.rogGraphics.content.colMode = !rgi.rogGraphics.content.colMode;
-                                }
                                 break;
                             case Input.KEY_F3:
                                 // Koordinatenmodus

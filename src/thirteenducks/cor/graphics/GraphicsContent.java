@@ -32,34 +32,23 @@ import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
-import org.apache.commons.collections.buffer.PriorityBuffer;
 import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import thirteenducks.cor.game.ability.Ability;
-import thirteenducks.cor.tools.mapeditor.MapEditorCursor;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.graphics.input.InteractableGameElement;
 
 @SuppressWarnings("CallToThreadDumpStack")
 public class GraphicsContent extends BasicGame {
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
 
     public GraphicsImage colModeImage;
-    Color color;
     public int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
     CoRMapElement[][] visMap; // Die angezeigte Map
-    public boolean renderMesh = false; // Gitter rendern
-    public boolean renderGround = false; // Boden rendern
-    public boolean renderObjects = false; // Objecte (Bäuume etc) rendern
-    public boolean renderCreeps = false; // Einheiten rendern
-    public boolean renderBuildings = false; // Gebäude rendern
     public boolean renderCursor = false;
     public boolean renderPicCursor = false; // Cursor, der ein Bild anzeigt, z.B. ein Haus, das gebaut werden soll
-    public boolean renderRessources = false;
     public boolean renderFogOfWar = false;
     public GraphicsImage renderPic;
     public int sizeX; // Mapgröße
@@ -68,8 +57,6 @@ public class GraphicsContent extends BasicGame {
     public int positionY;
     public int viewX; // Die Größe des Angezeigten ausschnitts
     public int viewY;
-    int backupViewX; // Muss manchmal umgestellt werden, wobei das alte behalten werden soll...
-    int backupViewY;
     public int realPixX; // Echte, ganze X-Pixel
     public int realPixY; // Echte, ganze Y-Pixel
     private HashMap<String, GraphicsImage> imgMap; // Enthält alle Bilder
@@ -77,46 +64,18 @@ public class GraphicsContent extends BasicGame {
     Image renderBackground = null; // Bodentextur, nur Bild-Auflösung
     int rBvX; // Position während der letzen Bildberechnung
     int rBvY; // Position während der letzen Bildberechnung
-    Image interactivehud = null;
-    public boolean colMode = false; // Modus, der die Kollision anzeigt
     public boolean serverColMode = false;
-    public boolean byPass = false; // Speziell, damit einige NULLPOINTER Kontrollen übergangen werden können
     boolean useAntialising = false; // Kantenglättung, normalerweise AUS // NUR IM NORMALEN RENDERMODE
-    java.util.List<Unit> unitList;
-    java.util.List<Building> buildingList;
     public List<Sprite> allList;
-    boolean newMode = true; // Units in Liste statt als Textur
-    ArrayList<Position> wayPath; // Ein weg
-    boolean enableWaypointHighlighting;
     public boolean alwaysshowenergybars = false; // Energiebalken immer anzeigen, WC3 lässt grüßen.
-    PriorityBuffer wayOpenList;
-    ArrayList<Position> wayClosedList;
     boolean displayFrameRate = false;
     Date initRun;
     public int realRuns = 0; // Für echte Framerateanzeige
     public int lastFr = 0; // Auch frameRatezeug
     Dimension framePos = new Dimension(0, 0); // Editor-Rahmen
-    MapEditorCursor drawCursor;
-    Date[] analyze;
-    private Image hudGround; // Hud-Hauptbild, hängt von epoche ab
-    private Image fowMiniLayer;  // FoW der Minimap
-    private Image fowMiniLayer2;  // FoW der Minimap
     public int epoche = 2; // Null ist keine Epoche, also kein Gescheites Grundbild..
-    public int hudSizeX; // Hängt vom oberen ab
-    private Image miniMap; // Hud-Minimap
     private ClientCore.InnerClient rgi;
-    private int miniMapViewSizeX = 10;
-    private int miniMapViewSizeY = 10;
-    Image wayPointHighlighting[];
     private static final boolean beautyDraw = true;     // Schöner zeichnen durch umsortieren der allList, kostet Leistung
-    public Image[] huds;                               // Die Huds für verschiedene Epochen
-    int lastMenuHash;                                   // Das Hud-Menü wird nur neu gezeichnet, wenn sich der Hash der selektieren Einheiten verändert.
-    ArrayList<GameObject[]> interSelFields;          // Die Selektierten Einheiten als Representation auf dem Hud
-    Image[] scaledBuildingLocation;             // Die Größe eines Gebäudes, in skalierter Version
-    Image buildingLayer;                        // Layer für Gebäude auf der Minimap
-    double maxminscaleX;
-    double maxminscaleY;
-    public boolean updateInterHud = false;
     public int mouseX;                                         // Die Position der Maus, muss geupdatet werden
     public int mouseY;                                         // Die Position der Maus, muss geupdatet werden
     int lastHovMouseX;
@@ -130,9 +89,6 @@ public class GraphicsContent extends BasicGame {
     public boolean coordMode = false;                          // Modus, der die Koordinaten der Felder mit anzeigt.
     public boolean idMode = false;                             // Modus, der die NetIds von Einheiten/Gebäuden und Ressourcen mit anzeigt.
     public int unitDestMode = 0;                               // Modus, der die Ziele von Einheiten (Bewegung & Angriff) anzeigt (Aus/Eigene/Fremde/Alle)0123
-    boolean smoothGround = false;                       // Grobe Ecken aus der Bodentextur rausrechnen
-    ArrayList<Ability> optList;            // Liste der derzeit anklickbaren Fähigkeiten
-    public GameObject tempInfoObj;                          // Über dieses Objekt werden Temporär Infos angezeigt.
     public byte[][] fowmap;                                    // Fog of War - Map
     GraphicsFogOfWarPattern fowpatmgr;                  // Managed und erstellt Fow-Pattern
     boolean updateBuildingsFow = false;                 // Lässt den Gebäude-Fow neu erstellen
@@ -171,11 +127,8 @@ public class GraphicsContent extends BasicGame {
     public int gameDone = 0; // Spiel zu Ende? 1=ja, mit Sieg; 2 = ja mit Niederlage; 3 = nein, aber trotzdem verloren
     public long endTime;
     public ReentrantLock allListLock;
-    Unit hoveredUnit;
     public ArrayList<Overlay> overlays;
-    long lastFowMiniRender;
     public GraphicsFireManager fireMan;
-    int lastDelta;
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
@@ -237,7 +190,7 @@ public class GraphicsContent extends BasicGame {
                     renderSprites(g);
 
                 //@TODO: fireeffects als skyeffect rendern
-                fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
+                //fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
 
 
                 // renderHealthBars(g);
@@ -255,7 +208,6 @@ public class GraphicsContent extends BasicGame {
                 if (idMode) {
                     renderIds(g);
                 }
-                renderHud(g);
                 // Mouse-Hover rendern
                 if (pauseMode) {
                     renderPause(g);
@@ -269,9 +221,6 @@ public class GraphicsContent extends BasicGame {
                 g.setFont(fonts[0]);
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
                 g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, realPixY - 20);
-                if (colMode) {
-                    this.renderCol();
-                }
                 if (serverColMode) {
                     this.renderServerCol();
                 }
@@ -875,26 +824,26 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderBuildingMarkers(Graphics g2) {
-        // Spielermarkierungen für Gebäude - neueres System
-        for (int i = 0; i < buildingList.size(); i++) {
-            Building b = buildingList.get(i);
-            if (b.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
-                continue;
-            }
-            // Startkoordinaten
-            int x = (b.getMainPosition().getX() - positionX) * 10;
-            int y = (int) ((b.getMainPosition().getY() - positionY) * 7.5);
-            // Linien ziehen
-            g2.setLineWidth(4);
-            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g2.setColor(rgi.game.getPlayer(b.getPlayerId()).color);
-            g2.drawLine(x, y, x + (b.getZ1() * 10), (int) (y - (b.getZ1() * 7.5)));
-            g2.drawLine(x, y, x + (b.getZ2() * 10), (int) (y + (b.getZ2() * 7.5)));
-            g2.drawLine((int) (x + (b.getZ1() * 10)),(int) (y - (b.getZ1() * 7.5)),(int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
-            g2.drawLine((int) (x + (b.getZ2() * 10)), (int) (y + (b.getZ2() * 7.5)), (int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
-        }
-        g2.setLineWidth(1);
-        //g2.setStroke(new BasicStroke(1));
+//        // Spielermarkierungen für Gebäude - neueres System
+//        for (int i = 0; i < buildingList.size(); i++) {
+//            Building b = buildingList.get(i);
+//            if (b.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
+//                continue;
+//            }
+//            // Startkoordinaten
+//            int x = (b.getMainPosition().getX() - positionX) * 10;
+//            int y = (int) ((b.getMainPosition().getY() - positionY) * 7.5);
+//            // Linien ziehen
+//            g2.setLineWidth(4);
+//            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+//            g2.setColor(rgi.game.getPlayer(b.getPlayerId()).color);
+//            g2.drawLine(x, y, x + (b.getZ1() * 10), (int) (y - (b.getZ1() * 7.5)));
+//            g2.drawLine(x, y, x + (b.getZ2() * 10), (int) (y + (b.getZ2() * 7.5)));
+//            g2.drawLine((int) (x + (b.getZ1() * 10)),(int) (y - (b.getZ1() * 7.5)),(int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
+//            g2.drawLine((int) (x + (b.getZ2() * 10)), (int) (y + (b.getZ2() * 7.5)), (int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
+//        }
+//        g2.setLineWidth(1);
+//        //g2.setStroke(new BasicStroke(1));
     }
 
     private void renderMouseHover(Graphics g2) {
@@ -1394,716 +1343,6 @@ public class GraphicsContent extends BasicGame {
 //        g2.drawRect(this.boxselectionstart.width, this.boxselectionstart.height, dirX, dirY);
     }
 
-    private void renderHud(Graphics g) {
-//        try {
-//            // Allgemeines Hud-backgroundbild
-//            hudGround.draw(hudX, 0);
-//            // Gebäude-Layer
-//            buildingLayer.draw((int) (hudX + hudSizeX * 0.1), (int) (realPixY / 7 * 1.4));
-//
-//            boolean reCalcFow = false;
-//            if (System.currentTimeMillis() - lastFowMiniRender > 1000) {
-//                reCalcFow = true;
-//                lastFowMiniRender = System.currentTimeMillis();
-//            }
-//            // Minimap - Grund-Minimap schon im Hud drin, Rest kommt jetzt dazu
-//            // Fow-Layer kopieren (von 1 auf 2)
-//            Graphics fowg1 = null;
-//            Graphics fowg2 = null;
-//            if (!fowDisabled && reCalcFow) {
-//                if (fowMiniLayer2 == null) {
-//                    fowMiniLayer2 = new Image(fowMiniLayer.getWidth(), fowMiniLayer.getHeight());
-//                }
-//                fowg2 = fowMiniLayer2.getGraphics();
-//                fowg2.clear();
-//                fowg2.setColor(new Color(0, 0, 0, 0.7f));
-//                fowg2.fillRect(0, 0, fowMiniLayer2.getWidth(), fowMiniLayer2.getHeight());
-//                fowg1 = fowMiniLayer.getGraphics();
-//            }
-//            int myPlayerId = rgi.game.getOwnPlayer().playerId;
-//
-//            /*
-//             *  Hinweis zur Fow-Berechnung.
-//             *
-//             * Leider frisst das herausschneiden der Einheitensichweiten massiv Leistung
-//             * - Teilweise bis zu 80% der Prozessorlaufzeit
-//             * Das Herausstanzen mit Schablonen auf Image-Basis hat leider auch nicht funktioniert
-//             *
-//             * Daher jetzt folgendes:
-//             *
-//             * Schattenberechnung nurnoch 1-2mal pro Sekunde
-//             * Mehrfache durchläufe der unit/und buildingList, jedes Mal nur einen Layer ausschneiden.
-//             * Das ist schneller, als zwischen jedem Aufruf die Farbe und den DrawMode (ALPHA_MAP) zu ändern
-//             * Ja, es ist Pfusch, aber ich hab leider keine bessere Idee.
-//             *
-//             */
-//
-//            if (unitList != null) {
-//                if (!fowDisabled && reCalcFow) {
-//
-//                    fowg1.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
-//                    fowg2.setColor(new org.newdawn.slick.Color(0, 0, 0, 0));
-//
-//                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
-//                    // Jetzt Fow-Layer schneiden
-//                    for (int i = 0; i < unitList.size(); i++) {
-//                        Unit unit = unitList.get(i);
-//                        // Nur eigene und sichtbare rendern
-//                        try {
-//                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
-//                                if (miniMap != null) {
-//                                    if (!fowDisabled) {
-//                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-//                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
-//                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
-//                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
-//                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
-////                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-////                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-//                                        fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-//                                    }
-//                                }
-//                            }
-//                        } catch (ArrayIndexOutOfBoundsException ex) {
-//                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-//                        }
-//                    }
-//                    fowg2.setDrawMode(Graphics.MODE_ALPHA_MAP);
-//                    for (int i = 0; i < unitList.size(); i++) {
-//                        Unit unit = unitList.get(i);
-//                        // Nur eigene und sichtbare rendern
-//                        try {
-//                            if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
-//                                if (miniMap != null) {
-//                                    if (!fowDisabled) {
-//                                        // Wenn eigene, dann noch sichtbarer Bereich rausschneiden (voll auf 1 und halb auf 2)
-//                                        int bx = (int) (unit.getMainPosition().getX() * 20 * maxminscaleX);
-//                                        int by = (int) (unit.getMainPosition().getY() * 15 * maxminscaleY);
-//                                        int vrangeX = (int) (unit.getVisrange() * 20 * maxminscaleX * 2);
-//                                        int vrangeY = (int) (unit.getVisrange() * 15 * maxminscaleY * 2);
-////                                        fowPainter.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-////                                        fowPainter2.drawImage(miniMapFoWShadow[unit.visrange], bx - vrangeX, by - vrangeY);
-//                                        fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-//                                    }
-//                                }
-//                            }
-//                        } catch (ArrayIndexOutOfBoundsException ex) {
-//                            System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-//                        }
-//                    }
-//                }
-//            }
-//            if (!fowDisabled && reCalcFow) {
-//                // Gebäude schneiden (fow2)
-//                if (buildingList != null) {
-//
-//                    for (int i = 0; i < buildingList.size(); i++) {
-//                        Building building = buildingList.get(i);
-//                        // Nur eigene & team
-//                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
-//                            // "Loch" in den fow-layer schneiden
-//                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-//                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
-//                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-//                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
-//                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
-//                            fowg2.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-//                        }
-//                    }
-//
-//                    fowg1.setDrawMode(Graphics.MODE_ALPHA_MAP);
-//
-//                    for (int i = 0; i < buildingList.size(); i++) {
-//                        Building building = buildingList.get(i);
-//                        // Nur eigene & team
-//                        if (building.getPlayerId() == myPlayerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
-//                            // "Loch" in den fow-layer schneiden
-//                            int bx = (int) ((building.getMainPosition().getX() + ((building.getZ1() + building.getZ2() - 2) * 1.0 / 2)) * 20 * maxminscaleX);
-//                            int by = (int) (building.getMainPosition().getY() * 15 * maxminscaleY);
-//                            // Mir sind diese Werte ehrlich gesagt net ganz klar, besonders der letzte faktor
-//                            int vrangeX = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 20 * maxminscaleX * 2);
-//                            int vrangeY = (int) ((building.getVisrange() + ((building.getZ1() + building.getZ2()) / 4)) * 15 * maxminscaleY * 2);
-//                            fowg1.fillOval(bx - vrangeX, by - vrangeY, vrangeX * 2, vrangeY * 2);
-//                        }
-//                    }
-//                }
-//                fowg1.flush();
-//                fowg2.flush();
-//            }
-//            if (!fowDisabled) {
-//                // FoW-Layer auf die Minimap
-//                fowMiniLayer2.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
-//                fowMiniLayer.draw((int) (hudX + hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4) + 1);
-//            }
-//            for (int i = 0; i < unitList.size(); i++) {
-//                Unit unit = unitList.get(i);
-//                // Nur eigene und sichtbare rendern
-//                try {
-//                    if (unit.getPlayerId() == myPlayerId || rgi.game.shareSight(unit, rgi.game.getOwnPlayer()) || fowmap[unit.getMainPosition().getX()][unit.getMainPosition().getY()] > 1) {
-//                        if (miniMap != null) {
-//                            setColorToPlayer(unit.getPlayerId(), g);
-//                            g.fillRect((int) ((unit.getMainPosition().getX() * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1) - 1, (int) ((unit.getMainPosition().getY() * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.371428) + 2, 3, 3);
-//                        }
-//                    }
-//                } catch (ArrayIndexOutOfBoundsException ex) {
-//                    System.out.println("FixMe: Illegal Position: Unit " + unit + " pos: " + unit.getMainPosition());
-//                }
-//            }
-//            // Sichtbaren Bereich anzeigen
-//            g.setColor(Color.lightGray);
-//            g.drawRect((int) ((positionX * 1.0 / sizeX * hudSizeX * 0.8) + hudX + hudSizeX * 0.1), (int) ((positionY * 1.0 / sizeY * realPixY * 2 / 7 * 0.8) + realPixY / 7 * 1.4), miniMapViewSizeX, miniMapViewSizeY);
-//            int newHash = 0;
-//            try {
-//                newHash = selectedObjects.hashCode();
-//            } catch (ConcurrentModificationException ex) {
-//                System.out.println("Catched: CME in Hud-Hashcode-Check - ignore if rare");
-//            }
-//            if (newHash != lastMenuHash || updateInterHud) {
-//                lastMenuHash = newHash;
-//                // Menü neu berechnen:
-//                updateInterHud = false;
-//                buildInteractiveHud();
-//            }
-//            // Interaktives Hud zeichnen
-//            g.drawImage(interactivehud, hudX, realPixY * 3 / 7);
-//
-//            // Ressourcen & Truppenlimit reinschreiben
-//            g.setColor(Color.black);
-//            g.setFont(fonts[1]);
-//            try {
-//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res1), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.015));
-//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res2), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.015));
-//                g.setColor(epoche > 1 ? Color.black : Color.lightGray);
-//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res3), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.063));
-//                g.setColor(epoche > 2 ? Color.black : Color.lightGray);
-//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res4), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.063));
-//                g.setColor(epoche > 5 ? Color.black : Color.lightGray);
-//                g.drawString(String.valueOf(rgi.game.getOwnPlayer().res5), (int) (hudX + hudSizeX * 0.1), (int) (realPixY * 0.11));
-//                g.setColor(Color.black);
-//                g.drawString(rgi.game.getOwnPlayer().currentlimit + "/" + Math.min(rgi.game.getOwnPlayer().maxlimit, 100), (int) (hudX + hudSizeX * 0.43), (int) (realPixY * 0.11));
-//            } catch (NullPointerException ex) {
-//            }
-//
-//        } catch (org.newdawn.slick.SlickException ex) {
-//            ex.printStackTrace();
-//        }
-    }
-
-    private void buildInteractiveHud() {
-//        // Baut den interaktiven Teil des Huds neu auf - z.B. da wo Einheiten etc angezeigt werden
-//        try {
-//            int px = -1;
-//            int py = 0;
-//            Graphics g2 = null;
-//            ArrayList<GameObject> selected = rgi.rogGraphics.inputM.selected;
-//            if (selected.isEmpty() && this.tempInfoObj == null) {
-//                // Hud leeren
-//                g2 = interactivehud.getGraphics();
-//                g2.setBackground(new org.newdawn.slick.Color(0.0f, 0.0f, 0.0f, 0.0f));
-//                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-//                g2.clear();
-//            }
-//            if ((selected.isEmpty() && this.tempInfoObj != null) || selected.size() == 1) {
-//                // Hud-Info mode
-//                if (selected.size() == 1) {
-//                    tempInfoObj = selected.get(0);
-//                }
-//                g2 = interactivehud.getGraphics();
-//                g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-//                //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-//                g2.clear();
-//
-//                // Spezifische Infos anzeigen:
-//                if (tempInfoObj.getClass().equals(Unit.class)) {
-//                    // Unit - Infos rendern
-//                    Unit unit = (Unit) tempInfoObj;
-//                    // Bildchen
-//                    GraphicsImage img = imgMap.get(unit.graphicsdata.defaultTexture);
-//                    int dx1 = (int) (hudSizeX * 0.15);
-//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2); // realPixY * 2/35
-//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5); // hudSizeX * 0.29
-//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4); // realPixY * 3/28
-//                    if (img != null) {
-//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-//                    }
-//                    // Spielername:
-//                    g2.setColor(Color.gray);
-//                    g2.setFont(fonts[2]);
-//                    g2.drawString(rgi.game.getPlayer(unit.getPlayerId()).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
-//                    // Einheitename
-//                    g2.setColor(Color.black);
-//                    g2.setFont(fonts[1]);
-//                    g2.drawString(unit.getName(), (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-//                    // HP
-//                    g2.setFont(fonts[2]);
-//                    g2.drawString("HP:  " + unit.getHitpoints() + " / " + unit.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-//                    // Rüstung
-//                    g2.setFont(fonts[0]);
-//                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
-//                    String atype = "";
-//                    if (unit.armortype.equals("lightinf")) {
-//                        atype = "Light Infantry";
-//                    } else if (unit.armortype.equals("heavyinf")) {
-//                        atype = "Heavy Infantry";
-//                    } else if (unit.armortype.equals("kav")) {
-//                        atype = "Cavalry";
-//                    } else if (unit.armortype.equals("vehicle")) {
-//                        atype = "Vehicle";
-//                    } else if (unit.armortype.equals("tank")) {
-//                        atype = "Tank";
-//                    } else if (unit.armortype.equals("air")) {
-//                        atype = "Air";
-//                    }
-//                    g2.drawString(atype, (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
-//                    //Geschwindigkeit
-//                    g2.drawString("Speed: ", dx1, (int) (dy2 * 1.25) - 10);
-//                    g2.drawString(String.valueOf(unit.speed), (int) (dx1 * 4.1), (int) (dy2 * 1.25) - 10);
-//                    //Reichweite
-//                    g2.drawString("Range: ", dx1, (int) (dy2 * 1.4) - 10);
-//                    if (unit.getRange() == 2) {
-//                        g2.drawString("Melee", (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
-//                    } else {
-//                        g2.drawString(String.valueOf(unit.getRange()), (int) (dx1 * 4.1), (int) (dy2 * 1.4) - 10);
-//                    }
-//                    // Schaden:
-//                    g2.drawString("Damage: ", dx1, (int) (dy2 * 1.60) - 10);
-//                    g2.drawString(String.valueOf(unit.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * 1.60) - 10);
-//                    // Special-Schaden gegen Rüstungsklassen:
-//                    float yposition = 1.75f;
-//                    if (unit.antilightinf != 100) {
-//                        g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antiheavyinf != 100) {
-//                        g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antikav != 100) {
-//                        g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antivehicle != 100) {
-//                        g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antitank != 100) {
-//                        g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antiair != 0) {
-//                        g2.drawString(" vs. Air: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                        yposition += 0.15;
-//                    }
-//                    if (unit.antibuilding != 100) {
-//                        g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * yposition) - 10);
-//                        g2.drawString(unit.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * yposition) - 10);
-//                    }
-//
-//                } else if (tempInfoObj.getClass().equals(Building.class)) {
-//                    // Building - Infos rendern
-//                    Building building = (Building) tempInfoObj;
-//                    // Bildchen
-//                    GraphicsImage img = imgMap.get(building.defaultTexture);
-//                    int dx1 = (int) (hudSizeX * 0.15);
-//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
-//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
-//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
-//                    if (img != null) {
-//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-//                    }
-//                    // Spielername:
-//                    g2.setColor(Color.gray);
-//                    g2.setFont(fonts[2]);
-//                    g2.drawString(rgi.game.getPlayer(building.getPlayerId()).nickName, (int) (hudSizeX * 0.4), (int) (dy2 * 0.5) - 10);
-//                    // Gebäudename
-//                    g2.setColor(Color.black);
-//                    g2.setFont(fonts[1]);
-//                    g2.drawString(building.getName(), (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-//                    // HP
-//                    g2.setFont(fonts[2]);
-//                    g2.drawString("HP:  " + building.getHitpoints() + " / " + building.getMaxhitpoints(), (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-//                    // Rüstung
-//                    g2.setFont(fonts[0]);
-//                    g2.drawString("Armortype: ", dx1, (int) (dy2 * 1.1) - 10);
-//                    g2.drawString("Building", (int) (dx1 * 4.1), (int) (dy2 * 1.1) - 10);
-//                    if (building.isbuilt) {
-//                        // Fortschritt anzeigen
-//                        g2.drawString("Constructing:  ", dx1, (int) (dy2 * 1.3) - 10);
-//                        g2.drawString(Math.round(building.buildprogress * 100) + "%", (int) (dx1 * 4.1), (int) (dy2 * 1.3) - 10);
-//                    } else {
-//                        double movedown = 1.3;
-//                        if (building.limit < 0) {
-//                            g2.drawString("Limit: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString("+" + (building.limit * -1), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.2;
-//                        }
-//                        if (building.getMaxIntra() > 0) {
-//                            // Anzahl der Arbeiter im Gebäude
-//                            g2.drawString("Harvesters: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.intraUnits.size() + "/" + building.getMaxIntra(), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.2;
-//                        }
-//                        if (building.heal > 0) {
-//                            // Anzahl der Arbeiter im Gebäude
-//                            g2.drawString("Heals: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(String.valueOf(building.heal), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.2;
-//                        }
-//                        if (building.getDamage() != 0) {
-//                            g2.drawString("Range: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(String.valueOf(building.getRange()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                            g2.drawString("Damage: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(String.valueOf(building.getDamage()), (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antilightinf != 100) {
-//                            g2.drawString(" vs. Light Infantry: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antilightinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antiheavyinf != 100) {
-//                            g2.drawString(" vs. Heavy Infantry: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antiheavyinf + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antikav != 100) {
-//                            g2.drawString(" vs. Cavalry: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antikav + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antivehicle != 100) {
-//                            g2.drawString(" vs. Vehicle: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antivehicle + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antitank != 100) {
-//                            g2.drawString(" vs. Tanks: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antitank + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antiair != 0) {
-//                            g2.drawString(" vs. Air: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antiair + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                            movedown += 0.15;
-//                        }
-//                        if (building.antibuilding != 100) {
-//                            g2.drawString(" vs. Buildings: ", dx1, (int) (dy2 * movedown) - 10);
-//                            g2.drawString(building.antibuilding + "%", (int) (dx1 * 4.1), (int) (dy2 * movedown) - 10);
-//                        }
-//                    }
-//
-//                } else if (tempInfoObj.getClass().equals(Ressource.class)) {
-//                    // Ressource - Infos zeigen, falls weit genug erforscht
-//                    Ressource res = (Ressource) tempInfoObj;
-//                    boolean showinfo = (res.getType() < 3 || (res.getType() == Ressource.RES_METAL && epoche >= 2) || (res.getType() == Ressource.RES_COINS) && epoche >= 3);
-//                    // Bildchen
-//                    GraphicsImage img = imgMap.get(res.getTex());
-//                    int dx1 = (int) (hudSizeX * 0.15);
-//                    int dy1 = (int) (realPixY * 2 / 7 * 0.2);
-//                    int dx2 = (int) (hudSizeX * 0.15 + hudSizeX * 0.7 / 5);
-//                    int dy2 = (int) (realPixY * 2 / 7 * 0.2 + realPixY * 2 / 7 * 0.7 / 4);
-//                    if (img != null) {
-//                        g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-//                    }
-//                    // Name
-//                    g2.setColor(Color.black);
-//                    g2.setFont(fonts[1]);
-//                    String name = "";
-//                    if (showinfo) {
-//                        switch (res.getType()) {
-//                            case 2:
-//                                name = "Tree";
-//                                break;
-//                            case 1:
-//                                name = "Berry bush";
-//                                break;
-//                            case 3:
-//                                name = "Metal mine";
-//                                break;
-//                            case 4:
-//                                name = "Gold mine";
-//                                break;
-//                        }
-//                    } else {
-//                        name = "???";
-//                    }
-//                    g2.drawString(name, (int) (hudSizeX * 0.4), (int) (dy2 * 0.7) - 10);
-//                    // Energie:
-//                    g2.setFont(fonts[2]);
-//                    if (showinfo) {
-//                        g2.drawString("Resources left:  " + res.hitpoints, (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-//                    } else {
-//                        g2.drawString("Resources left:  ???", (int) (hudSizeX * 0.41), (int) (dy2 * 0.9) - 10);
-//                    }
-//                }
-//                // Permanent updaten, damit Hp-Infos etc da bleiben
-//                updateInterHud = true;
-//            }
-//            interSelFields.clear();
-//            if (!selected.isEmpty()) {
-//                // Altes löschen
-//                tempInfoObj = null;
-//                // Erstmal die Grundlegende Struktur mit mehreren gleichen zusammenfassen und so
-//                ArrayList<ArrayList<GameObject>> prelist = new ArrayList<ArrayList<GameObject>>();
-//                for (int i = 0; i < selected.size(); i++) {
-//                    GameObject obj = selected.get(i);
-//                    // Nachsehen, ob es schon Kategorien mit dieser Einheit gibt:
-//                    int res = -1;
-//                    for (int k = 0; k < prelist.size(); k++) {
-//                        ArrayList<GameObject> list = prelist.get(k);
-//                        if (list.get(0).descTypeId == obj.descTypeId) {
-//                            res = k;
-//                            break;
-//                        }
-//                    }
-//                    if (res != -1) { // Ja das gibts schon, einfach adden
-//                        prelist.get(res).add(obj);
-//                    } else {
-//                        // Neue Kategorie aufmachen
-//                        prelist.add(new ArrayList<GameObject>());
-//                        prelist.get(prelist.size() - 1).add(obj);
-//                    }
-//                }
-//                // Strucktur für ein späteres finden speichern
-//
-//                for (ArrayList<GameObject> oblist : prelist) {
-//                    GameObject[] obarr = new GameObject[oblist.size()];
-//                    oblist.toArray(obarr);
-//                    interSelFields.add(obarr);
-//                }
-//                // Fertig, Struktur ist aufgebaut, jetzt zeichnen
-//                if (selected.size() > 1) {
-//                    g2 = interactivehud.getGraphics();
-//                    g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-//                    //g2.clearRect(0, 0, interactivehud.getWidth(), interactivehud.getHeight());
-//                    g2.clear();
-//                    for (int m = 0; m < interSelFields.size(); m++) {
-//                        // Position bestimmen:
-//                        px++;
-//                        if (px > 3) {
-//                            py++;
-//                            px = 0;
-//                        }
-//                        // Dahin zeichnen:
-//                        g2.setColor(Color.black);
-//                        GameObject rgo = interSelFields.get(m)[0];
-//                        String sel;
-//                        Image img = null;
-//                        // Versuche Gebäude
-//                        try {
-//                            Unit u = (Unit) rgo;
-//                            // Ok, Unit
-//                            if ((sel = u.graphicsdata.hudTexture) == null) {
-//                                sel = u.graphicsdata.defaultTexture;
-//                            }
-//                            if (sel != null) {
-//                                GraphicsImage rimg = imgMap.get(sel);
-//                                if (rimg != null) {
-//                                    img = rimg.getImage();
-//                                }
-//                            }
-//                        } catch (java.lang.ClassCastException ex) {
-//                            Building b = (Building) rgo;
-//                            // Ok, Gebäude
-//                            if ((sel = b.hudTexture) == null) {
-//                                sel = b.defaultTexture;
-//                            }
-//                            if (sel != null) {
-//                                GraphicsImage rimg = imgMap.get(sel);
-//                                if (rimg != null) {
-//                                    img = rimg.getImage();
-//                                }
-//                            }
-//                        }
-//                        if (img != null) {
-//                            // Jetzt Zeichnen
-//                            int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
-//                            int dy1 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560));
-//                            int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
-//                            int dy2 = (int) (realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4);
-//                            g2.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight());
-//                            g2.setColor(Color.black);
-//                            g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-//                            g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
-//                            g2.drawString(String.valueOf(interSelFields.get(m).length), dx1 + 2, dy1);
-//                        }
-//                    }
-//                }
-//            }
-//            optList.clear();
-//            if (selected.size() == 1 || interSelFields.size() == 1) {
-//                // Wenn alles von der gleichen Sorte ist
-//                // Alle Fähigkeiten dieser "Sorte" einblenden
-//                GameObject obj = null;
-//                if (interSelFields.size() == 1) {
-//                    obj = interSelFields.get(0)[0];
-//                } else {
-//                    obj = selected.get(0);
-//                }
-//                if (obj.ready) {
-//                    java.util.List<Ability> alist = obj.abilitys;
-//                    px = -1;
-//                    py = 0;
-//                    for (int i = 0; i < alist.size(); i++) {
-//                        Ability ability = alist.get(i);
-//                        // Entspricht Epoche? - Überhaupt zeichnen?
-//                        if ((ability.epoche == this.epoche || ability.epoche == 0) && ability.isVisible()) {
-//                            optList.add(ability);
-//                            // Position bestimmen:
-//                            px++;
-//                            if (px > 3) {
-//                                py++;
-//                                px = 0;
-//                            }
-//                            // Entweder wir haben gerade die angegebene Epoche, oder es gilt für alle 0
-//                            // Bildchen holen
-//                            String tex = null;
-//                            GraphicsImage img = null;
-//                            try {
-//                                tex = ability.symbols[epoche];
-//                                if (tex == null) {
-//                                    tex = ability.symbols[0]; // Wenn für die Spezielle Epoche keins da ist, dann das allgemeine versuchen
-//                                }
-//                                img = imgMap.get(tex);
-//                            } catch (Exception ex) {
-//                                rgi.logger("[Graphics][ERROR]: Symbol for ability \"" + ability.name + "\" (epoche " + epoche + ") not found!");
-//                            }
-//                            if (img != null) {
-//                                // Jetzt Zeichnen
-//                                int dx1 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15));
-//                                int dy1 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560)) + realPixY * 0.257);
-//                                int dx2 = (int) (hudSizeX * 0.15 + px * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5);
-//                                int dy2 = (int) ((realPixY * 2 / 7 * 0.2 + py * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4) + realPixY * 0.257);
-//                                g2.drawImage(img.getImage(), dx1, dy1, dx2, dy2, 0, 0, img.getImage().getWidth(), img.getImage().getHeight());
-//                                if (!ability.isAvailable()) {
-//                                    g2.setColor(fowGray);
-//                                    g2.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-//                                }
-//                                g2.setColor(ability.frameColor);
-//                                g2.drawRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-//                                g2.drawRect(dx1 + 1, dy1 + 1, (dx2 - dx1) - 2, (dy2 - dy1) - 2);
-//                                // Fortschritt zeichnen?
-//                                if (ability.behaviour != null) {
-//                                    float progress = 1.0f;
-//                                    int number = -1;
-//                                    if (ability.getClass().equals(AbilityRecruit.class)) {
-//                                        AbilityRecruit abr = (AbilityRecruit) ability;
-//                                        if (abr.behaviour.showProgess(abr.descTypeId)) {
-//                                            // Live-Rendern des IA-Huds einschalten
-//                                            updateInterHud = true;
-//                                            progress = abr.behaviour.getProgress(abr.descTypeId);
-//                                            if (abr.behaviour.showNumber(abr.descTypeId)) {
-//                                                number = abr.behaviour.getNumber(abr.descTypeId);
-//                                            }
-//                                        }
-//                                    } else if (ability.getClass().equals(AbilityBuild.class)) {
-//                                        AbilityBuild abb = (AbilityBuild) ability;
-//                                        if (abb.behaviour.showProgess(abb.descTypeId)) {
-//                                            // Live-Rendern des IA-Huds einschalten
-//                                            updateInterHud = true;
-//                                            progress = abb.behaviour.getProgress(0);
-//                                        }
-//                                    } else {
-//                                        if (ability.behaviour.showProgess(0)) {
-//                                            updateInterHud = true;
-//                                            progress = ability.behaviour.getProgress(0);
-//                                            if (ability.behaviour.showNumber(0)) {
-//                                                number = ability.behaviour.getNumber(0);
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    if (progress > -0.001 && progress < 0.001) {
-//                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
-//                                        g2.fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
-//                                    } else {
-//                                        // Punkt-Darstellung ermitteln:
-//                                        Polygon poly = new Polygon();
-//                                        // Mittelpunkt adden:
-//                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
-//                                        if (progress < 0.125) {
-//                                            // Den Variablen Punkt:
-//                                            // Mitte X + progress * 8 * restX, obenY
-//                                            poly.addPoint((int) (((dx1 + dx2) / 2) + ((((dx2 + dx1) / 2) - dx1) * progress * 8)), dy1);
-//                                            // Oben rechts
-//                                            poly.addPoint(dx2, dy1);
-//                                            // Unten Rechts
-//                                            poly.addPoint(dx2, dy2);
-//                                            // Unten links
-//                                            poly.addPoint(dx1, dy2);
-//                                            // Oben Links
-//                                            poly.addPoint(dx1, dy1);
-//                                            // Oben Mitte
-//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-//                                        } else if (progress < 0.375) {
-//                                            // Den Variablen Punkt
-//                                            // X2, Y1 + (progess - 0.125) * 4 * (Y2 - Y1)
-//                                            poly.addPoint(dx2, (int) (dy1 + (progress - 0.125) * 4 * (dy2 - dy1)));
-//                                            // Unten Rechts
-//                                            poly.addPoint(dx2, dy2);
-//                                            // Unten links
-//                                            poly.addPoint(dx1, dy2);
-//                                            // Oben Links
-//                                            poly.addPoint(dx1, dy1);
-//                                            // Oben Mitte
-//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-//                                        } else if (progress < 0.625) {
-//                                            // Variabler Punkt
-//                                            // (X2 - X1) * (progress - 0.375) * 4 , Y2
-//                                            poly.addPoint((int) (dx2 - ((dx2 - dx1) * (progress - 0.375) * 4)), dy2);
-//                                            // Unten links
-//                                            poly.addPoint(dx1, dy2);
-//                                            // Oben Links
-//                                            poly.addPoint(dx1, dy1);
-//                                            // Oben Mitte
-//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-//                                        } else if (progress < 0.875) {
-//                                            // Variabler Punkt
-//                                            // X1, (dy2 -dy1) * (progress - 0.625) * 4
-//                                            poly.addPoint(dx1, (int) (dy2 - (dy2 - dy1) * (progress - 0.625) * 4));
-//                                            // Oben Links
-//                                            poly.addPoint(dx1, dy1);
-//                                            // Oben Mitte
-//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-//                                        } else {
-//                                            // Variabler Punkt
-//                                            // X1 + (X2 - X1) / 2 * (progress - 0.875) * 8, Y1
-//                                            poly.addPoint((int) (dx1 + (dx2 - dx1) / 2 * (progress - 0.875) * 8), dy1);
-//                                            // Oben Mitte
-//                                            poly.addPoint((dx1 + dx2) / 2, dy1);
-//                                        }
-//                                        // Mittelpunkt wieder adden
-//                                        poly.addPoint((dx1 + dx2) / 2, (dy1 + dy2) / 2);
-//                                        // Zeichnen
-//                                        g2.setColor(new Color(0.0f, 0.0f, 0.0f, 0.6f));
-//                                        g2.fill(poly);
-//                                    }
-//                                    g2.setColor(Color.black);
-//                                    if (number != -1) {
-//                                        g2.drawString(Integer.toString(number), dx1 + 2, dy1);
-//                                    }
-//                                }
-//                            }
-//
-//                        }
-//
-//                    }
-//                }
-//            }
-//            // Komplett fertig, Struckturiert und alles - prima. Ende
-//
-//        } catch (org.newdawn.slick.SlickException ex) {
-//            ex.printStackTrace();
-//        }
-    }
-
     private void setColorToPlayer(int playerId, Graphics g2) {
         // Stellt die Farbe für die Minimap-Punkte richtig ein
         g2.setColor(rgi.game.getPlayer(playerId).color);
@@ -2199,10 +1438,6 @@ public class GraphicsContent extends BasicGame {
             }
         }
 
-    }
-
-    protected void changePaintCursor(MapEditorCursor rmec) {
-        drawCursor = rmec;
     }
 
     private void renderCol() {
@@ -2356,36 +1591,11 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public static Image grayScale(Image im) {
-
-        // Verwandelt ein Bild ein eine Grayscale-Version, behält aber die Transparenz
-        ImageBuffer grayImage = new ImageBuffer(im.getWidth(), im.getHeight());
-        //Graphics g = grayImage.getGraphics();
-
-        for (int x = 0; x < im.getWidth(); x++) {
-            for (int y = 0; y < im.getHeight(); y++) {
-                Color argb = im.getColor(x, y);
-                int a = argb.getAlpha();
-                int r = argb.getRed();
-                int g = argb.getGreen();
-                int b = argb.getBlue();
-                int l = (int) (.299 * r + .587 * g + .114 * b); //luminance
-                grayImage.setRGBA(x, y, l, l, l, a);
-            }
-        }
-        return grayImage.getImage();
-    }
-
     public void setVisMap(CoRMapElement[][] newVisMap, int X, int Y) {
         // Einfach einsetzen
         visMap = newVisMap;
         sizeX = X;
         sizeY = Y;
-
-        miniMapViewSizeX = (int) (viewX * 1.0 / sizeX * hudSizeX * 0.8);
-        miniMapViewSizeY = (int) (viewY * 1.0 / sizeY * realPixY / 7 * 2 * 0.8);
-        // Fog of War initialisieren
-
 
         fowmap = new byte[visMap.length][visMap[0].length];
         // Durchlaufen, alles auf 0 (unerforscht) setzen
@@ -2396,29 +1606,9 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public void changeVisMap(CoRMapElement[][] newVisMap) {
-        // Einfach einsetzen
-        visMap = newVisMap;
-        if (modi != 3) { // Im echten Rendern refreshed die Mainloop
-            repaint();
-        }
-    }
-
     public void setImageMap(HashMap<String, GraphicsImage> newMap) {
         // Die Bilder, die verfügbar sind
         imgMap = newMap;
-    }
-
-    public void setMesh(boolean useMesh) {
-        // Gitter anzeigen (Editor) oder nicht?
-        renderMesh = useMesh;
-        this.repaint();
-    }
-
-    public void setGround(boolean useGround) {
-        // Boden anzeigen oder nicht?
-        renderGround = useGround;
-        this.repaint();
     }
 
     public void setPosition(int posX, int posY) {
@@ -2441,26 +1631,6 @@ public class GraphicsContent extends BasicGame {
 
     }
 
-    public void setObjects(boolean robj) {
-        // Objekte - Häuser Bäume etc rendern oder net
-        renderObjects = robj;
-    }
-
-    public void setCreeps(boolean rcreeps) {
-        // Creeps rendern?
-        renderCreeps = rcreeps;
-    }
-
-    public void setBuildings(boolean rbuildings) {
-        // Gebäude rendern / Nur Editor
-        renderBuildings = rbuildings;
-    }
-
-    public void setRessources(boolean rRessources) {
-        // Ressourcen rendern
-        renderRessources = rRessources;
-    }
-
     public void setFogofwar(boolean rFow) {
         // Fog of War rendern
         renderFogOfWar = rFow;
@@ -2474,12 +1644,6 @@ public class GraphicsContent extends BasicGame {
         } else {
             parent.setMouseGrabbed(false);
         }
-    }
-
-    public void startEditorRender() {
-        // Jetzt keine dummen Sachen, sondern echten EditorContent rendern
-        modi = 2;
-        this.repaint();
     }
 
     // Löscht die gesamte Fow-Map (überschreibt sie mit 0 (unerkundet))
@@ -2574,106 +1738,6 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    public void renderBackgroundChanged() {
-        // Re-rendert den Background
-        // calcImage(false, true);
-        // MiniMap
-        if (parent.isShowingFPS()) {
-            parent.setShowFPS(false);
-            transformMiniMap();
-            mergeHud();
-            parent.setShowFPS(true);
-        } else {
-            transformMiniMap();
-            mergeHud();
-        }
-    }
-
-    public void initMiniMap() {
-        if (parent.isShowingFPS()) {
-            parent.setShowFPS(false);
-            transformMiniMap();
-            mergeHud();
-            parent.setShowFPS(true);
-        } else {
-            transformMiniMap();
-            mergeHud();
-        }
-    }
-
-    public void updateMiniMap() {
-        calcMiniMap();
-    }
-
-    private void transformMiniMap() {
-        try {
-            try {
-                // Erstellt einen neue Basis-Minimap
-                Image tempImg2 = new Image(visMap.length * 2, visMap[0].length * 2);
-                Graphics tempGra = tempImg2.getGraphics();
-                // Skalierungsfaktor berechnen
-                for (int x = 0; x < visMap.length; x++) {
-                    for (int y = 0; y < visMap[0].length; y++) {
-                        if ((x + y) % 2 == 1) {
-                            continue;
-                        } else {
-                            try {
-                                GraphicsImage tex = imgMap.get(visMap[x][y].getProperty("ground_tex"));
-                                if (tex != null) {
-                                    Color pcol = tex.getImage().getColor(20, 20);
-                                    tempGra.setColor(pcol);
-                                    tempGra.fillRect(x * 2, y * 2, 4, 4);
-                                }
-                            } catch (Exception ex) {
-                            }
-                        }
-                    }
-                }
-                tempGra.flush();
-                miniMap = tempImg2.getScaledCopy((int) (hudSizeX * 0.8), (int) (realPixY * 2 / 7 * 0.8));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            Graphics g3 = null;
-            g3 = fowMiniLayer.getGraphics();
-            g3.setBackground(Color.black);
-            //g3.clearRect(0, 0, fowMiniLayer.getWidth(), fowMiniLayer.getHeight());
-            g3.clear();
-        } catch (SlickException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
-    protected void mergeHud() {
-        try {
-            // Liefert das Hud zurück, mit der Minimap reingearbeitet
-            Graphics g4 = null;
-            if (hudGround == null) {
-                hudGround = new Image(hudSizeX, realPixY);
-            }
-            g4 = hudGround.getGraphics();
-            // Löschen
-            g4.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.5f));
-            //g4.clearRect(0, 0, hudGround.getWidth(), hudGround.getHeight());
-            g4.clear();
-            // Bilder passend rendern
-            if (epoche != 0) {
-                // Hud skaliert reinrendern
-                Image hud = huds[epoche];
-                if (hud == null) {
-                    hud = huds[1];
-                }
-                g4.drawImage(hud, 0, 0, hudGround.getWidth(), hudGround.getHeight(), 0, 0, hud.getWidth(), hud.getHeight());
-            }
-            g4.drawImage(miniMap, (int) (hudSizeX * 0.1) + 1, (int) (realPixY / 7 * 1.4));
-            g4.flush();
-        } catch (SlickException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
     public Dimension getSelectedField(int selX, int selY) {
         // Findet heraus, welches Feld geklickt wurde - Man muss die Felder mittig anklicken, sonst gehts nicht
         // Wir haben die X und Y Koordinate auf dem Display und wollen die X und Y Koordinate auf der Map bekommen
@@ -2751,92 +1815,6 @@ public class GraphicsContent extends BasicGame {
         return modi;
     }
 
-    public void renderWayPoint(Graphics g2) {
-        for (int i = 0; i < wayPath.size(); i++) {
-            // Liste durchgehen
-            // rendern
-            g2.drawImage(wayPointHighlighting[0], (wayPath.get(i).getX() - positionX) * 10, (int) ((wayPath.get(i).getY() - positionY) * 7.5));
-
-        }
-        if (wayOpenList != null) {
-            for (int o = 0; o < wayOpenList.size(); o++) {
-                Position pos = (Position) wayOpenList.remove();
-                g2.drawImage(wayPointHighlighting[3], (pos.getX() - positionX) * 10, (int) ((pos.getY() - positionY) * 7.5));
-            }
-        }
-        if (wayClosedList != null) {
-            for (int u = 0; u < wayClosedList.size(); u++) {
-                g2.drawImage(wayPointHighlighting[2], (wayClosedList.get(u).getX() - positionX) * 10, (int) ((wayClosedList.get(u).getY() - positionY) * 7.5));
-            }
-        }
-    }
-
-    public void appendOpenList(PriorityBuffer oL) {
-        wayOpenList = oL;
-    }
-
-    public void appendClosedList(ArrayList<Position> cL) {
-        wayClosedList = cL;
-    }
-
-    /**
-     * Rendert eine neue Minimap - Rasend schnell, weil nichts skaliert werden muss.
-     * Benutzt die GFM-Minimap als Basis
-     *
-     */
-    public void calcMiniMap() {
-        try {
-            if (buildingLayer == null) {
-                buildingLayer = new Image((int) (hudSizeX * 0.8), (int) (realPixY / 7 * 2 * 0.8));
-            }
-            if (fowMiniLayer == null) {
-                fowMiniLayer = new Image((int) (hudSizeX * 0.8), (int) (realPixY / 7 * 2 * 0.8));
-            }
-
-            // Fps-Anzeige temporär abschalten, sonst kann die Zahl auch im BuildingLayer erscheinen
-            boolean fpson = parent.isShowingFPS();
-            parent.setShowFPS(false);
-
-            // Bildchen ist schon da:
-            Graphics g2 = null;
-
-            g2 = buildingLayer.getGraphics();
-
-            g2.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
-
-            //g2.clearRect(0, 0, buildingLayer.getWidth(), buildingLayer.getHeight());
-            g2.clear();
-
-            // Einfach noch alle Gebäude mit dem vorgescaleten Bildchen reinrendern
-            for (Building building : buildingList) {
-                if (building.getPlayerId() == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(building, rgi.game.getOwnPlayer())) {
-                    for (int z1 = 0; z1 < building.getZ1(); z1++) {
-                        for (int z2 = 0; z2 < building.getZ2(); z2++) {
-                            // Hierhin das Bildchen zeichnen
-                            g2.drawImage(coloredImgMap.get("img/game/ground.png" + building.getPlayerId()).getImage(), (int) ((building.getMainPosition().getX() + z1 + z2) * 20 * maxminscaleX), (int) ((building.getMainPosition().getY() - z1 + z2) * 15 * maxminscaleY));
-                        }
-                    }
-                }
-
-            }
-            g2.flush();
-            if (fpson) {
-                parent.setShowFPS(true);
-            }
-        } catch (org.newdawn.slick.SlickException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void setColMode(boolean cMode) {
-        colMode = cMode;
-        /* Rausgenommen, da es zu Performanceeinbußen führt, Greymaps werden jetzt beim start gecalct...
-        if (cMode) {
-        calcGreyMap();
-        }
-         * */
-    }
-
   /*  public Dimension searchMiniMid(int cX, int cY) {
         // Sucht die Koordinaten eines Klicks auf die Minimap, also die Koordinaten des Feldes in der Mitte der Scollbox
         // Input muss auf Minimap gefiltert sein, sonst kommt nur Müll raus
@@ -2897,46 +1875,21 @@ public class GraphicsContent extends BasicGame {
         useAntialising = true;
     }
 
-    public void updateUnits(java.util.List<Unit> uL) {
-        unitList = uL;
-        if (modi != 3) {
-            repaint();
-        }
-    }
-
-    public void updateBuildings(java.util.List<Building> bL) {
-        buildingList = bL;
-        if (modi != 3) {
-            repaint();
-        }
-    }
-
-    public void enableWayPointHighlighting(ArrayList<Position> path) {
-        // Zeigt den Path an
-        wayPath = path;
-        enableWaypointHighlighting = true;
-//        calcImage(false, true);
-        System.out.println("AddMe: Enable Waypoint Highlighting");
-
-    }
-
     /**
      * Die Updates des FoW dürfen nicht während der Bildberechnung sein, sonst flackert es.
      */
     private void updateBuildingFoW() {
-        clearFogOfWar();
-        for (int i = 0; i < buildingList.size(); i++) {
-            Building b = buildingList.get(i);
-            // FoW berechnen
-            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(b, rgi.game.getOwnPlayer())) {
-                cutSight(b);
-            }
-        }
+//        clearFogOfWar();
+//        for (int i = 0; i < buildingList.size(); i++) {
+//            Building b = buildingList.get(i);
+//            // FoW berechnen
+//            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId || rgi.game.shareSight(b, rgi.game.getOwnPlayer())) {
+//                cutSight(b);
+//            }
+//        }
     }
 
     public void buildingsChanged() {
-        // Minimap updaten, damit Gebäude korrekt angezeigt werden
-        updateMiniMap();
         // FoW updaten
         updateBuildingsFow = true;
     }
@@ -3042,214 +1995,26 @@ public class GraphicsContent extends BasicGame {
      * Aktualisiert die gesamte FoW-Map auf Einheiten-Sichtweiten
      */
     public void calcFogOfWar() {
-        // Zuerst alles mal von Einheiten gesehene vergessen
-        for (int x = 0; x < fowmap.length; x++) {
-            for (int y = 0; y < fowmap[0].length; y++) {
-                byte v = fowmap[x][y];
-                if (fowmap[x][y] == 3) {
-                    fowmap[x][y] = 1;
-                }
-
-            }
-        }
-        // Für alle Einheiten auf der Map
-        int ownPlayerId = rgi.game.getOwnPlayer().playerId;
-        for (int i = 0; i < unitList.size(); i++) {
-            Unit unit = unitList.get(i);
-            if (unit.getPlayerId() != ownPlayerId && !rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
-                // Nur eigene Einheiten decken den Nebel des Krieges auf
-                continue;
-            }
-            cutSight(unit);
-        }
-    }
-
-    public void calcSelClicked(final int button, final int x, final int y, int clickCount, List<InteractableGameElement> list, boolean select) {
-//        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
-//        int kX = x;
-//        int kY = y;
-//        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X erstzen kann
-//        // Spalten - Xwerte
-//        if (kX >= hudX + (int) (hudSizeX * 0.15) && kX <= hudX + (hudSizeX * 0.15 + hudSizeX * 0.7 / 5)) {
-//            calc = 0;
-//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 1 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-//            calc = 1;
-//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 2 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-//            calc = 2;
-//        } else if (kX >= hudX + (int) (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15)) && kX <= hudX + (hudSizeX * 0.15 + 3 * (hudSizeX * 0.7 * 4 / 15) + hudSizeX * 0.7 / 5)) {
-//            calc = 3;
-//        }
-//        // Reihen
-//        if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 1 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
-//            calc += 4;
-//        } else if (kY >= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560)) && kY <= hudX + (int) (realPixY * 2 / 7 * 0.2 + 2 * (realPixY * 48 / 560) + realPixY * 2 / 7 * 0.7 / 4)) {
-//            calc += 8;
-//        }
-//        if (calc >= 0) {
-//            // Gut wir haben da was!
-//            if (calc < interSelFields.size()) {
-//                GameObject[] klicked = interSelFields.get(calc);
-//                if (klicked != null) {
-//                    if (select) {
-//                        // Gut, diese Kategorie gibts auch, nur diese Anwählen
-//                        // Erstmal alle löschen
-//                        for (GameObject obj : list) {
-//                            obj.isSelected = false;
-//                        }
-//                        list.clear();
-//                        for (GameObject newobj : klicked) {
-//                            list.add(newobj);
-//                            newobj.isSelected = true;
-//                        }
-//                        // Fertig
-//                    } else {
-//                        for (GameObject newobj : klicked) {
-//                            list.remove(newobj);
-//                            newobj.isSelected = false;
-//                        }
-//                    }
+//        // Zuerst alles mal von Einheiten gesehene vergessen
+//        for (int x = 0; x < fowmap.length; x++) {
+//            for (int y = 0; y < fowmap[0].length; y++) {
+//                byte v = fowmap[x][y];
+//                if (fowmap[x][y] == 3) {
+//                    fowmap[x][y] = 1;
 //                }
-//            }
-//        }
-    }
-
-    public void preCalcMiniMapElements(double scalefactorX, double scalefactorY) {
-//        // Alle Bilder gemäß des Scale-Faktors skalieren und einfügen
-//        // Scalefacor = MiniMap-Auflösung / Volle Hudgroundauflösung
-//        // Größe der Bilder errechnen:
-//        try {
-//            int tarX = (int) (40 * scalefactorX);
-//            int tarY = (int) (40 * scalefactorY);
-//            // Bilder anlegen & gleich reinrendern
-//            Image nimg = new Image(tarX + 1, tarY + 1);
-//            Graphics g = nimg.getGraphics();
-//            g.drawImage(coloredImgMap.get("img/game/ground.png").getImage(), 0, 0, nimg.getWidth(), nimg.getHeight(), 0, 0, 40, 40);
-//            GraphicsImage timg = new GraphicsImage(nimg);
-//            timg.setImageName("img/game/ground.png");
-//            coloredImgMap.put("img/game/ground.png", timg);
-//            maxminscaleX = scalefactorX;
-//            maxminscaleY = scalefactorY;
-//            // Fertig
-//        } catch (org.newdawn.slick.SlickException ex) {
-//            ex.printStackTrace();
-//        }
-    }
-
-    public void calcOptClicked(final int button, final int x, final int y, final int clickCount, ArrayList<GameObject> list) {
-//        mouseX = x;
-//        mouseY = y;
-//        Ability ab = searchOptFast();
-//        if (ab != null && list.get(0).ready) {
-//            // Mouse weg, damit Hover verschwindet:
-//            if (ab.removeHoverAfterUse) {
-//                mouseX = 50;
-//                mouseY = 50;
-//            }
-//            // Für die Erste GO ausführen
-//            // Invoker setzen
-//            ab.setInvoker(list.get(0));
-//            // Fähigkeit starten
-//            if (button == 0) {
-//                if (rgi.rogGraphics.inputM.shiftDown) {
-//                    for (int i = 0; i < 5; i++) {
-//                        if (ab.isAvailable()) {
-//                            ab.perform(list.get(0));
-//                        }
-//                    }
-//                } else {
-//                    if (ab.isAvailable()) {
-//                        ab.perform(list.get(0));
-//                    }
-//                }
-//            } else if (button == 1) {
-//                if (rgi.rogGraphics.inputM.shiftDown) {
-//                    for (int i = 0; i < 5; i++) {
-//                        ab.antiperform(list.get(0));
-//                    }
-//                } else {
-//                    ab.antiperform(list.get(0));
-//                }
-//            }
-//            // Für noch mehr ausführen?
-//            if (ab.useForAll) {
-//                for (int i = 1; i < list.size(); i++) {
-//                    Ability abr = list.get(i).abilitys.get(optList.indexOf(ab));
-//                    if (abr != null) {
-//                        if (button == 0) {
-//                            if (abr.isAvailable()) {
-//                                abr.perform(list.get(i));
-//                            }
-//                        } else if (button == 1) {
-//                            abr.antiperform(list.get(i));
-//                        }
-//                    }
-//                }
-//            }
-//            // IA-Hud triggern, wegen eventuellem Progress-Rendern
-//            this.updateInterHud = true;
 //
-//        }
-    }
-
-    /**
-     * Sucht die Ability heraus, über der derzeit die Maus steht.
-     * Diese Methode ist auf Geschwindigkeit optimiert.
-     * @return
-     */
-    private Ability searchOptFast() {
-//        // Es gibt 12 Möglichkeiten, aber wir müssen nur auf Reihen uns Spalten Testen, also 7 Test
-//        int calc = -500; // Sehr niedrigen Wert ansetzten, damit ein plus in Y nicht ein fehlendes X ersetzen kann
-//        // Rechenzeit sparen durch vorrechnen
-//        int hsx1 = (int) (hudSizeX * 0.15);
-//        int hsx2 = (int) (hudSizeX * 14 / 75);
-//        // Spalten - Xwerte
-//        if (mouseX >= hudX + (int) (hsx1) && mouseX <= hudX + (hsx1 + hudSizeX * 0.7 / 5)) {
-//            calc = 0;
-//        } else if (mouseX >= hudX + (int) (hsx1 + 1 * hsx2) && mouseX <= hudX + (hsx1 + 1 * hsx2 + hudSizeX * 0.7 / 5)) {
-//            calc = 1;
-//        } else if (mouseX >= hudX + (int) (hsx1 + 2 * hsx2) && mouseX <= hudX + (hsx1 + 2 * hsx2 + hudSizeX * 0.7 / 5)) {
-//            calc = 2;
-//        } else if (mouseX >= hudX + (int) (hsx1 + 3 * hsx2) && mouseX <= hudX + (hsx1 + 3 * hsx2 + hudSizeX * 0.7 / 5)) {
-//            calc = 3;
-//        }
-//        // Reihen
-//        if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4))) {
-//            // Nix
-//        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 1.5)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 2.5))) {
-//            calc += 4;
-//        } else if (mouseY >= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8) / 4 * 3)) && mouseY <= (int) (realPixY * 5 / 7 + realPixY * 2 / 7 * 0.1 + ((realPixY * 2 / 7 * 0.8)))) {
-//            calc += 8;
-//        } else {
-//            calc = -500;
-//        }
-//        if (calc >= 0 && calc < optList.size()) {
-//            // Gut wir haben da was!
-//            // Fähigkeit holen
-//            Ability ab = null;
-//            try {
-//                ab = optList.get(calc);
-//                if (rgi.rogGraphics.inputM.selected.get(0).ready) {
-//                    return ab;
-//                }
-//            } catch (java.lang.IndexOutOfBoundsException ex) {
 //            }
 //        }
-        return null;
-    }
-
-    private static String transformTime(int time) {
-        // Stellt die Zeit als schönen String da
-        int secs = (int) (time / 1000);
-        if (secs < 60) {
-            return secs + " s";
-        } else if (secs < 3600) {
-            int a;
-            return (secs / 60) + " min " + secs % 60 + " s";
-        } else {
-            int a = secs / 3600;
-            int b = secs % 3600;
-            return a + " h " + b / 60 + " min " + b % 60 + " s";
-        }
+//        // Für alle Einheiten auf der Map
+//        int ownPlayerId = rgi.game.getOwnPlayer().playerId;
+//        for (int i = 0; i < unitList.size(); i++) {
+//            Unit unit = unitList.get(i);
+//            if (unit.getPlayerId() != ownPlayerId && !rgi.game.shareSight(unit, rgi.game.getOwnPlayer())) {
+//                // Nur eigene Einheiten decken den Nebel des Krieges auf
+//                continue;
+//            }
+//            cutSight(unit);
+//        }
     }
 
     public void appendCoreInner(ClientCore.InnerClient inner) {
@@ -3258,10 +2023,7 @@ public class GraphicsContent extends BasicGame {
 
     public GraphicsContent() {
         super("Centuries of Rage 2: pre-Alpha");
-        interSelFields = new ArrayList<GameObject[]>();
         coloredImgMap = new HashMap<String, GraphicsImage>();
-        wayPointHighlighting = new Image[4];
-        optList = new ArrayList<Ability>();
         overlays = new ArrayList<Overlay>();
         fowpatmgr = new GraphicsFogOfWarPattern();
         allListLock = new ReentrantLock();
@@ -3279,15 +2041,6 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-        // Egal, wird automatisch gemacht
-        try {
-            wayPointHighlighting[0] = new Image("img/notinlist/editor/colmode.png");
-            wayPointHighlighting[1] = new Image("img/notinlist/editor/highlight_yellow.png");
-            wayPointHighlighting[2] = new Image("img/notinlist/editor/highlight_orange.png");
-            wayPointHighlighting[2] = new Image("img/notinlist/editor/highlight_blue.png");
-        } catch (SlickException ex) {
-            System.out.println("Can't init waypoint-highlighting!");
-        }
 
         // Fonts initialisieren
         fonts = new org.newdawn.slick.TrueTypeFont[6];
@@ -3313,7 +2066,6 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-        lastDelta = delta;
     }
 
     @Override
@@ -3371,37 +2123,15 @@ public class GraphicsContent extends BasicGame {
             this.paintComponent(g);
         }
         //this.paintComponent(g);
-        checkInputEvents();
 
         if (buildingsChanged) {
             this.buildingsChanged();
             buildingsChanged = false;
         }
         if (epocheChanged) {
-            if (parent.isShowingFPS()) {
-                parent.setShowFPS(false);
-                this.mergeHud();
-                parent.setShowFPS(true);
-            } else {
-                this.mergeHud();
-            }
             epocheChanged = false;
         }
         //parent.slickReady = true;
-    }
-
-    private void checkInputEvents() {
-        try {
-            if (lastInputEvent == 1) {
-                // CalcOptClicked
-              //  this.calcOptClicked(lastInputButton, lastInputX, lastInputY, 1, rgi.rogGraphics.inputM.selected);
-            }
-        } finally {
-            lastInputEvent = 0;
-            lastInputX = 0;
-            lastInputY = 0;
-            lastInputButton = 0;
-        }
     }
 
     //@Override

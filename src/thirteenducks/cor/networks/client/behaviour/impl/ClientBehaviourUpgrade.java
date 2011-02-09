@@ -111,8 +111,6 @@ public class ClientBehaviourUpgrade extends ClientBehaviour implements ShowsProg
             if (!this.ability.allowMultipleUses) {
                 this.ability.alreadyUsed = true;
             }
-
-            rgi.rogGraphics.triggerUpdateHud();
         }
     }
 

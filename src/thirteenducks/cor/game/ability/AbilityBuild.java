@@ -28,7 +28,6 @@ package thirteenducks.cor.game.ability;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import thirteenducks.cor.graphics.input.CoRInputMode;
 import thirteenducks.cor.game.Position;
@@ -142,9 +141,6 @@ public class AbilityBuild extends Ability {
                                 }
                                 // Losbauen
                                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 17, unit.netID, building.netID, duration, 0));
-
-                                // Fortschrittsanzeige einschalten
-                                rgi.rogGraphics.triggerUpdateHud();
                             } else {
                                 System.out.println("FixMe: Error, can't build building, is was not found.");
                             }
