@@ -48,7 +48,6 @@ import thirteenducks.cor.graphics.input.InteractableGameElement;
 public class GraphicsContent extends BasicGame {
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
 
-    GraphicsImage defaultimage;
     public GraphicsImage colModeImage;
     Color color;
     public int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
@@ -2349,18 +2348,6 @@ public class GraphicsContent extends BasicGame {
 //        }
     }
 
-    public Dimension getPreferredSize() {
-        if (modi == 1) {
-            return new Dimension(defaultimage.getImage().getWidth(), defaultimage.getImage().getHeight()); // Größe vom Bild
-        } else if (modi == 2) {
-            // return new Dimension(12000,12000); // Nur ein TEST
-            return new Dimension(sizeX * 10, (int) ((sizeY * 7.5) + 10)); // Echtes rendern
-        } else { // Modi == 0;
-            return new Dimension(100, 100); // Einfach irgendwas
-        }
-
-    }
-
     public void setFramePosition(Dimension td) {
         // Setzt die Position des Rahmens, inzwischen Editor&Game
         framePos = td;
@@ -2387,14 +2374,6 @@ public class GraphicsContent extends BasicGame {
             }
         }
         return grayImage.getImage();
-    }
-
-    public void setPicture(GraphicsImage b) {
-        // Einfach ein Bild anzeigen - Auflösung wird automatisch justiert
-        defaultimage = b;
-        modi =
-                1;
-        this.repaint();
     }
 
     public void setVisMap(CoRMapElement[][] newVisMap, int X, int Y) {
