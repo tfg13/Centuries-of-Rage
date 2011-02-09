@@ -57,8 +57,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     private HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
     HashMap imgInput;
     int imgInputNumber = 0;
-    List<Unit> unitList; //Alle Einheiten
-    List<Building> buildingList; // Alle Gebäude
     boolean showFrameRate = false;
     public CoRInput inputM; // InputModul
     public boolean miniMapScrolling = false;
@@ -73,7 +71,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     private boolean nolimits = false; // Keine Framerate-Begrenzung/Nur Benchmark
     long starttime;             // Wann die Grafikengine gestartet wurde
     private boolean pauseMod = false;   // Für den Pausemodus
-    private boolean statisticsMod = false;   // Für den Pausemodus
     private long pauseTime;           // Zeitpunkt des Pausierenes
     private boolean fowtrigger = false; // Trigger für flackerfreies-Fow-Updaten
     boolean fullScreenMode;
@@ -1404,13 +1401,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         // Nötige Variablen syncronisieren
         content.allList = rgi.mapModule.allList;
         content.buildingsChanged();
-        // Ansicht zum Hauptgebäude des Spielers scrollen (1. Gebäude mit seiner playerId in der Liste)
-        for (Building b : buildingList) {
-            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-                rgi.rogGraphics.jumpTo((b.getMainPosition().getX() + 6) - (rgi.rogGraphics.content.viewX / 2), b.getMainPosition().getY() - (rgi.rogGraphics.content.viewY / 2));
-                break;
-            }
-        }
     }
 
     public void startRendering() {
@@ -1764,7 +1754,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     public void showstatistics() {
-        statisticsMod = true;
+        //statisticsMod = true;
         content.gameDone = 0;
         System.out.println("AddMe: Start statistic!");
     }
