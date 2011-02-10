@@ -5,6 +5,7 @@
 
 package thirteenducks.cor.game;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Graphics;
@@ -26,6 +27,11 @@ public class Unit2x2 extends Unit {
      * Wird aus Performance-Gründen gecached.
      */
     private Position[] positions;
+    /**
+     * Wird vom Selektionsmechanismus verwaltet.
+     * Speichert die zuletzt an das Inputmodul übergebene Position.
+     */
+    private Position[] lastPositions;
 
      public Unit2x2(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -143,12 +149,15 @@ public class Unit2x2 extends Unit {
 
     @Override
     public boolean selPosChanged() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (!Arrays.equals(positions, lastPositions));
+
     }
 
     @Override
     public SelectionMarker getSelectionMarker() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        SelectionMarker marker = new SelectionMarker(this, lastPositions, positions);
+        lastPositions = positions;
+        return marker;
     }
 
     @Override
