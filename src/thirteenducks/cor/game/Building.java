@@ -406,6 +406,7 @@ public abstract class Building extends GameObject {
 
     @Override
     public SelectionMarker getSelectionMarker() {
+        selectionSet = true;
         return new SelectionMarker(this, null, positions);
     }
 }
