@@ -182,6 +182,13 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //Einheit gehört zu / Selektiert
+        if (isSelected()) {
+            // Weiße Bodenmarkierung
+            imgMap.get("img/game/sel_t0_s1.png").getImage().draw(x, y);
+        } else {
+            // Spielerfarbe
+            imgMap.get("img/game/sel_s1.png" + getPlayerId()).getImage().draw(x, y);
+        }                
     }
 }
