@@ -1175,7 +1175,7 @@ public class RandomMapBuilder {
             Haus.getGraphicsData().offsetY = 8;
             Haus.setPlayerId(i);
             Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
-            Haus.setMainPosition(new Position(x, y));
+            Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x + 1, y));
 //            RandomRogMap.visMap[x + 5][y - 5].setCollision(collision.blocked);
 //            RandomRogMap.visMap[x + 4][y - 4].setCollision(collision.blocked);
 //            RandomRogMap.visMap[x + 6][y - 4].setCollision(collision.blocked);
@@ -1250,7 +1250,11 @@ public class RandomMapBuilder {
     //    for (int i = 0; i < StartG.size(); i++) {	//für jeden Spieler 4 Starteinheiten setzen
 
             Unit2x2 Einheit = new Unit2x2(getNewNetID(), worker);
-            Einheit.setMainPosition(new Position(StartG.get(0).getMainPosition().getX() + 8, StartG.get(0).getMainPosition().getY() + 12));
+            Position unitPos = new Position(StartG.get(0).getMainPosition().getX() + 8, StartG.get(0).getMainPosition().getY() + 12);
+            if (!unitPos.valid()) {
+                unitPos.setX(unitPos.getX() + 1);
+            }
+            Einheit.setMainPosition(unitPos);
             Einheit.setPlayerId(1);
             StartU.add(Einheit);
 //            RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
