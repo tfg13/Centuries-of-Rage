@@ -45,6 +45,19 @@ public class SelectionMarker {
     InteractableGameElement owner;
 
     /**
+     * Erzeugt einen neuen Selektionsmarker mit den gegebenen Positionen.
+     * Owner müss übergeben werde, von den andern beiden darf maximal eines null sein.
+     * @param owner Das IGE, dessen Selektionspositionen geändert werden.
+     * @param oldPos Die alten Positionen, (sofern existent)
+     * @param newPos Die neuen Positionen, (sofern existent)
+     */
+    public SelectionMarker(InteractableGameElement owner, Position[] oldPos, Position[] newPos) {
+        this.owner = owner;
+        this.oldPositions = oldPos;
+        this.newPositions = newPos;
+    }
+
+    /**
      * Updated die gegebene selectionMap.
      * Dazu werden alle alten Referenzen gelöscht - fall es welche gab.
      * Dann werden alle neuen Referenzen gesetzt - fall es welche gibt.
