@@ -272,6 +272,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
+                    g.setColor(rgi.game.getPlayer(sprite.getColorId()).color);
                     sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
                 }
             }
@@ -290,6 +291,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
+                    g.setColor(rgi.game.getPlayer(sprite.getColorId()).color);
                     sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
                 }
             }
@@ -765,29 +767,6 @@ public class GraphicsContent extends BasicGame {
         g2.setFont(fonts[5]);
         g2.drawString("P A U S E", realPixX / 2 - 80, realPixY / 2 - 60);
         g2.drawRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
-    }
-
-    private void renderBuildingMarkers(Graphics g2) {
-//        // Spielermarkierungen für Gebäude - neueres System
-//        for (int i = 0; i < buildingList.size(); i++) {
-//            Building b = buildingList.get(i);
-//            if (b.getPlayerId() != rgi.game.getOwnPlayer().playerId) {
-//                continue;
-//            }
-//            // Startkoordinaten
-//            int x = (b.getMainPosition().getX() - positionX) * 10;
-//            int y = (int) ((b.getMainPosition().getY() - positionY) * 7.5);
-//            // Linien ziehen
-//            g2.setLineWidth(4);
-//            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-//            g2.setColor(rgi.game.getPlayer(b.getPlayerId()).color);
-//            g2.drawLine(x, y, x + (b.getZ1() * 10), (int) (y - (b.getZ1() * 7.5)));
-//            g2.drawLine(x, y, x + (b.getZ2() * 10), (int) (y + (b.getZ2() * 7.5)));
-//            g2.drawLine((int) (x + (b.getZ1() * 10)),(int) (y - (b.getZ1() * 7.5)),(int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
-//            g2.drawLine((int) (x + (b.getZ2() * 10)), (int) (y + (b.getZ2() * 7.5)), (int) (x + (b.getZ1() * 10) + (b.getZ2() * 10)),(int) (y - (b.getZ1() * 7.5) + (b.getZ2() * 7.5)));
-//        }
-//        g2.setLineWidth(1);
-//        //g2.setStroke(new BasicStroke(1));
     }
 
     private void renderSelBox(Graphics g2) {

@@ -83,4 +83,14 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @return eine Position, anhand derer dieses Sprite mit anderen verglichen werden kann.
      */
     public Position getSortPosition();
+
+    /**
+     * Sprites können bestimmte Dinge in ihrer eigenen Farbe rendern.
+     * Diese wird vom Grafiksystem vor den Aufrufen auf die renderMethoden gesetzt.
+     * Hierzu fragt das Grafiksystem die gewünschte ColorID ab.
+     * In der Regel ist das die playerId.
+     * Sprites, die keine Farbe haben/verwenden, sollten 0 zurückgeben.
+     * @return
+     */
+    public int getColorId();
 }

@@ -296,5 +296,10 @@ public class Bullet implements Pauseable, Sprite {
         // Bullets haben keine
     }
 
+    @Override
+    public int getColorId() {
+        return 0;
+    }
+
 
 }

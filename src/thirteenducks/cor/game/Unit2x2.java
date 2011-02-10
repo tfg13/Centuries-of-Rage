@@ -191,4 +191,9 @@ public class Unit2x2 extends Unit {
             imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
         }                
     }
+
+    @Override
+    public int getColorId() {
+        return getPlayerId();
+    }
 }

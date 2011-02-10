@@ -193,6 +193,18 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+            // Linien ziehen
+            g.setLineWidth(4);
+            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
+            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
+            g.drawLine((int) (x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)),(int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.drawLine((int) (x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.setLineWidth(4);
+    }
+
+    @Override
+    public int getColorId() {
+        return getPlayerId();
     }
 }

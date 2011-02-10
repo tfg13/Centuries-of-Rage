@@ -64,6 +64,7 @@ public class ClientGameController implements Runnable {
         // Den 0-Player adden
         playerList.add(new NetPlayer(rgi));
         playerList.get(0).playerId = 0;
+        playerList.get(0).color = Color.white;
     }
 
     public void startMainloop() {
