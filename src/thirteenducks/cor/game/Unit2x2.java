@@ -62,9 +62,9 @@ public class Unit2x2 extends Unit {
     public void setMainPosition(Position mainPosition) {
         super.setMainPosition(mainPosition);
         positions[0] = mainPosition;
-        positions[1] = mainPosition.add(new Position(mainPosition.getX() + 1, mainPosition.getY() - 1));
-        positions[2] = mainPosition.add(new Position(mainPosition.getX() + 1, mainPosition.getY() + 1));
-        positions[3] = mainPosition.add(new Position(mainPosition.getX() + 2, mainPosition.getY()));
+        positions[1] = new Position(mainPosition.getX() + 1, mainPosition.getY() - 1);
+        positions[2] = new Position(mainPosition.getX() + 1, mainPosition.getY() + 1);
+        positions[3] = new Position(mainPosition.getX() + 2, mainPosition.getY());
     }
 
     @Override
