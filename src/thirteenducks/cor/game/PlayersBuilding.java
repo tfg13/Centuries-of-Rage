@@ -31,7 +31,6 @@ import org.newdawn.slick.Graphics;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
-import thirteenducks.cor.graphics.input.SelectionMarker;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 
 /**
@@ -143,16 +142,6 @@ public class PlayersBuilding extends Building {
 
     @Override
     public boolean selectable() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean selPosChanged() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public SelectionMarker getSelectionMarker() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

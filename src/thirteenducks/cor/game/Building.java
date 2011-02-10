@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore;
+import thirteenducks.cor.graphics.input.SelectionMarker;
 
 /**
  * Superklasse für Gebäude allgemein
@@ -99,6 +100,11 @@ public abstract class Building extends GameObject {
      * Cacht alle Positionen dieses Gebäudes, weils dauernd benötigt wird.
      */
     private Position[] positions;
+    /**
+     * Wurde die Selektion schon eingetragen?
+     * Muss in der Regel nur ein einiziges Mal geschehen
+     */
+    private boolean selectionSet = false;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -390,5 +396,16 @@ public abstract class Building extends GameObject {
                 positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c,(int) mainPosition.getY() - z1c + z2c);
             }
         }
+    }
+
+
+    @Override
+    public boolean selPosChanged() {
+        return !selectionSet;
+    }
+
+    @Override
+    public SelectionMarker getSelectionMarker() {
+        return new SelectionMarker(this, null, positions);
     }
 }
