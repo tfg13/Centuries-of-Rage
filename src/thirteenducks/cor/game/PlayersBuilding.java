@@ -193,6 +193,6 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 }
