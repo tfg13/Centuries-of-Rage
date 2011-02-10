@@ -287,7 +287,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             this.rightScrollingEnabled = true;
         }
         content.setImageMap(imgMap);
-        importSelectionMarkers();
+        importColorableMarkers();
         try {
             content.colModeImage = new GraphicsImage(new Image("img/notinlist/editor/colmode.png"));
         } catch (SlickException ex) {
@@ -498,7 +498,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-    private void importSelectionMarkers() {
+    private void importColorableMarkers() {
         // Liest die Selektionsmarkierungen ein
         try {
             GraphicsImage ti1 = new GraphicsImage(new Image("img/game/ground.png"));
@@ -510,6 +510,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             GraphicsImage ti3 = new GraphicsImage(new Image("img/game/building_defaulttarget.png"));
             ti3.setImageName("img/game/building_defaulttarget.png");
             content.coloredImgMap.put("img/game/building_defaulttarget.png", ti3);
+            GraphicsImage ti4 = new GraphicsImage(new Image("img/game/sel_s2.png"));
+            ti4.setImageName("img/game/sel_s2.png");
+            content.coloredImgMap.put("img/game/sel_s2.png", ti4);
         } catch (SlickException ex) {
             rgi.logger("[Graphics][Critical]: Error importing selection markers.");
             System.out.println("[Graphics][Critical]: Error importing selection markers.");
