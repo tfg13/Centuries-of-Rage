@@ -109,7 +109,12 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x, y);
+        GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
+        if (img != null) {
+            img.getImage().draw(x, y);
+        } else {
+            System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
+        }
     }
 
     @Override
