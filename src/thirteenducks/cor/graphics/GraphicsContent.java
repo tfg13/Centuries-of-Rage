@@ -178,7 +178,9 @@ public class GraphicsContent extends BasicGame {
 //                }
 
                 //@TODO: buildingmarkers als groundeffect rendern
-                renderBuildingMarkers(g);
+                //renderBuildingMarkers(g);
+
+                renderGroundEffects(g);
 
                 //@TODO: Einheitenziel als groundeffect rendern
                 if (unitDestMode != 0) {
@@ -271,6 +273,24 @@ public class GraphicsContent extends BasicGame {
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
                     sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
+                }
+            }
+        }
+    }
+
+    /**
+     * Zeichnet alle Groundeffects aller Sprites auf den Bildschirm, falls diese derzeit im sichtbaren Bereich liegen,
+     * gemäß dem FOW gezeichnet werden sollen und sich nicht verstecken.
+     * @param g
+     */
+    private void renderGroundEffects(Graphics g) {
+        for (int i = 0; i < allList.size(); i++) {
+            Sprite sprite = allList.get(i);
+            if (spriteInSight(sprite)) {
+                //@TODO: FOW-Behandlung einbauen
+                if (sprite.renderInNullFog()) {
+                    Position mainPos = sprite.getMainPositionForRenderOrigin();
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
                 }
             }
         }
@@ -1271,7 +1291,6 @@ public class GraphicsContent extends BasicGame {
         // Berechnet die eingefärbten Texturen
         ArrayList<GraphicsImage> tList = new ArrayList<GraphicsImage>();
         tList.addAll(coloredImgMap.values());
-        coloredImgMap.clear();
         for (int i = 0; i < tList.size(); i++) {
             Image im = (Image) tList.get(i).getImage();
             for (int playerId = 0; playerId < colors.length; playerId++) {
@@ -1298,7 +1317,7 @@ public class GraphicsContent extends BasicGame {
                 // Bild berechnet, einfügen
                 GraphicsImage newImg = new GraphicsImage(preImg.getImage());
                 newImg.setImageName(tList.get(i).getImageName());
-                coloredImgMap.put(newImg.getImageName() + playerId, newImg);
+                imgMap.put(newImg.getImageName() + playerId, newImg);
             }
 
         }
@@ -1462,7 +1481,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     public GraphicsContent() {
-        super("Centuries of Rage 2: pre-Alpha");
+        super("Centuries of Rage HD: pre-Alpha");
         coloredImgMap = new HashMap<String, GraphicsImage>();
         overlays = new ArrayList<Overlay>();
         fowpatmgr = new GraphicsFogOfWarPattern();
