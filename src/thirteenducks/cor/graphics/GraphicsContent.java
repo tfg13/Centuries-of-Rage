@@ -177,9 +177,6 @@ public class GraphicsContent extends BasicGame {
 //                    lastHovMouseY = mouseY;
 //                }
 
-                //@TODO: buildingmarkers als groundeffect rendern
-                //renderBuildingMarkers(g);
-
                 renderGroundEffects(g);
 
                 //@TODO: Einheitenziel als groundeffect rendern
