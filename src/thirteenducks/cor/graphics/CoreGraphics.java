@@ -1287,6 +1287,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public void activateMap(CoRMapElement[][] newVisMap) {
         content.setVisMap(newVisMap, rgi.mapModule.getMapSizeX(), rgi.mapModule.getMapSizeY());
         content.setPosition(0, 0);
+        rgi.rogGraphics.initSubs();
     }
 
     /**
@@ -1423,7 +1424,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         } catch (AWTException ex) {
         }
 
-        rgi.rogGraphics.initSubs();
 
         starttime = new Date().getTime();
         seenPause = false;
