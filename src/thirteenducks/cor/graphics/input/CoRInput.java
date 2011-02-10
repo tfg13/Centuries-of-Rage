@@ -1222,6 +1222,7 @@ public class CoRInput implements Pauseable {
                 List<InteractableGameElement> elems = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
                 for (InteractableGameElement elem : elems) {
                     if (!finalList.contains(elem)) {
+                        finalList.add(elem);
                     }
                 }
             }
@@ -1232,12 +1233,10 @@ public class CoRInput implements Pauseable {
         // Sobald ein multi-fähiges auftaucht, alle nicht-multis rausschmeißen
         // Außerdem alle nicht-multis nach dem ersten nichtmulti entfernen
         int singleIndex = -1;
-        boolean foundMulti = false;
         boolean killSingle = false;
         for (int i = 0; i < finalList.size(); i++) {
             InteractableGameElement elem = finalList.get(i);
             if (elem.isMultiSelectable()) {
-                foundMulti = true;
                 if (singleIndex != -1) {
                     killSingle = true;
                     // Single entfernen
