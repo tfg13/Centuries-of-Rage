@@ -115,8 +115,11 @@ public class SelectionMap {
         }
     }
 
-
-
-
-
+    /**
+     * Löscht die komplette Selektionsmap
+     * Stellt den Ausgangszustand nach dem Erzeugen durch den Konstruktor wieder her.
+     */
+    public void clear() {
+         map = new LinkedList[map.length][map[0].length];
+    }
 }
