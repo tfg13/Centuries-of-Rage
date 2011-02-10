@@ -934,7 +934,7 @@ public class ClientMapModule {
         rgi.logger("[MapModul] Map \"" + mapFileName + "\" loaded.");
         createIDList();
         rgi.rogGraphics.activateMap(theMap.getVisMap());
-        createAllList();
+        createAllLists();
         rgi.game.registerBuildingList(buildingList);
         rgi.game.registerUnitList(unitList);
         // Fertig, mitteilen
@@ -942,7 +942,7 @@ public class ClientMapModule {
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
     }
 
-    private void createAllList() {
+    private void createAllLists() {
         // Erstellt eine Liste, in der Einheiten, Gebäude und Ressourcen enthalten sind.
         // Für Grafik only
         if (allList == null) {
@@ -950,12 +950,16 @@ public class ClientMapModule {
         } else {
             allList.clear();
         }
+        List<InteractableGameElement> igelist = new ArrayList<InteractableGameElement>();
         for (Unit unit : unitList) {
+            igelist.add(unit);
             allList.add(unit);
         }
         for (Building building : buildingList) {
             allList.add(building);
+            igelist.add(building);
         }
+        rgi.rogGraphics.inputM.setIGEs(igelist);
     }
 
     /**

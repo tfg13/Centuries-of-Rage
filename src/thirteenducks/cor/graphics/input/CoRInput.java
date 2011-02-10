@@ -136,7 +136,6 @@ public class CoRInput implements Pauseable {
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
         selMap = new SelectionMap(mapX, mapY);
-        iges = new ArrayList<InteractableGameElement>();
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
         rgi.logger("[RogInput] RogInput is ready to rock! (init completed)");
@@ -147,6 +146,7 @@ public class CoRInput implements Pauseable {
      * Dadurch werden alle vorher getrackten IGE's nichtmehr beachtet und die
      * bisherige Selektionsmap geht verloren.
      * Muss nach dem Laden einer Map einmal aufgerufen werden, damit bereits vorhandene IGE's berücksichtigt werden.
+     * Muss überhaupt einmal aufgerufen worden sein, damit das Inputmodul arbeiten kann.
      * @param iges
      */
     public void setIGEs(List<InteractableGameElement> iges) {

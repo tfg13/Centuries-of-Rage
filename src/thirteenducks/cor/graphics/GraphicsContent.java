@@ -146,14 +146,14 @@ public class GraphicsContent extends BasicGame {
 //                    this.updateBuildingFoW();
 //                }
                 g.setAntiAlias(useAntialising);
-                
+
                 // Alles löschen
                 g.setColor(Color.white);
                 g.fillRect(0, 0, realPixX, realPixY);
 
                 // Boden und Fix rendern
                 renderBackground();
-                
+
                 // Einheiten nach ihrer Y-Enfernung sortieren, erzeugt räumlichen Eindruck.
                 if (beautyDraw) {
                     try {
@@ -165,7 +165,7 @@ public class GraphicsContent extends BasicGame {
                         allListLock.unlock();
                     }
                 }
-                
+
                 // @TODO: buildingwaypoint als groundeffect rendern
                 renderBuildingWaypoint();
 
@@ -176,17 +176,17 @@ public class GraphicsContent extends BasicGame {
 //                    lastHovMouseX = mouseX;
 //                    lastHovMouseY = mouseY;
 //                }
-                
-                    //@TODO: buildingmarkers als groundeffect rendern
-                    renderBuildingMarkers(g);
-                    
-                    //@TODO: Einheitenziel als groundeffect rendern
-                    if (unitDestMode != 0) {
-                        renderUnitDest(g);
-                    }
-                    
-                    // Jetzt alle Sprites rendern
-                    renderSprites(g);
+
+                //@TODO: buildingmarkers als groundeffect rendern
+                renderBuildingMarkers(g);
+
+                //@TODO: Einheitenziel als groundeffect rendern
+                if (unitDestMode != 0) {
+                    renderUnitDest(g);
+                }
+
+                // Jetzt alle Sprites rendern
+                renderSprites(g);
 
                 //@TODO: fireeffects als skyeffect rendern
                 //fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
@@ -197,7 +197,7 @@ public class GraphicsContent extends BasicGame {
 //                if (renderFogOfWar) {
 //                    renderFogOfWar(g);
 //                }
-                
+
                 if (renderPicCursor) {
                     renderCursor();
                 }
@@ -832,8 +832,8 @@ public class GraphicsContent extends BasicGame {
                 g3.setColor(Color.white);
                 g3.fillRect(0, 0, renderBackground.getWidth(), renderBackground.getHeight());
 
-                for (int x = -2; x < sizeX && x < (viewX + 1); x+=1) {
-                    for (int y = -2; y < sizeY && y < (viewY + 1); y+=1) {
+                for (int x = -2; x < sizeX && x < (viewX + 1); x += 1) {
+                    for (int y = -2; y < sizeY && y < (viewY + 1); y += 1) {
                         if ((x + y) % 2 == 1) {
                             continue;
                         }
@@ -1238,31 +1238,29 @@ public class GraphicsContent extends BasicGame {
         return new Position(coordX, coordY);
     }
 
- /*   public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
-        // Koordinaten finden
-        Dimension tempD = searchMiniMid(x, y);
-        // Sicht auf Mitte davon setzen
-        rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
+    /*   public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
+    // Koordinaten finden
+    Dimension tempD = searchMiniMid(x, y);
+    // Sicht auf Mitte davon setzen
+    rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
     }
 
     public void klickedOnMiniMap(int x, int y) {
-        // Koordinaten finden
-        Dimension tempD = searchMiniMid(x, y);
-        // Sicht auf Mitte davon setzen
-        rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
+    // Koordinaten finden
+    Dimension tempD = searchMiniMid(x, y);
+    // Sicht auf Mitte davon setzen
+    rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
     } */
-
     public int getModi() {
         // liefert den aktuellen renderModus zurück
         return modi;
     }
 
-  /*  public Dimension searchMiniMid(int cX, int cY) {
-        // Sucht die Koordinaten eines Klicks auf die Minimap, also die Koordinaten des Feldes in der Mitte der Scollbox
-        // Input muss auf Minimap gefiltert sein, sonst kommt nur Müll raus
-        return new Dimension((int) (((cX - (hudX + hudSizeX * 0.1)) / (hudSizeX * 0.8)) * sizeX), (int) (((cY - realPixY / 7 * 1.4) / (realPixY / 7 * 2 * 0.8)) * sizeY));
+    /*  public Dimension searchMiniMid(int cX, int cY) {
+    // Sucht die Koordinaten eines Klicks auf die Minimap, also die Koordinaten des Feldes in der Mitte der Scollbox
+    // Input muss auf Minimap gefiltert sein, sonst kommt nur Müll raus
+    return new Dimension((int) (((cX - (hudX + hudSizeX * 0.1)) / (hudSizeX * 0.8)) * sizeX), (int) (((cY - realPixY / 7 * 1.4) / (realPixY / 7 * 2 * 0.8)) * sizeY));
     }*/
-
     public void startDebugMode() {
         modi = 4;
         repaint();
@@ -1508,8 +1506,10 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
-        // Update Input-System
-        parent.inputM.updateIGEs();
+        if (initRun != null) {
+            // Update Input-System
+            parent.inputM.updateIGEs();
+        }
     }
 
     @Override
@@ -1587,6 +1587,4 @@ public class GraphicsContent extends BasicGame {
     @Override
     public void inputStarted() {
     }
-
-    
 }
