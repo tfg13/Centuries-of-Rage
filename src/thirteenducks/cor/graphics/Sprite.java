@@ -45,8 +45,20 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param g Der Grafikkontext auf den gezeichnet werden kann. Man kann auch direkt auf den Screen zeichnen
      * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
+     * @param imgMap Die Map mit allen verfügbaren Texturen
      */
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap);
+
+    /**
+     * Zeichnet die Bodeneffekte dieses Sprites.
+     * Bodeneffekte werden vor den eigentlichen Texturen gezeichnet und sind vor allem für Markierungen gedacht.
+     * x und y müssen die Zeichenkoordinaten des Zuordnungsfeldes sein.
+     * @param g Der Grafikkontext auf den gezeichnet werden kann. Man kann auch direkt auf den Screen zeichnen.
+     * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
+     * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
+     * @param imgMap Die Map mit allen verfügbaren Texturen
+     */
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap);
 
     /**
      * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
