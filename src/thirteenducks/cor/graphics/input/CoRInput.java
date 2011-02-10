@@ -62,6 +62,11 @@ public class CoRInput implements Pauseable {
      */
     private List<InteractableGameElement> selected;
     /**
+     * Alle überhaupt verfügbaren IGE's.
+     * Das Inputmodul verarbeitet alle IGE's in dieser Liste.
+     */
+    private List<InteractableGameElement> iges;
+    /**
      * Die SelektionsMap, die alle Position speichert, an denen derzeit etwas selektierbar ist.
      */
     private SelectionMap selMap;
@@ -1276,5 +1281,19 @@ public class CoRInput implements Pauseable {
      */
     public void removeFromSelection(GameObject unit) {
         selected.remove(unit);
+    }
+
+    /**
+     * Updated das Selektionssystem.
+     * In der Regel ziemlich schnell, kann also vermutlich mit jedem Frame einmal aufgerufen werden.
+     */
+    public void updateIGEs() {
+        // Alle IGEs updaten:
+        for (int i = 0; i < iges.size(); i++) {
+            InteractableGameElement ige = iges.get(i);
+            if (ige.selPosChanged()) {
+                ige.getSelectionMarker().updateSelectionMap(selMap);
+            }
+        }
     }
 }
