@@ -799,14 +799,17 @@ public class CoRInput implements Pauseable {
                 }
             }
         } else { // Nur wenn gar keine Multis
-            // Alle Singles bis auf das erste Weg
-            elems.retainAll(elems.subList(0, 1));
+            // Alle Singles bis auf das erste Weg - falls welche da sind
+            if (elems.size() > 0) {
+                elems.retainAll(elems.subList(0, 1));
+            }
         }
         // Die Liste entählt jetzt entweder nur noch Multis (Anzahl egal) oder nur ein Single.
         // Wenn ein Single, dann auf jeden Fall alles alte abwählen. Bei Multis alles alte abwählen, falls shift NICHT gedrückt ist.
         if (!containsMulti || !shiftDown) {
             for (int i = 0; i < selected.size(); i++) {
                 selected.get(i).setSelected(false);
+                System.out.println("Deselected: " + selected.get(i).toString());
             }
             selected.clear();
         }
@@ -815,6 +818,7 @@ public class CoRInput implements Pauseable {
         for (InteractableGameElement elem : elems) {
             elem.setSelected(true);
             selected.add(elem);
+            System.out.println("Selected: " + elem.toString());
         }
     }
 
