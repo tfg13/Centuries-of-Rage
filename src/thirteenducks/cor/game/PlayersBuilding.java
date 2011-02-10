@@ -142,17 +142,17 @@ public class PlayersBuilding extends Building {
 
     @Override
     public boolean selectable() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return true;
     }
 
     @Override
     public boolean isSelectableByPlayer(int playerId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return playerId == this.getPlayerId();
     }
 
     @Override
     public boolean isMultiSelectable() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     @Override

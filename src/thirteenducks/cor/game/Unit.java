@@ -471,4 +471,19 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public boolean isIntra() {
         return isIntra;
     }
+
+    @Override
+    public boolean isSelectableByPlayer(int playerId) {
+        return playerId == this.getPlayerId();
+    }
+
+    @Override
+    public boolean isMultiSelectable() {
+        return true;
+    }
+
+    @Override
+    public boolean selectable() {
+        return true;
+    }
 }

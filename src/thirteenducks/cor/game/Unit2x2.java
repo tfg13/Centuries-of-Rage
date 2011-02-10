@@ -143,11 +143,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public boolean selectable() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public boolean selPosChanged() {
         return (!Arrays.equals(positions, lastPositions));
 
@@ -158,16 +153,6 @@ public class Unit2x2 extends Unit {
         SelectionMarker marker = new SelectionMarker(this, lastPositions, positions);
         lastPositions = positions;
         return marker;
-    }
-
-    @Override
-    public boolean isSelectableByPlayer(int playerId) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean isMultiSelectable() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
