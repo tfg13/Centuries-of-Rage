@@ -1397,7 +1397,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
         rgi.logger("[Graphics]: Calcing selection markers...");
         Color[] playercolors = new Color[rgi.game.playerList.size()];
-        playercolors[0] = Color.black;
+        playercolors[0] = Color.white;
         for (int i = 1; i < playercolors.length; i++) {
             playercolors[i] = rgi.game.playerList.get(i).color;
         }

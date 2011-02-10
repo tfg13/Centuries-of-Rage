@@ -185,7 +185,7 @@ public class Unit2x2 extends Unit {
         //Einheit gehört zu / Selektiert
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_t0_s2.png").getImage().draw(x, y);
+            imgMap.get("img/game/sel_s2.png0").getImage().draw(x, y);
         } else {
             // Spielerfarbe
             imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
