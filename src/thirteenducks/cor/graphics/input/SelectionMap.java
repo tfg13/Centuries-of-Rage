@@ -54,7 +54,7 @@ public class SelectionMap {
      * @param y die Y-Koordinate
      * @param ige das IGE, das eingetragen werden soll
      */
-    public void addIGE(int x, int y, InteractableGameElement ige) {
+    public synchronized void addIGE(int x, int y, InteractableGameElement ige) {
         if (x < 0 || x > map.length) {
             System.out.println("WARN: Setting IGE for invalid Field! (X=" + x + ")");
             return;
@@ -79,7 +79,7 @@ public class SelectionMap {
      * @param y die Y-Koordinate
      * @param ige das IGE, das entfernt werden soll.
      */
-    public void removeIGE(int x, int y, InteractableGameElement ige) {
+    public synchronized void removeIGE(int x, int y, InteractableGameElement ige) {
         if (x < 0 || x > map.length) {
             System.out.println("WARN: Removing IGE for invalid Field! (X=" + x + ")");
             return;
@@ -101,7 +101,7 @@ public class SelectionMap {
      * @param playerId die PlayerId der gesuchten Einheiten
      * @return alle IGE's an der angegebenen Stelle, die vom angegebenen Team sind.
      */
-    List<InteractableGameElement> getIGEsWithTeamAt(int cx, int cy, int playerId) {
+    public synchronized List<InteractableGameElement> getIGEsWithTeamAt(int cx, int cy, int playerId) {
         if (cx < 0 || cx > map.length) {
             System.out.println("WARN: Getting all IGEs (team) for invalid Field! (X=" + cx + ")");
             return null;
@@ -129,7 +129,7 @@ public class SelectionMap {
      * @param cy Die Y-Koordinate
      * @return Eine Liste mit allen Elementen aller teams, die an dieser Stelle eingetragen sind.
      */
-    List<InteractableGameElement> getIGEsAt(int cx, int cy) {
+    public synchronized List<InteractableGameElement> getIGEsAt(int cx, int cy) {
         if (cx < 0 || cx > map.length) {
             System.out.println("WARN: Getting IGEs for invalid Field! (X=" + cx + ")");
             return null;
@@ -151,7 +151,7 @@ public class SelectionMap {
      * Löscht die komplette Selektionsmap
      * Stellt den Ausgangszustand nach dem Erzeugen durch den Konstruktor wieder her.
      */
-    public void clear() {
+    public synchronized void clear() {
         map = new LinkedList[map.length][map[0].length];
     }
 }
