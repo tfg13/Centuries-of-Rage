@@ -1508,6 +1508,8 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
+        // Update Input-System
+        parent.inputM.updateIGEs();
     }
 
     @Override
