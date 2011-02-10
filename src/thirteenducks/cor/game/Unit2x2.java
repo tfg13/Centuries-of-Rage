@@ -179,4 +179,9 @@ public class Unit2x2 extends Unit {
     public Position getSortPosition() {
         return this.getMainPosition();
     }
+
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

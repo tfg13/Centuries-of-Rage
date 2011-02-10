@@ -291,5 +291,10 @@ public class Bullet implements Pauseable, Sprite {
         return true; // Geschosse sind grundsätzlich nicht unsichtbar.
     }
 
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+        // Bullets haben keine
+    }
+
 
 }
