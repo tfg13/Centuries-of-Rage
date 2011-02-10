@@ -8,6 +8,7 @@ package thirteenducks.cor.game;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsImage;
@@ -108,7 +109,7 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
         if (img != null) {
             img.getImage().draw(x, y);
@@ -181,7 +182,7 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         //Einheit gehört zu / Selektiert
         if (isSelected()) {
             // Weiße Bodenmarkierung

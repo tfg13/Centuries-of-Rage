@@ -27,6 +27,7 @@ package thirteenducks.cor.game;
 
 import java.util.List;
 import java.util.Map;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -101,7 +102,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - (getGraphicsData().offsetX * 10), (int) (y - (getGraphicsData().offsetY * 10)));
     }
 
@@ -192,10 +193,11 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
             // Linien ziehen
             g.setLineWidth(4);
             //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g.setColor(isSelected() ? Color.white : spriteColor);
             g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
             g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
             g.drawLine((int) (x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)),(int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));

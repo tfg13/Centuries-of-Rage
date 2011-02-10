@@ -26,6 +26,7 @@
 package thirteenducks.cor.game;
 
 import java.util.Map;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.graphics.Sprite;
@@ -248,7 +249,7 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         System.out.println("AddMe: Render Sprite.");
     }
 
@@ -292,7 +293,7 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap) {
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         // Bullets haben keine
     }
 

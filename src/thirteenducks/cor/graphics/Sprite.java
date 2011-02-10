@@ -27,6 +27,7 @@
 package thirteenducks.cor.graphics;
 
 import java.util.Map;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.Hideable;
 import thirteenducks.cor.game.Pauseable;
@@ -47,7 +48,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      * @param imgMap Die Map mit allen verfügbaren Texturen
      */
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap);
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor);
 
     /**
      * Zeichnet die Bodeneffekte dieses Sprites.
@@ -58,7 +59,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      * @param imgMap Die Map mit allen verfügbaren Texturen
      */
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap);
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor);
 
     /**
      * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
@@ -86,7 +87,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
 
     /**
      * Sprites können bestimmte Dinge in ihrer eigenen Farbe rendern.
-     * Diese wird vom Grafiksystem vor den Aufrufen auf die renderMethoden gesetzt.
+     * Diese wird vom Grafiksystem an die renderMethoden mitgeliefert.
      * Hierzu fragt das Grafiksystem die gewünschte ColorID ab.
      * In der Regel ist das die playerId.
      * Sprites, die keine Farbe haben/verwenden, sollten 0 zurückgeben.

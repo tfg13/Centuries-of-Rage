@@ -272,8 +272,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    g.setColor(rgi.game.getPlayer(sprite.getColorId()).color);
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -291,8 +290,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    g.setColor(rgi.game.getPlayer(sprite.getColorId()).color);
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
