@@ -100,11 +100,15 @@ public class Minimap extends Overlay {
         map.draw(dx, dy, sizeX, sizeY);
     }
 
-    private void createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap) {
+    private Minimap() { // Konstruktor private, kann sonst niemand aufrufen
+    }
+
+    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap) {
+        Minimap minimap = new Minimap();
         try {
             // Erstellt einen neue Basis-Minimap
-            map = new Image(visMap.length * 2, visMap[0].length * 2);
-            Graphics tempGra = map.getGraphics();
+            minimap.map = new Image(visMap.length * 2, visMap[0].length * 2);
+            Graphics tempGra = minimap.map.getGraphics();
             // Skalierungsfaktor berechnen
             for (int x = 0; x < visMap.length; x++) {
                 for (int y = 0; y < visMap[0].length; y++) {
@@ -128,5 +132,6 @@ public class Minimap extends Overlay {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return minimap;
     }
 }

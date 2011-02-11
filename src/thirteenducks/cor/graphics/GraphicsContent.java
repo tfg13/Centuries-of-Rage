@@ -128,6 +128,7 @@ public class GraphicsContent extends BasicGame {
     public ReentrantLock allListLock;
     public ArrayList<Overlay> overlays;
     public GraphicsFireManager fireMan;
+    private Minimap minimap;
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
@@ -1040,6 +1041,13 @@ public class GraphicsContent extends BasicGame {
                 fowmap[x][y] = 0;
             }
         }
+
+        if (overlays.contains(minimap)) {
+            overlays.remove(minimap);
+        }
+        // Minimap erstellen
+        minimap = Minimap.createMinimap(visMap, imgMap);
+        overlays.add(minimap);
     }
 
     public void setImageMap(HashMap<String, GraphicsImage> newMap) {
