@@ -1455,7 +1455,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     public GraphicsContent() {
-        super("Centuries of Rage HD: pre-Alpha");
+        super("Centuries of Rage HD (pre-Alpha)");
         coloredImgMap = new HashMap<String, GraphicsImage>();
         overlays = new ArrayList<Overlay>();
         fowpatmgr = new GraphicsFogOfWarPattern();
