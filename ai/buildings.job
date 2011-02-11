@@ -1,0 +1,5 @@
+#[NAME]				[DESCID]		[PRIORITY]							[COMMENT]
+1stHouse			2				"1000+$getpriority(1stHouse)"	# Build first House, 1000 should be the highest priority in the beginning
+lol					3				"4000"
+
+

@@ -2,7 +2,9 @@
 .DS_Store
 RoG.jar
 dist*
-build*
+build.xml
+build-*
+build/*
 client_log.txt
 client_cfg.txt
 server_log.txt
