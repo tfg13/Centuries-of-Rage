@@ -1041,13 +1041,6 @@ public class GraphicsContent extends BasicGame {
                 fowmap[x][y] = 0;
             }
         }
-
-        if (overlays.contains(minimap)) {
-            overlays.remove(minimap);
-        }
-        // Minimap erstellen
-        minimap = Minimap.createMinimap(visMap, imgMap);
-        overlays.add(minimap);
     }
 
     public void setImageMap(HashMap<String, GraphicsImage> newMap) {
@@ -1140,6 +1133,7 @@ public class GraphicsContent extends BasicGame {
                 repaint();
             }
         }
+        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
     }
 
     public void scrollRight() {
@@ -1152,6 +1146,8 @@ public class GraphicsContent extends BasicGame {
             }
 
         }
+        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+
     }
 
     public void scrollLeft() {
@@ -1169,6 +1165,8 @@ public class GraphicsContent extends BasicGame {
         if (modi != 3) {
             repaint();
         }
+        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+
     }
 
     public void scrollDown() {
@@ -1180,6 +1178,8 @@ public class GraphicsContent extends BasicGame {
                 repaint();
             }
         }
+        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+
     }
 
     public Dimension getSelectedField(int selX, int selY) {
@@ -1557,6 +1557,8 @@ public class GraphicsContent extends BasicGame {
         } else if (initState == 4) {
             // FinalPrepare
             parent.finalPrepare();
+            minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY);
+            overlays.add(minimap);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 3, 0, 0, 0, 0));

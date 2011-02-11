@@ -80,6 +80,10 @@ public class Minimap extends Overlay {
      * Die derzeitige Ecke
      */
     private int edge = 0;
+    /**
+     * Der derzeitig sichtbare Bereich.
+     */
+    private float[] view;
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -98,13 +102,26 @@ public class Minimap extends Overlay {
                 break;
         }
         map.draw(dx, dy, sizeX, sizeY);
+        g.setColor(Color.lightGray);
+        g.drawRect(dx + view[0] * sizeX, dy + view[1] * sizeY, dx + view[2] * sizeX, dy + view[3] * sizeY);
     }
 
-    private Minimap() { // Konstruktor private, kann sonst niemand aufrufen
+    private Minimap(int resX, int resY) { // Konstruktor private, kann sonst niemand aufrufen
+        sizeX = (int) (resX * DEFAULT_SIZEFACTOR_X);
+        sizeY = (int) (resY * DEFAULT_SIZEFACTOR_Y);
+        view = new float[4];
     }
 
-    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap) {
-        Minimap minimap = new Minimap();
+    public void viewChanged(int posX, int posY, int viewX, int viewY, int sizeX, int sizeY) {
+        // Koordinaten auf eigene Pixel umrechnen
+        view[0] = 1.0f * posX / sizeX;
+        view[1] = 1.0f * posY / sizeY;
+        view[2] = 1.0f * (posX + viewX) / sizeX;
+        view[3] = 1.0f * (posY + viewY) / sizeY;
+    }
+
+    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap, int fullResX, int fullResY) {
+        Minimap minimap = new Minimap(fullResX, fullResY);
         try {
             // Erstellt einen neue Basis-Minimap
             minimap.map = new Image(visMap.length * 2, visMap[0].length * 2);
