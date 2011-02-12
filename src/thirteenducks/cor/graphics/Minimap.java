@@ -101,6 +101,9 @@ public class Minimap extends Overlay {
                 dy = fullResY - sizeY;
                 break;
         }
+        // Rahmen
+        g.setColor(Color.black);
+        g.fillRect(dx - 4, dy - 4, sizeX + 8, sizeY + 8);
         map.draw(dx, dy, sizeX, sizeY);
         g.setColor(Color.lightGray);
         g.setLineWidth(1);
