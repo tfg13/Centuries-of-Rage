@@ -176,6 +176,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             // Idle aktiviern, falls wir davor geflohen sind
             this.setIdle(true, false);
         }
+        System.out.println("STOP!");
     }
 
     /**
