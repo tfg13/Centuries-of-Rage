@@ -1183,7 +1183,9 @@ public class GraphicsContent extends BasicGame {
      * Informiert die Minimap darüber, dass sich die derzeitige AnzeigePosition geändert hat.
      */
     private void viewPosChanged() {
-        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+        if (minimap != null) { // Falls aktiv
+            minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+        }
     }
 
     public Dimension getSelectedField(int selX, int selY) {
