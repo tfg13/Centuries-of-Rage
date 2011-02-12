@@ -23,9 +23,9 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package thirteenducks.cor.graphics.input;
 
+import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
 
 /**
@@ -87,6 +87,51 @@ public abstract class OverlayMouseListener implements MouseListener {
         return catch2Y;
     }
 
+    /**
+     * Die Maus wurde auf dem Overlay bewegt.
+     * @param x
+     * @param y
+     */
+    public abstract void mouseMoved(int x, int y);
+
+    /**
+     * Die Maus wurde auf dem Overlay mit einer gedrückten Taste bewegt
+     * @param x
+     * @param y
+     */
+    public abstract void mouseDragged(int x, int y);
 
 
+    @Override
+    public boolean isAcceptingInput() {
+        return true;
+    }
+
+    /*
+     * Diese Methoden gehen das Overlay nichts an
+     */
+
+    @Override
+    public void mouseClicked(int i, int i1, int i2, int i3) {
+    }
+
+    @Override
+    public void setInput(Input input) {
+    }
+
+    @Override
+    public void inputEnded() {
+    }
+
+    @Override
+    public void inputStarted() {
+    }
+
+    @Override
+    public void mouseMoved(int i, int i1, int i2, int i3) {
+    }
+
+    @Override
+    public void mouseDragged(int i, int i1, int i2, int i3) {
+    }
 }

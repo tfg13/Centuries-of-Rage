@@ -303,7 +303,7 @@ public class CoRInput implements Pauseable {
             public void mousePressed(int button, int x, int y) {
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
-                    listener.mousePressed(button, x, y);
+                    listener.mousePressed(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
                 } else {
                     // Game
                     if (!graphics.content.pauseMode) {
@@ -339,7 +339,7 @@ public class CoRInput implements Pauseable {
             public void mouseReleased(final int button, final int x, final int y) {
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
-                    listener.mouseReleased(button, x, y);
+                    listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
                 } else {
                     if (!graphics.content.pauseMode) {
                         if (rgi.rogGraphics.rightScrollingEnabled) {
@@ -408,7 +408,7 @@ public class CoRInput implements Pauseable {
                 graphics.content.mouseY = newy;
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
-                    listener.mouseMoved(oldx, oldy, newx, newy);
+                    listener.mouseMoved(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
                 }
             }
 
@@ -428,7 +428,7 @@ public class CoRInput implements Pauseable {
                 graphics.content.mouseY = newy;
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
-                    listener.mouseDragged(i, i1, newx, newy);
+                    listener.mouseDragged(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
                 }
             }
 
