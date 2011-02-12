@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -162,13 +163,13 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick) {
+    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void command(int button, Position target, boolean doubleKlick) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi) {
+        this.sendToPosition(target, rgi, doubleKlick);
     }
 
     @Override
