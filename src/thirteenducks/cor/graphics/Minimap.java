@@ -103,7 +103,8 @@ public class Minimap extends Overlay {
         }
         map.draw(dx, dy, sizeX, sizeY);
         g.setColor(Color.lightGray);
-        g.drawRect(dx + view[0] * sizeX, dy + view[1] * sizeY, dx + view[2] * sizeX, dy + view[3] * sizeY);
+        g.setLineWidth(1);
+        g.drawRect(dx + view[0] * sizeX, dy + view[1] * sizeY, view[2] * sizeX, view[3] * sizeY);
     }
 
     private Minimap(int resX, int resY) { // Konstruktor private, kann sonst niemand aufrufen
@@ -116,8 +117,8 @@ public class Minimap extends Overlay {
         // Koordinaten auf eigene Pixel umrechnen
         view[0] = 1.0f * posX / sizeX;
         view[1] = 1.0f * posY / sizeY;
-        view[2] = 1.0f * (posX + viewX) / sizeX;
-        view[3] = 1.0f * (posY + viewY) / sizeY;
+        view[2] = 1.0f * viewX / sizeX;
+        view[3] = 1.0f * viewY / sizeY;
     }
 
     public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap, int fullResX, int fullResY) {
