@@ -29,7 +29,6 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.input.OverlayMouseListener;
 import thirteenducks.cor.map.CoRMapElement;
@@ -87,23 +86,15 @@ public class Minimap extends Overlay {
      * Der derzeitig sichtbare Bereich.
      */
     private float[] view;
+    /**
+     * Die aktuelle Position der Minimap, alles absolute Koordinaten
+     */
+    private int[] pos;
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
-        int dx = 0;
-        int dy = 0;
-        switch (edge) {
-            case EDGE_TOP_RIGHT:
-                dx = fullResX - sizeX;
-                break;
-            case EDGE_BOTTOM_LEFT:
-                dy = fullResY - sizeY;
-                break;
-            case EDGE_BOTTOM_RIGHT:
-                dx = fullResX - sizeX;
-                dy = fullResY - sizeY;
-                break;
-        }
+        int dx = pos[0];
+        int dy = pos[1];
         // Rahmen
         g.setColor(Color.black);
         g.fillRect(dx - 4, dy - 4, sizeX + 8, sizeY + 8);
@@ -117,6 +108,32 @@ public class Minimap extends Overlay {
         sizeX = (int) (resX * DEFAULT_SIZEFACTOR_X);
         sizeY = (int) (resY * DEFAULT_SIZEFACTOR_Y);
         view = new float[4];
+        pos = new int[4];
+        switch (edge) {
+            case EDGE_TOP_LEFT:
+                pos[0] = 0;
+                pos[1] = 0;
+                pos[2] = sizeX;
+                pos[3] = sizeY;
+            case EDGE_TOP_RIGHT:
+                pos[0] = resX - sizeX;
+                pos[1] = 0;
+                pos[2] = resX;
+                pos[3] = sizeY;
+                break;
+            case EDGE_BOTTOM_LEFT:
+                pos[0] = 0;
+                pos[1] = resY - sizeY;
+                pos[2] = sizeX;
+                pos[3] = resY;
+                break;
+            case EDGE_BOTTOM_RIGHT:
+                pos[0] = resX - sizeX;
+                pos[1] = resY - sizeY;
+                pos[2] = resX;
+                pos[3] = resY;
+                break;
+        }
     }
 
     public void viewChanged(int posX, int posY, int viewX, int viewY, int sizeX, int sizeY) {
@@ -185,6 +202,26 @@ public class Minimap extends Overlay {
                 // Berechnung: Koordinate / Länge = Positionsfaktor des Mittelpunkts. Minus halber Sichtbereich = Positionsfaktor oben links
                 // Mal Map-Größe = Oben-Rechts-Jump-Koordinate
                 rgi.rogGraphics.jumpTo((int) (((1.0 * x / sizeX) - (view[2] / 2)) * mapX), (int) (((1.0 * y / sizeY) - (view[3] / 2)) * mapY));
+            }
+
+            @Override
+            public int getCatch1X() {
+                return pos[0];
+            }
+
+            @Override
+            public int getCatch1Y() {
+                return pos[1];
+            }
+
+            @Override
+            public int getCatch2X() {
+                return pos[2];
+            }
+
+            @Override
+            public int getCatch2Y() {
+                return pos[3];
             }
         });
     }

@@ -40,52 +40,26 @@ public abstract class OverlayMouseListener implements MouseListener {
 
     /**
      * Die X-Koordinate der oberen, linken Ecke des catch-Bereichs
-     */
-    private int catch1X;
-    /**
-     * Die Y-Koordinate der oberen, linken Ecke des catch-Bereichs
-     */
-    private int catch1Y;
-    /**
-     * Die X-Koordinate der unteren, rechten Ecke des catch-Bereichs
-     */
-    private int catch2X;
-    /**
-     * Die Y-Koordinate der unteren, rechten Ecke des catch-Bereichs
-     */
-    private int catch2Y;
-
-    /**
-     * Die X-Koordinate der oberen, linken Ecke des catch-Bereichs
      * @return the catch1X
      */
-    public int getCatch1X() {
-        return catch1X;
-    }
+    public abstract int getCatch1X();
 
     /**
      * Die Y-Koordinate der oberen, linken Ecke des catch-Bereichs
      * @return the catch1Y
      */
-    public int getCatch1Y() {
-        return catch1Y;
-    }
-
+    public abstract int getCatch1Y();
     /**
      * Die X-Koordinate der unteren, rechten Ecke des catch-Bereichs
      * @return the catch2X
      */
-    public int getCatch2X() {
-        return catch2X;
-    }
+    public abstract int getCatch2X();
 
     /**
      * Die Y-Koordinate der unteren, rechten Ecke des catch-Bereichs
      * @return the catch2Y
      */
-    public int getCatch2Y() {
-        return catch2Y;
-    }
+    public abstract int getCatch2Y();
 
     /**
      * Die Maus wurde auf dem Overlay bewegt.
