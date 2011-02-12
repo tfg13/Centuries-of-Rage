@@ -29,6 +29,9 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.graphics.input.OverlayMouseListener;
 import thirteenducks.cor.map.CoRMapElement;
 
 /**
@@ -124,7 +127,7 @@ public class Minimap extends Overlay {
         view[3] = 1.0f * viewY / sizeY;
     }
 
-    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap, int fullResX, int fullResY) {
+    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap, final int fullResX, final int fullResY, ClientCore.InnerClient rgi) {
         Minimap minimap = new Minimap(fullResX, fullResY);
         try {
             // Erstellt einen neue Basis-Minimap
@@ -153,6 +156,36 @@ public class Minimap extends Overlay {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        minimap.initListener(rgi, visMap.length, visMap[0].length);
         return minimap;
+    }
+
+    private void initListener(final ClientCore.InnerClient rgi, final int mapX, final int mapY) {
+        rgi.rogGraphics.inputM.addOverlayMouseListener(new OverlayMouseListener() {
+
+            @Override
+            public void mouseWheelMoved(int i) {
+            }
+
+            @Override
+            public void mousePressed(int i, int i1, int i2) {
+            }
+
+            @Override
+            public void mouseReleased(int i, int i1, int i2) {
+            }
+
+            @Override
+            public void mouseMoved(int x, int y) {
+            }
+
+            @Override
+            public void mouseDragged(int x, int y) {
+                // Ausschnitt verschieben.
+                // Berechnung: Koordinate / Länge = Positionsfaktor des Mittelpunkts. Minus halber Sichtbereich = Positionsfaktor oben links
+                // Mal Map-Größe = Oben-Rechts-Jump-Koordinate
+                rgi.rogGraphics.jumpTo((int) (((1.0 * x / sizeX) - (view[2] / 2)) * mapX), (int) (((1.0 * y / sizeY) - (view[3] / 2)) * mapY));
+            }
+        });
     }
 }
