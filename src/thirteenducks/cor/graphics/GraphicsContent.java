@@ -1055,7 +1055,7 @@ public class GraphicsContent extends BasicGame {
         if (modi != 3) { // Im echten Rendern refreshed die Mainloop
             repaint();
         }
-
+        viewPosChanged();
     }
 
     public void setVisibleArea(int vX, int vY) {
@@ -1133,7 +1133,7 @@ public class GraphicsContent extends BasicGame {
                 repaint();
             }
         }
-        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+        viewPosChanged();
     }
 
     public void scrollRight() {
@@ -1146,8 +1146,7 @@ public class GraphicsContent extends BasicGame {
             }
 
         }
-        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
-
+        viewPosChanged();
     }
 
     public void scrollLeft() {
@@ -1165,8 +1164,7 @@ public class GraphicsContent extends BasicGame {
         if (modi != 3) {
             repaint();
         }
-        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
-
+        viewPosChanged();
     }
 
     public void scrollDown() {
@@ -1178,8 +1176,14 @@ public class GraphicsContent extends BasicGame {
                 repaint();
             }
         }
-        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
+        viewPosChanged();
+    }
 
+    /**
+     * Informiert die Minimap darüber, dass sich die derzeitige AnzeigePosition geändert hat.
+     */
+    private void viewPosChanged() {
+        minimap.viewChanged(positionX, positionY, viewX, viewY, sizeX, sizeY);
     }
 
     public Dimension getSelectedField(int selX, int selY) {
