@@ -497,6 +497,7 @@ public class ServerNetController implements Runnable {
                         cmdMap[cmd].process(data, this, rgi);
 
                     } catch (NullPointerException ex) {
+                        ex.printStackTrace();
                         System.out.println("S-NetCtrl: Got unknown command (" + cmd + ")");
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("S-NetCtrl: Got unknown command (" + cmd + ")");
