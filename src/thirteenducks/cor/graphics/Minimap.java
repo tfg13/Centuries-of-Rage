@@ -190,6 +190,8 @@ public class Minimap extends Overlay {
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
+                // Berechnung siehe bei mouseDragged
+                rgi.rogGraphics.jumpTo((int) (((1.0 * i1 / sizeX) - (view[2] / 2)) * mapX), (int) (((1.0 * i2 / sizeY) - (view[3] / 2)) * mapY));
             }
 
             @Override
