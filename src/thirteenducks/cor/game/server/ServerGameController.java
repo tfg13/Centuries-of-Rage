@@ -123,10 +123,10 @@ public class ServerGameController implements Runnable {
         for (Unit unit : unitList) {
             ServerBehaviourMove smove = new ServerBehaviourMove(rgi, unit);
             unit.addServerBehaviour(smove);
-            //  unit.moveManager = smove;
+            unit.moveManager = smove;
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
             unit.addServerBehaviour(amove);
-            //     unit.attackManager = amove;
+            unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
             System.out.println("AddMe: Set UnitRefs for all Positions!");
             rgi.netmap.setUnitRef(unit.getMainPosition(), unit, unit.getPlayerId());
