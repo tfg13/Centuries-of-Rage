@@ -52,7 +52,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * Der Wegmanager der Einheit.
      */
-    private final Path path;
+    protected final Path path;
     /**
      * PFUSCH!!!
      * Nur aus Kompatibilitätsgründen hier!
