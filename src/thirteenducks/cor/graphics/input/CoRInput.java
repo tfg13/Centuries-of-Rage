@@ -406,6 +406,8 @@ public class CoRInput implements Pauseable {
                 // Position markieren
                 graphics.content.mouseX = newx;
                 graphics.content.mouseY = newy;
+                lastMouseX = newx;
+                lastMouseY = newy;
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
                     listener.mouseMoved(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
@@ -426,6 +428,8 @@ public class CoRInput implements Pauseable {
                 // Position markieren
                 graphics.content.mouseX = newx;
                 graphics.content.mouseY = newy;
+                lastMouseX = newx;
+                lastMouseY = newy;
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
                     listener.mouseDragged(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
