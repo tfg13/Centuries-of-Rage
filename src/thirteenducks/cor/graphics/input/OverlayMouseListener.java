@@ -30,7 +30,7 @@ import org.newdawn.slick.MouseListener;
 
 /**
  * Ein solcher Listener kann von Overlays beim Inputmodul registriert werden.
- * Dann leitet das Inputmodul alle Klicks (auf Wunsch auch mouseMoves) die über diesem Overlay liegen an selbiges weiter.
+ * Dann leitet das Inputmodul alle Klicks (auch mouseMoves) die über diesem Overlay liegen an selbiges weiter.
  * Die Mausaktionen werden dann ausschließlich an das Overlay gesendet und nicht vom eigentlichen Spiel verarbeitet.
  *
  * Mithilfe dieses Listeners kann ein Overlay genau einen rechteckigen Bereich "abdecken".
