@@ -28,6 +28,7 @@ package thirteenducks.cor.graphics.input;
 
 import java.util.List;
 import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.client.ClientCore;
 
 /**
  * InteractableGameElements sind Spielelemente, mit denen (primär durch die Maus) interagiert werden kann.
@@ -100,7 +101,7 @@ public interface InteractableGameElement {
      * @param targets Eine Liste aller IGE's die sich auf der ZielPosition des Klicks befinden
      * @param doubleKlick ist dies der wiederholte klick eines Doppelklicks
      */
-    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick);
+    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi);
     /**
      * Aufrufen, um einem selektierten IGE mitzuteilen, dass ein Befehl für es eingegangen ist.
      * Ein Befehl ist ein Klick mit der rechten oder mittleren Maustaste, während das IGE selektiert ist.
@@ -111,7 +112,7 @@ public interface InteractableGameElement {
      * @param target Das Feld auf der Map, dass der Benutzer angeklickt hatte.
      * @param doubleKlick ist dies der wiederholte Klick eines Doppelklicks?
      */
-    public void command(int button, Position target, boolean doubleKlick);
+    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi);
 
     /**
      * Es wurde eine für diese Einheit bestimmte Taste gedrückt.
