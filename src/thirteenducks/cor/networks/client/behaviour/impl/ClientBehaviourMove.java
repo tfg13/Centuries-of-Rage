@@ -40,7 +40,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     private Unit caster2;
 
     public ClientBehaviourMove(ClientCore.InnerClient newinner, Unit caster) {
-        super(newinner, caster, 1, 5, false);
+        super(newinner, caster, 1, 5, true);
         this.caster2 = caster;
     }
 
