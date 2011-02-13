@@ -185,6 +185,7 @@ public class Path implements Pauseable, Serializable {
             targetPos = null;
             path = null;
             moving = false;
+            return;
         }
         // Zuletzt erreichten Wegpunkt finden
         if (passedWay >= nextWayPointDist) {
