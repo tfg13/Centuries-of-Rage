@@ -51,7 +51,7 @@ import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
  *
  */
-public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement {
+public abstract class GameObject implements Serializable, Sprite, ClientBehaviourProcessor, InteractableGameElement {
 
     /**
      * Dieses Objekt lebt noch nicht.

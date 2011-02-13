@@ -38,6 +38,7 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import java.util.Timer;
 import java.util.TimerTask;
+import thirteenducks.cor.game.ClientBehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.ability.AbilityIntraManager;
@@ -55,6 +56,7 @@ public class ClientGameController implements Runnable {
     Thread t;                                   // Der Thread, in dem die Mainloop läuft
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)
+    private List<ClientBehaviourProcessor> allList;
 
     public ClientGameController(ClientCore.InnerClient newinner) {
         rgi = newinner;
@@ -238,9 +240,8 @@ public class ClientGameController implements Runnable {
     public void run() {
         // Mainloop
         rgi.logger("Starting Mainloop...");
-        System.out.println("AddMe: Create & Start GameEngine-Mainloop");
 
-      /*  while (true) {
+        while (true) {
 
             // Alle Behaviour durchgehen
 
@@ -253,26 +254,10 @@ public class ClientGameController implements Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
-
-            for (int u = 0; u < unitList.size(); u++) {
-                Unit unit = unitList.get(u);
-                for (int b = 0; b < unit.cbehaviours.size(); b++) {
-                    ClientBehaviour c = unit.cbehaviours.get(b);
-                    if (c.isActive()) {
-                        c.tryexecute();
-                    }
-                }
-            }
-
-
-            for (int u = 0; u < buildingList.size(); u++) {
-                Building building = buildingList.get(u);
-                for (int b = 0; b < building.cbehaviours.size(); b++) {
-                    ClientBehaviour c = building.cbehaviours.get(b);
-                    if (c.isActive()) {
-                        c.tryexecute();
-                    }
-                }
+            
+            for (int i = 0; i < allList.size(); i++) {
+                ClientBehaviourProcessor proc = allList.get(i);
+                proc.process();
             }
 
             try {
@@ -281,7 +266,7 @@ public class ClientGameController implements Runnable {
                 rgi.logger(ex);
             }
 
-        } */
+        }
     }
 
     public void registerBuilding(int playerId, Building building) {
