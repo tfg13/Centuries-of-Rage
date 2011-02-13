@@ -55,19 +55,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
     @Override
     public void activate() {
-        this.active = true;
     }
 
     @Override
     public void deactivate() {
-        this.active = false;
     }
 
     @Override
     public void execute() {
-
-            caster2.serverManagePath(rgi);
-        
+        caster2.serverManagePath(rgi);
     }
 
     @Override
