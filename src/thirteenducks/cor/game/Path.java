@@ -89,6 +89,10 @@ public class Path implements Pauseable, Serializable {
      * Muss erst berechnet werden, steht zur Verfügung, wenn pathLengthCalced = true
      */
     private List<PathElement> path;
+    /**
+     * True, während sich die Einheit bewegt, also das Behaviour laufen soll.
+     */
+    private boolean moving;
 
     /**
      * Berechnet die Länge des Weges dieser Einheit.
@@ -110,6 +114,7 @@ public class Path implements Pauseable, Serializable {
             path.add(new PathElement(pos, length, vec));
         }
         pathComputed = true;
+        moving = true;
     }
 
     /**
@@ -179,9 +184,7 @@ public class Path implements Pauseable, Serializable {
             caster2.setMainPosition(targetPos);
             targetPos = null;
             path = null;
-            caster2.attackManager.moveStopped();
-            caster2.moveManager.deactivate();
-            return;
+            moving = false;
         }
         // Zuletzt erreichten Wegpunkt finden
         if (passedWay >= nextWayPointDist) {
@@ -233,6 +236,7 @@ public class Path implements Pauseable, Serializable {
                     rgi.netmap.setUnitRef(caster2.getMainPosition(), caster2, caster2.getPlayerId());
                     caster2.attackManager.moveStopped();
                     caster2.moveManager.deactivate();
+                    moving = false;
                     return;
                 }
                 // Zuletzt erreichten Wegpunkt finden
@@ -306,6 +310,14 @@ public class Path implements Pauseable, Serializable {
                 }
             }
         } while (gotError);
+    }
+
+    /**
+     * True, während sich die Einheit bewegt, also das Behaviour laufen soll.
+     * @return the moving
+     */
+    public boolean isMoving() {
+        return moving;
     }
 
     /**
