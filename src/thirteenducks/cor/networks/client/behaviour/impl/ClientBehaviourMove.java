@@ -55,10 +55,12 @@ public class ClientBehaviourMove extends ClientBehaviour {
 
     @Override
     public void pause() {
+        caster2.pause();
     }
 
     @Override
     public void unpause() {
+        caster2.unpause();
     }
 
 }
