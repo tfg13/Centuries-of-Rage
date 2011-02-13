@@ -239,7 +239,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
      */
     public void clientManagePath(InnerClient rgi) {
-        path.clientManagePath(rgi, this);
+        if (path.isMoving()) {
+            path.clientManagePath(rgi, this);
+        }
     }
 
     /**
@@ -425,11 +427,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     if (this.movingtarget != null) {
     retUnit.movingtarget = this.movingtarget.clone();
     }
-
+    
     if (this.path != null) {
     retUnit.path = new ArrayList<Position>();
     }
-
+    
     // Special-Stuff
     if (this.anim != null) {
     retUnit.anim = this.anim.clone();
@@ -441,7 +443,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
     }
     retUnit.graphicsdata = this.graphicsdata.clone();
-
+    
     return retUnit;
     } */
     @Override
@@ -497,6 +499,4 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public boolean selectable() {
         return true;
     }
-
-
 }
