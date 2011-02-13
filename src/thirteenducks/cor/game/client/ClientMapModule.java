@@ -36,7 +36,7 @@ import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
 import org.newdawn.slick.Input;
-import thirteenducks.cor.game.ClientBehaviourProcessor;
+import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
@@ -953,7 +953,7 @@ public class ClientMapModule {
         // Input
         List<InteractableGameElement> igelist = new ArrayList<InteractableGameElement>();
         // Game
-        List<ClientBehaviourProcessor> procList = new ArrayList<ClientBehaviourProcessor>();
+        List<BehaviourProcessor> procList = new ArrayList<BehaviourProcessor>();
         for (Unit unit : unitList) {
             igelist.add(unit);
             allList.add(unit);

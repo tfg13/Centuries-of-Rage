@@ -38,7 +38,7 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import java.util.Timer;
 import java.util.TimerTask;
-import thirteenducks.cor.game.ClientBehaviourProcessor;
+import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
 
@@ -53,7 +53,7 @@ public class ClientGameController implements Runnable {
     Thread t;                                   // Der Thread, in dem die Mainloop läuft
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)
-    private List<ClientBehaviourProcessor> allList;
+    private List<BehaviourProcessor> allList;
 
     public ClientGameController(ClientCore.InnerClient newinner) {
         rgi = newinner;
@@ -210,7 +210,7 @@ public class ClientGameController implements Runnable {
         return newmap;
     }
 
-    public void registerAllList(List<ClientBehaviourProcessor> allList) {
+    public void registerAllList(List<BehaviourProcessor> allList) {
         this.allList = allList;
     }
 
@@ -250,7 +250,7 @@ public class ClientGameController implements Runnable {
             }
 
             for (int i = 0; i < allList.size(); i++) {
-                ClientBehaviourProcessor proc = allList.get(i);
+                BehaviourProcessor proc = allList.get(i);
                 proc.process();
             }
 
@@ -383,7 +383,7 @@ public class ClientGameController implements Runnable {
     private void managePause(boolean pause) {
         // Alle Behaviour pausieren
         for (int i = 0; i < allList.size(); i++) {
-            ClientBehaviourProcessor proc = allList.get(i);
+            BehaviourProcessor proc = allList.get(i);
             proc.managePause(pause);
         }
     }

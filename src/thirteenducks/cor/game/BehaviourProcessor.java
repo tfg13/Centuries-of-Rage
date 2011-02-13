@@ -36,7 +36,7 @@ import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
  *
  * @author tfg
  */
-public interface ClientBehaviourProcessor {
+public interface BehaviourProcessor {
 
     /**
      * Findet heraus, ob dieser BehaviourProcessor Client-Behaviour hat (NICHT, ob diese ausgeführt werden sollen etc.)
