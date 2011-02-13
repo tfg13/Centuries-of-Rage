@@ -64,4 +64,10 @@ public interface ClientBehaviourProcessor {
      */
     public void process();
 
+    /**
+     * Wird für (Un-)Pause aufgerufen
+     * @param pause true bedeutet, dass vom laufenden Spiel in PAUSE gewechselt wird.
+     */
+    public void managePause(boolean pause);
+
 }

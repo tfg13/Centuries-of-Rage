@@ -254,7 +254,7 @@ public class ClientGameController implements Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
-            
+
             for (int i = 0; i < allList.size(); i++) {
                 ClientBehaviourProcessor proc = allList.get(i);
                 proc.process();
@@ -387,41 +387,11 @@ public class ClientGameController implements Runnable {
      * @param b Boolean, auf Pause stellen (true) oder zurück(false)
      */
     private void managePause(boolean pause) {
-        System.out.println("AddMe: Call Pause for every Behaviour!");
-    /*    // Alle Behaviour pausieren
-        for (int u = 0; u < unitList.size(); u++) {
-            Unit unit = unitList.get(u);
-            if (pause) {
-                unit.pause();
-            } else {
-                unit.unpause();
-            }
-            for (int b = 0; b < unit.cbehaviours.size(); b++) {
-                ClientBehaviour c = unit.cbehaviours.get(b);
-                if (c.isActive()) {
-                    if (pause) {
-                        c.pause();
-                    } else {
-                        c.unpause();
-                    }
-                }
-            }
+        // Alle Behaviour pausieren
+        for (int i = 0; i < allList.size(); i++) {
+            ClientBehaviourProcessor proc = allList.get(i);
+            proc.managePause(pause);
         }
-
-
-        for (int u = 0; u < buildingList.size(); u++) {
-            Building building = buildingList.get(u);
-            for (int b = 0; b < building.cbehaviours.size(); b++) {
-                ClientBehaviour c = building.cbehaviours.get(b);
-                if (c.isActive()) {
-                    if (pause) {
-                        c.pause();
-                    } else {
-                        c.unpause();
-                    }
-                }
-            }
-        } */
     }
 
     /**
@@ -458,7 +428,7 @@ public class ClientGameController implements Runnable {
         }
 
         Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.schedule(new TimerTask()  {
 
             public void run() {
                 rgi.rogGraphics.showstatistics();
