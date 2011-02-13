@@ -109,7 +109,7 @@ public class Path implements Pauseable, Serializable {
             // Richtung berechnen
             int vec = pos.subtract(old).transformToIntVector();
             // Strecke berechnen, mit Pytagoras
-            double abschnitt = Math.sqrt(Math.pow(Math.abs(old.getX() - pos.getX()), 2) + Math.pow(Math.abs(old.getX() - pos.getY()), 2));
+            double abschnitt = Math.sqrt(Math.pow(old.getX() - pos.getX(), 2) + Math.pow(old.getY() - pos.getY(), 2));
             length = length + abschnitt;
             path.add(new PathElement(pos, length, vec));
         }
