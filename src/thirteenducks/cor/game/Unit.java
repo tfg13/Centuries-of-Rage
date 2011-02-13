@@ -232,7 +232,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
      */
     public void serverManagePath(ServerCore.InnerServer rgi) {
-        path.serverManagePath(rgi, this);
+        if (path.isMoving()) {
+            path.serverManagePath(rgi, this);
+        }
     }
 
     /**

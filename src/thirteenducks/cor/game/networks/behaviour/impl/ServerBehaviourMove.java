@@ -27,8 +27,6 @@ package thirteenducks.cor.game.networks.behaviour.impl;
 
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.game.Building;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import thirteenducks.cor.game.Unit;
 
 /**
