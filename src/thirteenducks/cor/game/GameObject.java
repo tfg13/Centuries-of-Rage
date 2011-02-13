@@ -1242,4 +1242,14 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public Position getMainPositionForRenderOrigin() {
         return mainPosition;
     }
+    
+    @Override
+    public void process() {
+        for (int i = 0; i < cbehaviours.size(); i++) {
+            ClientBehaviour be = cbehaviours.get(i);
+            if (be.isActive()) {
+                be.tryexecute();
+            }
+        }
+    }
 }
