@@ -47,11 +47,9 @@ import thirteenducks.cor.game.Unit;
 public class ServerBehaviourMove extends ServerBehaviour {
 
     Unit caster2;
-    boolean reservedTarget = false;
-    public boolean fleeing = false;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 5, false);
+        super(newinner, caster, 1, 5, true);
         caster2 = caster;
     }
 

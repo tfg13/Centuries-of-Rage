@@ -123,7 +123,6 @@ public class ServerGameController implements Runnable {
         for (Unit unit : unitList) {
             ServerBehaviourMove smove = new ServerBehaviourMove(rgi, unit);
             unit.addServerBehaviour(smove);
-            unit.moveManager = smove;
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
             unit.addServerBehaviour(amove);
             unit.attackManager = amove;

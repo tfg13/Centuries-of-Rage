@@ -556,8 +556,6 @@ public class ServerMoveManager {
             unit.attackManager.setIdle(true, false);
         }*/
 
-        unit.moveManager.activate();
-
     }
 
  /*   private void attachMoveUnit(ArrayList<Position> completePath, Unit unit, boolean compressed, boolean flee) {

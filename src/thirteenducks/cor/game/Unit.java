@@ -54,12 +54,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der Wegmanager der Einheit.
      */
     protected final Path path;
-    /**
-     * PFUSCH!!!
-     * Nur aus Kompatibilitätsgründen hier!
-     * @deprecated 
-     */
-    public ServerBehaviourMove moveManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
