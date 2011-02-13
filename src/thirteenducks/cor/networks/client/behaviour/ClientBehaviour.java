@@ -34,7 +34,7 @@ import thirteenducks.cor.game.GameObject;
  *
  * ID-Liste:
  *
- * 1
+ * 1 - Move - Bewegungsberechnung
  * 2
  * 3
  * 4 - Idle - Angriffsziele suchen

@@ -28,6 +28,7 @@ package thirteenducks.cor.game;
 import java.io.*;
 import java.util.*;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 
@@ -227,8 +228,18 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         path.switchPath(newPath);
     }
 
+    /**
+     * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
+     */
     public void serverManagePath(ServerCore.InnerServer rgi) {
         path.serverManagePath(rgi, this);
+    }
+
+    /**
+     * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
+     */
+    public void clientManagePath(InnerClient rgi) {
+        path.clientManagePath(rgi, this);
     }
 
     /**
@@ -486,4 +497,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public boolean selectable() {
         return true;
     }
+
+
 }
