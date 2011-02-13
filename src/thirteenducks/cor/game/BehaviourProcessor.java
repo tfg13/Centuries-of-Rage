@@ -58,5 +58,10 @@ public interface BehaviourProcessor {
      * @return eine Liste aller ServerBehaviour
      */
     public List<ServerBehaviour> getServerBehaviours();
+    /**
+     * Führt alle derzeitig aktiven Behaviours aus.
+     * Verwaltet das Timing selbstständig.
+     */
+    public void process();
 
 }
