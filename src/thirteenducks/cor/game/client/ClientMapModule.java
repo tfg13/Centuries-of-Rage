@@ -36,6 +36,7 @@ import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
 import org.newdawn.slick.Input;
+import thirteenducks.cor.game.ClientBehaviourProcessor;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
@@ -935,8 +936,6 @@ public class ClientMapModule {
         createIDList();
         rgi.rogGraphics.activateMap(theMap.getVisMap());
         createAllLists();
-        rgi.game.registerBuildingList(buildingList);
-        rgi.game.registerUnitList(unitList);
         // Fertig, mitteilen
         rgi.rogGraphics.triggerStatusWaiting();
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
@@ -950,16 +949,22 @@ public class ClientMapModule {
         } else {
             allList.clear();
         }
+        // Input
         List<InteractableGameElement> igelist = new ArrayList<InteractableGameElement>();
+        // Game
+        List<ClientBehaviourProcessor> procList = new ArrayList<ClientBehaviourProcessor>();
         for (Unit unit : unitList) {
             igelist.add(unit);
             allList.add(unit);
+            procList.add(unit);
         }
         for (Building building : buildingList) {
             allList.add(building);
             igelist.add(building);
+            procList.add(building);
         }
         rgi.rogGraphics.inputM.setIGEs(igelist);
+        rgi.game.registerAllList(procList);
     }
 
     /**

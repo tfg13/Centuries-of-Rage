@@ -41,7 +41,6 @@ import java.util.TimerTask;
 import thirteenducks.cor.game.ClientBehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
-import thirteenducks.cor.game.ability.AbilityIntraManager;
 
 /**
  *
@@ -51,8 +50,6 @@ public class ClientGameController implements Runnable {
 
     ClientCore.InnerClient rgi;
     private NetPlayer myself;
-    private List<Unit> unitList;             // Die Liste mit den Einheiten
-    private List<Building> buildingList;     // Die Liste mit den Gebäuden
     Thread t;                                   // Der Thread, in dem die Mainloop läuft
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)
@@ -162,10 +159,11 @@ public class ClientGameController implements Runnable {
 
         }
 
-        for (Building building : buildingList) {
+        System.out.println("AddMe: Add intramanager for Buildings");
+        /*for (Building building : buildingList) {
             AbilityIntraManager intram = new AbilityIntraManager(building, rgi);
             building.addAbility(intram);
-        }
+        }*/
 
         // Dem Spieler Startressourcen geben
         myself.res1 = 200;
@@ -212,12 +210,8 @@ public class ClientGameController implements Runnable {
         return newmap;
     }
 
-    public void registerUnitList(List<Unit> uL) {
-        unitList = uL;
-    }
-
-    public void registerBuildingList(List<Building> bL) {
-        buildingList = bL;
+    public void registerAllList(List<ClientBehaviourProcessor> allList) {
+        this.allList = allList;
     }
 
     public void setPlayer(NetPlayer player) {
