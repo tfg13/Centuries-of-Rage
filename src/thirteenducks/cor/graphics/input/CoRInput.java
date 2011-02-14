@@ -1317,4 +1317,22 @@ public class CoRInput implements Pauseable {
             }
         }
     }
+
+    /**
+     * Added dieses GO zum selektionssystem.
+     * Zunkünftig werden Mausgesten auf dieses IGE erkannt.
+     * @param go das hinzuzufügende go
+     */
+    public void addGO(GameObject go) {
+        iges.add(go);
+    }
+
+    /**
+     * Entfernt dieses GO wieder aus dem selektionssystem.
+     * Mausgesten werden zukünftig nichtmehr erkannt.
+     * @param go das zu entfernende go
+     */
+    public void removeGO(GameObject go) {
+        iges.remove(go);
+    }
 }

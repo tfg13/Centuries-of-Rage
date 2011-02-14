@@ -1215,6 +1215,8 @@ public class ClientMapModule {
             rgi.rogGraphics.content.allListLock.unlock();
         }
         this.buildingList.add(b);
+        rgi.game.addGO(b);
+        rgi.rogGraphics.inputM.addGO(b);
 
         if (netIDList.containsKey(b.netID)) {
             throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
@@ -1306,6 +1308,9 @@ public class ClientMapModule {
         }
         this.unitList.add(u);
 
+        rgi.game.addGO(u);
+        rgi.rogGraphics.inputM.addGO(u);
+
         if (netIDList.containsKey(u.netID)) {
             throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
         }
@@ -1331,6 +1336,8 @@ public class ClientMapModule {
             rgi.rogGraphics.notifyUnitDieing(unit);
             this.unitList.remove(unit);
             this.netIDList.remove(unit.netID);
+            rgi.game.removeGO(unit);
+            rgi.rogGraphics.inputM.removeGO(unit);
             rgi.rogGraphics.inputM.removeFromSelection(unit);
         }
     }

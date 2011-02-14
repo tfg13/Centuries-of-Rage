@@ -429,4 +429,22 @@ public class ClientGameController implements Runnable {
             }
         }, 3000);
     }
+
+    /**
+     * Fügt ein GO hinzu.
+     * Alle Behaviours dieses GO's werden ab sofort berechnet.
+     * @param go das zu addende GO
+     */
+    public void addGO(GameObject go) {
+        allList.add(go);
+    }
+    /**
+     * Löscht ein GO.
+     * Die Behaviours dieses GO's werden nichtmehr ausgeführt.
+     * Eine noch einmalige Ausführung nach dem return dieser Methode kann aber nicht ausgeschlossen werden.
+     * @param go das zu entfernende go
+     */
+    void removeGO(GameObject go) {
+        allList.remove(go);
+    }
 }
