@@ -99,7 +99,7 @@ public class PlayersBuilding extends Building {
 
     @Override
     public Position getSpawnPosition(GameObject obj) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.getMainPosition().subtract(new Position(-4, -4));
     }
 
     @Override
