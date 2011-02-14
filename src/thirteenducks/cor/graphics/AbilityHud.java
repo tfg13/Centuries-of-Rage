@@ -205,7 +205,7 @@ public class AbilityHud extends Overlay {
                     if (ab.isVisible()) {
                         if (counter++ == index) {
                             // Diese hier!
-                            if (i == 1) {
+                            if (i == 0) {
                                 ab.perform(ige.getAbilityCaster());
                             } else {
                                 ab.antiperform(ige.getAbilityCaster());
