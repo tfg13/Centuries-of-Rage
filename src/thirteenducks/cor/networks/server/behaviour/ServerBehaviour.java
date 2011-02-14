@@ -66,7 +66,7 @@ public abstract class ServerBehaviour implements Pauseable {
         this.caster = caster;
     }
 
-        /**
+    /**
      * Konstruktor, muss implementiert werden
      * @param newinner
      */
@@ -119,9 +119,7 @@ public abstract class ServerBehaviour implements Pauseable {
 
         // Ausführen
         try {
-            if (caster.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-                this.execute();
-            }
+            this.execute();
         } catch (Exception ex) {
             // Damit der Server nicht abstürzt!
             ex.printStackTrace();
