@@ -27,6 +27,7 @@
 package thirteenducks.cor.graphics.input;
 
 import java.util.List;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
@@ -126,4 +127,11 @@ public interface InteractableGameElement {
      * @return
      */
     public List<Ability> getAbilitys();
+    /**
+     * Liefert das Objekt, mit dem die perform()-Methoden der Abilitys aufgerufen werden sollen.
+     * Einfach null zurückgeben, wenn nicht benötigt.
+     * Unterklassen von GameObject können in der Regel einfach this zurückgeben.
+     * @return das Objekt, mit dem die perform()-Methoden der Abilitys aufgerufen werden sollen
+     */
+    public GameObject getAbilityCaster();
 }
