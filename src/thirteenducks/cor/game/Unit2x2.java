@@ -107,7 +107,7 @@ public class Unit2x2 extends Unit {
 
     @Override
     public Position[] getPositions() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return positions;
     }
 
     @Override
