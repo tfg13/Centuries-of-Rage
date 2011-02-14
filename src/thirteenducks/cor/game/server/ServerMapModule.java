@@ -724,6 +724,7 @@ public class ServerMapModule {
         for (Building building : buildingList) {
             bpList.add(building);
         }
+        rgi.game.registerAllList(bpList);
     }
 
     public Unit getDescUnit(int playerId, int descId) {
