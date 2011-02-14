@@ -63,6 +63,6 @@ public abstract class Overlay {
      * @param fullResY
      * @param hudX
      */
-    public abstract void renderOverlay(Graphics g, int fullResX, int fullResY);
+    public abstract void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap);
 
 }

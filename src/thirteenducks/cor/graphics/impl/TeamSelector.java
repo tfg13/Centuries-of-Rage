@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.graphics.impl;
 
+import java.util.Map;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.graphics.input.CoRInputMode;
@@ -33,6 +34,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Polygon;
+import thirteenducks.cor.graphics.GraphicsImage;
 
 /**
  * Der Team-Selektor.
@@ -85,7 +87,7 @@ public class TeamSelector extends Overlay {
     int players = 0;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
         if (active) {
             // Einmalig die Spielerzahl berechnen
             if (players == 0) {

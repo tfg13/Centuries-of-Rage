@@ -92,7 +92,7 @@ public class Minimap extends Overlay {
     private int[] pos;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
         int dx = pos[0];
         int dy = pos[1];
         // Rahmen
