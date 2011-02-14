@@ -23,14 +23,14 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package thirteenducks.cor.graphics;
 
 import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.Ability;
+import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.graphics.input.OverlayMouseListener;
 
 /**
  * Die Fähigkeiten-Anzeige des Huds
@@ -38,43 +38,178 @@ import thirteenducks.cor.game.ability.Ability;
 public class AbilityHud extends Overlay {
 
     /**
+     * Die Fähigkeitenanzeige ist derzeit oben rechts.
+     */
+    public static final int EDGE_TOP_RIGHT = 0;
+    /**
+     * Die Fähigkeitenanzeige ist derzeit oben links.
+     */
+    public static final int EDGE_TOP_LEFT = 1;
+    /**
+     * Die Fähigkeitenanzeige ist derzeit unten rechts.
+     */
+    public static final int EDGE_BOTTOM_RIGHT = 2;
+    /**
+     * Die Fähigkeitenanzeige ist derzeit unten links.
+     */
+    public static final int EDGE_BOTTOM_LEFT = 3;
+    /**
      * Die größe der (quadratischen) Fähigkeiten-Icons
      */
     public static final int ICON_SIZE_XY = 40;
-
     /**
      * Das GO dessen Fähigkeiten derzeit angezeigt werden.
      */
-    private GameObject object;
+    private List<Ability> abList;
     /**
-     * Die derzeitige X-Zeichenkoordinate
+     * Die letzen Zeichenkoordinaten, für den MouseInput
      */
-    private int dx;
+    private int[] coords;
     /**
-     * Die derzeitige Y-Zeichenkoordinate
+     * In welcher Ecke es derzeit angezeigt wird.
      */
-    private int dy;
-
+    private int edge = EDGE_BOTTOM_LEFT;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String,GraphicsImage> imgMap) {
-        if (object != null) {
-            List<Ability> abList = object.getAbilitys();
+    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+        if (abList != null) {
+            int visCounter = 0;
             for (int i = 0; i < abList.size(); i++) {
                 Ability ab = abList.get(i);
-                String tex = ab.symbols[0];
-                if (tex != null) {
-                    GraphicsImage img = imgMap.get(tex);
-                    if (img != null) {
-                        img.getImage().draw(dx + (i * ICON_SIZE_XY), dy, ICON_SIZE_XY, ICON_SIZE_XY);
+                if (ab.isVisible()) {
+                    String tex = ab.symbols[0];
+                    if (tex == null) {
+                        tex = ab.symbols[1];
+                    }
+                    if (tex != null) {
+                        GraphicsImage img = imgMap.get(tex);
+                        if (img != null) {
+                            switch (edge) {
+                                case EDGE_TOP_LEFT:
+                                    img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY);
+                                    break;
+                                case EDGE_TOP_RIGHT:
+                                    img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY);
+                                    break;
+                                case EDGE_BOTTOM_LEFT:
+                                    img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY);
+                                    break;
+                                case EDGE_BOTTOM_RIGHT:
+                                    img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY);
+                                    break;
+                            }
+                        }
                     }
                 }
             }
+            updateCoords(fullResX, fullResY);
+        } else {
+            coords[0] = 0;
+            coords[1] = 0;
+            coords[2] = 0;
+            coords[3] = 0;
         }
     }
 
-    public void setActiveObject(GameObject obj) {
-        object = obj;
+    /**
+     * Muss beim Rendern aufgerufen werden, damit der selections-layer immer mit dem sichtbaren layer übereinstimmt.
+     * Nicht wirklich schön.
+     */
+    private void updateCoords(int resX, int resY) {
+        switch (edge) {
+            case EDGE_TOP_LEFT:
+                coords[0] = 0;
+                coords[1] = 0;
+                coords[2] = abList.size() * ICON_SIZE_XY;
+                coords[3] = ICON_SIZE_XY;
+                break;
+            case EDGE_TOP_RIGHT:
+                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
+                coords[1] = 0;
+                coords[2] = resX;
+                coords[3] = ICON_SIZE_XY;
+                break;
+            case EDGE_BOTTOM_LEFT:
+                coords[0] = 0;
+                coords[1] = resY - ICON_SIZE_XY;
+                coords[2] = abList.size() * ICON_SIZE_XY;
+                coords[3] = resY;
+                break;
+            case EDGE_BOTTOM_RIGHT:
+                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
+                coords[1] = resY - ICON_SIZE_XY;
+                coords[2] = resX;
+                coords[3] = resY;
+                break;
+        }
     }
 
+    public void setActiveObject(List<Ability> abList) {
+        this.abList = abList;
+    }
+
+    private AbilityHud(ClientCore.InnerClient rgi) {
+        coords = new int[4];
+        rgi.rogGraphics.inputM.addOverlayMouseListener(new OverlayMouseListener() {
+
+            @Override
+            public int getCatch1X() {
+                return coords[0];
+            }
+
+            @Override
+            public int getCatch1Y() {
+                return coords[1];
+            }
+
+            @Override
+            public int getCatch2X() {
+                return coords[2];
+            }
+
+            @Override
+            public int getCatch2Y() {
+                return coords[3];
+            }
+
+            @Override
+            public void mouseMoved(int x, int y) {
+            }
+
+            @Override
+            public void mouseDragged(int x, int y) {
+            }
+
+            @Override
+            public void mouseWheelMoved(int i) {
+            }
+
+            @Override
+            public void mousePressed(int i, int i1, int i2) {
+            }
+
+            @Override
+            public void mouseReleased(int i, int i1, int i2) {
+                // Ability finden
+                int index = i1 / ICON_SIZE_XY;
+                int counter = 0;
+                for (int o = 0; o < abList.size(); o++) {
+                    Ability ab = abList.get(o);
+                    if (ab.isVisible()) {
+                        if (counter++ == index) {
+                            // Diese hier!
+                            System.out.println("AddMe: Call ability " + o);
+                        }
+
+                    }
+                }
+
+            }
+
+        });
+    }
+
+    public static AbilityHud createAbilityHud(ClientCore.InnerClient rgi) {
+        return new AbilityHud(rgi);
+    }
 }

@@ -28,6 +28,7 @@ package thirteenducks.cor.graphics.input;
 
 import java.util.List;
 import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
 
 /**
@@ -120,4 +121,9 @@ public interface InteractableGameElement {
      * @param character Das gedrückte Zeichen
      */
     public void keyCommand(int key, char character);
+    /**
+     * Liefert eine Liste von Abilitys
+     * @return
+     */
+    public List<Ability> getAbilitys();
 }

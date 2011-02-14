@@ -40,6 +40,7 @@ import java.util.List;
 import org.newdawn.slick.*;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.Pauseable;
+import thirteenducks.cor.graphics.AbilityHud;
 
 /**
  *
@@ -140,10 +141,16 @@ public class CoRInput implements Pauseable {
      * Interner Zustandsspeicher, benötigt für das Overlayssystem
      */
     private int lastMouseY;
+    /**
+     * Die Fähigkeitenanzeige des Huds.
+     */
+    private AbilityHud abHud;
 
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
         selMap = new SelectionMap(mapX, mapY);
+        abHud = AbilityHud.createAbilityHud(rgi);
+        graphics.content.overlays.add(abHud);
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
         rgi.logger("[RogInput] RogInput is ready to rock! (init completed)");
@@ -362,12 +369,14 @@ public class CoRInput implements Pauseable {
                                                     selected.get(i).setSelected(false);
                                                 }
                                                 selected.clear();
+                                                abHud.setActiveObject(null);
                                             }
                                             List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
                                             if (selectedIGE != null) {
                                                 for (InteractableGameElement ige : selectedIGE) {
                                                     ige.setSelected(true);
                                                     selected.add(ige);
+                                                    abHud.setActiveObject(ige.getAbilitys());
                                                 }
                                             }
 
@@ -806,6 +815,7 @@ public class CoRInput implements Pauseable {
                 System.out.println("Deselected: " + selected.get(i).toString());
             }
             selected.clear();
+            abHud.setActiveObject(null);
         }
 
         // Alles, was noch da ist anwählen:
@@ -813,6 +823,7 @@ public class CoRInput implements Pauseable {
             elem.setSelected(true);
             selected.add(elem);
             System.out.println("Selected: " + elem.toString());
+            abHud.setActiveObject(elem.getAbilitys());
         }
     }
 

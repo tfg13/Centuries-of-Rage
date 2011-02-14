@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.graphics;
 
+import java.util.Map;
 import org.newdawn.slick.Graphics;
 
 /**
