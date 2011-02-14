@@ -27,9 +27,12 @@ package thirteenducks.cor.graphics;
 
 import java.util.List;
 import java.util.Map;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.OverlayMouseListener;
 
 /**
@@ -58,9 +61,9 @@ public class AbilityHud extends Overlay {
      */
     public static final int ICON_SIZE_XY = 40;
     /**
-     * Das GO dessen Fähigkeiten derzeit angezeigt werden.
+     * Das IGE dessen Fähigkeiten derzeit angezeigt werden.
      */
-    private List<Ability> abList;
+    private InteractableGameElement ige;
     /**
      * Die letzen Zeichenkoordinaten, für den MouseInput
      */
@@ -72,42 +75,45 @@ public class AbilityHud extends Overlay {
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
-        if (abList != null) {
-            int visCounter = 0;
-            for (int i = 0; i < abList.size(); i++) {
-                Ability ab = abList.get(i);
-                if (ab.isVisible()) {
-                    String tex = ab.symbols[0];
-                    if (tex == null) {
-                        tex = ab.symbols[1];
-                    }
-                    if (tex != null) {
-                        GraphicsImage img = imgMap.get(tex);
-                        if (img != null) {
-                            switch (edge) {
-                                case EDGE_TOP_LEFT:
-                                    img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY);
-                                    break;
-                                case EDGE_TOP_RIGHT:
-                                    img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY);
-                                    break;
-                                case EDGE_BOTTOM_LEFT:
-                                    img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY);
-                                    break;
-                                case EDGE_BOTTOM_RIGHT:
-                                    img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY);
-                                    break;
+        if (ige != null) {
+            List<Ability> abList = ige.getAbilitys();
+            if (abList != null) {
+                int visCounter = 0;
+                for (int i = 0; i < abList.size(); i++) {
+                    Ability ab = abList.get(i);
+                    if (ab.isVisible()) {
+                        String tex = ab.symbols[0];
+                        if (tex == null) {
+                            tex = ab.symbols[1];
+                        }
+                        if (tex != null) {
+                            GraphicsImage img = imgMap.get(tex);
+                            if (img != null) {
+                                switch (edge) {
+                                    case EDGE_TOP_LEFT:
+                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        break;
+                                    case EDGE_TOP_RIGHT:
+                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        break;
+                                    case EDGE_BOTTOM_LEFT:
+                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        break;
+                                    case EDGE_BOTTOM_RIGHT:
+                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        break;
+                                }
                             }
                         }
                     }
                 }
+                updateCoords(fullResX, fullResY, abList);
+            } else {
+                coords[0] = 0;
+                coords[1] = 0;
+                coords[2] = 0;
+                coords[3] = 0;
             }
-            updateCoords(fullResX, fullResY);
-        } else {
-            coords[0] = 0;
-            coords[1] = 0;
-            coords[2] = 0;
-            coords[3] = 0;
         }
     }
 
@@ -115,7 +121,7 @@ public class AbilityHud extends Overlay {
      * Muss beim Rendern aufgerufen werden, damit der selections-layer immer mit dem sichtbaren layer übereinstimmt.
      * Nicht wirklich schön.
      */
-    private void updateCoords(int resX, int resY) {
+    private void updateCoords(int resX, int resY, List<Ability> abList) {
         switch (edge) {
             case EDGE_TOP_LEFT:
                 coords[0] = 0;
@@ -144,8 +150,8 @@ public class AbilityHud extends Overlay {
         }
     }
 
-    public void setActiveObject(List<Ability> abList) {
-        this.abList = abList;
+    public void setActiveObject(InteractableGameElement elem) {
+        this.ige = elem;
     }
 
     private AbilityHud(ClientCore.InnerClient rgi) {
@@ -190,6 +196,7 @@ public class AbilityHud extends Overlay {
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
+                List<Ability> abList = ige.getAbilitys();
                 // Ability finden
                 int index = i1 / ICON_SIZE_XY;
                 int counter = 0;
@@ -198,14 +205,17 @@ public class AbilityHud extends Overlay {
                     if (ab.isVisible()) {
                         if (counter++ == index) {
                             // Diese hier!
-                            System.out.println("AddMe: Call ability " + o);
+                            if (i == 1) {
+                                ab.perform(ige.getAbilityCaster());
+                            } else {
+                                ab.antiperform(ige.getAbilityCaster());
+                            }
                         }
 
                     }
                 }
 
             }
-
         });
     }
 

@@ -376,7 +376,7 @@ public class CoRInput implements Pauseable {
                                                 for (InteractableGameElement ige : selectedIGE) {
                                                     ige.setSelected(true);
                                                     selected.add(ige);
-                                                    abHud.setActiveObject(ige.getAbilitys());
+                                                    abHud.setActiveObject(ige);
                                                 }
                                             }
 
@@ -823,7 +823,7 @@ public class CoRInput implements Pauseable {
             elem.setSelected(true);
             selected.add(elem);
             System.out.println("Selected: " + elem.toString());
-            abHud.setActiveObject(elem.getAbilitys());
+            abHud.setActiveObject(elem);
         }
     }
 
