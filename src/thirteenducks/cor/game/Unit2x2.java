@@ -179,7 +179,7 @@ public class Unit2x2 extends Unit {
     @Override
     public SelectionMarker getSelectionMarker() {
         SelectionMarker marker = new SelectionMarker(this, lastPositions, positions);
-        lastPositions = positions;
+        lastPositions = positions.clone();
         return marker;
     }
 
