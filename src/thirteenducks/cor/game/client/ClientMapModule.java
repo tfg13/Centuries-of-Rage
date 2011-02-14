@@ -1384,6 +1384,8 @@ public class ClientMapModule {
             // Jetzt löschen
             this.buildingList.remove(building);
             this.netIDList.remove(building.netID);
+            rgi.game.removeGO(building);
+            rgi.rogGraphics.inputM.removeGO(building);
             rgi.rogGraphics.notifyBuildingDieing(building);
             rgi.rogGraphics.inputM.removeFromSelection(building);
             // Effekte entfernen

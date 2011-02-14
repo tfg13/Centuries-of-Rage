@@ -1071,6 +1071,8 @@ public class ServerMapModule {
 
         this.netIDList.put(b.netID, b);
 
+        rgi.game.addGO(b);
+
         // In Abhängigkeitsliste einfügen
         if (b.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
             if (!rgi.game.playerList.get(b.getPlayerId()).bList.contains(b.getDescTypeId())) {
@@ -1108,6 +1110,7 @@ public class ServerMapModule {
         this.unitList.add(u);
 
         this.netIDList.put(u.netID, u);
+        rgi.game.addGO(u);
 
         // Abhängigkeiten
         if (!rgi.game.playerList.get(u.getPlayerId()).uList.contains(u.getDescTypeId())) {
@@ -1163,6 +1166,7 @@ public class ServerMapModule {
             // Unit löschen
             this.unitList.remove(u);
             this.netIDList.remove(u.netID);
+            rgi.game.removeGO(u);
         }
     }
 
@@ -1196,6 +1200,7 @@ public class ServerMapModule {
             // Unit löschen
             this.buildingList.remove(u);
             this.netIDList.remove(u.netID);
+            rgi.game.removeGO(u);
 
             // Sieg/Niederlage testen
             checkFinished(u.getPlayerId());

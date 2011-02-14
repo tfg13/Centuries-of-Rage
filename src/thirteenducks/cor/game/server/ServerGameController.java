@@ -325,4 +325,24 @@ public class ServerGameController implements Runnable {
             processor.managePause(pause);
         }
     }
+
+    /**
+     * Fügt dieses GO zum Behaviourssystem hinzu.
+     * Die Behaviours dieses GO's werden zukünftig berechnet.
+     * @param go das hinzuzufügende GO
+     */
+    public void addGO(GameObject go) {
+        allList.add(go);
+    }
+
+    /**
+     * Entfernt dieses GO aus dem Behavioursystem
+     * Die Behaviours dieses GOs werden in Zunkunft nichtmehr ausgeführt.
+     * Eine einmalige zukünftige Ausführung kann allerdings nicht 100% ausgeschlossen werden.
+     * Diese würde allerdings praktisch sofort geschehen, später werden die behaviours sicher nicht mehr aufgerufen.
+     * @param go das zu entfernene GO
+     */
+    public void removeGO(GameObject go) {
+        allList.remove(go);
+    }
 }
