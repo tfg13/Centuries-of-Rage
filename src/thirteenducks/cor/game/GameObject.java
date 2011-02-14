@@ -1245,23 +1245,45 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
 
     @Override
     public void process() {
-        for (int i = 0; i < cbehaviours.size(); i++) {
-            ClientBehaviour be = cbehaviours.get(i);
-            if (be.isActive()) {
-                be.tryexecute();
+        if (cbehaviours != null) { // Client?
+            for (int i = 0; i < cbehaviours.size(); i++) {
+                ClientBehaviour be = cbehaviours.get(i);
+                if (be.isActive()) {
+                    be.tryexecute();
+                }
+            }
+        } else { // Server
+            for (int i = 0; i < sbehaviours.size(); i++) {
+                ServerBehaviour be = sbehaviours.get(i);
+                if (be.isActive()) {
+                    be.tryexecute();
+                }
             }
         }
     }
 
     @Override
     public void managePause(boolean pause) {
-        for (int i = 0; i < cbehaviours.size(); i++) {
-            ClientBehaviour be = cbehaviours.get(i);
-            if (be.isActive()) {
-                if (pause) {
-                    be.pause();
-                } else {
-                    be.unpause();
+        if (cbehaviours != null) {
+            for (int i = 0; i < cbehaviours.size(); i++) {
+                ClientBehaviour be = cbehaviours.get(i);
+                if (be.isActive()) {
+                    if (pause) {
+                        be.pause();
+                    } else {
+                        be.unpause();
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < sbehaviours.size(); i++) {
+                ServerBehaviour be = sbehaviours.get(i);
+                if (be.isActive()) {
+                    if (pause) {
+                        be.pause();
+                    } else {
+                        be.unpause();
+                    }
                 }
             }
         }

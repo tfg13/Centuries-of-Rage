@@ -33,9 +33,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
-import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.game.Unit;
@@ -48,7 +48,10 @@ import thirteenducks.cor.game.Unit;
 public class ServerGameController implements Runnable {
 
     private List<Unit> unitList;             // Die Liste mit den Einheiten
-    private List<Building> buildingList;     // Die Liste mit den Gebäuden
+    /**
+     * Eine Liste mit allen Objekten, die Behaviours ausführen können.
+     */
+    private List<BehaviourProcessor> allList;
     List<NetPlayer> playerList;         // Die Liste mit den Spielern VORSICHT- ES DARF NIEMALS JEMAND GELÖSCHT WERDEN!!!
     ServerCore.InnerServer rgi;         // Die Referenz auf logger und alle anderen Module
     Thread t;
@@ -59,49 +62,32 @@ public class ServerGameController implements Runnable {
 
         // Mainloop
         rgi.logger("Starting Mainloop...");
-        System.out.println("AddMe: Implement Behaviour-System!");
-        /*   while (true) {
+        while (true) {
 
-        // Alle Behaviour durchgehen
+            // Alle Behaviour durchgehen
 
-        while (pause) {
-        if (!pause) {
-        break;
-        }
-        try {
-        Thread.sleep(20);
-        } catch (InterruptedException ex) {
-        }
-        }
+            while (pause) {
+                if (!pause) {
+                    break;
+                }
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException ex) {
+                }
+            }
 
-        for (int u = 0; u < unitList.size(); u++) {
-        Unit unit = unitList.get(u);
-        for (int b = 0; b < unit.sbehaviours.size(); b++) {
-        ServerBehaviour s = unit.sbehaviours.get(b);
-        if (s.isActive()) {
-        s.tryexecute();
-        }
-        }
-        }
+            for (int i = 0; i < allList.size(); i++) {
+                BehaviourProcessor processor = allList.get(i);
+                processor.process();
+            }
 
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                rgi.logger(ex);
+            }
 
-        for (int u = 0; u < buildingList.size(); u++) {
-        Building building = buildingList.get(u);
-        for (int b = 0; b < building.sbehaviours.size(); b++) {
-        ServerBehaviour s = building.sbehaviours.get(b);
-        if (s.isActive()) {
-        s.tryexecute();
         }
-        }
-        }
-
-        try {
-        Thread.sleep(20);
-        } catch (InterruptedException ex) {
-        rgi.logger(ex);
-        }
-
-        } */
     }
 
     public void startMainloop() {
@@ -157,8 +143,8 @@ public class ServerGameController implements Runnable {
         unitList = uL;
     }
 
-    public void registerBuildingList(List<Building> bL) {
-        buildingList = bL;
+    public void registerAllList(List<BehaviourProcessor> allList) {
+        this.allList = allList;
     }
 
     public void registerBuilding(int playerId, Building building) {
@@ -333,34 +319,10 @@ public class ServerGameController implements Runnable {
      */
     private void managePause(boolean pause) {
         // Alle Behaviour pausieren
-        System.out.println("AddMe: Pause all behaviours");
-    /*    for (int u = 0; u < unitList.size(); u++) {
-            Unit unit = unitList.get(u);
-            for (int b = 0; b < unit.sbehaviours.size(); b++) {
-                ServerBehaviour c = unit.sbehaviours.get(b);
-                if (c.isActive()) {
-                    if (pause) {
-                        c.pause();
-                    } else {
-                        c.unpause();
-                    }
-                }
-            }
+
+        for (int i = 0; i < allList.size(); i++) {
+            BehaviourProcessor processor = allList.get(i);
+            processor.managePause(pause);
         }
-
-
-        for (int u = 0; u < buildingList.size(); u++) {
-            Building building = buildingList.get(u);
-            for (int b = 0; b < building.sbehaviours.size(); b++) {
-                ServerBehaviour c = building.sbehaviours.get(b);
-                if (c.isActive()) {
-                    if (pause) {
-                        c.pause();
-                    } else {
-                        c.unpause();
-                    }
-                }
-            }
-        } */
     }
 }
