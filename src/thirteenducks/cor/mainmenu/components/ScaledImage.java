@@ -28,6 +28,7 @@ package thirteenducks.cor.mainmenu.components;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppletGameContainer.Container;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -50,9 +51,14 @@ public class ScaledImage extends Component {
      * Pfad des zu ladenden Bilds
      */
     String imagePath;
+    /**
+     * Die Farbe die zum rendern des Bildes verwendet wird
+     */
+    Color color;
 
     public ScaledImage(MainMenu mainMenuReference, int x, int y, double width, double height, String imagepath) {
         super(mainMenuReference, x, y, width, height);
+
 
         imagePath = imagepath;
     }
@@ -73,11 +79,23 @@ public class ScaledImage extends Component {
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(image, this.getX1(), this.getY1());
+        if (color != null) {
+            g.drawImage(image, this.getX1(), this.getY1(), color);
+        } else {
+            g.drawImage(image, this.getX1(), this.getY1());
+        }
     }
 
     @Override
     public void setAlpha(float alpha) {
         image.setAlpha(alpha);
+    }
+
+    /**
+     * Setter für Color
+     * @param theColor - Die Farbe die zum rendern des Bildes benutzt wird
+     */
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
