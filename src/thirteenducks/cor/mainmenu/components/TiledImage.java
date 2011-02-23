@@ -71,14 +71,10 @@ public class TiledImage extends Component {
     @Override
     public void render(Graphics g) {
         g.fillRect(x1, y1, this.getWidth(), this.getHeight(), image, 0, 0);
-
-
     }
 
     @Override
     public void setAlpha(float alpha) {
         image.setAlpha(alpha);
     }
-
-
 }

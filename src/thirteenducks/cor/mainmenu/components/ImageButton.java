@@ -87,14 +87,11 @@ public abstract class ImageButton extends Component {
     @Override
     public void render(Graphics g) {
 
-
         if (isMouseHover()) {
             g.drawImage(image, getX1(), getY1());
         } else {
             g.drawImage(image, getX1(), getY1());
         }
-
-
     }
 
     @Override
