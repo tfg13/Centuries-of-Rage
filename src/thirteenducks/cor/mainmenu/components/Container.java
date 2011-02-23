@@ -43,8 +43,7 @@ public class Container extends Component {
      */
     private ArrayList<Component> components;
     /**
-     * Gibt an, ob die Komponente aktiv ist
-     * nur aktive Komponenten werden gerendert und erhalten Input
+     * Gibt an, ob der Container aktiv ist, d.h. gerendert wird und Ereignisse weiterleitet
      */
     private boolean active;
     /**
@@ -94,6 +93,13 @@ public class Container extends Component {
     @Override
     public void render(Graphics g) {
 
+        // Wenn der Container inaktiv ist wird er nicht gerendert:
+        if (!active) {
+            return;
+        }
+
+
+        // @TODO: Das sollte in eine eigene Funktion verlagert werden
         // wenn deltaalpha nicht null ist sind wir in der animation
         // bei fade-out wird sofort begonnen, bei fade in erst nach der fade zeit
         if (deltaAlpha != 0) {
@@ -154,9 +160,11 @@ public class Container extends Component {
      */
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        for (Component m : components) {
-            if (m.getX1() < x && x < m.getX2() && m.getY1() < y && y < m.getY2()) {
-                m.mouseClicked(button, x, y, clickCount);
+        if (active) {
+            for (Component m : components) {
+                if (m.getX1() < x && x < m.getX2() && m.getY1() < y && y < m.getY2()) {
+                    m.mouseClicked(button, x, y, clickCount);
+                }
             }
         }
     }
@@ -168,8 +176,10 @@ public class Container extends Component {
      */
     @Override
     public void mouseHoverChanged(boolean newstate) {
-        for (Component m : components) {
-            m.mouseHoverChanged(newstate);
+        if (active) {
+            for (Component m : components) {
+                m.mouseHoverChanged(newstate);
+            }
         }
     }
 
@@ -180,8 +190,10 @@ public class Container extends Component {
      */
     @Override
     public void keyPressed(int key, char c) {
-        for (Component m : components) {
-            m.keyPressed(key, c);
+        if (active) {
+            for (Component m : components) {
+                m.keyPressed(key, c);
+            }
         }
     }
 
@@ -189,7 +201,7 @@ public class Container extends Component {
      * Lässt den Container einblenden
      */
     public void fadeIn() {
-
+        active = true;
         deltaAlpha = (1.0f / fadeTime);
         lastAlphaChange = System.currentTimeMillis();
         fadeStartTime = System.currentTimeMillis();
@@ -199,6 +211,7 @@ public class Container extends Component {
      * Lässt den Container ausblenden
      */
     public void fadeOut() {
+        active = true;
         deltaAlpha = -(1.0f / fadeTime);
         fadeStartTime = System.currentTimeMillis();
         lastAlphaChange = System.currentTimeMillis();
@@ -209,12 +222,5 @@ public class Container extends Component {
         for (Component c : components) {
             c.setAlpha(alpha);
         }
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }
