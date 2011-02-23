@@ -83,7 +83,11 @@ public abstract class ImageButton extends Component {
 
     @Override
     public void mouseHoverChanged(boolean newstate) {
-        // @TODO: Highlighting von image ändern
+        if (newstate) {
+            image.setColor(Color.orange);
+        } else {
+            image.setColor(null);
+        }
     }
 
     @Override
