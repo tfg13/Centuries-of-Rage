@@ -48,7 +48,7 @@ public abstract class ImageButton extends Component {
     /**
      * Das Bild
      */
-    Image image;
+    ScaledImage image;
     /**
      * Der Text, der auf dem Button stehen soll
      */
@@ -66,32 +66,24 @@ public abstract class ImageButton extends Component {
         super(mainMenuReference, x, y, width, height);
         imagePath = imagepath;
 
+        image = new ScaledImage(mainMenuReference, x, y, width, height, imagepath);
+
     }
 
     @Override
     public void init(GameContainer c) {
-
-        try {
-            image = new Image(imagePath);
-
-            image = image.getScaledCopy(getWidth(), getHeight());
-        } catch (SlickException ex) {
-            ex.printStackTrace();
-        }
-
-        // Die Maße an das Bild anpassen:
-        this.x2 = getX1() + image.getWidth();
-        this.y2 = getY1() + image.getHeight();
+        image.init(c);
     }
 
     @Override
     public void render(Graphics g) {
 
-        if (isMouseHover()) {
-            g.drawImage(image, getX1(), getY1());
-        } else {
-            g.drawImage(image, getX1(), getY1());
-        }
+        image.render(g);
+    }
+
+    @Override
+    public void mouseHoverChanged(boolean newstate) {
+        // @TODO: Highlighting von image ändern
     }
 
     @Override

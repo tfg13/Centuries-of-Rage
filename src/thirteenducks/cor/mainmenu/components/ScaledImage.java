@@ -61,6 +61,10 @@ public class ScaledImage extends Component {
     public void init(GameContainer c) {
         try {
             image = new Image(imagePath);
+
+            // Das Bild auf die Größe dieser Komponente skalieren:
+            image = image.getScaledCopy(getWidth(), getHeight());
+
         } catch (SlickException ex) {
             ex.printStackTrace();
             System.out.print("MainMenu: Error loading image " + imagePath + " !");
@@ -69,15 +73,11 @@ public class ScaledImage extends Component {
 
     @Override
     public void render(Graphics g) {
-
-        g.drawImage(image, x1, y1, x2, y2, 0, 0, image.getWidth(), image.getHeight());
-
+        g.drawImage(image, this.getX1(), this.getY1());
     }
 
     @Override
     public void setAlpha(float alpha) {
         image.setAlpha(alpha);
     }
-
-
 }
