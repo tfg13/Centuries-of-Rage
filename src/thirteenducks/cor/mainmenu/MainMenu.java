@@ -117,20 +117,17 @@ public class MainMenu extends AppGameContainer {
 
 
         /**********************************************************************
-         * TestSeite:
+         * Menüs:
          *********************************************************************/
         Container startScreen = new StartScreen(this);
-        Container joinServerScreen = new JoinServerScreen(this);
-
         menus.put("startscreen", startScreen);
-        menus.put("joinserverscreen", joinServerScreen);
-
         g.addComponent(startScreen);
-        //g.addComponent(joinServerScreen);
+        startScreen.fadeIn();
 
-        
-
-
+        Container joinServerScreen = new JoinServerScreen(this);
+        menus.put("joinserverscreen", joinServerScreen);
+        g.components.add(joinServerScreen);
+        joinServerScreen.fadeOut();
 
     }
 
