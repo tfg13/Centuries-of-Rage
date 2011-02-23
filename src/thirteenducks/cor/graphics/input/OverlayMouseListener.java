@@ -23,14 +23,14 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package thirteenducks.cor.graphics.input;
 
-import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
 
 /**
  * Ein solcher Listener kann von Overlays beim Inputmodul registriert werden.
- * Dann leitet das Inputmodul alle Klicks (auch mouseMoves) die über diesem Overlay liegen an selbiges weiter.
+ * Dann leitet das Inputmodul alle Klicks (auf Wunsch auch mouseMoves) die über diesem Overlay liegen an selbiges weiter.
  * Die Mausaktionen werden dann ausschließlich an das Overlay gesendet und nicht vom eigentlichen Spiel verarbeitet.
  *
  * Mithilfe dieses Listeners kann ein Overlay genau einen rechteckigen Bereich "abdecken".
@@ -40,72 +40,53 @@ public abstract class OverlayMouseListener implements MouseListener {
 
     /**
      * Die X-Koordinate der oberen, linken Ecke des catch-Bereichs
+     */
+    private int catch1X;
+    /**
+     * Die Y-Koordinate der oberen, linken Ecke des catch-Bereichs
+     */
+    private int catch1Y;
+    /**
+     * Die X-Koordinate der unteren, rechten Ecke des catch-Bereichs
+     */
+    private int catch2X;
+    /**
+     * Die Y-Koordinate der unteren, rechten Ecke des catch-Bereichs
+     */
+    private int catch2Y;
+
+    /**
+     * Die X-Koordinate der oberen, linken Ecke des catch-Bereichs
      * @return the catch1X
      */
-    public abstract int getCatch1X();
+    public int getCatch1X() {
+        return catch1X;
+    }
 
     /**
      * Die Y-Koordinate der oberen, linken Ecke des catch-Bereichs
      * @return the catch1Y
      */
-    public abstract int getCatch1Y();
+    public int getCatch1Y() {
+        return catch1Y;
+    }
+
     /**
      * Die X-Koordinate der unteren, rechten Ecke des catch-Bereichs
      * @return the catch2X
      */
-    public abstract int getCatch2X();
+    public int getCatch2X() {
+        return catch2X;
+    }
 
     /**
      * Die Y-Koordinate der unteren, rechten Ecke des catch-Bereichs
      * @return the catch2Y
      */
-    public abstract int getCatch2Y();
-
-    /**
-     * Die Maus wurde auf dem Overlay bewegt.
-     * @param x
-     * @param y
-     */
-    public abstract void mouseMoved(int x, int y);
-
-    /**
-     * Die Maus wurde auf dem Overlay mit einer gedrückten Taste bewegt
-     * @param x
-     * @param y
-     */
-    public abstract void mouseDragged(int x, int y);
-
-
-    @Override
-    public boolean isAcceptingInput() {
-        return true;
+    public int getCatch2Y() {
+        return catch2Y;
     }
 
-    /*
-     * Diese Methoden gehen das Overlay nichts an
-     */
 
-    @Override
-    public void mouseClicked(int i, int i1, int i2, int i3) {
-    }
 
-    @Override
-    public void setInput(Input input) {
-    }
-
-    @Override
-    public void inputEnded() {
-    }
-
-    @Override
-    public void inputStarted() {
-    }
-
-    @Override
-    public void mouseMoved(int i, int i1, int i2, int i3) {
-    }
-
-    @Override
-    public void mouseDragged(int i, int i1, int i2, int i3) {
-    }
 }

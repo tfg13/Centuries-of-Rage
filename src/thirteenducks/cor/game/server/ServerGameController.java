@@ -33,9 +33,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
+import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.game.Unit;
@@ -48,10 +48,7 @@ import thirteenducks.cor.game.Unit;
 public class ServerGameController implements Runnable {
 
     private List<Unit> unitList;             // Die Liste mit den Einheiten
-    /**
-     * Eine Liste mit allen Objekten, die Behaviours ausführen können.
-     */
-    private List<BehaviourProcessor> allList;
+    private List<Building> buildingList;     // Die Liste mit den Gebäuden
     List<NetPlayer> playerList;         // Die Liste mit den Spielern VORSICHT- ES DARF NIEMALS JEMAND GELÖSCHT WERDEN!!!
     ServerCore.InnerServer rgi;         // Die Referenz auf logger und alle anderen Module
     Thread t;
@@ -62,32 +59,49 @@ public class ServerGameController implements Runnable {
 
         // Mainloop
         rgi.logger("Starting Mainloop...");
-        while (true) {
+        System.out.println("AddMe: Implement Behaviour-System!");
+        /*   while (true) {
 
-            // Alle Behaviour durchgehen
+        // Alle Behaviour durchgehen
 
-            while (pause) {
-                if (!pause) {
-                    break;
-                }
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException ex) {
-                }
-            }
-
-            for (int i = 0; i < allList.size(); i++) {
-                BehaviourProcessor processor = allList.get(i);
-                processor.process();
-            }
-
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                rgi.logger(ex);
-            }
-
+        while (pause) {
+        if (!pause) {
+        break;
         }
+        try {
+        Thread.sleep(20);
+        } catch (InterruptedException ex) {
+        }
+        }
+
+        for (int u = 0; u < unitList.size(); u++) {
+        Unit unit = unitList.get(u);
+        for (int b = 0; b < unit.sbehaviours.size(); b++) {
+        ServerBehaviour s = unit.sbehaviours.get(b);
+        if (s.isActive()) {
+        s.tryexecute();
+        }
+        }
+        }
+
+
+        for (int u = 0; u < buildingList.size(); u++) {
+        Building building = buildingList.get(u);
+        for (int b = 0; b < building.sbehaviours.size(); b++) {
+        ServerBehaviour s = building.sbehaviours.get(b);
+        if (s.isActive()) {
+        s.tryexecute();
+        }
+        }
+        }
+
+        try {
+        Thread.sleep(20);
+        } catch (InterruptedException ex) {
+        rgi.logger(ex);
+        }
+
+        } */
     }
 
     public void startMainloop() {
@@ -109,9 +123,10 @@ public class ServerGameController implements Runnable {
         for (Unit unit : unitList) {
             ServerBehaviourMove smove = new ServerBehaviourMove(rgi, unit);
             unit.addServerBehaviour(smove);
+            //  unit.moveManager = smove;
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
             unit.addServerBehaviour(amove);
-            unit.attackManager = amove;
+            //     unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
             System.out.println("AddMe: Set UnitRefs for all Positions!");
             rgi.netmap.setUnitRef(unit.getMainPosition(), unit, unit.getPlayerId());
@@ -143,8 +158,8 @@ public class ServerGameController implements Runnable {
         unitList = uL;
     }
 
-    public void registerAllList(List<BehaviourProcessor> allList) {
-        this.allList = allList;
+    public void registerBuildingList(List<Building> bL) {
+        buildingList = bL;
     }
 
     public void registerBuilding(int playerId, Building building) {
@@ -319,30 +334,34 @@ public class ServerGameController implements Runnable {
      */
     private void managePause(boolean pause) {
         // Alle Behaviour pausieren
-
-        for (int i = 0; i < allList.size(); i++) {
-            BehaviourProcessor processor = allList.get(i);
-            processor.managePause(pause);
+        System.out.println("AddMe: Pause all behaviours");
+    /*    for (int u = 0; u < unitList.size(); u++) {
+            Unit unit = unitList.get(u);
+            for (int b = 0; b < unit.sbehaviours.size(); b++) {
+                ServerBehaviour c = unit.sbehaviours.get(b);
+                if (c.isActive()) {
+                    if (pause) {
+                        c.pause();
+                    } else {
+                        c.unpause();
+                    }
+                }
+            }
         }
-    }
 
-    /**
-     * Fügt dieses GO zum Behaviourssystem hinzu.
-     * Die Behaviours dieses GO's werden zukünftig berechnet.
-     * @param go das hinzuzufügende GO
-     */
-    public void addGO(GameObject go) {
-        allList.add(go);
-    }
 
-    /**
-     * Entfernt dieses GO aus dem Behavioursystem
-     * Die Behaviours dieses GOs werden in Zunkunft nichtmehr ausgeführt.
-     * Eine einmalige zukünftige Ausführung kann allerdings nicht 100% ausgeschlossen werden.
-     * Diese würde allerdings praktisch sofort geschehen, später werden die behaviours sicher nicht mehr aufgerufen.
-     * @param go das zu entfernene GO
-     */
-    public void removeGO(GameObject go) {
-        allList.remove(go);
+        for (int u = 0; u < buildingList.size(); u++) {
+            Building building = buildingList.get(u);
+            for (int b = 0; b < building.sbehaviours.size(); b++) {
+                ServerBehaviour c = building.sbehaviours.get(b);
+                if (c.isActive()) {
+                    if (pause) {
+                        c.pause();
+                    } else {
+                        c.unpause();
+                    }
+                }
+            }
+        } */
     }
 }

@@ -40,7 +40,6 @@ import java.util.List;
 import org.newdawn.slick.*;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.Pauseable;
-import thirteenducks.cor.graphics.AbilityHud;
 
 /**
  *
@@ -62,11 +61,6 @@ public class CoRInput implements Pauseable {
      * Alle derzeit selektierten IGE's.
      */
     private List<InteractableGameElement> selected;
-    /**
-     * Alle überhaupt verfügbaren IGE's.
-     * Das Inputmodul verarbeitet alle IGE's in dieser Liste.
-     */
-    private List<InteractableGameElement> iges;
     /**
      * Die SelektionsMap, die alle Position speichert, an denen derzeit etwas selektierbar ist.
      */
@@ -133,40 +127,13 @@ public class CoRInput implements Pauseable {
      * Sind wir derzeit im Box-Selektionsmodus?
      */
     public boolean dragSelectionBox = false;
-    /**
-     * Interner Zustandsspeicher, benötigt für das Overlayssystem
-     */
-    private int lastMouseX;
-    /**
-     * Interner Zustandsspeicher, benötigt für das Overlayssystem
-     */
-    private int lastMouseY;
-    /**
-     * Die Fähigkeitenanzeige des Huds.
-     */
-    private AbilityHud abHud;
 
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
         selMap = new SelectionMap(mapX, mapY);
-        abHud = AbilityHud.createAbilityHud(rgi);
-        graphics.content.overlays.add(abHud);
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
         rgi.logger("[RogInput] RogInput is ready to rock! (init completed)");
-    }
-
-    /**
-     * Ersetzt die interne IGE-Liste mit (einer Kopie) der gegebenen.
-     * Dadurch werden alle vorher getrackten IGE's nichtmehr beachtet und die
-     * bisherige Selektionsmap geht verloren.
-     * Muss nach dem Laden einer Map einmal aufgerufen werden, damit bereits vorhandene IGE's berücksichtigt werden.
-     * Muss überhaupt einmal aufgerufen worden sein, damit das Inputmodul arbeiten kann.
-     * @param iges
-     */
-    public void setIGEs(List<InteractableGameElement> iges) {
-        selMap.clear();
-        this.iges = new ArrayList<InteractableGameElement>(iges);
     }
 
     public boolean hasSpecialMode() {
@@ -174,117 +141,101 @@ public class CoRInput implements Pauseable {
     }
 
     public void addAndReplaceSpecialMode(CoRInputMode newmode) {
-//        // Fügt den neuen Modi hinzu und entfernt den alten (falls vorhanden)
-//        if (specialMode != null) {
-//            // Alten entfernen
-//            specialMode.endMode();
-//        }
-//        input.removeAllMouseListeners();
-//
-//        // Neuen registrieren
-//
-//        specialMode = newmode;
-//        specialMode.startMode();
-//        input.addMouseListener(new MouseListener() {
-//
-//            @Override
-//            public void mouseWheelMoved(int change) {
-//            }
-//
-//            @Override
-//            public void mouseClicked(int button, int x, int y, int clickCount) {
-//                if (!graphics.content.pauseMode) {
-//                    specialMode.mouseKlicked(button, x, y, clickCount);
-//                }
-//            }
-//
-//            @Override
-//            public void mousePressed(int button, int x, int y) {
-//                /*    if (!graphics.content.pauseMode) {
-//                // Hud, Minimap?
-//                if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
-//                if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
-//                // Auf Minimap!
-//                graphics.miniMapScrolling = true;
-//                }
-//                }
-//                } */
-//            }
-//
-//            @Override
-//            public void mouseReleased(int button, int x, int y) {
-//                if (!graphics.content.pauseMode) {
-//                    graphics.miniMapScrolling = false;
-//                }
-//            }
-//
-//            @Override
-//            public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-//                // Position markieren
-//                graphics.content.mouseX = newx;
-//                graphics.content.mouseY = newy;
-//                if (!graphics.content.pauseMode) {
-//                    specialMode.mouseMoved(oldx, oldy, newx, newy);
-//                }
-//            }
-//
-//            @Override
-//            public void setInput(Input input) {
-//            }
-//
-//            @Override
-//            public boolean isAcceptingInput() {
-//                return true;
-//            }
-//
-//            @Override
-//            public void inputEnded() {
-//            }
-//
-//            @Override
-//            public void mouseDragged(int oldx, int oldy, int newx, int newy) {
-//                // Position markieren
-//                graphics.content.mouseX = newx;
-//                graphics.content.mouseY = newy;
-//                if (!graphics.content.pauseMode) {
-//                    specialMode.mouseMoved(oldx, oldy, newx, newy);
-//                }
-//            }
-//
-//            @Override
-//            public void inputStarted() {
-//            }
-//        });
-//
-//
-//        input.resume();
+        // Fügt den neuen Modi hinzu und entfernt den alten (falls vorhanden)
+        if (specialMode != null) {
+            // Alten entfernen
+            specialMode.endMode();
+        }
+        input.removeAllMouseListeners();
+
+        // Neuen registrieren
+
+        specialMode = newmode;
+        specialMode.startMode();
+        input.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseWheelMoved(int change) {
+            }
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                if (!graphics.content.pauseMode) {
+                    specialMode.mouseKlicked(button, x, y, clickCount);
+                }
+            }
+
+            @Override
+            public void mousePressed(int button, int x, int y) {
+                if (!graphics.content.pauseMode) {
+                    // Hud, Minimap?
+                    if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
+                        if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
+                            // Auf Minimap!
+                            graphics.miniMapScrolling = true;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(int button, int x, int y) {
+                if (!graphics.content.pauseMode) {
+                    graphics.miniMapScrolling = false;
+                }
+            }
+
+            @Override
+            public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+                // Position markieren
+                graphics.content.mouseX = newx;
+                graphics.content.mouseY = newy;
+                if (!graphics.content.pauseMode) {
+                    specialMode.mouseMoved(oldx, oldy, newx, newy);
+                }
+            }
+
+            @Override
+            public void setInput(Input input) {
+            }
+
+            @Override
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            @Override
+            public void inputEnded() {
+            }
+
+            @Override
+            public void mouseDragged(int oldx, int oldy, int newx, int newy) {
+                // Position markieren
+                graphics.content.mouseX = newx;
+                graphics.content.mouseY = newy;
+                if (!graphics.content.pauseMode) {
+                    specialMode.mouseMoved(oldx, oldy, newx, newy);
+                }
+            }
+
+            @Override
+            public void inputStarted() {
+            }
+        });
+
+
+        input.resume();
     }
 
     public void removeSpecialMode() {
-//        // Entfernt den SpecialMode und stellt das normale Verhalten wieder her
-//        if (specialMode != null) {
-//            specialMode.endMode();
-//        }
-//        // Listener löschen, falls welche da sind
-//        input.removeAllMouseListeners();
-//        // Ursprungliche Listener wiederherstellen
-//        initListeners();
-    }
-
-    /*
-     * Sucht das Overlay unter der Maus.
-     * Sucht rückwärts, damit später hinzugefügte Overlays, die "drüber" liegen zuerst gefunden werden.
-     */
-    private OverlayMouseListener findOverlay() {
-        for (int i = overlays.size() - 1; i >= 0; i--) {
-            OverlayMouseListener listener = overlays.get(i);
-            // Trifft das zu?
-            if (listener.getCatch1X() <= lastMouseX && listener.getCatch2X() >= lastMouseX && listener.getCatch1Y() <= lastMouseY && listener.getCatch2Y() >= lastMouseY) {
-                // Bingo!
-                return listener;
-            }
+        // Entfernt den SpecialMode und stellt das normale Verhalten wieder her
+        if (specialMode != null) {
+            specialMode.endMode();
         }
-        return null;
+        // Listener löschen, falls welche da sind
+        input.removeAllMouseListeners();
+        // Ursprungliche Listener wiederherstellen
+        initListeners();
     }
 
     private void initListeners() {
@@ -295,37 +246,84 @@ public class CoRInput implements Pauseable {
 
             @Override
             public void mouseWheelMoved(int change) {
-                OverlayMouseListener listener = findOverlay();
-                if (listener != null) {
-                    listener.mouseWheelMoved(change);
-                }
             }
 
             @Override
             public void mouseClicked(final int button, final int x, final int y, final int clickCount) {
-                // Klicked gibts nicht, nur pressed oder released
+                if (!graphics.content.pauseMode) {
+                    Thread t = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // Im Hud oder im Game-Bereich
+                            if (x > graphics.content.hudX) {
+                                // Im Hud
+                                // Auf MiniMap?
+                                if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
+                                    if (y > (graphics.content.realPixY / 7 + graphics.content.realPixY * 2 / 7 * 0.2) && y < graphics.content.realPixY * 3 / 7) {
+                                        // Auf Minimap!
+                                        if (button == 0) {
+                                            graphics.content.klickedOnMiniMap(button, x, y, clickCount);
+                                        }
+                                        return;
+                                    }
+                                }
+                                // In den Sel-Unit Bereich
+                                if (!selected.isEmpty()) {
+                                    if (graphics.clickedInSel(button, x, y, clickCount)) {
+                                        // Feld selektiert?
+                                        if (button == 0) {
+                                            graphics.content.calcSelClicked(button, x, y, clickCount, selected, true);
+                                        } else if (button == 1) {
+                                            graphics.content.calcSelClicked(button, x, y, clickCount, selected, false);
+                                        }
+                                    } else if (graphics.clickedInOpt(button, x, y, clickCount)) {
+                                        // Fähigkeit angeklickt!
+                                        // Auslagern, das muss die Grafik machen, wegen potentiellen Änderungen
+                                        graphics.content.lastInputButton = button;
+                                        graphics.content.lastInputEvent = 1;
+                                        graphics.content.lastInputX = x;
+                                        graphics.content.lastInputY = y;
+                                        //graphics.content.calcOptClicked(button, x, y, clickCount, selected);
+                                    }
+                                }
+                                //TODO - klicks ins hud behandeln
+                            } else {
+                                // Rechts, oder Linksklick?
+                                if (button == 0) {
+                                    // Normaler Linksklick
+                                    // Muss an die Grafik ausgelagert werden, sonst ist Slick beleidigt
+                                    // Wird bei MouseReleased behandelt.
+                                    //mouseKlickedLeft(button, x, y, clickCount);
+                                } else if (button == 1) {
+                                    // Rechts geklickt
+                                    // Wird bei MouseReleased angeklickt
+                                }
+                            }
+                        }
+                    });
+
+                    t.setDaemon(true);
+                    t.setName("InputEventWorker - MouseClicked");
+                    t.start();
+                }
             }
 
             @Override
             public void mousePressed(int button, int x, int y) {
-                OverlayMouseListener listener = findOverlay();
-                if (listener != null) {
-                    listener.mousePressed(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
-                } else {
-                    // Game
-                    if (!graphics.content.pauseMode) {
-                        // Hud oder Game?
-                /*    if (x > graphics.content.hudX) {
+                if (!graphics.content.pauseMode) {
+                    // Hud oder Game?
+                    if (x > graphics.content.hudX) {
                         // Hud, Minimap?
                         if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
-                        if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
-                        // Auf Minimap!
-                        if (button == 0) {
-                        graphics.miniMapScrolling = true;
+                            if (y > (graphics.content.viewY * 15 / 7 * 1.2) && y < graphics.content.viewY * 15 / 7 * 3 - graphics.content.viewY * 15 / 7 * 0.2) {
+                                // Auf Minimap!
+                                if (button == 0) {
+                                    graphics.miniMapScrolling = true;
+                                }
+                            }
                         }
-                        }
-                        }
-                        } else { */
+                    } else {
                         // Im Game.
                         // Selektionskästchen ziehen
                         if (button == 0) {
@@ -337,76 +335,70 @@ public class CoRInput implements Pauseable {
                                 graphics.startRightScrolling();
                             }
                         }
-                        //    }
                     }
                 }
             }
 
             @Override
             public void mouseReleased(final int button, final int x, final int y) {
-                OverlayMouseListener listener = findOverlay();
-                if (listener != null) {
-                    listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
-                } else {
-                    if (!graphics.content.pauseMode) {
-                        if (rgi.rogGraphics.rightScrollingEnabled) {
-                            graphics.stopRightScrolling();
-                        }
-                        Thread t = new Thread(new Runnable() {
+                if (!graphics.content.pauseMode) {
+                    if (rgi.rogGraphics.rightScrollingEnabled) {
+                        graphics.stopRightScrolling();
+                    }
+                    Thread t = new Thread(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                graphics.miniMapScrolling = false;
-                                if (button == 0) {
-                                    // Wenn die Maus um mindestens 5 Pixel bewegt wurde ist es ein Selektionsrahmen, sonst ein normaler Klick
-                                    int dx = graphics.dSBX - x;
-                                    int dy = graphics.dSBY - y;
-                                    if ((dx > 5 || dx < -5) && (dy > 5 || dy < -5)) {
-                                        if (dragSelectionBox) {
-                                            // Selektion ist an, jetzt abschalten und eingeschlossene Einheiten selektieren
-                                            if (!shiftDown) {
-                                                for (int i = 0; i < selected.size(); i++) {
-                                                    selected.get(i).setSelected(false);
-                                                }
-                                                selected.clear();
-                                                abHud.setActiveObject(null);
+                        @Override
+                        public void run() {
+                            graphics.miniMapScrolling = false;
+                            if (button == 0) {
+                                // Wenn die Maus um mindestens 5 Pixel bewegt wurde ist es ein Selektionsrahmen, sonst ein normaler Klick
+                                int dx = graphics.dSBX - x;
+                                int dy = graphics.dSBY - y;
+                                if ((dx > 5 || dx < -5) && (dy > 5 || dy < -5)) {
+                                    if (dragSelectionBox) {
+                                        // Selektion ist an, jetzt abschalten und eingeschlossene Einheiten selektieren
+                                        if (!shiftDown) {
+                                            for (int i = 0; i < selected.size(); i++) {
+                                                selected.get(i).setSelected(false);
                                             }
-                                            List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
-                                            if (selectedIGE != null) {
-                                                for (InteractableGameElement ige : selectedIGE) {
-                                                    ige.setSelected(true);
-                                                    selected.add(ige);
-                                                    abHud.setActiveObject(ige);
-                                                }
-                                            }
-
+                                            selected.clear();
                                         }
-                                    } else {
-                                        // Kein Rahmen, normaler klick
+                                        List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
+                                        if (selectedIGE != null) {
+                                            for (InteractableGameElement ige : selectedIGE) {
+                                                ige.setSelected(true);
+                                                selected.add(ige);
+                                            }
+                                        }
+
+                                    }
+                                } else {
+                                    // Kein Rahmen, normaler klick
+                                    if (x < graphics.content.hudX) {
                                         CoRInput.this.mouseKlickedLeft(button, x, y, 1);
                                     }
-                                    // Das auf jeden Fall machen:
-                                    stopSelectionBox();
                                 }
-                                if (button == 1 && !rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200)) {
-                                    /*    if (x > graphics.content.hudX) {
+                                // Das auf jeden Fall machen:
+                                stopSelectionBox();
+                            }
+                            if (button == 1 && !rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200)) {
+                                if (x > graphics.content.hudX) {
                                     // Auf Minimap?
                                     if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
-                                    if (y > (graphics.content.realPixY / 7 * 1.4) && y < graphics.content.realPixY / 7 * 3) {
-                                    // Auf Minimap!
-                                    mouseKlickedRightMiniMap(button, x, y);
+                                        if (y > (graphics.content.realPixY / 7 * 1.4) && y < graphics.content.realPixY / 7 * 3) {
+                                            // Auf Minimap!
+                                            mouseKlickedRightMiniMap(button, x, y);
+                                        }
                                     }
-                                    }
-                                    } else { */
+                                } else {
                                     mouseKlickedRight(button, x, y);
-                                    //  }
                                 }
                             }
-                        });
-                        t.setDaemon(true);
-                        t.setName("InputEventWorker - MouseReleased");
-                        t.start();
-                    }
+                        }
+                    });
+                    t.setDaemon(true);
+                    t.setName("InputEventWorker - MouseReleased");
+                    t.start();
                 }
             }
 
@@ -415,12 +407,6 @@ public class CoRInput implements Pauseable {
                 // Position markieren
                 graphics.content.mouseX = newx;
                 graphics.content.mouseY = newy;
-                lastMouseX = newx;
-                lastMouseY = newy;
-                OverlayMouseListener listener = findOverlay();
-                if (listener != null) {
-                    listener.mouseMoved(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
-                }
             }
 
             @Override
@@ -437,12 +423,6 @@ public class CoRInput implements Pauseable {
                 // Position markieren
                 graphics.content.mouseX = newx;
                 graphics.content.mouseY = newy;
-                lastMouseX = newx;
-                lastMouseY = newy;
-                OverlayMouseListener listener = findOverlay();
-                if (listener != null) {
-                    listener.mouseDragged(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
-                }
             }
 
             @Override
@@ -563,6 +543,11 @@ public class CoRInput implements Pauseable {
                                 CoRInput.this.removeSpecialMode();
                                 break;
                             case Input.KEY_F2:
+                                // Kollisionsmodus
+                                rgi.netctrl.broadcastString("F2", (byte) 44);
+                                if (rgi.isInDebugMode()) {
+                                    rgi.rogGraphics.content.colMode = !rgi.rogGraphics.content.colMode;
+                                }
                                 break;
                             case Input.KEY_F3:
                                 // Koordinatenmodus
@@ -747,29 +732,30 @@ public class CoRInput implements Pauseable {
         }
     }
 
-//    /**
-//     * Wird beim Rechtsklick auf die Minimap aufgerufen
-//     * @param e
-//     */
-//    private void mouseKlickedRightMiniMap(final int button, final int x, final int y) {
-//        // Nur bei selektieren Einheiten
-//        if (!selected.isEmpty() && selected.get(0).getClass().equals(Unit.class)) {
-//            // Alle da hin schicken, immer mit der Zielsuch-Logik
-//            // Erstmal grundlegendes Ziel berechnen
-//            Dimension selField = rgi.rogGraphics.content.searchMiniMid(x, y);
-//            // Auf 2er-Raster anpassen
-//            if ((selField.width + selField.height) % 2 == 1) {
-//                selField.height--;
-//            }
-//
-//            for (int i = 0; i < selected.size(); i++) {
-//                Unit tmpUnit = (Unit) selected.get(i);
-//                Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
-//                tmpUnit.sendToPosition(target, rgi, true);
-//            }
-//
-//        }
-//    }
+    /**
+     * Wird beim Rechtsklick auf die Minimap aufgerufen
+     * @param e
+     */
+    private void mouseKlickedRightMiniMap(final int button, final int x, final int y) {
+        // Nur bei selektieren Einheiten
+        if (!selected.isEmpty() && selected.get(0).getClass().equals(Unit.class)) {
+            // Alle da hin schicken, immer mit der Zielsuch-Logik
+            // Erstmal grundlegendes Ziel berechnen
+            Dimension selField = rgi.rogGraphics.content.searchMiniMid(x, y);
+            // Auf 2er-Raster anpassen
+            if ((selField.width + selField.height) % 2 == 1) {
+                selField.height--;
+            }
+
+            for (int i = 0; i < selected.size(); i++) {
+                Unit tmpUnit = (Unit) selected.get(i);
+                Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
+                tmpUnit.sendToPosition(target, rgi, true);
+            }
+
+        }
+    }
+
     /**
      * Wird bei Linksklick aufgerufen. Behandelt an/abwählen von Einheiten, Gebäuden.
      * @param e     MouseEvent, enthält Position, welcher Button, wie oft, welche Maus, etc..
@@ -784,9 +770,9 @@ public class CoRInput implements Pauseable {
         for (int i = 0; i < elems.size(); i++) {
             InteractableGameElement elem = elems.get(i);
             if (elem.selectable() && elem.isSelectableByPlayer(myPlayer)) {
-                if (elem.isMultiSelectable()) {
-                    containsMulti = true;
-                }
+            if (elem.isMultiSelectable()) {
+                containsMulti = true;
+            }
             } else {
                 // Rauswerfen, das können wir nicht anklicken
                 elems.remove(i--);
@@ -802,28 +788,22 @@ public class CoRInput implements Pauseable {
                 }
             }
         } else { // Nur wenn gar keine Multis
-            // Alle Singles bis auf das erste Weg - falls welche da sind
-            if (elems.size() > 0) {
-                elems.retainAll(elems.subList(0, 1));
-            }
+            // Alle Singles bis auf das erste Weg
+            elems.retainAll(elems.subList(0, 1));
         }
         // Die Liste entählt jetzt entweder nur noch Multis (Anzahl egal) oder nur ein Single.
         // Wenn ein Single, dann auf jeden Fall alles alte abwählen. Bei Multis alles alte abwählen, falls shift NICHT gedrückt ist.
         if (!containsMulti || !shiftDown) {
             for (int i = 0; i < selected.size(); i++) {
                 selected.get(i).setSelected(false);
-                System.out.println("Deselected: " + selected.get(i).toString());
             }
             selected.clear();
-            abHud.setActiveObject(null);
         }
 
         // Alles, was noch da ist anwählen:
         for (InteractableGameElement elem : elems) {
             elem.setSelected(true);
             selected.add(elem);
-            System.out.println("Selected: " + elem.toString());
-            abHud.setActiveObject(elem);
         }
     }
 
@@ -840,11 +820,11 @@ public class CoRInput implements Pauseable {
             List<InteractableGameElement> targets = selMap.getIGEsAt(selField.getX(), selField.getY());
             if (!targets.isEmpty()) {
                 for (InteractableGameElement elem : selected) {
-                    elem.command(button, targets, false, rgi);
+                    elem.command(button, targets, false);
                 }
             } else {
                 for (InteractableGameElement elem : selected) {
-                    elem.command(button, selField, false, rgi);
+                    elem.command(button, selField, false);
                 }
             }
         }
@@ -1227,7 +1207,6 @@ public class CoRInput implements Pauseable {
                 List<InteractableGameElement> elems = selMap.getIGEsWithTeamAt(cx, cy, rgi.game.getOwnPlayer().playerId);
                 for (InteractableGameElement elem : elems) {
                     if (!finalList.contains(elem)) {
-                        finalList.add(elem);
                     }
                 }
             }
@@ -1238,10 +1217,12 @@ public class CoRInput implements Pauseable {
         // Sobald ein multi-fähiges auftaucht, alle nicht-multis rausschmeißen
         // Außerdem alle nicht-multis nach dem ersten nichtmulti entfernen
         int singleIndex = -1;
+        boolean foundMulti = false;
         boolean killSingle = false;
         for (int i = 0; i < finalList.size(); i++) {
             InteractableGameElement elem = finalList.get(i);
             if (elem.isMultiSelectable()) {
+                foundMulti = true;
                 if (singleIndex != -1) {
                     killSingle = true;
                     // Single entfernen
@@ -1302,37 +1283,5 @@ public class CoRInput implements Pauseable {
      */
     public void removeFromSelection(GameObject unit) {
         selected.remove(unit);
-    }
-
-    /**
-     * Updated das Selektionssystem.
-     * In der Regel ziemlich schnell, kann also vermutlich mit jedem Frame einmal aufgerufen werden.
-     */
-    public void updateIGEs() {
-        // Alle IGEs updaten:
-        for (int i = 0; i < iges.size(); i++) {
-            InteractableGameElement ige = iges.get(i);
-            if (ige.selPosChanged()) {
-                ige.getSelectionMarker().updateSelectionMap(selMap);
-            }
-        }
-    }
-
-    /**
-     * Added dieses GO zum selektionssystem.
-     * Zunkünftig werden Mausgesten auf dieses IGE erkannt.
-     * @param go das hinzuzufügende go
-     */
-    public void addGO(GameObject go) {
-        iges.add(go);
-    }
-
-    /**
-     * Entfernt dieses GO wieder aus dem selektionssystem.
-     * Mausgesten werden zukünftig nichtmehr erkannt.
-     * @param go das zu entfernende go
-     */
-    public void removeGO(GameObject go) {
-        iges.remove(go);
     }
 }

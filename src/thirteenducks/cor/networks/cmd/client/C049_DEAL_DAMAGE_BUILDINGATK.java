@@ -27,7 +27,7 @@ package thirteenducks.cor.networks.cmd.client;
 
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
-import thirteenducks.cor.game.Bullet;
+import thirteenducks.cor.graphics.GraphicsBullet;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.networks.cmd.ClientCommand;
@@ -49,7 +49,7 @@ public class C049_DEAL_DAMAGE_BUILDINGATK extends ClientCommand {
                 int dmg = rgi.readInt(data, 3);
                 int delay = rgi.readInt(data, 4);
                 // Neues Bullet erzeugen
-                Bullet bullet = new Bullet(atck49, vic49, dmg, delay);
+                GraphicsBullet bullet = new GraphicsBullet(atck49, vic49, dmg, delay);
                 rgi.rogGraphics.addBulletB(bullet);
             } else {
                 System.out.println("FixMe: Victim ID mismatch (cmd49)");

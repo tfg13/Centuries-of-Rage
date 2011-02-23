@@ -38,9 +38,9 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import java.util.Timer;
 import java.util.TimerTask;
-import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.ability.Ability;
+import thirteenducks.cor.game.ability.AbilityIntraManager;
 
 /**
  *
@@ -50,10 +50,11 @@ public class ClientGameController implements Runnable {
 
     ClientCore.InnerClient rgi;
     private NetPlayer myself;
+    private List<Unit> unitList;             // Die Liste mit den Einheiten
+    private List<Building> buildingList;     // Die Liste mit den Gebäuden
     Thread t;                                   // Der Thread, in dem die Mainloop läuft
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)
-    private List<BehaviourProcessor> allList;
 
     public ClientGameController(ClientCore.InnerClient newinner) {
         rgi = newinner;
@@ -63,7 +64,6 @@ public class ClientGameController implements Runnable {
         // Den 0-Player adden
         playerList.add(new NetPlayer(rgi));
         playerList.get(0).playerId = 0;
-        playerList.get(0).color = Color.white;
     }
 
     public void startMainloop() {
@@ -159,11 +159,10 @@ public class ClientGameController implements Runnable {
 
         }
 
-        System.out.println("AddMe: Add intramanager for Buildings");
-        /*for (Building building : buildingList) {
+        for (Building building : buildingList) {
             AbilityIntraManager intram = new AbilityIntraManager(building, rgi);
             building.addAbility(intram);
-        }*/
+        }
 
         // Dem Spieler Startressourcen geben
         myself.res1 = 200;
@@ -210,8 +209,12 @@ public class ClientGameController implements Runnable {
         return newmap;
     }
 
-    public void registerAllList(List<BehaviourProcessor> allList) {
-        this.allList = allList;
+    public void registerUnitList(List<Unit> uL) {
+        unitList = uL;
+    }
+
+    public void registerBuildingList(List<Building> bL) {
+        buildingList = bL;
     }
 
     public void setPlayer(NetPlayer player) {
@@ -234,8 +237,9 @@ public class ClientGameController implements Runnable {
     public void run() {
         // Mainloop
         rgi.logger("Starting Mainloop...");
+        System.out.println("AddMe: Create & Start GameEngine-Mainloop");
 
-        while (true) {
+      /*  while (true) {
 
             // Alle Behaviour durchgehen
 
@@ -249,9 +253,25 @@ public class ClientGameController implements Runnable {
                 }
             }
 
-            for (int i = 0; i < allList.size(); i++) {
-                BehaviourProcessor proc = allList.get(i);
-                proc.process();
+            for (int u = 0; u < unitList.size(); u++) {
+                Unit unit = unitList.get(u);
+                for (int b = 0; b < unit.cbehaviours.size(); b++) {
+                    ClientBehaviour c = unit.cbehaviours.get(b);
+                    if (c.isActive()) {
+                        c.tryexecute();
+                    }
+                }
+            }
+
+
+            for (int u = 0; u < buildingList.size(); u++) {
+                Building building = buildingList.get(u);
+                for (int b = 0; b < building.cbehaviours.size(); b++) {
+                    ClientBehaviour c = building.cbehaviours.get(b);
+                    if (c.isActive()) {
+                        c.tryexecute();
+                    }
+                }
             }
 
             try {
@@ -260,7 +280,7 @@ public class ClientGameController implements Runnable {
                 rgi.logger(ex);
             }
 
-        }
+        } */
     }
 
     public void registerBuilding(int playerId, Building building) {
@@ -381,11 +401,41 @@ public class ClientGameController implements Runnable {
      * @param b Boolean, auf Pause stellen (true) oder zurück(false)
      */
     private void managePause(boolean pause) {
-        // Alle Behaviour pausieren
-        for (int i = 0; i < allList.size(); i++) {
-            BehaviourProcessor proc = allList.get(i);
-            proc.managePause(pause);
+        System.out.println("AddMe: Call Pause for every Behaviour!");
+    /*    // Alle Behaviour pausieren
+        for (int u = 0; u < unitList.size(); u++) {
+            Unit unit = unitList.get(u);
+            if (pause) {
+                unit.pause();
+            } else {
+                unit.unpause();
+            }
+            for (int b = 0; b < unit.cbehaviours.size(); b++) {
+                ClientBehaviour c = unit.cbehaviours.get(b);
+                if (c.isActive()) {
+                    if (pause) {
+                        c.pause();
+                    } else {
+                        c.unpause();
+                    }
+                }
+            }
         }
+
+
+        for (int u = 0; u < buildingList.size(); u++) {
+            Building building = buildingList.get(u);
+            for (int b = 0; b < building.cbehaviours.size(); b++) {
+                ClientBehaviour c = building.cbehaviours.get(b);
+                if (c.isActive()) {
+                    if (pause) {
+                        c.pause();
+                    } else {
+                        c.unpause();
+                    }
+                }
+            }
+        } */
     }
 
     /**
@@ -422,29 +472,11 @@ public class ClientGameController implements Runnable {
         }
 
         Timer timer = new Timer();
-        timer.schedule(new TimerTask()  {
+        timer.schedule(new TimerTask() {
 
             public void run() {
                 rgi.rogGraphics.showstatistics();
             }
         }, 3000);
-    }
-
-    /**
-     * Fügt ein GO hinzu.
-     * Alle Behaviours dieses GO's werden ab sofort berechnet.
-     * @param go das zu addende GO
-     */
-    public void addGO(GameObject go) {
-        allList.add(go);
-    }
-    /**
-     * Löscht ein GO.
-     * Die Behaviours dieses GO's werden nichtmehr ausgeführt.
-     * Eine noch einmalige Ausführung nach dem return dieser Methode kann aber nicht ausgeschlossen werden.
-     * @param go das zu entfernende go
-     */
-    void removeGO(GameObject go) {
-        allList.remove(go);
     }
 }

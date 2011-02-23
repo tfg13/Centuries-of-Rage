@@ -26,13 +26,11 @@
 package thirteenducks.cor.game;
 
 import java.util.List;
-import java.util.Map;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
+import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
+import thirteenducks.cor.graphics.input.SelectionMarker;
 import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
 
 /**
@@ -99,12 +97,17 @@ public class PlayersBuilding extends Building {
 
     @Override
     public Position getSpawnPosition(GameObject obj) {
-        return this.getMainPosition().subtract(new Position(-4, -4));
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - (getGraphicsData().offsetX * 10), (int) (y - (getGraphicsData().offsetY * 10)));
+    public void renderSprite(Graphics g, int x, int y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Position[] getVisisbilityPositions() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -144,26 +147,36 @@ public class PlayersBuilding extends Building {
 
     @Override
     public boolean selectable() {
-        return true;
-    }
-
-    @Override
-    public boolean isSelectableByPlayer(int playerId) {
-        return playerId == this.getPlayerId();
-    }
-
-    @Override
-    public boolean isMultiSelectable() {
-        return false;
-    }
-
-    @Override
-    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi) {
+    public boolean selPosChanged() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SelectionMarker getSelectionMarker() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isSelectableByPlayer(int playerId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isMultiSelectable() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void command(int button, Position target, boolean doubleKlick) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -174,18 +187,17 @@ public class PlayersBuilding extends Building {
 
     @Override
     public boolean renderInFullFog() {
-        return false;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean renderInHalfFog() {
-        //@TODO: Gebäude müssen sichtbar bleiben, wenn man sie einmal gesehen hat.
-        return false;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean renderInNullFog() {
-        return true;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -193,21 +205,4 @@ public class PlayersBuilding extends Building {
         return this.getMainPosition();
     }
 
-    @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-            // Linien ziehen
-            g.setLineWidth(4);
-            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g.setColor(isSelected() ? Color.white : spriteColor);
-            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
-            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
-            g.drawLine((int) (x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)),(int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.drawLine((int) (x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.setLineWidth(4);
-    }
-
-    @Override
-    public int getColorId() {
-        return getPlayerId();
-    }
 }

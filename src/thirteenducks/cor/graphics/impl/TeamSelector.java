@@ -25,16 +25,15 @@
  */
 package thirteenducks.cor.graphics.impl;
 
-import java.util.Map;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.graphics.input.CoRInputMode;
 import thirteenducks.cor.graphics.Overlay;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Polygon;
-import thirteenducks.cor.graphics.GraphicsImage;
 
 /**
  * Der Team-Selektor.
@@ -87,7 +86,7 @@ public class TeamSelector extends Overlay {
     int players = 0;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY, int hudX) {
         if (active) {
             // Einmalig die Spielerzahl berechnen
             if (players == 0) {
@@ -99,11 +98,11 @@ public class TeamSelector extends Overlay {
                     }
                 }
                 // Dein eigenen nicht
-                contentSizeX = (int) (0.90 * fullResX);
+                contentSizeX = (int) (0.90 * hudX);
                 gap = (int) (WINDOW_OVER_CONTENT * fullResY);
                 seqY = font.getLineHeight();
                 contentSizeY = (players - 1) * seqY;
-                oriX = (fullResX / 2) - ((contentSizeX + 2 * gap) / 2);
+                oriX = (hudX / 2) - ((contentSizeX + 2 * gap) / 2);
                 oriY = (fullResY / 2) - ((contentSizeY + 3 * gap + seqY) / 2);
 
             }

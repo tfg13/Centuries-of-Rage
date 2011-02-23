@@ -27,7 +27,7 @@ package thirteenducks.cor.networks.cmd.client;
 
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.networks.client.ClientNetController.ClientHandler;
-import thirteenducks.cor.game.Bullet;
+import thirteenducks.cor.graphics.GraphicsBullet;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.networks.cmd.ClientCommand;
@@ -49,7 +49,7 @@ public class C039_DEAL_DAMAGE extends ClientCommand {
                 int dmg = rgi.readInt(data, 3);
                 int delay = rgi.readInt(data, 4);
                 // Neues Bullet erzeugen
-                Bullet bullet = new Bullet(atck39, vic39, dmg, delay);
+                GraphicsBullet bullet = new GraphicsBullet(atck39, vic39, dmg, delay);
                 rgi.rogGraphics.addBullet(bullet);
             } else {
                 // Das ist kein Problem, diese Einheit ist halt schon tot.

@@ -58,16 +58,5 @@ public interface BehaviourProcessor {
      * @return eine Liste aller ServerBehaviour
      */
     public List<ServerBehaviour> getServerBehaviours();
-    /**
-     * Führt alle derzeitig aktiven Behaviours aus.
-     * Verwaltet das Timing selbstständig.
-     */
-    public void process();
-
-    /**
-     * Wird für (Un-)Pause aufgerufen
-     * @param pause true bedeutet, dass vom laufenden Spiel in PAUSE gewechselt wird.
-     */
-    public void managePause(boolean pause);
 
 }

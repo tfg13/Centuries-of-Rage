@@ -28,7 +28,6 @@ package thirteenducks.cor.game;
 import java.io.*;
 import java.util.*;
 import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 
@@ -53,7 +52,13 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * Der Wegmanager der Einheit.
      */
-    protected final Path path;
+    private final Path path;
+    /**
+     * PFUSCH!!!
+     * Nur aus Kompatibilitätsgründen hier!
+     * @deprecated 
+     */
+    public ServerBehaviourMove moveManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -222,22 +227,8 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         path.switchPath(newPath);
     }
 
-    /**
-     * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
-     */
     public void serverManagePath(ServerCore.InnerServer rgi) {
-        if (path.isMoving()) {
-            path.serverManagePath(rgi, this);
-        }
-    }
-
-    /**
-     * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
-     */
-    public void clientManagePath(InnerClient rgi) {
-        if (path.isMoving()) {
-            path.clientManagePath(rgi, this);
-        }
+        path.serverManagePath(rgi, this);
     }
 
     /**
@@ -423,11 +414,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     if (this.movingtarget != null) {
     retUnit.movingtarget = this.movingtarget.clone();
     }
-    
+
     if (this.path != null) {
     retUnit.path = new ArrayList<Position>();
     }
-    
+
     // Special-Stuff
     if (this.anim != null) {
     retUnit.anim = this.anim.clone();
@@ -439,7 +430,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
     }
     retUnit.graphicsdata = this.graphicsdata.clone();
-    
+
     return retUnit;
     } */
     @Override
@@ -457,42 +448,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return ("Unit \"" + this.getName() + "\" ID: " + this.netID);
     }
 
-    @Override
-    public boolean renderInFullFog() {
-        return false;
-    }
-
-    @Override
-    public boolean renderInHalfFog() {
-        //@TODO: Gebäude müssen sichtbar bleiben, wenn man sie einmal gesehen hat.
-        return false;
-    }
-
-    @Override
-    public boolean renderInNullFog() {
-        return true;
-    }
-
     /**
      * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
      * @return the isIntra
      */
     public boolean isIntra() {
         return isIntra;
-    }
-
-    @Override
-    public boolean isSelectableByPlayer(int playerId) {
-        return playerId == this.getPlayerId();
-    }
-
-    @Override
-    public boolean isMultiSelectable() {
-        return true;
-    }
-
-    @Override
-    public boolean selectable() {
-        return true;
     }
 }

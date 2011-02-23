@@ -23,44 +23,47 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package thirteenducks.cor.mainmenu.components;
 
-package thirteenducks.cor.networks.client.behaviour.impl;
-
-import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.networks.client.behaviour.ClientBehaviour;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
- * Dieses Behaviour verwaltet das Client-Bewegungssystem.
- * Die genauen Delta-Berechnungen werden nach wie vor von der Grafikengine durchgeführt.
- * Dieses Behaviour ruft regelmäßig die calcAndManage-Methode des Weges der Einheit auf.
+ * Label - Zeigt Text an
+ *
+ * @author michael
  */
-public class ClientBehaviourMove extends ClientBehaviour {
+public class Label extends Component {
 
-    private Unit caster2;
+    /**
+     * Der Text des Labels
+     */
+    String labelText;
 
-    public ClientBehaviourMove(ClientCore.InnerClient newinner, Unit caster) {
-        super(newinner, caster, 1, 5, true);
-        this.caster2 = caster;
+
+    /**
+     * Die Farbe, in der der Text geschrieben wird
+     */
+    Color color;
+
+    /**
+     * Konstruktor
+     * @param mainMenuReference     Referenz auf das Hauptmenü
+     * @param x                     X-Position des Labels
+     * @param y                     Y-Position der Labels
+     * @param text                  Text des Labels
+     */
+    public Label(MainMenu mainMenuReference, int x, int y, String text, Color color_t) {
+        super(mainMenuReference, x, y, text.length(), 5);
+
+        labelText = text;
+        color = color_t;
     }
 
     @Override
-    public void execute() {
-        caster2.clientManagePath(rgi);
+    public void render(Graphics g) {
+        g.setColor(color);
+        g.drawString(labelText, getX1(), getY1());
     }
-
-    @Override
-    public void gotSignal(byte[] packet) {
-    }
-
-    @Override
-    public void pause() {
-        caster2.pause();
-    }
-
-    @Override
-    public void unpause() {
-        caster2.unpause();
-    }
-
 }

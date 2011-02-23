@@ -27,6 +27,8 @@ package thirteenducks.cor.game.networks.behaviour.impl;
 
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.ServerCore;
+import thirteenducks.cor.game.Building;
+import thirteenducks.cor.map.CoRMapElement.collision;
 import thirteenducks.cor.game.Unit;
 
 /**
@@ -47,23 +49,29 @@ import thirteenducks.cor.game.Unit;
 public class ServerBehaviourMove extends ServerBehaviour {
 
     Unit caster2;
+    boolean reservedTarget = false;
+    public boolean fleeing = false;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 5, true);
+        super(newinner, caster, 1, 5, false);
         caster2 = caster;
     }
 
     @Override
     public void activate() {
+        this.active = true;
     }
 
     @Override
     public void deactivate() {
+        this.active = false;
     }
 
     @Override
     public void execute() {
-        caster2.serverManagePath(rgi);
+
+            caster2.serverManagePath(rgi);
+        
     }
 
     @Override

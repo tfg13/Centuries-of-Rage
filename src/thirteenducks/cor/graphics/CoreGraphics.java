@@ -25,9 +25,10 @@
  */
 package thirteenducks.cor.graphics;
 
-import thirteenducks.cor.game.Bullet;
+import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -54,9 +55,11 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public GraphicsContent content;
     Dimension displaySize;
     // RogGraphicsComponent content;
-    private HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
+    HashMap<String, GraphicsImage> imgMap; // Hier sind alle Bilder drin
     HashMap imgInput;
     int imgInputNumber = 0;
+    List<Unit> unitList; //Alle Einheiten
+    List<Building> buildingList; // Alle Gebäude
     boolean showFrameRate = false;
     public CoRInput inputM; // InputModul
     public boolean miniMapScrolling = false;
@@ -71,6 +74,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     private boolean nolimits = false; // Keine Framerate-Begrenzung/Nur Benchmark
     long starttime;             // Wann die Grafikengine gestartet wurde
     private boolean pauseMod = false;   // Für den Pausemodus
+    private boolean statisticsMod = false;   // Für den Pausemodus
     private long pauseTime;           // Zeitpunkt des Pausierenes
     private boolean fowtrigger = false; // Trigger für flackerfreies-Fow-Updaten
     boolean fullScreenMode;
@@ -79,7 +83,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     long lastFowCalc;
     boolean seenPause = false;
     Thread slickGraphics;
-    final List<Bullet> newBullets;
+    final List<GraphicsBullet> newBullets;
     public boolean rightScrollingEnabled = false;
     public boolean rightScrolling = false;
     public long rightScrollStart;
@@ -100,7 +104,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content = (GraphicsContent) super.game;
         rgi = inner; // Die Innere Klasse übernehmen
         displaySize = size;
-        newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
+        newBullets = Collections.synchronizedList(new ArrayList<GraphicsBullet>());
     }
 
     /**
@@ -145,9 +149,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 rgi.logger("[Graphics][ERROR]: Can't load loadingscreen!");
             }
         }
+        content.byPass = true;
         content.realPixX = displaySize.width;
         content.realPixY = displaySize.height;
-        content.setVisibleArea((displaySize.width / 10), (int) (displaySize.height / 7.5));
+        content.setVisibleArea((displaySize.width / 20), (displaySize.height / 15));
         content.modi = -1;
     }
 
@@ -287,7 +292,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             this.rightScrollingEnabled = true;
         }
         content.setImageMap(imgMap);
-        importColorableMarkers();
+        importSelectionMarkers();
         try {
             content.colModeImage = new GraphicsImage(new Image("img/notinlist/editor/colmode.png"));
         } catch (SlickException ex) {
@@ -309,7 +314,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             nolimits = true;
         }
         this.setLoadStatus(5);
-        //readAnimations();
+        readAnimations();
         rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
         this.triggerStatusWaiting();
         // LOAD abgeschlossen, dem Server mitteilen
@@ -498,7 +503,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-    private void importColorableMarkers() {
+    private void importSelectionMarkers() {
         // Liest die Selektionsmarkierungen ein
         try {
             GraphicsImage ti1 = new GraphicsImage(new Image("img/game/ground.png"));
@@ -510,9 +515,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             GraphicsImage ti3 = new GraphicsImage(new Image("img/game/building_defaulttarget.png"));
             ti3.setImageName("img/game/building_defaulttarget.png");
             content.coloredImgMap.put("img/game/building_defaulttarget.png", ti3);
-            GraphicsImage ti4 = new GraphicsImage(new Image("img/game/sel_s2.png"));
-            ti4.setImageName("img/game/sel_s2.png");
-            content.coloredImgMap.put("img/game/sel_s2.png", ti4);
         } catch (SlickException ex) {
             rgi.logger("[Graphics][Critical]: Error importing selection markers.");
             System.out.println("[Graphics][Critical]: Error importing selection markers.");
@@ -520,22 +522,22 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     private void importHuds() {
-//        try {
-//            // Liest alle Huds aus img/hud/ ein und schickt sie an RogGraphicsComponent
-//            // Epochennummer ist Bildname
-//            Image ep1 = new Image("img/hud/e1.png");
-//            Image ep2 = new Image("img/hud/e2.png");
-//            Image ep3 = new Image("img/hud/e3.png");
-//            // Bilder geladen in Array packen und ab
-//            content.huds = new Image[10];
-//            content.huds[1] = ep1;
-//            content.huds[2] = ep2;
-//            content.huds[3] = ep3;
-//        } catch (SlickException ex) {
-//            System.out.println("ERROR: Can't load Huds!");
-//            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
-//            rgi.logger(ex);
-//        }
+        try {
+            // Liest alle Huds aus img/hud/ ein und schickt sie an RogGraphicsComponent
+            // Epochennummer ist Bildname
+            Image ep1 = new Image("img/hud/e1.png");
+            Image ep2 = new Image("img/hud/e2.png");
+            Image ep3 = new Image("img/hud/e3.png");
+            // Bilder geladen in Array packen und ab
+            content.huds = new Image[10];
+            content.huds[1] = ep1;
+            content.huds[2] = ep2;
+            content.huds[3] = ep3;
+        } catch (SlickException ex) {
+            System.out.println("ERROR: Can't load Huds!");
+            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
+            rgi.logger(ex);
+        }
 
     }
 
@@ -1290,7 +1292,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public void activateMap(CoRMapElement[][] newVisMap) {
         content.setVisMap(newVisMap, rgi.mapModule.getMapSizeX(), rgi.mapModule.getMapSizeY());
         content.setPosition(0, 0);
-        rgi.rogGraphics.initSubs();
     }
 
     /**
@@ -1328,44 +1329,44 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.gameDone = 2;
     }
 
-//    public boolean clickedInSel(final int button, final int x, final int y, int clickCount) {
-//        // Überprüft, ob ein Aufruf in die Einheiten-Selektions-Zone fiel
-//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-//            if (y > (content.realPixY * 3 / 7 + content.realPixY * 2 / 7 * 0.2) && y < (content.realPixY * 5 / 7)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public boolean clickedInOpt(int x, int y) {
-//        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
-//        // Auf Geschwindigkeit optimiert
-//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-//            if (y > (content.realPixY * 0.742714) && y < (content.realPixY * 0.9712857)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public boolean clickedInOpt(final int button, final int x, final int y, final int clickCount) {
-//        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
-//        // Auf Geschwindigkeit optimiert
-//        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
-//            if (y > (content.realPixY * 0.1248285) && y < (content.realPixY * 0.9712857)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public boolean clickedInSel(final int button, final int x, final int y, int clickCount) {
+        // Überprüft, ob ein Aufruf in die Einheiten-Selektions-Zone fiel
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 3 / 7 + content.realPixY * 2 / 7 * 0.2) && y < (content.realPixY * 5 / 7)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean clickedInOpt(int x, int y) {
+        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+        // Auf Geschwindigkeit optimiert
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 0.742714) && y < (content.realPixY * 0.9712857)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean clickedInOpt(final int button, final int x, final int y, final int clickCount) {
+        // Überprüft, ob ein Aufruf in die Fähigkeiten-Zone fiel
+        // Auf Geschwindigkeit optimiert
+        if (x > (content.hudX + content.hudSizeX * 0.15) && x < (content.hudX + content.hudSizeX * 0.85)) {
+            if (y > (content.realPixY * 0.1248285) && y < (content.realPixY * 0.9712857)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
      * Fügt ein Bullet zur Grafikengine hinzu.
      * Mehr muss nicht getan werden, Animation und Schaden werden automatisch berechnet, solange die Grafik läuft.
      * Nur scheduling, wird erst eingefügt, wenn gerade kein Frame gerendert wird.
      */
-    public void addBullet(Bullet b) {
+    public void addBullet(GraphicsBullet b) {
         synchronized (newBullets) {
             try {
                 content.allListLock.lock();
@@ -1376,7 +1377,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-    public void addBulletB(Bullet b) {
+    public void addBulletB(GraphicsBullet b) {
         synchronized (newBullets) {
             try {
                 content.allListLock.lock();
@@ -1393,18 +1394,39 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void finalPrepare() {
         // Grafikausgabe einrichten
+        content.byPass = true; // Game-rendering darf das
         content.epoche = 1;
+
+        // Jetzt ist die Größe gesetzt, scalefaktor fürs Hud bestimmen und Bildchen skalieren lassen
+        double scalefactorX = (content.hudSizeX * 0.8) / (content.sizeX * 20);
+        double scalefactorY = (content.realPixY / 7 * 2 * 0.8) / (content.sizeY * 15);
+        content.preCalcMiniMapElements(scalefactorX, scalefactorY);
 
         rgi.logger("[Graphics]: Calcing selection markers...");
         Color[] playercolors = new Color[rgi.game.playerList.size()];
-        playercolors[0] = Color.white;
+        playercolors[0] = Color.black;
         for (int i = 1; i < playercolors.length; i++) {
             playercolors[i] = rgi.game.playerList.get(i).color;
         }
         content.calcColoredMaps(playercolors);
         // Nötige Variablen syncronisieren
         content.allList = rgi.mapModule.allList;
+
+        try {
+            content.interactivehud = new Image(content.hudSizeX, content.realPixY / 7 * 4);
+        } catch (org.newdawn.slick.SlickException ex) {
+            rgi.logger(ex);
+        }
         content.buildingsChanged();
+        //content.renderBackgroundChanged(); // Für MiniMaperstellung etc..
+        content.initMiniMap();
+        // Ansicht zum Hauptgebäude des Spielers scrollen (1. Gebäude mit seiner playerId in der Liste)
+        for (Building b : buildingList) {
+            if (b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
+                rgi.rogGraphics.jumpTo((b.getMainPosition().getX() + 6) - (rgi.rogGraphics.content.viewX / 2), b.getMainPosition().getY() - (rgi.rogGraphics.content.viewY / 2));
+                break;
+            }
+        }
     }
 
     public void startRendering() {
@@ -1427,6 +1449,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         } catch (AWTException ex) {
         }
 
+        rgi.rogGraphics.initSubs();
 
         starttime = new Date().getTime();
         seenPause = false;
@@ -1510,6 +1533,24 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         return false;
     }
 
+    public void refreshMap() {
+    }
+
+    public void updateUnits(List<Unit> nL) {
+        unitList = nL;
+        content.updateUnits(unitList);
+    }
+
+    public void updateBuildings(List<Building> nL) {
+        buildingList = nL;
+        content.updateBuildings(nL);
+    }
+
+    public void showCalculatedRoute(ArrayList<Position> path) {
+        // Zeigt den von der Wegfindung berechneten Weg an, zum Wegfindung-DEBUGGEN
+        content.enableWayPointHighlighting(path);
+    }
+
     public void displayError(String s) {
         // Zeigt eine Fehlermeldung grafisch an, zum Wegklicken mit OK
         JOptionPane.showMessageDialog(new JFrame().getComponent(0),
@@ -1563,6 +1604,17 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void setAlwaysShowEnergyBars(boolean b) {
         content.alwaysshowenergybars = b;
+    }
+
+    /**
+     * Zeigt Infos über Einheiten / Gebäude / Ressourcen an, die einem nicht gehören.
+     * Funktioniert nur, solange selected leer ist.
+     * Ansonsten wird dieses hier sofort gelöscht.
+     * @param das zu zeigende Objekt.
+     */
+    public void triggerTempStatus(GameObject obj) {
+        content.tempInfoObj = obj;
+        triggerUpdateHud();
     }
 
     public void notifyUnitDieing(final Unit unit) {
@@ -1643,6 +1695,15 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     }
 
+    /**
+     * Lässt die Grafik den interaktiven Teil des Huds neu zeichnen
+     * Geschieht sofort mit dem nächsten Frame
+     *
+     */
+    public void triggerUpdateHud() {
+        content.updateInterHud = true;
+    }
+
     public void triggerRefreshFow() {
         fowtrigger = true;
     }
@@ -1652,9 +1713,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public void epocheChanged() {
         content.epocheChanged = true;
+        this.triggerUpdateHud();
         builingsChanged();
         // Feuer neu auf den Gebäuden verteilen
-        //content.fireMan.epocheChanged(content.epoche, content.buildingList);
+        content.fireMan.epocheChanged(content.epoche, content.buildingList);
         // Allen mitteilen
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 45, -2, content.epoche, 0, 0));
     }
@@ -1684,10 +1746,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         if (!seenPause) {
             content.paintComponent(g);
         }
-//        if (miniMapScrolling) {
-//            // Wie klick auf MiniMap behandeln
-//            content.klickedOnMiniMap(content.mouseX, content.mouseY);
-//        }
+        if (miniMapScrolling) {
+            // Wie klick auf MiniMap behandeln
+            content.klickedOnMiniMap(content.mouseX, content.mouseY);
+        }
         // Eventuell neue Bullets adden:
         manageBullets();
         if (!this.rightScrolling) {
@@ -1734,8 +1796,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         //rgf.setIgnoreRepaint(false);
         for (int i = 0; i < content.allList.size(); i++) {
             Sprite r = content.allList.get(i);
-            if (r.getClass().equals(Bullet.class)) {
-                ((Bullet) r).pause();
+            if (r.getClass().equals(GraphicsBullet.class)) {
+                ((GraphicsBullet) r).pause();
             }
         }
     }
@@ -1746,8 +1808,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.pauseMode = false;
         for (int i = 0; i < content.allList.size(); i++) {
             Sprite r = content.allList.get(i);
-            if (r.getClass().equals(Bullet.class)) {
-                ((Bullet) r).unpause();
+            if (r.getClass().equals(GraphicsBullet.class)) {
+                ((GraphicsBullet) r).unpause();
             }
         }
     }
@@ -1757,8 +1819,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     public void showstatistics() {
-        //statisticsMod = true;
+        statisticsMod = true;
+        content.statisticsMode = true;
         content.gameDone = 0;
-        System.out.println("AddMe: Start statistic!");
     }
 }

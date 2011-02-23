@@ -624,9 +624,6 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
     }
 
     public boolean equals(Position p2) {
-        if (p2 == null) {
-            return false;
-        }
         if (X != p2.X) {
             return false;
         }

@@ -28,7 +28,6 @@ package thirteenducks.cor.graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.Overlay;
 import java.util.ArrayList;
-import java.util.Map;
 import org.newdawn.slick.*;
 
 /**
@@ -258,7 +257,7 @@ public class ClientChat  extends Overlay {
      * @param chatX X-Koordinate des Chatfensters (das nicht immer gezeinet wird)
      * @param chatY Y-Koordinate des Chatfensters (das nicht immer gezeinet wird)
      */
-    private void renderChat(Graphics g2, int chatX, int chatY) {
+    public void renderChat(Graphics g2, int chatX, int chatY) {
         // Der Chat zeigt immer die letzen paar Zeilen an, egal in welchem Modus.
         // Daher muss erst der eventuell vorhandene Hintergrund gezeichnet werden, und dann der Text
         if (mode == ClientChat.ENTER_MODE) {
@@ -519,7 +518,7 @@ public class ClientChat  extends Overlay {
     }
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY, int hudX) {
         renderChat(g, 10, (int) (0.65 * fullResY));
     }
 

@@ -25,11 +25,12 @@
  */
 package thirteenducks.cor.game.ability;
 
+import thirteenducks.cor.game.ability.Ability;
+import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
 import thirteenducks.cor.game.GameObject;
 import org.newdawn.slick.Color;
 import java.util.HashMap;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
 
 
 /**
@@ -129,6 +130,7 @@ public class AbilityUpgrade extends Ability {
             ClientBehaviourUpgrade up = new ClientBehaviourUpgrade(rgi, caster, this);
             caster.addClientBehaviour(up);
             this.behaviour = up;
+            rgi.rogGraphics.triggerUpdateHud();
        // }
     }
 

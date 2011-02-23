@@ -44,17 +44,28 @@ import org.newdawn.slick.Sound;
  */
 public class SoundModule {
 
-    ArrayList<RogSoundModulePlayer> players;            // Die geladenen Sounds
+    /**
+     * Liste der geladenen Sounds
+     */
+    ArrayList<RogSoundModulePlayer> players;
+    /**
+     * gibt an, ob COR auf lautlos gestellt wurde
+     */
     boolean muted = false;
 
-    // Konstruktor
+    /**
+     * Konstruktor
+     */
     public SoundModule() {
         players = new ArrayList<RogSoundModulePlayer>();
         this.initModule();
     }
 
-    // Initialisierung
-    public void initModule() {
+    /**
+     * Initialisiert das Soundmodul
+     * lädt alle *.ogg Dateien aus /sound
+     */
+    private void initModule() {
         // Dateien im sound-Ordner einlesen:
         File soundfolder = new File("sound");
         File soundfiles[] = soundfolder.listFiles(new FilenameFilter() {    // Nur .OGG und .ogg Dateien einlesen
@@ -69,11 +80,7 @@ public class SoundModule {
         // Liste mit Sounds initialisieren:
         for (int i = 0; i < soundfiles.length; i++) {
             players.add(new RogSoundModulePlayer(soundfiles[i].getName(), "./sound/" + soundfiles[i].getName()));
-            //System.out.println("Sound found: " + soundfiles[i].getName());
         }
-
-        // Theme abspielen:
-        //System.out.println("playing wolfe.ogg");
     }
 
     /**
@@ -87,8 +94,8 @@ public class SoundModule {
         if (muted) {
             // Alle anhalten
             for (RogSoundModulePlayer p : players) {
-                if (p.sound.playing()) {
-                    p.sound.stop();
+                if (p.getSound().playing()) {
+                    p.getSound().stop();
                 }
             }
         }
@@ -96,16 +103,17 @@ public class SoundModule {
 
     /**
      * Einen Sound für immer wiederholen
-     * @param name
+     * 
+     * @param name      Name des Sounds
      */
     public void loopSound(String name) {
         if (!muted) {
             for (RogSoundModulePlayer p : players) {
-                if (p.myname.equals(name)) {
+                if (p.getMyname().equals(name)) {
                     if ("wolfe.ogg".equals(name)) {
-                        p.sound.loop(1.0f, 0.5f);
+                        p.getSound().loop(1.0f, 0.5f);
                     } else {
-                        p.sound.loop();
+                        p.getSound().loop();
                     }
                     return;
                 }
@@ -121,8 +129,8 @@ public class SoundModule {
     public void playSound(String name) {
         if (!muted) {
             for (RogSoundModulePlayer p : players) {
-                if (p.myname.equals(name)) {
-                    p.sound.play();
+                if (p.getMyname().equals(name)) {
+                    p.getSound().play();
                     return;
                 }
             }
@@ -135,16 +143,61 @@ public class SoundModule {
      */
     private class RogSoundModulePlayer {
 
-        Sound sound;            // Der org.newdawn.slick.Sound
-        String myname;          // Der Name der eingelesenen Datei
+        /**
+         * Sound-Objekt
+         * Das ist die org.newdawn.slick-Repräsentation unseres Sounds
+         */
+        private Sound sound;
+        /**
+         * Der Name des Sounds, entspricht dem Dateinamen
+         */
+        private String myname;
 
+        /**
+         * Konstruktor
+         *
+         * @param name       Name der Datei / des Sounds (z.B. "musik.ogg")
+         * @param path       Pfad der Datei (z.B. "/sound/musik.ogg")
+         */
         RogSoundModulePlayer(String name, String path) {
             myname = name;
             try {
                 sound = new Sound(path);
             } catch (SlickException ex) {
-                Logger.getLogger(SoundModule.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
+        }
+
+        /**
+         * Getter für sound
+         * @return      das sound-Objekt
+         */
+        public Sound getSound() {
+            return sound;
+        }
+
+        /**
+         * Setter für sound
+         * @param sound     neuer Sound
+         */
+        public void setSound(Sound sound) {
+            this.sound = sound;
+        }
+
+        /**
+         * Getter für den Namen des Sounds
+         * @return      der Name des Sounds (entspricht dem Dateinamen)
+         */
+        public String getMyname() {
+            return myname;
+        }
+
+        /**
+         * Setter für den Soundnamen
+         * @param myname    der neue Name
+         */
+        public void setMyname(String myname) {
+            this.myname = myname;
         }
     }
 }

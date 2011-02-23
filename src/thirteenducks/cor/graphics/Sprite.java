@@ -26,10 +26,7 @@
 
 package thirteenducks.cor.graphics;
 
-import java.util.Map;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.Hideable;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.game.Position;
 
@@ -37,7 +34,7 @@ import thirteenducks.cor.game.Position;
  * Ein Sprite ist ein zum Spiel gehörendes Objekt.
  * Die Grafikengine zeichnet Sprites automatisch, sofern sie in Sichtweite sind etc.
  */
-public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
+public interface Sprite extends Comparable<Sprite>, Pauseable {
 
     /**
      * Zeichnet dieses Sprite nach x, y auf den Bildschirm.
@@ -46,28 +43,8 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param g Der Grafikkontext auf den gezeichnet werden kann. Man kann auch direkt auf den Screen zeichnen
      * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
      * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
-     * @param imgMap Die Map mit allen verfügbaren Texturen
      */
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor);
-
-    /**
-     * Zeichnet die Bodeneffekte dieses Sprites.
-     * Bodeneffekte werden vor den eigentlichen Texturen gezeichnet und sind vor allem für Markierungen gedacht.
-     * x und y müssen die Zeichenkoordinaten des Zuordnungsfeldes sein.
-     * @param g Der Grafikkontext auf den gezeichnet werden kann. Man kann auch direkt auf den Screen zeichnen.
-     * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
-     * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
-     * @param imgMap Die Map mit allen verfügbaren Texturen
-     */
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor);
-
-    /**
-     * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
-     * Das Grafiksystem wird diese Position verwenden, um die in der renderSprite-Methode übergebenen Koordinaten zu berechnen.
-     * In der Regel ist dies die Zuordnungsposition.
-     * @return
-     */
-    public Position getMainPositionForRenderOrigin();
+    public void renderSprite(Graphics g, int x, int y);
 
     /**
      * Liefert alle Position zurück, auf denen sich tatsächlich etwas von diesem Objekt befindet.
@@ -84,14 +61,4 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @return eine Position, anhand derer dieses Sprite mit anderen verglichen werden kann.
      */
     public Position getSortPosition();
-
-    /**
-     * Sprites können bestimmte Dinge in ihrer eigenen Farbe rendern.
-     * Diese wird vom Grafiksystem an die renderMethoden mitgeliefert.
-     * Hierzu fragt das Grafiksystem die gewünschte ColorID ab.
-     * In der Regel ist das die playerId.
-     * Sprites, die keine Farbe haben/verwenden, sollten 0 zurückgeben.
-     * @return
-     */
-    public int getColorId();
 }

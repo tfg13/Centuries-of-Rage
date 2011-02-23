@@ -30,11 +30,16 @@ import thirteenducks.cor.game.client.ClientCore;
 /**
  * Diese Klasse bildet die Schnittstelle zwischen Scriptcode und Javacode.
  * Scripts können über die Funktionen dieser Klasse auf das Spiel zugreifen.
+ *
  * @author michael
  */
 public class ScriptInterface {
 
+    /**
+     * ClientCore-Referenz
+     */
     ClientCore.InnerClient rgi;
+
     /**
      * Konstruktor
      */
@@ -43,7 +48,7 @@ public class ScriptInterface {
     }
 
     /**
-     * Für Debugprints
+     * Schreibt DebugPrint in stdout
      */
     public void print(String message) {
         System.out.println("[SCRIPTDEBUG] " + message);

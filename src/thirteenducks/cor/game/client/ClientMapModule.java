@@ -36,7 +36,6 @@ import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
 import org.newdawn.slick.Input;
-import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
@@ -56,7 +55,6 @@ import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.map.MapIO;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
 /**
  * Das MapModul auf der Client-Seite
@@ -936,13 +934,17 @@ public class ClientMapModule {
         rgi.logger("[MapModul] Map \"" + mapFileName + "\" loaded.");
         createIDList();
         rgi.rogGraphics.activateMap(theMap.getVisMap());
-        createAllLists();
+        rgi.rogGraphics.updateBuildings(buildingList);
+        rgi.rogGraphics.updateUnits(unitList);
+        createAllList();
+        rgi.game.registerBuildingList(buildingList);
+        rgi.game.registerUnitList(unitList);
         // Fertig, mitteilen
         rgi.rogGraphics.triggerStatusWaiting();
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
     }
 
-    private void createAllLists() {
+    private void createAllList() {
         // Erstellt eine Liste, in der Einheiten, Gebäude und Ressourcen enthalten sind.
         // Für Grafik only
         if (allList == null) {
@@ -950,22 +952,12 @@ public class ClientMapModule {
         } else {
             allList.clear();
         }
-        // Input
-        List<InteractableGameElement> igelist = new ArrayList<InteractableGameElement>();
-        // Game
-        List<BehaviourProcessor> procList = new ArrayList<BehaviourProcessor>();
         for (Unit unit : unitList) {
-            igelist.add(unit);
             allList.add(unit);
-            procList.add(unit);
         }
         for (Building building : buildingList) {
             allList.add(building);
-            igelist.add(building);
-            procList.add(building);
         }
-        rgi.rogGraphics.inputM.setIGEs(igelist);
-        rgi.game.registerAllList(procList);
     }
 
     /**
@@ -1010,7 +1002,6 @@ public class ClientMapModule {
         for (Unit unit : unitList) {
             // Alle Parameter kopieren
             unit.copyPropertiesFrom(descUnit.get(unit.getDescTypeId()));
-            unit.addClientBehaviour(new ClientBehaviourMove(rgi, unit));
         }
     }
 
@@ -1215,8 +1206,6 @@ public class ClientMapModule {
             rgi.rogGraphics.content.allListLock.unlock();
         }
         this.buildingList.add(b);
-        rgi.game.addGO(b);
-        rgi.rogGraphics.inputM.addGO(b);
 
         if (netIDList.containsKey(b.netID)) {
             throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
@@ -1295,7 +1284,7 @@ public class ClientMapModule {
     }
 
     /**
-     * Fügt eine Einheit zum Spiel hinzu
+     * Fügt eine Einheit
      * Darf nur vom NetController aufgerufen werden!
      * @param b
      */
@@ -1308,9 +1297,6 @@ public class ClientMapModule {
         }
         this.unitList.add(u);
 
-        rgi.game.addGO(u);
-        rgi.rogGraphics.inputM.addGO(u);
-
         if (netIDList.containsKey(u.netID)) {
             throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
         }
@@ -1322,8 +1308,6 @@ public class ClientMapModule {
                 rgi.game.getOwnPlayer().uList.add(u.getDescTypeId());
             }
         }
-        
-        u.addClientBehaviour(new ClientBehaviourMove(rgi, u));
     }
 
     /**
@@ -1336,9 +1320,10 @@ public class ClientMapModule {
             rgi.rogGraphics.notifyUnitDieing(unit);
             this.unitList.remove(unit);
             this.netIDList.remove(unit.netID);
-            rgi.game.removeGO(unit);
-            rgi.rogGraphics.inputM.removeGO(unit);
             rgi.rogGraphics.inputM.removeFromSelection(unit);
+            if (rgi.rogGraphics.content.tempInfoObj == unit) {
+                rgi.rogGraphics.content.tempInfoObj = null;
+            }
         }
     }
 
@@ -1384,10 +1369,11 @@ public class ClientMapModule {
             // Jetzt löschen
             this.buildingList.remove(building);
             this.netIDList.remove(building.netID);
-            rgi.game.removeGO(building);
-            rgi.rogGraphics.inputM.removeGO(building);
             rgi.rogGraphics.notifyBuildingDieing(building);
             rgi.rogGraphics.inputM.removeFromSelection(building);
+            if (rgi.rogGraphics.content.tempInfoObj == building) {
+                rgi.rogGraphics.content.tempInfoObj = null;
+            }
             // Effekte entfernen
         }
     }

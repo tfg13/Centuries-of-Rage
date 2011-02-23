@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.graphics.input.SelectionMarker;
 
 /**
  * Superklasse für Gebäude allgemein
@@ -96,15 +95,6 @@ public abstract class Building extends GameObject {
      * Speichert den genommenen Schaden während der Bauphase
      */
     private int damageWhileContruction;
-    /**
-     * Cacht alle Positionen dieses Gebäudes, weils dauernd benötigt wird.
-     */
-    private Position[] positions;
-    /**
-     * Wurde die Selektion schon eingetragen?
-     * Muss in der Regel nur ein einiziges Mal geschehen
-     */
-    private boolean selectionSet = false;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -115,7 +105,6 @@ public abstract class Building extends GameObject {
     protected Building(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
         intraUnits = new ArrayList<Unit>();
-        positions = new Position[z1 * z2];
         setVisrange(7); // Default für Gebäude
     }
 
@@ -141,8 +130,6 @@ public abstract class Building extends GameObject {
         this.maxIntra = copyFrom.maxIntra;
         this.z1 = copyFrom.z1;
         this.z2 = copyFrom.z2;
-        intraUnits = new ArrayList<Unit>();
-        positions = new Position[z1 * z2];
     }
 
     /**
@@ -379,34 +366,5 @@ public abstract class Building extends GameObject {
      */
     public int getMaxIntra() {
         return maxIntra;
-    }
-
-    @Override
-    public Position[] getVisisbilityPositions() {
-        return positions;
-    }
-
-    @Override
-    public void setMainPosition(Position mainPosition) {
-        // Wir überschreiben das, damit man positions setzen kann.
-        super.setMainPosition(mainPosition);
-        int counter = 0;
-        for (int z1c = 0; z1c < z1; z1c++) {
-            for (int z2c = 0; z2c < z2; z2c++) {
-                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c,(int) mainPosition.getY() - z1c + z2c);
-            }
-        }
-    }
-
-
-    @Override
-    public boolean selPosChanged() {
-        return !selectionSet;
-    }
-
-    @Override
-    public SelectionMarker getSelectionMarker() {
-        selectionSet = true;
-        return new SelectionMarker(this, null, positions);
     }
 }

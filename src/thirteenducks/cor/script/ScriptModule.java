@@ -44,11 +44,26 @@ import thirteenducks.cor.game.client.ClientCore;
  */
 public class ScriptModule {
 
+    /**
+     * ClientCore-Referenz
+     */
     ClientCore.InnerClient rgi;
-    PythonInterpreter interpreter;
-    Thread scriptThread;
-    ArrayList<ScriptEvent> events;
-    ArrayList<PyObject> scripts;
+    /**
+     * PythonInterpreter, lädt und verwaltet Scripts
+     */
+    private PythonInterpreter interpreter;
+    /**
+     * Der Thread in dem die ScriptEreignisse verarbeitet werden
+     */
+    private Thread scriptThread;
+    /**
+     * Liste mit aufgetretenen Ereignissen, die noch verarbeitet werden müssen
+     */
+    private ArrayList<ScriptEvent> events;
+    /**
+     * Liste der geladenen Scripts
+     */
+    private ArrayList<PyObject> scripts;
 
     /**
      * Konstruktor
@@ -98,8 +113,8 @@ public class ScriptModule {
     /**
      * Löst ein Script-Ereignis aus, d.h. die entsprechende Funktion wird aufgerufen
      */
-    public void raiseEvent(String name, Object args[]) {
-        events.add(new ScriptEvent(name, args));
+    public void raiseEvent(String name) {
+        events.add(new ScriptEvent(name));
     }
 
     /**
@@ -111,18 +126,14 @@ public class ScriptModule {
         scripts.add(interpreter.get("trigger").__call__());
     }
 
-
     /**
      * Fügt eine neue Schnittstellen-Klasse hinzu.
      * Scripts können die Klasse und ihre Funktionen aufrufen, um mit dem Spiel zu interagieren.
      * @param name      Der Name, mit dem die Schnittstellenklasse im Script aufgerufen wird
      * @param interf    Die Schnittstellenklasse
      */
-    public void addInterface(String name, Object interf)
-    {
+    public void addInterface(String name, Object interf) {
         interpreter.set(name, interf);
     }
-
-
 }// Klassenende
 

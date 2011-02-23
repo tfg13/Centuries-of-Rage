@@ -166,6 +166,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                         start = 0;
                         this.activate();
                         caster.getBuildAbility(building.getDescTypeId()).behaviour = this;
+                        rgi.rogGraphics.triggerUpdateHud();
                     } else {
                         System.out.println("FixMe: Building ID mismatch, Cmd: 17");
                     }
@@ -174,6 +175,7 @@ public class ClientBehaviourConstruct extends ClientBehaviour implements ShowsPr
                     start = 0;
                     this.activate();
                     caster.getBuildAbility(building.getDescTypeId()).behaviour = this;
+                    rgi.rogGraphics.triggerUpdateHud();
                 }
         }
     }

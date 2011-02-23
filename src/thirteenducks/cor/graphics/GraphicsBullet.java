@@ -23,13 +23,12 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.game;
+package thirteenducks.cor.graphics;
 
-import java.util.Map;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.graphics.GraphicsImage;
-import thirteenducks.cor.graphics.Sprite;
+import thirteenducks.cor.game.Pauseable;
+import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.GameObject;
 
 /**
  * Ein Geschoss (Kugel/Pfeil)
@@ -48,7 +47,7 @@ import thirteenducks.cor.graphics.Sprite;
  *
  * @author tfg
  */
-public class Bullet implements Pauseable, Sprite {
+public class GraphicsBullet implements Pauseable, Sprite {
 
     public Position sourcePos;
     public GameObject attacker;
@@ -65,7 +64,7 @@ public class Bullet implements Pauseable, Sprite {
     int lastY;
     String texture;
 
-    public Bullet(GameObject attacker, GameObject victim, int dmg, int dly) {
+    public GraphicsBullet(GameObject attacker, GameObject victim, int dmg, int dly) {
         sourcePos = attacker.getMainPosition();
         this.attacker = attacker;
         target = victim;
@@ -249,7 +248,7 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y) {
         System.out.println("AddMe: Render Sprite.");
     }
 
@@ -270,36 +269,6 @@ public class Bullet implements Pauseable, Sprite {
     @Override
     public Position getSortPosition() {
         return sourcePos;
-    }
-
-    @Override
-    public Position getMainPositionForRenderOrigin() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean renderInFullFog() {
-        return false;
-    }
-
-    @Override
-    public boolean renderInHalfFog() {
-        return false; // Im Halbschatten sieht man Geschosse nicht.
-    }
-
-    @Override
-    public boolean renderInNullFog() {
-        return true; // Geschosse sind grundsätzlich nicht unsichtbar.
-    }
-
-    @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        // Bullets haben keine
-    }
-
-    @Override
-    public int getColorId() {
-        return 0;
     }
 
 

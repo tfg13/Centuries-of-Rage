@@ -23,38 +23,34 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.script;
+package thirteenducks.cor.mainmenu;
 
-import org.python.core.PyCode;
-import org.python.core.PyObject;
-import org.python.util.PythonInterpreter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.newdawn.slick.SlickException;
 
 /**
- * Beschreibt ein Script-Ereignis
+ * Der Centuries of Rage Starter
+ * Startet das Hauptmenü
+ *
+ * @TODO: prüfen, ob CoR überhaupt auf diesem System läuft, fehlende Komponenten (lwjgl, ...) auflisten etc
+ *
+ * @author michael
  */
-public class ScriptEvent {
+public class CorStarter {
 
     /**
-     * Name des Ereignisses
-     * z.B. gameStart wenn die gameStart()-Funktion des Scripts aufgerufen werden soll
-     */
-    String name;
-
-    /**
-     * Konstruktor
+     * Einstiegspunkt
      *
-     * @param eventname     Name der Ereignisses bzw. der zu rufenden Funktion
+     * @param args - Kommandozeilenargumente
      */
-    public ScriptEvent(String eventname) {
-        name = eventname;
+    public static void main(final String[] args) {
+        try {
+            // Hauptmenü erstellen:
+            MainMenu smm = new MainMenu(new MainMenuGraphics());
+        } catch (SlickException ex) {
+            ex.printStackTrace();
+        }
 
-    }
-
-    /**
-     * Löst das Ereignis aus, d.h. ruft die entsprechende Funktion auf
-     * @param code      Das zugrundeliegende Code-Objekt
-     */
-    public void trigger(PyObject code) {
-        code.invoke(name);
     }
 }

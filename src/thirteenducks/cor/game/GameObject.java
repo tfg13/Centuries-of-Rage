@@ -51,7 +51,7 @@ import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
  *
  */
-public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement {
+public abstract class GameObject implements Serializable, Sprite, BehaviourProcessor, InteractableGameElement, Hideable {
 
     /**
      * Dieses Objekt lebt noch nicht.
@@ -596,6 +596,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
             ((Unit) this).anim = rgua; */
             System.out.println("AddMe: Upgrade GraphicsData & Animator");
         }
+        rgi.rogGraphics.triggerUpdateHud();
     }
 
     /**
@@ -647,7 +648,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.range = unit.getRange();
         this.atkdelay = unit.getAtkdelay();
         this.abilitys.clear();
-        this.graphicsData = unit.getGraphicsData().clone();
         for (Ability ab : unit.abilitys) {
             try {
                 this.abilitys.add(ab.clone());
@@ -657,6 +657,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         }
         // Unit-Eigenschaften
         Unit here = (Unit) this;
+        System.out.println("AddMe: Copy animator & Graphics Data!");
         here.speed = unit.getSpeed();
     }
 
@@ -680,7 +681,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.range = building.getRange();
         this.atkdelay = building.getAtkdelay();
         this.abilitys.clear();
-        this.graphicsData = building.getGraphicsData().clone();
         for (Ability ab : building.abilitys) {
             try {
                 this.abilitys.add(ab.clone());
@@ -698,9 +698,13 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void performDeltaUpgrade(ServerCore.InnerServer rgi, ServerAbilityUpgrade up) {
         // Allgemeine Upgrades durchführen:
 
-        if (up.newTex != null) {
-            this.getGraphicsData().defaultTexture = up.newTex;
+        /*   if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
         }
+        } */
         System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
 
         this.maxhitpoints += up.maxhitpointsup;
@@ -750,9 +754,13 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
 
     public void performDeltaUpgrade(ClientCore.InnerClient rgi, AbilityUpgrade up) {
         // Allgemeine Upgrades durchführen:
-        if (up.newTex != null) {
-            this.getGraphicsData().defaultTexture = up.newTex;
+    /*    if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
         }
+        } */
         System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
 
         this.maxhitpoints += up.maxhitpointsup;
@@ -855,9 +863,13 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void performDeltaUpgrade(ServerCore.InnerServer rgi, DeltaUpgradeParameter up) {
         // Allgemeine Upgrades durchführen:
 
-        if (up.newTex != null) {
-            this.getGraphicsData().defaultTexture = up.newTex;
+        /* if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
         }
+        } */
 
         System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
 
@@ -934,9 +946,13 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public void performDeltaUpgrade(ClientCore.InnerClient rgi, DeltaUpgradeParameter up) {
         // Allgemeine Upgrades durchführen:
 
-        if (up.newTex != null) {
-            this.getGraphicsData().defaultTexture = up.newTex;
+        /*  if (up.newTex != null) {
+        if (this.getClass().equals(Unit.class)) {
+        ((Unit) this).graphicsdata.defaultTexture = up.newTex;
+        } else if (this.getClass().equals(Building.class)) {
+        ((Building) this).defaultTexture = up.newTex;
         }
+        } */
 
         System.out.println("AddMe: Upgrade GraphicsData & Animator (2x!)");
 
@@ -1236,55 +1252,5 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     @Override
     public int compareTo(Sprite o) {
         return this.getSortPosition().compareTo(o.getSortPosition());
-    }
-
-    @Override
-    public Position getMainPositionForRenderOrigin() {
-        return mainPosition;
-    }
-
-    @Override
-    public void process() {
-        for (int i = 0; i < cbehaviours.size(); i++) {
-            ClientBehaviour be = cbehaviours.get(i);
-            if (be.isActive()) {
-                be.tryexecute();
-            }
-        }
-        for (int i = 0; i < sbehaviours.size(); i++) {
-            ServerBehaviour be = sbehaviours.get(i);
-            if (be.isActive()) {
-                be.tryexecute();
-            }
-        }
-    }
-
-    @Override
-    public void managePause(boolean pause) {
-        for (int i = 0; i < cbehaviours.size(); i++) {
-            ClientBehaviour be = cbehaviours.get(i);
-            if (be.isActive()) {
-                if (pause) {
-                    be.pause();
-                } else {
-                    be.unpause();
-                }
-            }
-        }
-        for (int i = 0; i < sbehaviours.size(); i++) {
-            ServerBehaviour be = sbehaviours.get(i);
-            if (be.isActive()) {
-                if (pause) {
-                    be.pause();
-                } else {
-                    be.unpause();
-                }
-            }
-        }
-    }
-
-    @Override
-    public GameObject getAbilityCaster() {
-        return this;
     }
 }
