@@ -43,6 +43,11 @@ public class Container extends Component {
      */
     private ArrayList<Component> components;
     /**
+     * Gibt an, ob die Komponente aktiv ist
+     * nur aktive Komponenten werden gerendert und erhalten Input
+     */
+    private boolean active;
+    /**
      * Die Transparenz des Containers, für ein/ausblenden
      */
     private float alpha;
@@ -96,7 +101,7 @@ public class Container extends Component {
             int numsteps = (int) ((System.currentTimeMillis() - lastAlphaChange));
             lastAlphaChange = System.currentTimeMillis();
             for (int steps = 0; steps < numsteps; steps++) {
-                
+
                 if (deltaAlpha < 0) {
                     alpha += deltaAlpha;
 
@@ -157,14 +162,14 @@ public class Container extends Component {
     }
 
     /**
-     * Wird bei Mausbewegungen aufgerufen
+     * Wird gerufen, wenn die Maus anfängt oder aufhört zu Hovern
      * @param x     - die X-Position der Maus
      * @param y     - die Y-Position der Maus
      */
     @Override
-    public void mouseMoved(int x, int y) {
+    public void mouseHoverChanged(boolean newstate) {
         for (Component m : components) {
-            m.mouseMoved(x, y);
+            m.mouseHoverChanged(newstate);
         }
     }
 
@@ -200,11 +205,16 @@ public class Container extends Component {
     }
 
     @Override
-    public void setAlpha(float alpha)
-    {
-        for(Component c : components)
-        {
+    public void setAlpha(float alpha) {
+        for (Component c : components) {
             c.setAlpha(alpha);
         }
+    }
+
+    /**
+     * @param active the active to set
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

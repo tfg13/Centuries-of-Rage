@@ -57,11 +57,6 @@ public class Component {
      */
     private boolean mouseHover;
     /**
-     * Gibt an, ob die Komponente aktiv ist
-     * nur aktive Komponenten werden gerendert und erhalten Input
-     */
-    private boolean active;
-    /**
      * Alpha-Wert der Komponente, steuert Transparenz
      */
     private float alpha;
@@ -142,10 +137,17 @@ public class Component {
      */
     public void mouseMoved(int x, int y) {
         if (getX1() < x && x < getX2() && getY1() < y && y < getY2()) {
-            mouseHover = true;
+            mouseHoverChanged(true);
         } else {
-            mouseHover = false;
+            mouseHoverChanged(false);
         }
+    }
+
+    /**
+     * Wird gerufen, wenn die Maus anfängt oder aufhrt über der Komponente zu hovern
+     * @param newstate
+     */
+    public void mouseHoverChanged(boolean newstate) {
     }
 
     /**
@@ -220,22 +222,6 @@ public class Component {
      */
     public void setMainMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
-    }
-
-    /**
-     * Gettwe für active
-     * @return  true, wenn die Komponente aktiv ist
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * Setter für active
-     * @param   true zum aktivieren, false zum deaktivieren
-     */
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     /**
