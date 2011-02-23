@@ -99,35 +99,6 @@ public class Container extends Component {
         }
 
 
-        // @TODO: Das sollte in eine eigene Funktion verlagert werden
-        // wenn deltaalpha nicht null ist sind wir in der animation
-        // bei fade-out wird sofort begonnen, bei fade in erst nach der fade zeit
-        if (deltaAlpha != 0) {
-
-            int numsteps = (int) ((System.currentTimeMillis() - lastAlphaChange));
-            lastAlphaChange = System.currentTimeMillis();
-            for (int steps = 0; steps < numsteps; steps++) {
-
-                if (deltaAlpha < 0) {
-                    alpha += deltaAlpha;
-
-                } else if (deltaAlpha > 0) {
-                    if ((System.currentTimeMillis() - fadeStartTime) > fadeTime) {
-                        alpha += deltaAlpha;
-                    }
-                }
-            }
-            // neues alpha an die komponenten weitergeben
-            for (Component c : components) {
-                c.setAlpha(alpha);
-            }
-
-            // wenn ganz transparent oder ganz sichtbar sind wir fertig:
-            if (alpha <= 0 && deltaAlpha < 0 || alpha >= 1 && deltaAlpha > 0) {
-                deltaAlpha = 0;
-                System.out.print("deactivated");
-            }
-        }
 
         // Rahmen zeichnen:
         g.setColor(Color.gray);
@@ -169,17 +140,10 @@ public class Container extends Component {
         }
     }
 
-    /**
-     * Wird gerufen, wenn die Maus anfängt oder aufhört zu Hovern
-     * @param x     - die X-Position der Maus
-     * @param y     - die Y-Position der Maus
-     */
     @Override
-    public void mouseHoverChanged(boolean newstate) {
-        if (active) {
-            for (Component m : components) {
-                m.mouseHoverChanged(newstate);
-            }
+    public void mouseMoved(int x, int y) {
+        for (Component c : components) {
+            c.mouseMoved(x, y);
         }
     }
 
@@ -202,19 +166,13 @@ public class Container extends Component {
      */
     public void fadeIn() {
         active = true;
-        deltaAlpha = (1.0f / fadeTime);
-        lastAlphaChange = System.currentTimeMillis();
-        fadeStartTime = System.currentTimeMillis();
+
     }
 
     /**
      * Lässt den Container ausblenden
      */
     public void fadeOut() {
-        active = true;
-        deltaAlpha = -(1.0f / fadeTime);
-        fadeStartTime = System.currentTimeMillis();
-        lastAlphaChange = System.currentTimeMillis();
     }
 
     @Override
