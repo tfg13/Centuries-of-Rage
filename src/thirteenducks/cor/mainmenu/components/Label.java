@@ -26,11 +26,13 @@
 package thirteenducks.cor.mainmenu.components;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
  * Label - Zeigt Text an
+ * @TODO: Die textgröße mit g.scale() anpassen (die größe wird dann im konstruktor mitgegeben)
  *
  * @author michael
  */
@@ -40,8 +42,6 @@ public class Label extends Component {
      * Der Text des Labels
      */
     String labelText;
-
-
     /**
      * Die Farbe, in der der Text geschrieben wird
      */
@@ -54,16 +54,28 @@ public class Label extends Component {
      * @param y                     Y-Position der Labels
      * @param text                  Text des Labels
      */
-    public Label(MainMenu mainMenuReference, int x, int y, String text, Color color_t) {
-        super(mainMenuReference, x, y, text.length(), 5);
+    public Label(MainMenu mainMenuReference, float x, float y, String text, Color color_t) {
+        super(mainMenuReference, x, y, 1, 1);
 
         labelText = text;
         color = color_t;
     }
 
     @Override
+    public void init(GameContainer c) {
+
+        // Breite und Höhe anpassen:
+        int width = c.getGraphics().getFont().getWidth(labelText);
+        int height = c.getGraphics().getFont().getHeight(labelText);
+
+        this.setX2(getX1() + width);
+        this.setY2(getY1() + height);
+    }
+
+    @Override
     public void render(Graphics g) {
         g.setColor(color);
+
         g.drawString(labelText, getX1(), getY1());
     }
 }

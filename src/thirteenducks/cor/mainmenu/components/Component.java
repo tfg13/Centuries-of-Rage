@@ -45,13 +45,13 @@ public class Component {
      */
     private MainMenu mainMenu;
     /**
-     * Die Position der linken oberen Ecke der Komponente in Pixel
+     * Die Koordinaten der linken oberen Ecke
      */
-    int x1, y1;
+    private int x1, y1;
     /**
-     * Die Position der rechten unteren Ecke der Komponente in Pixel
+     * Die Koordinaten der rechten unteren Ecke
      */
-    int x2, y2;
+    private int x2, y2;
     /**
      * gibt an, ob der Cursor über der Komponente schwebt
      */
@@ -238,5 +238,21 @@ public class Component {
      */
     public float getAlpha() {
         return this.alpha;
+    }
+
+    /**
+     * Setter für X2
+     * @param - X-Koordinate der rechten unteren Ecke
+     */
+    public void setX2(int x2) {
+        this.x2 = x2;
+    }
+
+    /**
+     * Setter für Y2
+     * @param - Y-Koordinate der rechten unteren Ecke
+     */
+    public void setY2(int y2) {
+        this.y2 = y2;
     }
 }

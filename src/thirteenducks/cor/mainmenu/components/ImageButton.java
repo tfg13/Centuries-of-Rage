@@ -50,6 +50,10 @@ public abstract class ImageButton extends Component {
      */
     ScaledImage image;
     /**
+     * Der Text, der auf dem Button steht
+     */
+    Label label;
+    /**
      * Der Text, der auf dem Button stehen soll
      */
     String text;
@@ -66,6 +70,7 @@ public abstract class ImageButton extends Component {
         super(mainMenuReference, x, y, width, height);
         imagePath = imagepath;
 
+        label = new Label(mainMenuReference, x+1.85f, y+1.8f, text, Color.yellow);
         image = new ScaledImage(mainMenuReference, x, y, width, height, imagepath);
 
     }
@@ -73,12 +78,14 @@ public abstract class ImageButton extends Component {
     @Override
     public void init(GameContainer c) {
         image.init(c);
+        label.init(c);
     }
 
     @Override
     public void render(Graphics g) {
 
         image.render(g);
+        label.render(g);
     }
 
     @Override

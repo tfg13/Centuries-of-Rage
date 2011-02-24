@@ -87,8 +87,8 @@ public class CheckBox extends Component {
         }
 
         // Die Maße an das Bild anpassen:
-        this.x2 = getX1() + normalImage.getWidth();
-        this.y2 = getY1() + normalImage.getHeight();
+        this.setX2(getX1() + normalImage.getWidth());
+        this.setY2(getY1() + normalImage.getHeight());
     }
 
     @Override
