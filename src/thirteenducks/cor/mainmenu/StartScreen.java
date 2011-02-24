@@ -31,15 +31,16 @@ public class StartScreen extends Container {
      * @param m     Referenz auf das Hauptmenü
      */
     public StartScreen(MainMenu m) {
-        super(m, 15, 85, 70, 8);
+        super(m, 15, 85, 80, 8);
 
         mainMenu = m;
 
-
+        // Hintergrund
+        super.addComponent(new ScaledImage(mainMenu, -20, 85, 140, 8, "img/mainmenu/buttonnew.png"));
 
 
         // Start Game Button:
-        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "START GAME") {
+        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "Start Game") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -47,7 +48,7 @@ public class StartScreen extends Container {
         });
 
         // Join Game Button:
-        super.addComponent(new ImageButton(mainMenu, 30, 86, 13, 6, "img/mainmenu/buttonnew.png", "START GAME") {
+        super.addComponent(new ImageButton(mainMenu, 30, 86, 13, 6, "img/mainmenu/buttonnew.png", "Join Game") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -58,7 +59,15 @@ public class StartScreen extends Container {
         });
 
         // Options Button:
-        super.addComponent(new ImageButton(mainMenu, 44, 86, 13, 6, "img/mainmenu/buttonnew.png", "START GAME") {
+        super.addComponent(new ImageButton(mainMenu, 44, 86, 13, 6, "img/mainmenu/buttonnew.png", "OPTIONS") {
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+            }
+        });
+
+        // Map Editor
+        super.addComponent(new ImageButton(mainMenu, 58, 86, 13, 6, "img/mainmenu/buttonnew.png", "Map Editor") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -66,7 +75,7 @@ public class StartScreen extends Container {
         });
 
         // Quit Game Button:
-        super.addComponent(new ImageButton(mainMenu, 58, 86, 13, 6, "img/mainmenu/buttonnew.png", "START GAME") {
+        super.addComponent(new ImageButton(mainMenu, 72, 86, 13, 6, "img/mainmenu/buttonnew.png", "QUIT") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
