@@ -6,6 +6,7 @@ package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.ImageButton;
+import thirteenducks.cor.mainmenu.components.TextBox;
 
 /**
  * Der Server-beitreten-Bildschirm
@@ -21,6 +22,10 @@ public class JoinServerScreen extends Container {
      * MainMenu-Referenz
      */
     MainMenu mainMenu;
+    /**
+     * Das Texteingabefeld für IP oder Servername
+     */
+    TextBox textBox;
 
     /**
      * Konstruktor
@@ -34,12 +39,14 @@ public class JoinServerScreen extends Container {
 
 
 
+        textBox = new TextBox(mainMenu, 30, 30);
+        super.addComponent(textBox);
 
-        // Join Game Button:
-        super.addComponent(new ImageButton(mainMenu, 30,30, 30,30, "img/mainmenu/buttonnew.png", "Join") {
+        super.addComponent(new ImageButton(mainMenu, 40, 40, 10, 8, "img/mainmenu/buttonnew.png", "Join") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
+                System.out.println("Joining Game: " + textBox.getText());
             }
         });
 
