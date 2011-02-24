@@ -26,21 +26,10 @@
 package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.*;
-import thirteenducks.cor.mainmenu.components.Label;
-import thirteenducks.cor.mainmenu.components.TestButton;
 import thirteenducks.cor.mainmenu.components.AnimatedImage;
-import java.awt.Dimension;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
-import thirteenducks.cor.graphics.CoreGraphics;
-import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
  * Grafisches Hauptmenü

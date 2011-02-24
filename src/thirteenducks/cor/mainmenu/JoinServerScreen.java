@@ -4,13 +4,8 @@
  */
 package thirteenducks.cor.mainmenu;
 
-import org.newdawn.slick.Color;
-import thirteenducks.cor.mainmenu.components.Component;
 import thirteenducks.cor.mainmenu.components.Container;
-import thirteenducks.cor.mainmenu.components.TestButton;
 import thirteenducks.cor.mainmenu.components.ImageButton;
-import thirteenducks.cor.mainmenu.components.Label;
-import thirteenducks.cor.mainmenu.components.TiledImage;
 
 /**
  * Der Server-beitreten-Bildschirm
