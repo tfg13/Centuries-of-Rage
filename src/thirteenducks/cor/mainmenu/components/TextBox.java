@@ -35,7 +35,7 @@ import org.newdawn.slick.SlickException;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
- * Ein Button
+ * Ein Texteingabefeld
  * 
  * @author michael
  */
@@ -49,14 +49,12 @@ public class TextBox extends Component {
     /**
      * Konstruktor
      * @param mainMenuReference     Referenz auf das MAinMenu
-     * @param x                     X-Position des Buttons
-     * @param y                     Y-Position des Buttons
-     * @param label                 Der Pfad des Bildes
+     * @param x                     X-Position der TextBox
+     * @param y                     Y-Position der TextBox
      */
-    public TextBox(MainMenu mainMenuReference, int x, int y, String text_t) {
-        super(mainMenuReference, x, y, 30,7);
-        text = text_t;
-
+    public TextBox(MainMenu mainMenuReference, int x, int y) {
+        super(mainMenuReference, x, y, 30, 7);
+        text = "";
     }
 
     @Override
@@ -64,7 +62,7 @@ public class TextBox extends Component {
 
         // Kasten mit Hintergrundfarbe füllen:
         g.setColor(Color.gray);
-        g.fillRect(getX1(), getY1(), getX2(), getY2());
+        g.fillRect(getX1(), getY1(), this.getWidth(), this.getHeight());
 
         g.setColor(Color.black);
 
@@ -75,18 +73,34 @@ public class TextBox extends Component {
         g.drawLine(getX1(), getY1(), getX1(), getY2());
 
         // Text zeichnen:
-        g.drawString(text, getX1() + 5, getY1() + 5);
+        g.drawString(getText(), getX1() + 5, getY1() + 5);
     }
 
     @Override
     public void keyPressed(int key, char c) {
         // Bei return(14) das letzte Zeichen entfernen, ansonsten den entsprechenden Buchstaben dranhängen:
         if (key != 14) {
-            text += c;
+            setText(getText() + c);
         } else {
-            if (text.length() > 0) {
-                text = text.substring(0, text.length() - 1);
+            if (getText().length() > 0) {
+                setText(getText().substring(0, getText().length() - 1));
             }
         }
+    }
+
+    /**
+     * Getter für Text
+     * @return - der Text der in der Textbox steht
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Setter für Text
+     * @param text - der neue Text für die TextBox
+     */
+    public void setText(String text) {
+        this.text = text;
     }
 }
