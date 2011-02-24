@@ -36,6 +36,8 @@ import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
  * Ein Button
+ *
+ * @TODO: Diese Klasse sollte eigentlich Container erweitern
  * 
  * @author michael
  */
@@ -70,7 +72,7 @@ public abstract class ImageButton extends Component {
         super(mainMenuReference, x, y, width, height);
         imagePath = imagepath;
 
-        label = new Label(mainMenuReference, x+1.85f, y+1.8f, text, Color.yellow);
+        label = new Label(mainMenuReference, x + 1.85f, y + 1.8f, text, Color.yellow);
         image = new ScaledImage(mainMenuReference, x, y, width, height, imagepath);
 
     }

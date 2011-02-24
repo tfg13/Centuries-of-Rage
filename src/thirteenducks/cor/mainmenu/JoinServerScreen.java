@@ -33,7 +33,7 @@ public class JoinServerScreen extends Container {
      * @param m     Referenz auf das Hauptmenü
      */
     public JoinServerScreen(MainMenu m) {
-        super(m, 15, 30, 70, 7);
+        super(m, 15, 30, 70, 40);
 
         mainMenu = m;
 
@@ -47,6 +47,7 @@ public class JoinServerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 System.out.println("Joining Game: " + textBox.getText());
+                fadeOut();
             }
         });
 

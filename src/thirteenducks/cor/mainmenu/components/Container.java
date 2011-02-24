@@ -142,8 +142,10 @@ public class Container extends Component {
 
     @Override
     public void mouseMoved(int x, int y) {
-        for (Component c : components) {
-            c.mouseMoved(x, y);
+        if (active) {
+            for (Component c : components) {
+                c.mouseMoved(x, y);
+            }
         }
     }
 
@@ -173,6 +175,7 @@ public class Container extends Component {
      * Lässt den Container ausblenden
      */
     public void fadeOut() {
+        active = false;
     }
 
     @Override
