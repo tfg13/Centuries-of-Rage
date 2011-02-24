@@ -65,11 +65,6 @@ public class MainMenu extends AppGameContainer {
          */
         initComponents(g);
 
-
-
-
-
-
         // mit rendern beginnen:
         this.setShowFPS(false);
         super.start();
@@ -108,11 +103,13 @@ public class MainMenu extends AppGameContainer {
         /**********************************************************************
          * Menüs:
          *********************************************************************/
+        // Hauptmenü:
         Container startScreen = new StartScreen(this);
         menus.put("startscreen", startScreen);
         g.addComponent(startScreen);
         startScreen.fadeIn();
 
+        // Spiel beitreten:
         Container joinServerScreen = new JoinServerScreen(this);
         menus.put("joinserverscreen", joinServerScreen);
         g.addComponent(joinServerScreen);

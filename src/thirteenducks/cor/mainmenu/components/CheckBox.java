@@ -25,9 +25,6 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -64,10 +61,11 @@ public class CheckBox extends Component {
 
     /**
      * Konstruktor
-     * @param mainMenuReference     Referenz auf das MAinMenu
+     * @param mainMenuReference     Referenz auf das MainMenu
      * @param x                     X-Position des Buttons
      * @param y                     Y-Position des Buttons
-     * @param label                 Der Pfad des Bildes
+     * @param imagepath             Pfad des Bildes im Normalzustand
+     * @param activeimagepath       Pfad des Bildes für den aktivierten Zustand
      */
     public CheckBox(MainMenu mainMenuReference, int x, int y, String imagepath, String activeimagepath) {
         super(mainMenuReference, x, y, 1, 1);
@@ -115,7 +113,7 @@ public class CheckBox extends Component {
     }
 
     /**
-     * Getter für checked
+     * Fragt de nstatus der Checkbox ab
      * @return  true, wenn die Checkbox angehackt ist, sonst false
      */
     public boolean isChecked() {

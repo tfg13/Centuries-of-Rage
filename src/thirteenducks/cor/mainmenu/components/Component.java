@@ -25,16 +25,16 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.MouseListener;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
- * Superklasse für Grafikkomponenten des Hauptmenüüs, z.B. Buttons oder Labels
+ * Superklasse für Grafikkomponenten des Hauptmenüs, z.B. Buttons oder Labels
+ * Diese Klasse verwaltet allgemeine Parameter wie Position
  *
+ * @TODO: für die Prozentangeben werden int, double und float verwendet, da sollte ein standard her
+ * @TODO: wird die MainMenu-Referenz eigentlich benötigt?
  *
  * @author michael
  */
@@ -45,11 +45,11 @@ public class Component {
      */
     private MainMenu mainMenu;
     /**
-     * Die Koordinaten der linken oberen Ecke
+     * Die Koordinaten der linken oberen Ecke in Pixel
      */
     private int x1, y1;
     /**
-     * Die Koordinaten der rechten unteren Ecke
+     * Die Koordinaten der rechten unteren Ecke in Pixel
      */
     private int x2, y2;
     /**
@@ -211,17 +211,11 @@ public class Component {
     }
 
     /**
+     * Getter für MainMenu
      * @return the mainMenu
      */
     public MainMenu getMainMenu() {
         return mainMenu;
-    }
-
-    /**
-     * @param mainMenu the mainMenu to set
-     */
-    public void setMainMenu(MainMenu mainMenu) {
-        this.mainMenu = mainMenu;
     }
 
     /**
@@ -234,7 +228,7 @@ public class Component {
 
     /**
      * getter für Alpha
-     * @return
+     * @return - Der Alpha-Wert dieser Komponente
      */
     public float getAlpha() {
         return this.alpha;

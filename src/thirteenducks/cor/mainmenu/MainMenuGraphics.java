@@ -31,13 +31,14 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.InputListener;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.SlickException;
 
 /**
  * GrafikInhalt des Hauptmenüs
+ * 
+ * Verwaltet das Zeichnen der Komponenten und leitet Mausklicks und Tastendrücke weiter
  *
  * @author michael
  */
@@ -51,10 +52,6 @@ public class MainMenuGraphics extends BasicGame {
      * Liste der Grafikkomponenten
      */
     ArrayList<Component> components;
-    /**
-     * Komponenten mit diesem Index werden gerendert
-     */
-    private int currentIndex;
 
     /**
      * Konstruktor
@@ -62,12 +59,11 @@ public class MainMenuGraphics extends BasicGame {
     public MainMenuGraphics() {
         super("COR Mainmenu");
         components = new ArrayList<Component>();
-        setCurrentIndex(0);
     }
 
     /**
      * Setzt die MainMenu-Referenz
-     * @param smm - Referenz auf StyloMainMenu
+     * @param smm - Referenz auf MainMenu
      */
     public void setMainMenuReference(MainMenu smm) {
         mainMenu = smm;
@@ -194,22 +190,6 @@ public class MainMenuGraphics extends BasicGame {
             c.render(g);
 
         }
-    }
-
-    /**
-     * Getter für Index
-     * @return      der aktuelle Index
-     */
-    public int getCurrentIndex() {
-        return currentIndex;
-    }
-
-    /**
-     * Setter für Index
-     * @param currentIndex      der neue index
-     */
-    public void setCurrentIndex(int currentIndex) {
-        this.currentIndex = currentIndex;
     }
 
     /**

@@ -25,9 +25,6 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -85,13 +82,17 @@ public class ScaledImage extends Component {
         }
     }
 
+    /**
+     * Setzt de nAlpha-Wert und steuert damit die Transparenz des Bildes
+     * @param alpha - der neue Transparenz-Wert
+     */
     @Override
     public void setAlpha(float alpha) {
         image.setAlpha(alpha);
     }
 
     /**
-     * Setter für Color
+     * Setzt die Farbe, die als Filter zum Zeichnen verwendet wird
      * @param theColor - Die Farbe die zum rendern des Bildes benutzt wird
      */
     public void setColor(Color color) {

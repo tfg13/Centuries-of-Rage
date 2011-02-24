@@ -25,10 +25,6 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.newdawn.slick.AppletGameContainer.Container;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -73,6 +69,10 @@ public class TiledImage extends Component {
         g.fillRect(this.getX1(), this.getY1(), this.getWidth(), this.getHeight(), image, 0, 0);
     }
 
+    /**
+     * Stellt die Transparenz dieses Bildes ein
+     * @param alpha - die neue Transparenz
+     */
     @Override
     public void setAlpha(float alpha) {
         image.setAlpha(alpha);

@@ -25,17 +25,17 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
  * Ein Texteingabefeld
+ *
+ * @TODO: gescheites Design, Hintergrundgrafik etc....
+ * @TODO: eventuell dynamische Größe (oder zumindest Länge) unterstützen
+ *
+ * @note: Diese Textbox reagiert auf jeden Tastendruck. Dies ist beabsichtigt, dann muss man sie nicht erst anklicken.
  * 
  * @author michael
  */
@@ -48,7 +48,7 @@ public class TextBox extends Component {
 
     /**
      * Konstruktor
-     * @param mainMenuReference     Referenz auf das MAinMenu
+     * @param mainMenuReference     Referenz auf das MainMenu
      * @param x                     X-Position der TextBox
      * @param y                     Y-Position der TextBox
      */

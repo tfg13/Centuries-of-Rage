@@ -25,9 +25,6 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.BigImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -39,6 +36,9 @@ import thirteenducks.cor.mainmenu.MainMenu;
  * Animiertes Bild
  * Zeichnet ein Bild und verschiebt es langsam nach links.
  * Das Bild sollte länger als die Auflösung sein und die gleiche Höhe haben.
+ *
+ * @note: diese Klasse wird warscheinlich abgeschafft oder grob umstrukturiert,
+ * da nicht alle java-Plattformen riesige Bilder unterstützen
  *
  * @author michael
  */
