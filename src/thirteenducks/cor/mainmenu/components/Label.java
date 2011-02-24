@@ -32,7 +32,7 @@ import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
  * Label - Zeigt Text an
- * @TODO: Die textgröße mit g.scale() anpassen (die größe wird dann im konstruktor mitgegeben)
+ * @TODO: Die textgröße mit g.scale() anpassen (die größe wird dann im konstruktor mitgegeben) und den Text zentrieren
  *
  * @author michael
  */

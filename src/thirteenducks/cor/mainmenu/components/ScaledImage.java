@@ -59,7 +59,6 @@ public class ScaledImage extends Component {
     public ScaledImage(MainMenu mainMenuReference, int x, int y, double width, double height, String imagepath) {
         super(mainMenuReference, x, y, width, height);
 
-
         imagePath = imagepath;
     }
 
