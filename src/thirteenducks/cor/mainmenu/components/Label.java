@@ -25,9 +25,13 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
@@ -41,11 +45,15 @@ public class Label extends Component {
     /**
      * Der Text des Labels
      */
-    String labelText;
+    private String labelText;
     /**
      * Die Farbe, in der der Text geschrieben wird
      */
-    Color color;
+    private Color color;
+    /**
+     * Die Schrift, mit der der Text gerendert wird
+     */
+    private UnicodeFont font;
 
     /**
      * Konstruktor
@@ -59,10 +67,30 @@ public class Label extends Component {
 
         labelText = text;
         color = color_t;
+
+
     }
 
     @Override
     public void init(GameContainer c) {
+
+        // X-Faktor
+        float x = 0.016f;
+
+
+
+        int fontsize = (int) ((float) this.getMainMenu().getWidth() * x);
+
+        font = new org.newdawn.slick.UnicodeFont(java.awt.Font.decode("Sans-" + fontsize));
+        try {
+            font.getEffects().add(new org.newdawn.slick.font.effects.ShadowEffect(java.awt.Color.BLACK, 1, 1, 1.0f));
+            font.getEffects().add(new org.newdawn.slick.font.effects.ColorEffect(new java.awt.Color(255, 255, 200)));
+            font.addAsciiGlyphs();
+            font.loadGlyphs();
+        } catch (SlickException ex) {
+            Logger.getLogger(Label.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
         // Breite und Höhe anpassen:
         int width = c.getGraphics().getFont().getWidth(labelText);
@@ -75,7 +103,12 @@ public class Label extends Component {
     @Override
     public void render(Graphics g) {
         g.setColor(color);
+        g.setFont(font);
 
-        g.drawString(labelText, getX1(), getY1());
+        // Der Text soll zentriert gerendert werden, also Textlänge berechnen:
+        int textWidth = g.getFont().getWidth(labelText);
+
+
+        g.drawString(labelText, getX1() + (textWidth / 2), getY1());
     }
 }
