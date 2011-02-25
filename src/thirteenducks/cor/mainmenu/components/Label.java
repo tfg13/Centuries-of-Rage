@@ -62,8 +62,8 @@ public class Label extends Component {
      * @param y                     Y-Position der Labels
      * @param text                  Text des Labels
      */
-    public Label(MainMenu mainMenuReference, float x, float y, String text, Color color_t) {
-        super(mainMenuReference, x, y, 1, 1);
+    public Label(MainMenu mainMenuReference, float x, float y, float width, float height, String text, Color color_t) {
+        super(mainMenuReference, x, y, width, height);
 
         labelText = text;
         color = color_t;
@@ -92,23 +92,19 @@ public class Label extends Component {
         }
 
 
-        // Breite und Höhe anpassen:
-        int width = c.getGraphics().getFont().getWidth(labelText);
-        int height = c.getGraphics().getFont().getHeight(labelText);
-
-        this.setX2(getX1() + width);
-        this.setY2(getY1() + height);
     }
 
     @Override
     public void render(Graphics g) {
+
         g.setColor(color);
         g.setFont(font);
 
         // Der Text soll zentriert gerendert werden, also Textlänge berechnen:
         int textWidth = g.getFont().getWidth(labelText);
 
+        int space = ((this.getWidth() - textWidth) / 2);
 
-        g.drawString(labelText, getX1() + (textWidth / 2), getY1());
+        g.drawString(labelText, getX1() + space, getY1());
     }
 }
