@@ -51,7 +51,7 @@ public class MainMenu extends AppGameContainer {
      * Konstruktor
      */
     public MainMenu(MainMenuGraphics g) throws SlickException {
-        super(g, 1024, 768, false);
+        super(g, 1024,768, false);
 
         this.setTargetFrameRate(65);
 

@@ -42,12 +42,22 @@ public class TiledImage extends Component {
     /**
      * Das Bild, das gerendert wird
      */
-    Image image;
+    private Image image;
     /**
      * Pfad des zu ladenden Bilds
      */
-    String imagePath;
+    private String imagePath;
 
+    /**
+     * Konstruktor
+     *
+     * @param mainMenuReference - Hauptmenü-Referenz
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param imagepath         - Pfad des Bildes
+     */
     public TiledImage(MainMenu mainMenuReference, int x, int y, double width, double height, String imagepath) {
         super(mainMenuReference, x, y, width, height);
 

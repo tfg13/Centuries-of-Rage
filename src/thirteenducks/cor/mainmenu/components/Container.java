@@ -26,7 +26,6 @@
 package thirteenducks.cor.mainmenu.components;
 
 import java.util.ArrayList;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.mainmenu.MainMenu;

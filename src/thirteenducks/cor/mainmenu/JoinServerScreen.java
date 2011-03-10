@@ -28,6 +28,7 @@ package thirteenducks.cor.mainmenu;
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.ImageButton;
 import thirteenducks.cor.mainmenu.components.TextBox;
+import thirteenducks.cor.mainmenu.components.TiledImage;
 
 /**
  * Der Server-beitreten-Bildschirm
@@ -42,11 +43,11 @@ public class JoinServerScreen extends Container {
     /**
      * MainMenu-Referenz
      */
-    MainMenu mainMenu;
+    private MainMenu mainMenu;
     /**
      * Das Texteingabefeld für IP oder Servername
      */
-    TextBox textBox;
+    private TextBox textBox;
 
     /**
      * Konstruktor
@@ -58,10 +59,16 @@ public class JoinServerScreen extends Container {
 
         mainMenu = m;
 
-        textBox = new TextBox(mainMenu, 30, 30);
+
+        // Hintergrund:
+        super.addComponent(new TiledImage(mainMenu, 15, 30, 70, 40, "img/mainmenu/rost.png"));
+
+        // Textfeld initialisieren:
+        textBox = new TextBox(mainMenu, 37, 40);
         super.addComponent(textBox);
 
-        super.addComponent(new ImageButton(mainMenu, 40, 40, 10, 8, "img/mainmenu/buttonnew.png", "Join") {
+        // Join-Button:
+        super.addComponent(new ImageButton(mainMenu, 47, 50, 10, 8, "img/mainmenu/buttonnew.png", "Join") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -69,5 +76,7 @@ public class JoinServerScreen extends Container {
                 fadeOut();
             }
         });
+
+
     }
 }
