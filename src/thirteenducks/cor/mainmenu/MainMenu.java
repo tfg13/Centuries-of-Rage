@@ -91,10 +91,11 @@ public class MainMenu extends AppGameContainer {
          * Hintergrund:
          *********************************************************************/
         // Animierter Hintergrund:
-        g.components.add(new AnimatedImage(this, "/img/mainmenu/test.png"));
+        //g.components.add(new AnimatedImage(this, "/img/mainmenu/test.png"));
 
         // Rahmen:
-        g.components.add(new Frame(this));
+        // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
+        g.components.add(new Frame(this, 0,0,99.9999f,99.9999f));
 
         // Mauskoordiaten anzeigen:
         g.components.add(new CoordinateView(this));
