@@ -91,7 +91,7 @@ public class MainMenu extends AppGameContainer {
          * Hintergrund:
          *********************************************************************/
         // Animierter Hintergrund:
-        //g.components.add(new AnimatedImage(this, "/img/mainmenu/test.png"));
+        g.components.add(new AnimatedImage(this, "/img/mainmenu/test.png"));
 
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....

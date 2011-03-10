@@ -26,6 +26,7 @@
 package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.Container;
+import thirteenducks.cor.mainmenu.components.Frame;
 import thirteenducks.cor.mainmenu.components.ImageButton;
 import thirteenducks.cor.mainmenu.components.TextBox;
 import thirteenducks.cor.mainmenu.components.TiledImage;
@@ -62,6 +63,9 @@ public class JoinServerScreen extends Container {
 
         // Hintergrund:
         super.addComponent(new TiledImage(mainMenu, 15, 30, 70, 40, "img/mainmenu/rost.png"));
+
+        // Rahmen:
+        super.addComponent(new Frame(mainMenu, 15, 30, 70, 40));
 
         // Textfeld initialisieren:
         textBox = new TextBox(mainMenu, 37, 40);
