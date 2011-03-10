@@ -48,11 +48,11 @@ public class RandomMapBuilderScreen extends Container {
     /**
      * Das Texteingabefeld für Layout
      */
-    private TextBox LayoutBox;
+    private TextBox layoutBox;
     /**
      * Das Texteingabefeld für Size
      */
-    private TextBox SizeBox;
+    private TextBox sizeBox;
     /**
      * Das Texteingabefeld für Theme
      */
@@ -72,19 +72,20 @@ public class RandomMapBuilderScreen extends Container {
         // Hintergrund:
         super.addComponent(new TiledImage(mainMenu, 15, 30, 70, 40, "img/mainmenu/rost.png"));
 
-        // Textfeld initialisieren:
-        textBox = new TextBox(mainMenu, 37, 40);
-        super.addComponent(textBox);
+        // Textfelder initialisieren:
+        playerNumberBox = new TextBox(mainMenu, 37, 40);
+        super.addComponent(playerNumberBox);
 
-        // Join-Button:
-        super.addComponent(new ImageButton(mainMenu, 47, 50, 10, 8, "img/mainmenu/buttonnew.png", "Join") {
+        layoutBox = new TextBox(mainMenu, 37, 50);
+        super.addComponent(layoutBox);
 
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                System.out.println("Joining Game: " + textBox.getText());
-                fadeOut();
-            }
-        });
+        sizeBox = new TextBox(mainMenu, 37, 60);
+        super.addComponent(sizeBox);
+
+        themeBox = new TextBox(mainMenu, 37, 70);
+        super.addComponent(themeBox);
+
+
 
 
     }

@@ -51,7 +51,7 @@ public class MainMenu extends AppGameContainer {
      * Konstruktor
      */
     public MainMenu(MainMenuGraphics g) throws SlickException {
-        super(g, 1024,768, false);
+        super(g, 1024, 768, false);
 
         this.setTargetFrameRate(65);
 
@@ -114,6 +114,12 @@ public class MainMenu extends AppGameContainer {
         menus.put("joinserverscreen", joinServerScreen);
         g.addComponent(joinServerScreen);
         joinServerScreen.fadeOut();
+
+        // RandomMapBuilder
+        Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
+        menus.put("randommapbuilderscreen", randomMapBuilderScreen);
+        g.addComponent(randomMapBuilderScreen);
+        randomMapBuilderScreen.fadeOut();
 
     }
 
