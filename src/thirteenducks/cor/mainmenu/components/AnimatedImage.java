@@ -65,6 +65,7 @@ public class AnimatedImage extends Component {
      * Konstruktor
      * 
      * @param mainMenuReference     Referenz auf MainMenu
+     * @param imagepath             Pfad des Bildes
      */
     public AnimatedImage(MainMenu mainMenuReference, String imagepath) {
         super(mainMenuReference, 0, 0, 100, 100);
