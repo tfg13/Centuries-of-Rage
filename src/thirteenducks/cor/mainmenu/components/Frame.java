@@ -20,7 +20,7 @@ public class Frame extends Component {
      * @param m     Hauptmenü-Referenz
      */
     public Frame(MainMenu m, float x, float y, float width, float height) {
-        super(m, 0, 0, width, height);
+        super(m, x, y, width, height);
     }
 
     /**
@@ -44,19 +44,19 @@ public class Frame extends Component {
         // 2. Rahmen:
         g.setColor(Color.gray);
 
-        g.drawLine(this.getX1()+1+1, this.getY1()+1+1, this.getX2()-1, this.getY1()+1);
-        g.drawLine(this.getX1()+1, this.getY1()+1, this.getX1()+1, this.getY2()-1);
-        g.drawLine(this.getX1()+1, this.getY2()-1, this.getX2()-1, this.getY2()-1);
-        g.drawLine(this.getX2()-1, this.getY1()+1, this.getX2()-1, this.getY2()-1);
+        g.drawLine(this.getX1() + 1 + 1, this.getY1() + 1 + 1, this.getX2() - 1, this.getY1() + 1);
+        g.drawLine(this.getX1() + 1, this.getY1() + 1, this.getX1() + 1, this.getY2() - 1);
+        g.drawLine(this.getX1() + 1, this.getY2() - 1, this.getX2() - 1, this.getY2() - 1);
+        g.drawLine(this.getX2() - 1, this.getY1() + 1, this.getX2() - 1, this.getY2() - 1);
 
         // 3. Rahmen:
         g.setColor(Color.black);
 
 
-        g.drawLine(this.getX1()+2+1+1, this.getY1()+2+1+1, this.getX2()-2-1, this.getY1()+2+1);
-        g.drawLine(this.getX1()+2+1, this.getY1()+2+1, this.getX1()+2+1, this.getY2()-2-1);
-        g.drawLine(this.getX1()+2+1, this.getY2()-2-1, this.getX2()-2-1, this.getY2()-2-1);
-        g.drawLine(this.getX2()-2-1, this.getY1()+2+1, this.getX2()-2-1, this.getY2()-2-1);
+        g.drawLine(this.getX1() + 2 + 1, this.getY1() + 2 + 1, this.getX2() - 2, this.getY1() + 2);
+        g.drawLine(this.getX1() + 2, this.getY1() + 2, this.getX1() + 2, this.getY2() - 2);
+        g.drawLine(this.getX1() + 2, this.getY2() - 2, this.getX2() - 2, this.getY2() - 2);
+        g.drawLine(this.getX2() - 2, this.getY1() + 2, this.getX2() - 2, this.getY2() - 2);
 
 
 
