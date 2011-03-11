@@ -509,18 +509,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
-        //Einheit gehört zu / Selektiert
-        if (isSelected()) {
-            // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(x, y);
-        } else {
-            // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
-        }
-    }
-
-    @Override
     public int getColorId() {
         return getPlayerId();
     }

@@ -33,6 +33,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
@@ -190,5 +191,17 @@ public class Unit2x2 extends Unit {
     @Override
     public Position getSortPosition() {
         return this.getMainPosition();
+    }
+
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+        //Einheit gehört zu / Selektiert
+        if (isSelected()) {
+            // Weiße Bodenmarkierung
+            imgMap.get("img/game/sel_s2.png0").getImage().draw(x, y);
+        } else {
+            // Spielerfarbe
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
+        }
     }
 }
