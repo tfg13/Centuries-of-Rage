@@ -33,7 +33,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
-import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.graphics.input.SelectionMarker;
@@ -131,16 +130,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
-        GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
-        if (img != null) {
-            img.getImage().draw(x, y);
-        } else {
-            System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
-        }
-    }
-
-    @Override
     public Position[] getVisisbilityPositions() {
         return positions;
     }
@@ -201,22 +190,5 @@ public class Unit2x2 extends Unit {
     @Override
     public Position getSortPosition() {
         return this.getMainPosition();
-    }
-
-    @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
-        //Einheit gehört zu / Selektiert
-        if (isSelected()) {
-            // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(x, y);
-        } else {
-            // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
-        }                
-    }
-
-    @Override
-    public int getColorId() {
-        return getPlayerId();
     }
 }
