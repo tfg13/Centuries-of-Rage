@@ -1508,7 +1508,7 @@ public class GraphicsContent extends BasicGame {
         // Fenster ungefähr in die Mitte des Bildschirms
         int mx = Display.getDisplayMode().getWidth();
         int my = Display.getDisplayMode().getHeight();
-        Display.setLocation(parent.getScreenWidth() / 2 - mx / 2, parent.getScreenHeight() / 2 - my / 2);
+        //Display.setLocation(parent.getScreenWidth() / 2 - mx / 2, parent.getScreenHeight() / 2 - my / 2);
     }
 
     @Override
