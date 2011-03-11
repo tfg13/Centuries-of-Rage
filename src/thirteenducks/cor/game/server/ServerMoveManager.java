@@ -178,7 +178,7 @@ public class ServerMoveManager {
         // Weg suchen
         ArrayList<Position> newpath = null;
 
-        newpath = inner.pathfinder.findPath(unit.getMainPosition(), target, unit.getPlayerId(), allowDifferentTarget);
+        newpath = inner.pathfinder.findPath(unit, target, allowDifferentTarget);
         /*
         if (unit.path.indexOf(unit.position) + 1 != unit.path.size()) {
         newpath = inner.pathfinder.findPath(unit.path.get(unit.lastwaypoint + 1), target, unit.getPlayerId(), allowDifferentTarget);
@@ -464,7 +464,7 @@ public class ServerMoveManager {
 
         // Weg suchen
         ArrayList<Position> newpath = null;
-        newpath = inner.pathfinder.findPath(unit.getMainPosition(), to, unit.getPlayerId(), true);
+        newpath = inner.pathfinder.findPath(unit, to, true);
         System.out.println("AddMe: Check for SWITCH");
 
         /*} else {
