@@ -30,6 +30,7 @@ package thirteenducks.cor.game.server;
 import thirteenducks.cor.map.CoRMapElement.collision;
 import java.util.*;
 import org.apache.commons.collections.buffer.PriorityBuffer;
+import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Position;
 
 public class ServerPathfinder {
@@ -41,152 +42,162 @@ public class ServerPathfinder {
     private Position[][] RogP;
 
     public ServerPathfinder(ServerCore.InnerServer inner) {
-        rgi = inner;
+	rgi = inner;
     }
 
-    public synchronized ArrayList<Position> findPath(Position start, Position ziel, int playerId, boolean allowDifferentTarget) {
+    public synchronized ArrayList<Position> findPath(GameObject unit, Position ziel, boolean allowDifferentTarget) {
 
-        if (start == null || ziel == null) {
-            System.out.println("FixMe: SPathfinder, irregular call: " + start + "-->" + ziel);
-            return null;
-        }
+	Position start = unit.getMainPosition();
+	if (start == null || ziel == null) {
+	    System.out.println("FixMe: SPathfinder, irregular call: " + start + "-->" + ziel);
+	    return null;
+	}
 
-        int cost_t = 0;    //Movement Kosten (gerade 5, diagonal 7, wird später festgelegt)
-        int sizeofmapX = rgi.netmap.getMapSizeX();   //die Größe der Map als Variable speichern
-        int sizeofmapY = rgi.netmap.getMapSizeY();
+	int cost_t = 0;    //Movement Kosten (gerade 5, diagonal 7, wird später festgelegt)
+	int sizeofmapX = rgi.netmap.getMapSizeX();   //die Größe der Map als Variable speichern
+	int sizeofmapY = rgi.netmap.getMapSizeY();
 
-        open.clear();   //Listen löschen
-        containopen.clear();
-        closed.clear();
+	open.clear();   //Listen löschen
+	containopen.clear();
+	closed.clear();
 
-        RogP = new Position[sizeofmapX][sizeofmapY];
-        for (int x = 0; x < sizeofmapX; x = x + 2) {  //alle vorhandenen Felder der Karte
-            for (int y = 0; y < sizeofmapY; y = y + 2) {
-                RogP[x][y] = new Position(x, y);
-            }
-        }
-        for (int x = 1; x < sizeofmapX; x = x + 2) {
-            for (int y = 1; y < sizeofmapY; y = y + 2) {
-                RogP[x][y] = new Position(x, y);
-            }
-        }
-        start.setCost(0);   //Kosten für das Startfeld (von dem aus berechnet wird) sind natürlich 0
-        open.add(start);  //Startfeld in die openlist
-        containopen.add(start);
-        ziel.setParent(null);    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
+	RogP = new Position[sizeofmapX][sizeofmapY];
+	for (int x = 0; x < sizeofmapX; x = x + 2) {  //alle vorhandenen Felder der Karte
+	    for (int y = 0; y < sizeofmapY; y = y + 2) {
+		RogP[x][y] = new Position(x, y);
+	    }
+	}
+	for (int x = 1; x < sizeofmapX; x = x + 2) {
+	    for (int y = 1; y < sizeofmapY; y = y + 2) {
+		RogP[x][y] = new Position(x, y);
+	    }
+	}
+	start.setCost(0);   //Kosten für das Startfeld (von dem aus berechnet wird) sind natürlich 0
+	open.add(start);  //Startfeld in die openlist
+	containopen.add(start);
+	ziel.setParent(null);    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
 
-        if (rgi.netmap.getCollision(ziel.getX(), ziel.getY()) == collision.blocked || rgi.netmap.checkFieldReservation(ziel.getX(), ziel.getY())) {
-            if (allowDifferentTarget) {
-                ziel = ziel.aroundMe(1, rgi);
-            } else {
-                return null;
-            }
-        }
+	if (rgi.netmap.getCollision(ziel.getX(), ziel.getY()) == collision.blocked || rgi.netmap.checkFieldReservation(ziel.getX(), ziel.getY())) {
+	    if (allowDifferentTarget) {
+		ziel = ziel.aroundMe(1, rgi);
+	    } else {
+		return null;
+	    }
+	}
 
-        for (int j = 0; j < 40000; j++) {		//Anzahl der maximalen Durchläufe, bis Wegfindung aufgibt
+	for (int j = 0; j < 40000; j++) {		//Anzahl der maximalen Durchläufe, bis Wegfindung aufgibt
 
-            if (open.isEmpty()) {   //Abbruch, wenn openlist leer ist => es gibt keinen Weg
-                return null;
-            }
+	    if (open.isEmpty()) {   //Abbruch, wenn openlist leer ist => es gibt keinen Weg
+		return null;
+	    }
 
-            // Sortieren nicht mehr nötig, PriorityBuffer bewahrt die Felder in der Reihenfolge ihrer Priority - also dem F-Wert auf
-            Position current = (Position) open.remove();		//der Eintrag aus der openlist mit dem niedrigesten F-Wert rausholen und gleich löschen
-            containopen.remove(current);
-            if (current.equals(ziel)) {	//Abbruch, weil Weg von Start nach Ziel gefunden wurde
-                ziel.setParent(current.getParent());   //"Vorgängerfeld" von Ziel bekannt
-                break;
-            }
+	    // Sortieren nicht mehr nötig, PriorityBuffer bewahrt die Felder in der Reihenfolge ihrer Priority - also dem F-Wert auf
+	    Position current = (Position) open.remove();		//der Eintrag aus der openlist mit dem niedrigesten F-Wert rausholen und gleich löschen
+	    containopen.remove(current);
+	    if (current.equals(ziel)) {	//Abbruch, weil Weg von Start nach Ziel gefunden wurde
+		ziel.setParent(current.getParent());   //"Vorgängerfeld" von Ziel bekannt
+		break;
+	    }
 
-            // Aus der open wurde current bereits gelöscht, jetzt in die closed verschieben
-            closed.add(current);
+	    // Aus der open wurde current bereits gelöscht, jetzt in die closed verschieben
+	    closed.add(current);
 
-            for (int x = -2; x < 3; x++) {			//Die 8 Nachbarfelder suchen
-                for (int y = -2; y < 3; y++) {
-                    if (Math.abs(x) + Math.abs(y) != 2) {
-                        continue;
-                    }
+	    for (int x = -2; x < 3; x++) {			//Die 8 Nachbarfelder suchen
+		for (int y = -2; y < 3; y++) {
+		    if (Math.abs(x) + Math.abs(y) != 2) {
+			continue;
+		    }
 
-                    int nx = x + current.getX();		//x und y Wert fuer aktuelles Nachbarfeld
-                    int ny = y + current.getY();
+		    int nx = x + current.getX();		//x und y Wert fuer aktuelles Nachbarfeld
+		    int ny = y + current.getY();
 
-                    if ((nx > 0) && (ny > 0) && (nx < sizeofmapX) && (ny < sizeofmapY)) {
-                        if (!rgi.netmap.isGroundCollidingForUnit(nx, ny, playerId)) {		//überprüfen, ob Feld begehbar ist und innerhalb der Map ist
+		    if ((nx > 0) && (ny > 0) && (nx < sizeofmapX) && (ny < sizeofmapY)) {
+			boolean allesfrei = true; //Alle Felder, die die Einheit belegen würde, frei?
 
-                            Position neighbour = RogP[nx][ny];
+			Position unitpos[] = unit.getPositions();
+			for (int i = 0; i < unitpos.length; i++) {
+			    if (rgi.netmap.isGroundCollidingForUnit(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getX() + unitpos[i].getX(), unit.getPlayerId())) {
+				allesfrei = false; //Nicht alle Felder frei
+			    }
+			}
 
-                            if (closed.contains(neighbour)) {		//Felder in ClosedList müssen nicht überprüft werden
-                                continue;
-                            }
+			if (allesfrei) {		//überprüfen, ob Feld begehbar ist und innerhalb der Map ist
 
-                            if (neighbour.getX() == current.getX() || neighbour.getY() == current.getY()) { //-> diagonal (über die Ecken)
-                                cost_t = 7; //Kosten für diagonale Bewegung
+			    Position neighbour = RogP[nx][ny];
 
-                                int diax = 0;
-                                int diay = 0;
-                                int dia2x = 0;
-                                int dia2y = 0;
+			    if (closed.contains(neighbour)) {		//Felder in ClosedList müssen nicht überprüft werden
+				continue;
+			    }
 
-                                if (neighbour.getX() == current.getX()) {	// Zwischenfelder für horizontale diagonale Bewegung (haha)
-                                    diay = (neighbour.getY() + current.getY()) / 2;
-                                    dia2y = (neighbour.getY() + current.getY()) / 2;
-                                    diax = neighbour.getX() - 1;
-                                    dia2x = neighbour.getX() + 1;
-                                } else {
-                                    diax = (neighbour.getX() + current.getX()) / 2;	// Zwischenfelder für vertikale Bewegung
-                                    dia2x = (neighbour.getX() + current.getX()) / 2;
-                                    diay = neighbour.getY() - 1;
-                                    dia2y = neighbour.getY() + 1;
-                                }
-                                if (rgi.netmap.isGroundCollidingForUnit(diax, diay, playerId) || rgi.netmap.isGroundCollidingForUnit(dia2x, dia2y, playerId)) {
-                                    continue;	//abbrechen, wenn Zwischenfelder blockiert sind (-> keine Ecken schneiden)
-                                }
+			    if (neighbour.getX() == current.getX() || neighbour.getY() == current.getY()) { //-> diagonal (über die Ecken)
+				cost_t = 7; //Kosten für diagonale Bewegung
 
-                            } else {
-                                cost_t = 5; //Kosten für gerades Nachbarfeld
-                            }
+				int diax = 0;
+				int diay = 0;
+				int dia2x = 0;
+				int dia2y = 0;
 
-                            if (containopen.contains(neighbour)) {         //Wenn sich das Feld in der openlist befindet, muss berechnet werden, ob es einen kürzeren Weg gibt
+				if (neighbour.getX() == current.getX()) {	// Zwischenfelder für horizontale diagonale Bewegung (haha)
+				    diay = (neighbour.getY() + current.getY()) / 2;
+				    dia2y = (neighbour.getY() + current.getY()) / 2;
+				    diax = neighbour.getX() - 1;
+				    dia2x = neighbour.getX() + 1;
+				} else {
+				    diax = (neighbour.getX() + current.getX()) / 2;	// Zwischenfelder für vertikale Bewegung
+				    dia2x = (neighbour.getX() + current.getX()) / 2;
+				    diay = neighbour.getY() - 1;
+				    dia2y = neighbour.getY() + 1;
+				}
+				if (rgi.netmap.isGroundCollidingForUnit(diax, diay, unit.getPlayerId()) || rgi.netmap.isGroundCollidingForUnit(dia2x, dia2y, unit.getPlayerId())) {
+				    continue;	//abbrechen, wenn Zwischenfelder blockiert sind (-> keine Ecken schneiden)
+				}
 
-                                if (current.getCost() + cost_t < neighbour.getCost()) {		//kürzerer Weg gefunden?
+			    } else {
+				cost_t = 5; //Kosten für gerades Nachbarfeld
+			    }
 
-                                    neighbour.setCost(current.getCost() + cost_t);         //-> Wegkosten neu berechnen
-                                    neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start + Luftlinie zum Ziel
-                                    neighbour.setParent(current); //aktuelles Feld wird zum Vorgängerfeld
-                                }
-                            } else {
-                                neighbour.setCost(current.getCost() + cost_t);
-                                neighbour.setHeuristic((Math.abs((ziel.getX() - neighbour.getX())) + Math.abs((ziel.getY() - neighbour.getY()))) * 3);	// geschätzte Distanz zum Ziel
-                                //Die Zahl am Ende der Berechnung ist der Aufwand der Wegsuche
-                                //5 ist schnell, 4 normal, 3 dauert lange
+			    if (containopen.contains(neighbour)) {         //Wenn sich das Feld in der openlist befindet, muss berechnet werden, ob es einen kürzeren Weg gibt
 
-                                neighbour.setParent(current);						// Parent ist die RogPosition, von dem der aktuelle entdeckt wurde
-                                neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start aus + Luftlinie zum Ziel
-                                open.add(neighbour);    // in openlist hinzufügen
-                                containopen.add(neighbour);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+				if (current.getCost() + cost_t < neighbour.getCost()) {		//kürzerer Weg gefunden?
 
-        if (ziel.getParent() == null) {		//kein Weg gefunden
-            return null;
-        }
+				    neighbour.setCost(current.getCost() + cost_t);         //-> Wegkosten neu berechnen
+				    neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start + Luftlinie zum Ziel
+				    neighbour.setParent(current); //aktuelles Feld wird zum Vorgängerfeld
+				}
+			    } else {
+				neighbour.setCost(current.getCost() + cost_t);
+				neighbour.setHeuristic((Math.abs((ziel.getX() - neighbour.getX())) + Math.abs((ziel.getY() - neighbour.getY()))) * 3);	// geschätzte Distanz zum Ziel
+				//Die Zahl am Ende der Berechnung ist der Aufwand der Wegsuche
+				//5 ist schnell, 4 normal, 3 dauert lange
 
-        ArrayList<Position> pathrev = new ArrayList();   //Pfad aus parents erstellen, von Ziel nach Start
-        Position target = ziel;
-        while (!target.equals(start)) {
-            pathrev.add(RogP[target.getX()][target.getY()]);
-            target = target.getParent();
-        }
-        pathrev.add(start);
+				neighbour.setParent(current);						// Parent ist die RogPosition, von dem der aktuelle entdeckt wurde
+				neighbour.setValF(neighbour.getCost() + neighbour.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start aus + Luftlinie zum Ziel
+				open.add(neighbour);    // in openlist hinzufügen
+				containopen.add(neighbour);
+			    }
+			}
+		    }
+		}
+	    }
+	}
 
-        ArrayList<Position> path = new ArrayList();	//Pfad umkehren, sodass er von Start nach Ziel ist
-        for (int k = pathrev.size() - 1; k >= 0; k--) {
-            path.add(pathrev.get(k));
-        }
+	if (ziel.getParent() == null) {		//kein Weg gefunden
+	    return null;
+	}
 
-        return path;					//Pfad zurückgeben
+	ArrayList<Position> pathrev = new ArrayList();   //Pfad aus parents erstellen, von Ziel nach Start
+	Position target = ziel;
+	while (!target.equals(start)) {
+	    pathrev.add(RogP[target.getX()][target.getY()]);
+	    target = target.getParent();
+	}
+	pathrev.add(start);
+
+	ArrayList<Position> path = new ArrayList();	//Pfad umkehren, sodass er von Start nach Ziel ist
+	for (int k = pathrev.size() - 1; k >= 0; k--) {
+	    path.add(pathrev.get(k));
+	}
+
+	return path;					//Pfad zurückgeben
     }
 }

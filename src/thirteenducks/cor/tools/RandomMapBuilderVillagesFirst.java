@@ -23,6 +23,8 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
     @Override
     public void performJob() {
 
+	//Start-Gebäude am Maprand in gleichen Abständen platzieren!
+
 	ArrayList<Position> Frei = new ArrayList<Position>(); //Arraylist mit allen möglichen Startpositionen
 	ArrayList<Building> StartG = new ArrayList<Building>();//Arraylist mit den endgültigen Startgebäuden
 
