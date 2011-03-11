@@ -1,0 +1,99 @@
+13Ducks Entertainment's: Centuries of Rage
+
+Content:
+
+1. Requirements
+2. How to install everything
+3. How to run CoR
+2. FAQ
+3. Licensing information
+4. How to get involved
+5. How to contact us
+
+---------------------------------------------------------
+
+1. GETTING STARTED
+
+CoR needs the following components/libraries to run:
+See Chapter 2 for instructions how to install them on your system.
+
+- Java runtime (version 6)
+  - Sun/Oracle JRE recommended - may work with others, but no support for them
+- OpenGL & OpenAL
+  - must be supported by your graphics chip
+- LWJGL
+
+
+---------------------------------------------------------
+
+2. HOW TO INSTALL
+
+Please note: There is no installer at this time.
+You have to install everything manually.
+We try to deliver an auto-installer ASAP.
+
+WINDOWS:
+
+- If not installed, install Java from java.com
+- Make sure you have the latest drivers for you graphics card installed
+- Download LWJGL from lwjgl.org and copy the .dll's to Windows/System32 folder.
+
+LINUX:
+
+- If not installed, install Java 6 Sun runtime environment.
+  - (Ubuntu:) enable the "partner" repository & install "java-6-sun" package
+- Download LWJGL from lwjgl.org and copy the .so's to /usr/lib
+- Make sure OpenGL & OpenAL is installed
+
+MAC:
+
+- Download LWJGL from lwjgl.org and copy the .jnilib and .dylib into Libraries
+
+---------------------------------------------------------
+
+3. HOW TO RUN
+
+WINDOWS:
+
+There may be a "CoR.exe" located within the game-directory. Just doubleklick it.
+
+ALL SYSTEMS:
+
+- Depending on the way java is installed, it may work to double-click RoG.jar
+- If not, try run it direct from the command-line:
+
+java -Xmx512m -Xms512m -jar RoG.jar
+
+
+4. FAQ
+
+Q: The game does not start/crashes with cannot find * librarys.
+A: Try to install the files mentioned in the error-dialog.
+   If it says something about "native" libs the lwjgl.* (dll, so, jnilib) cannot be found.
+   Try placing it somewhere else or point to it via -native-library-path=PATH
+
+
+---------------------------------------------------------
+
+5. Licensing information
+
+See LICENSE for more information
+
+
+---------------------------------------------------------
+
+6. How to get involved
+
+Fork the Repository at GitHub & email us!
+
+
+---------------------------------------------------------
+
+5. How to contact us
+
+Email us!
+
+
+
+
+Thank you for using CoR!
