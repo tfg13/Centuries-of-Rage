@@ -33,7 +33,7 @@ import org.newdawn.slick.SlickException;
  *
  * @TODO: prüfen, ob CoR überhaupt auf diesem System läuft, fehlende Komponenten (lwjgl, ...) auflisten etc
  *
- * @author michael
+ * @author  michael
  */
 public class CorStarter {
 
