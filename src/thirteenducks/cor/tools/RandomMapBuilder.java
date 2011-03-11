@@ -56,7 +56,6 @@ public class RandomMapBuilder {
 	RMBJob = new ArrayList<RandomMapBuilderJob>();
 	RMBJob.add(new RandomMapBuilderVillagesPlayer());
 
-
 	long zstVorher = System.currentTimeMillis(); // Zeit stoppen
 
 	int newMapX = 121 + Size * 20 + PlayerNumber * 20;
@@ -66,6 +65,7 @@ public class RandomMapBuilder {
 	CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
 	String newMapName = "Random Map";
 	RandomRogMap = new CoRMap(newMapX, newMapY, newMapName, newMapArray);
+	RandomRogMap.setPlayernumber(PlayerNumber);
 
 	// Map-Array anlegen
 	for (int x = 0; x < newMapX; x++) {
@@ -97,23 +97,23 @@ public class RandomMapBuilder {
 	buildingList = new ArrayList<Building>();	// Leere BuildingList einfügen
 	RandomRogMap.setMapProperty("BUILDING_LIST", buildingList);
 
-	zAlles("img/ground/testgrounddesert1.png");
+	zAlles("img/ground/testwater1.png");
 	ArrayList<Position> Land = sLand();
 	zRechteck(Land.get(0).getX(), Land.get(0).getY(), Land.get(1).getX(), Land.get(1).getY(), "img/ground/testgrounddesert1.png");
 
-	RMBJob.get(0).performJob(RandomRogMap); //VillagesPlayer
-
-	//Kontinente
-	int RndK = (int) Math.random() * 3;
+		//Kontinente
+	int RndK = (int) (Math.random() * 3);
 	Position LandMitte = new Position(((int) (Land.get(0).getX() + Land.get(1).getX()) / 4) * 2, ((int) (Land.get(0).getY() + Land.get(1).getY()) / 4) * 2);
 	Position RandomMitte = new Position((int) (LandMitte.getX() + (Math.random() - 0.5) * RandomRogMap.getMapSizeX() / 2), (int) (LandMitte.getY() + (Math.random() - 0.5) * RandomRogMap.getMapSizeY() / 2));
 	if (RandomMitte.getX() % 2 != RandomMitte.getY()) {
 	    RandomMitte.setX(RandomMitte.getX() + 1);
 	}
-	RndK = 1;
+	
 	if (RndK != 0) {
 	    zKontinent(RandomMitte, RndK);
 	}
+
+	RMBJob.get(0).performJob(RandomRogMap); //VillagesPlayer
 
 	RandomRogMap.setMapProperty("NEXTNETID", RandomRogMap.getNewNetID());
 	saveMap(RandomRogMap);
@@ -131,6 +131,7 @@ public class RandomMapBuilder {
 	for (int i = 0; i < 4; i++) {
 	    double Random = Math.random();
 	    if (Random < 0.2) {
+		System.out.println("Meer");
 		if (maxtwo < 2) {
 		    maxtwo++;
 		    if (i == 0 || i == 2) { // links, rechts
