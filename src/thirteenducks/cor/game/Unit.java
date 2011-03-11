@@ -32,7 +32,6 @@ import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import thirteenducks.cor.graphics.GraphicsImage;
 
 /**
