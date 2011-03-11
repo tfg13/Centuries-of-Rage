@@ -1236,18 +1236,20 @@ public class CoRInput implements Pauseable {
         // Nachbearbeiten.
         // Manche Objekte sind nicht zusammen mit anderen auswählbar. (Builindgs mit Units)
         // Sobald ein multi-fähiges auftaucht, alle nicht-multis rausschmeißen
-        // Außerdem alle nicht-multis nach dem ersten nichtmulti entfernen
+        // Außerdem alle singles nach dem ersten single entfernen
         int singleIndex = -1;
         boolean killSingle = false;
         for (int i = 0; i < finalList.size(); i++) {
             InteractableGameElement elem = finalList.get(i);
             if (elem.isMultiSelectable()) {
                 if (singleIndex != -1) {
-                    killSingle = true;
+                    
                     // Single entfernen
                     finalList.remove(singleIndex);
+                    singleIndex = -1; // Nicht mehrfach löschen
                     i--;
                 }
+                killSingle = true; // Es war ein Multi da, singles sind jetzt uninteressant
             } else {
                 if (killSingle || singleIndex != -1) {
                     // Schon eins da? Dann das hier löschen
