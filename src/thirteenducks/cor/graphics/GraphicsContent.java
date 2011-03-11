@@ -319,7 +319,7 @@ public class GraphicsContent extends BasicGame {
      * @return
      */
     private boolean positionInSight(Position s) {
-        if (s.getX() >= positionX && s.getY() < positionX + viewX) {
+        if (s.getX() >= positionX && s.getX() < positionX + viewX) {
             if (s.getY() >= positionY && s.getY() < positionY + viewY) {
                 return true;
             }
