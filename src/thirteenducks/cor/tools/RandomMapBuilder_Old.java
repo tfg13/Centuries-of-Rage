@@ -23,10 +23,6 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-// Zufallsmapgenerator
-// von 2ndCalc
-// 90% Try&Error, 10% Copy&Paste
-// wenns nich laeuft ist wer anders schuld
 package thirteenducks.cor.tools;
 
 import thirteenducks.cor.map.CoRMap;
@@ -42,6 +38,17 @@ import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.map.CoRMapElement;
 import thirteenducks.cor.map.MapIO;
 
+/**
+ * Der alte RandomMapBuilder
+ *
+ *   Zufallsmapgenerator
+ *   von 2ndCalc
+ *   90% Try&Error, 10% Copy&Paste
+ *   wenns nich laeuft ist wer anders schuld
+ *
+ * @deprecated
+ * @author 2ndCalc
+ */
 public class RandomMapBuilder_Old {
 
     public HashMap<Integer, Unit> descUnit;
@@ -1156,20 +1163,20 @@ public class RandomMapBuilder_Old {
             int RndStart = (int) RndStartD;
             int x = Frei.get(RndStart).getX();
             int y = Frei.get(RndStart).getY();
-            
+
             DescParamsBuilding param = new DescParamsBuilding();
 
-               //Haus an diese Position setzen
+            //Haus an diese Position setzen
 
             param.setDescTypeId(1);
             param.setDescName("Village Center");
             param.setHitpoints(2000);
             param.setMaxhitpoints(2000);
-            
+
             param.setZ1(12);
             param.setZ2(12);
-            
-            
+
+
             PlayersBuilding tmp = new PlayersBuilding(param);
             PlayersBuilding Haus = new PlayersBuilding(getNewNetID(), tmp);
             Haus.getGraphicsData().offsetY = 8;
@@ -1247,42 +1254,42 @@ public class RandomMapBuilder_Old {
         kundschafterP.setDescTypeId(402);
         Unit2x2 kundschafter = new Unit2x2(kundschafterP);
 
-    //    for (int i = 0; i < StartG.size(); i++) {	//für jeden Spieler 4 Starteinheiten setzen
+        //    for (int i = 0; i < StartG.size(); i++) {	//für jeden Spieler 4 Starteinheiten setzen
 
-            Unit2x2 Einheit = new Unit2x2(getNewNetID(), worker);
-            Position unitPos = new Position(StartG.get(0).getMainPosition().getX() + 8, StartG.get(0).getMainPosition().getY() + 12);
-            if (!unitPos.valid()) {
-                unitPos.setX(unitPos.getX() + 1);
-            }
-            Einheit.setMainPosition(unitPos);
-            Einheit.setPlayerId(1);
-            StartU.add(Einheit);
+        Unit2x2 Einheit = new Unit2x2(getNewNetID(), worker);
+        Position unitPos = new Position(StartG.get(0).getMainPosition().getX() + 8, StartG.get(0).getMainPosition().getY() + 12);
+        if (!unitPos.valid()) {
+            unitPos.setX(unitPos.getX() + 1);
+        }
+        Einheit.setMainPosition(unitPos);
+        Einheit.setPlayerId(1);
+        StartU.add(Einheit);
 //            RandomRogMap.visMap[Einheit.getMainPosition().getX()][Einheit.getMainPosition().getY()].setCollision(collision.occupied);
 /*
-            Unit2x2 Einheit2 = new Unit2x2(getNewNetID(), worker);
-            Einheit2.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 5, StartG.get(i).getMainPosition().getY() + 7));
-            Einheit2.setPlayerId(i + 1);
-            StartU.add(Einheit2);
-//            RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
+        Unit2x2 Einheit2 = new Unit2x2(getNewNetID(), worker);
+        Einheit2.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 5, StartG.get(i).getMainPosition().getY() + 7));
+        Einheit2.setPlayerId(i + 1);
+        StartU.add(Einheit2);
+        //            RandomRogMap.visMap[Einheit2.getMainPosition().getX()][Einheit2.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit2x2 Einheit3 = new Unit2x2(getNewNetID(), worker);
-            Einheit3.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 6, StartG.get(i).getMainPosition().getY() + 6));
-            Einheit3.setPlayerId(i + 1);
-            StartU.add(Einheit3);
-//            RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
+        Unit2x2 Einheit3 = new Unit2x2(getNewNetID(), worker);
+        Einheit3.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 6, StartG.get(i).getMainPosition().getY() + 6));
+        Einheit3.setPlayerId(i + 1);
+        StartU.add(Einheit3);
+        //            RandomRogMap.visMap[Einheit3.getMainPosition().getX()][Einheit3.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit2x2 Einheit4 = new Unit2x2(getNewNetID(), worker);
-            Einheit4.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 3, StartG.get(i).getMainPosition().getY() + 5));
-            Einheit4.setPlayerId(i + 1);
-            StartU.add(Einheit4);
-//            RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
+        Unit2x2 Einheit4 = new Unit2x2(getNewNetID(), worker);
+        Einheit4.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 3, StartG.get(i).getMainPosition().getY() + 5));
+        Einheit4.setPlayerId(i + 1);
+        StartU.add(Einheit4);
+        //            RandomRogMap.visMap[Einheit4.getMainPosition().getX()][Einheit4.getMainPosition().getY()].setCollision(collision.occupied);
 
-            Unit2x2 Einheit5 = new Unit2x2(getNewNetID(), kundschafter);
-            Einheit5.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 8, StartG.get(i).getMainPosition().getY() + 4));
-            Einheit5.setPlayerId(i + 1);
-            StartU.add(Einheit5);
-//            RandomRogMap.visMap[Einheit5.getMainPosition().getX()][Einheit5.getMainPosition().getY()].setCollision(collision.occupied); */
-       // }
+        Unit2x2 Einheit5 = new Unit2x2(getNewNetID(), kundschafter);
+        Einheit5.setMainPosition(new Position(StartG.get(i).getMainPosition().getX() + 8, StartG.get(i).getMainPosition().getY() + 4));
+        Einheit5.setPlayerId(i + 1);
+        StartU.add(Einheit5);
+        //            RandomRogMap.visMap[Einheit5.getMainPosition().getX()][Einheit5.getMainPosition().getY()].setCollision(collision.occupied); */
+        // }
 
         return StartU;
     }
