@@ -12,26 +12,25 @@ import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.game.Unit2x2;
-import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Setzt für jeden Spieler ein Startdorf
  * @author Johannes
  */
-public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
+public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
     @Override
-    public void performJob(CoRMap RandomRogMap) {
+    public void performJob() {
 
 	ArrayList<Position> Frei = new ArrayList<Position>(); //Arraylist mit allen möglichen Startpositionen
 	ArrayList<Building> StartG = new ArrayList<Building>();//Arraylist mit den endgültigen Startgebäuden
 
-	for (int i = 1; i <= RandomRogMap.getPlayernumber(); i++) {	//für jeden Spieler:
+	for (int i = 1; i <= RandomMapBuilder.RandomRogMap.getPlayernumber(); i++) {	//für jeden Spieler:
 
 	    Frei.clear();
-	    for (int u = 2; u < RandomRogMap.getMapSizeX() - 24; u++) {
-		for (int j = 14; j < RandomRogMap.getMapSizeY() - 14; j++) {
+	    for (int u = 2; u < RandomMapBuilder.RandomRogMap.getMapSizeX() - 24; u++) {
+		for (int j = 14; j < RandomMapBuilder.RandomRogMap.getMapSizeY() - 14; j++) {
 		    if (u % 2 != j % 2) {
 			continue;
 		    }
@@ -40,7 +39,7 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 		    int counter = 0;
 		    for (int z1c = 0; z1c < 12; z1c++) {
 			for (int z2c = 0; z2c < 12; z2c++) {
-			    if (RandomRogMap.visMap[u + z1c + z2c][j - z1c + z2c].getCollision().equals(collision.blocked)) {
+			    if (RandomMapBuilder.RandomRogMap.visMap[u + z1c + z2c][j - z1c + z2c].getCollision().equals(collision.blocked)) {
 				frei = false;
 			    }
 			}
@@ -57,7 +56,7 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 		double[] dist = new double[Frei.size()]; // Distanz zum nächsten Hauptgebäude
 
 		for (int z = 0; z < Frei.size(); z++) { //für jedes Feld Distanz zum Rand berechnen
-		    dist[z] = Math.min(Math.min(Frei.get(z).getX(), Frei.get(z).getY()), Math.min(RandomRogMap.getMapSizeX() - Frei.get(z).getX(), RandomRogMap.getMapSizeY() - Frei.get(z).getY()));
+		    dist[z] = Math.min(Math.min(Frei.get(z).getX(), Frei.get(z).getY()), Math.min(RandomMapBuilder.RandomRogMap.getMapSizeX() - Frei.get(z).getX(), RandomMapBuilder.RandomRogMap.getMapSizeY() - Frei.get(z).getY()));
 		}
 
 		double mittel = 0;
@@ -93,7 +92,7 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 	    } else {
 
 		double[] dist = new double[Frei.size()]; // Distanz zum nächsten Hauptgebäude
-		double[] work = new double[RandomRogMap.getPlayernumber()];
+		double[] work = new double[RandomMapBuilder.RandomRogMap.getPlayernumber()];
 
 		for (int z = 0; z < Frei.size(); z++) { //für jedes Feld Distanz zu allen Hauptgebäuden berechnen
 		    for (int d = 0; d < i - 1; d++) {
@@ -120,7 +119,7 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 		    }
 		}
 
-		double xcvbn = 0.6 + (0.05 * i) - (0.05 * RandomRogMap.getPlayernumber());
+		double xcvbn = 0.6 + (0.05 * i) - (0.05 * RandomMapBuilder.RandomRogMap.getPlayernumber());
 		double high = (1 - xcvbn) * mittel + xcvbn * maxd;
 
 		for (int q = 0; q < Frei.size(); q++) {
@@ -158,7 +157,7 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 
 
 	    PlayersBuilding tmp = new PlayersBuilding(param);
-	    PlayersBuilding Haus = new PlayersBuilding(RandomRogMap.getNewNetID(), tmp);
+	    PlayersBuilding Haus = new PlayersBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
 	    Haus.getGraphicsData().offsetY = 8;
 	    Haus.setPlayerId(i);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
@@ -167,14 +166,14 @@ public class RandomMapBuilderVillagesPlayer extends RandomMapBuilderJob {
 
 	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
-		    RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
+		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
 		}
 	    }
 
 	    StartG.add(Haus); //Startgebäude in Arraylist eintragen
 	}
 	
-	ArrayList<Building> buildingList = (ArrayList<Building>) RandomRogMap.getMapPoperty("BUILDING_LIST");
+	ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
 
 	for (int i = 0; i < StartG.size(); i++) {
 	    buildingList.add(StartG.get(i)); //Startgebäude setzen

@@ -13,6 +13,5 @@ import thirteenducks.cor.map.CoRMap;
  */
 public abstract class RandomMapBuilderJob {
 
-    public abstract void performJob(CoRMap RandomRogMap);
-
+    public abstract void performJob();
 }

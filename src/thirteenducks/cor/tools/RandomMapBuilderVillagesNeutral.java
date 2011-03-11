@@ -5,8 +5,6 @@
 
 package thirteenducks.cor.tools;
 
-import thirteenducks.cor.map.CoRMap;
-
 /**
  *
  * @author Johannes
@@ -14,7 +12,7 @@ import thirteenducks.cor.map.CoRMap;
 public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
     @Override
-    public void performJob(CoRMap RandomRogMap) {
+    public void performJob() {
 	throw new UnsupportedOperationException("Not supported yet.");
     }
 
