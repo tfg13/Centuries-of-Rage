@@ -22,3 +22,5 @@ sound/*
 manifest.mf
 testdata*
 natives/*
+nbbuild.xml
+
