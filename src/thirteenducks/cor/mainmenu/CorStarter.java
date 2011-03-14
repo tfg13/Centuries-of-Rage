@@ -39,11 +39,15 @@ public class CorStarter {
 
     /**
      * Konstruktor
+     * liest die Bildschirmauflösung aus und startet das grafische Hauptmenü
      */
     public CorStarter(String resolution) {
         try {
+            int resX = Integer.parseInt(resolution.substring(0, resolution.indexOf("*")));
+            int resY = Integer.parseInt(resolution.substring(resolution.indexOf("*") + 1, resolution.length()));
+
             // Hauptmenü erstellen:
-            MainMenu smm = new MainMenu(new MainMenuGraphics());
+            MainMenu smm = new MainMenu(new MainMenuGraphics(), resX, resY);
         } catch (SlickException ex) {
             ex.printStackTrace();
         }
