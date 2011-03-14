@@ -44,10 +44,10 @@ import thirteenducks.cor.map.MapIO;
 
 public class RandomMapBuilder {
 
-    static public HashMap<Integer, Unit> descUnit;
-    static public HashMap<Integer, Building> descBuilding;
-    static CoRMap RandomRogMap;
-    static ArrayList<RandomMapBuilderJob> RMBJob;
+    public static HashMap<Integer, Unit> descUnit;
+    public static HashMap<Integer, Building> descBuilding;
+    public static CoRMap RandomRogMap;
+    public static ArrayList<RandomMapBuilderJob> RMBJob;
 
     public static void newMap(byte PlayerNumber, byte Layout, byte Size, byte Theme) {
 
