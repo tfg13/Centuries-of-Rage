@@ -204,4 +204,15 @@ public class Unit2x2 extends Unit {
             imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
         }
     }
+
+    @Override
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+        GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
+        int[] xy = path.calcExcactPosition(x,y);
+        if (img != null) {
+            img.getImage().draw(xy[0], xy[1]);
+        } else {
+            System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
+        }
+    }
 }
