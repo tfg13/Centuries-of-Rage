@@ -407,10 +407,11 @@ public class Path implements Pauseable, Serializable {
                     double faktor = diffLength / potPathWay * 100;
                     double lDiffX = diffX * faktor / 10; //    / 100 * 10
                     double lDiffY = diffY * faktor / 100 * 7.5;
-
+                    // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
+                    Position pdiff = zPos.subtract(path.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
-                    x += lDiffX;
-                    y += lDiffY;
+                    x += lDiffX - (pdiff.getX() * 10);
+                    y += lDiffY - (pdiff.getY() * 7.5);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
