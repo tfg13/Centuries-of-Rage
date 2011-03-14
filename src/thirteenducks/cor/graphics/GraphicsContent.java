@@ -306,7 +306,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -324,7 +324,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * 10, (int) ((mainPos.getY() - positionY) * 7.5), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -825,7 +825,7 @@ public class GraphicsContent extends BasicGame {
         if (renderPicCursor) {
             // Pic-Cursor
             // Einfach Bild an die gerasterte Cursorposition rendern.
-            renderPic.getImage().draw(framePos.width * 10, (int) (framePos.height * 7.5));
+            renderPic.getImage().draw(framePos.width * FIELD_HALF_X, (int) (framePos.height * FIELD_HALF_Y));
         }
     }
 
@@ -884,7 +884,7 @@ public class GraphicsContent extends BasicGame {
                             GraphicsImage tempImage = imgMap.get(ground);
 
                             if (tempImage != null) {
-                                g3.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5));
+                                g3.drawImage(tempImage.getImage(), x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             } else {
                                 System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
                             }
@@ -893,7 +893,7 @@ public class GraphicsContent extends BasicGame {
                                 GraphicsImage fixImage = imgMap.get(fix);
 
                                 if (fixImage != null) {
-                                    g3.drawImage(fixImage.getImage(), x * 10, (int) (y * 7.5));
+                                    g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                                 } else {
                                     System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
                                 }
@@ -928,7 +928,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 10, (int) (y * 7.5));
+                        colModeImage.getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -941,7 +941,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        colModeImage.getImage().draw(x * 10, (int) (y * 7.5));
+                        colModeImage.getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                     }
                 } catch (Exception ex) {
                 }
@@ -964,7 +964,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (int) (y * 7.5));
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -977,7 +977,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * 10, (int) (y * 7.5));
+                        imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                     }
                 } catch (Exception ex) {
                 }
@@ -997,12 +997,12 @@ public class GraphicsContent extends BasicGame {
         // Rendert die rote Kollisionsfarbe
         for (int x = 0; x < sizeX && x < viewX; x = x + 4) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 5, (int) (y * 7.5) + 10);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X  + 5, (int) (y * FIELD_HALF_Y) + 10);
             }
         }
         for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 4) {
             for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * 10 + 5, (int) (y * 7.5) + 10);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X + 5, (int) (y * FIELD_HALF_Y) + 10);
             }
         }
     }
@@ -1231,8 +1231,8 @@ public class GraphicsContent extends BasicGame {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 10;
-        int coordY = (int) (selY / 7.5);
+        int coordX = selX / FIELD_HALF_X;
+        int coordY = (int) (selY / FIELD_HALF_Y);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
@@ -1252,8 +1252,8 @@ public class GraphicsContent extends BasicGame {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 10;
-        int coordY = (int) (selY / 7.5);
+        int coordX = selX / FIELD_HALF_X;
+        int coordY = (int) (selY / FIELD_HALF_Y);
         // Scrollposition addieren
         boolean xg = (coordX % 2 == 0);
         boolean yg = (coordY % 2 == 0);
@@ -1268,8 +1268,8 @@ public class GraphicsContent extends BasicGame {
         // Versatz beachten
         x = x - 10;
         y = y - 15;
-        int coordX = x / 10;
-        int coordY = (int) (y / 7.5);
+        int coordX = x / FIELD_HALF_X;
+        int coordY = (int) (y / FIELD_HALF_Y);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
