@@ -25,6 +25,9 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.net.InetAddress;
+import org.lwjgl.opengl.DisplayMode;
+import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.Frame;
 import thirteenducks.cor.mainmenu.components.ImageButton;
@@ -49,6 +52,10 @@ public class JoinServerScreen extends Container {
      * Das Texteingabefeld für IP oder Servername
      */
     private TextBox textBox;
+    /**
+     * default port
+     */
+    final int port = 39264;
 
     /**
      * Konstruktor
@@ -77,6 +84,14 @@ public class JoinServerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 System.out.println("Joining Game: " + textBox.getText());
+
+                try {
+                    //ClientCore clientCore = new ClientCore(true, InetAddress.getByName(textBox.getText()), port, "testname", new DisplayMode(mainMenu.graphics.getResX(), mainMenu.graphics.getResY()), mainMenu.getFullScreen(), cfg);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+
                 fadeOut();
             }
         });

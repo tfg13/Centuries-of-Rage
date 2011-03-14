@@ -46,12 +46,29 @@ public class MainMenu extends AppGameContainer {
      * Die einzelnen Menüs
      */
     HashMap<String, Container> menus;
+    /**
+     * Gibt an, ob das Hauptmenü (und Später das Spiel) im Fenster- oder FullscreenModus läuft
+     */
+    private boolean fullScreen;
+    /**
+     * X-Bildschirmauflösung
+     */
+    private int resX;
+    /**
+     * Y-Bildschirmauflösung
+     */
+    private int resY;
 
     /**
      * Konstruktor
      */
     public MainMenu(MainMenuGraphics g, int resX, int resY, boolean fullScreen) throws SlickException {
         super(g, resX, resY, fullScreen);
+
+        this.resX = resX;
+        this.resY = resY;
+
+        this.fullScreen = fullScreen;
 
         this.setTargetFrameRate(65);
 
@@ -132,5 +149,29 @@ public class MainMenu extends AppGameContainer {
      */
     public Container getMenu(String name) {
         return menus.get(name);
+    }
+
+    /**
+     * Getter für fullScreen
+     * @return true, wenn fullScreen true ist
+     */
+    boolean getFullScreen() {
+        return fullScreen;
+    }
+
+    /**
+     * Getter für X-Auflösung
+     * @return X-Auflösung
+     */
+    public int getResX() {
+        return resX;
+    }
+
+    /**
+     * Getter für Y-Auflösung
+     * @return Y-Auflösung
+     */
+    public int getResY() {
+        return resY;
     }
 }
