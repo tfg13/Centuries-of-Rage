@@ -38,10 +38,28 @@ import org.newdawn.slick.SlickException;
 public class CorStarter {
 
     /**
+     * Einstiegspunkt
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+
+        new CorStarter();
+    }
+
+    /**
+     * Konstruktor
+     * liest di cfg ein und zeigt das Startsplash
+     */
+    public CorStarter() {
+        // cfg einlesen
+        new Splash(this);
+    }
+
+    /**
      * Konstruktor
      * liest die Bildschirmauflösung aus und startet das grafische Hauptmenü
      */
-    public CorStarter(String resolution, boolean fullScreen) {
+    public void startMainMenu(String resolution, boolean fullScreen) {
         try {
             int resX = Integer.parseInt(resolution.substring(0, resolution.indexOf("*")));
             int resY = Integer.parseInt(resolution.substring(resolution.indexOf("*") + 1, resolution.length()));

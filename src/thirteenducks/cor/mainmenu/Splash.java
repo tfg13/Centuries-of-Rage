@@ -33,10 +33,20 @@ package thirteenducks.cor.mainmenu;
  * @author michael
  */
 public class Splash extends javax.swing.JFrame {
-    // <editor-fold defaultstate="collapsed" desc="swing-zeug">
 
-    /** Creates new form CoR_Launcher */
-    public Splash() {
+    /**
+     * Referenz auf den CorStarter
+     */
+    CorStarter starter;
+
+    // <editor-fold defaultstate="collapsed" desc="swing-zeug">
+    /**
+     * Konstruktor
+     * setzt lediglich die starter-Referenz
+     * @param starter - Referenz auf den Starter
+     */
+    public Splash(CorStarter starter) {
+        this.starter = starter;
         initComponents();
     }
 
@@ -129,7 +139,7 @@ public class Splash extends javax.swing.JFrame {
         Thread launcherThread = new Thread(new Runnable() {
 
             public void run() {
-                new CorStarter(resolutionPickerBox.getSelectedItem().toString(), fullscreenCheckBox.isSelected());
+                starter.startMainMenu(resolutionPickerBox.getSelectedItem().toString(), fullscreenCheckBox.isSelected());
             }
         });
         launcherThread.setName("launcherthread");
@@ -139,7 +149,7 @@ public class Splash extends javax.swing.JFrame {
     }//GEN-LAST:event_goButtonActionPerformed
 
     /**
-     * Beednen-Button
+     * Beenden-Button
      */
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         System.exit(0);
@@ -147,19 +157,7 @@ public class Splash extends javax.swing.JFrame {
 
     private void resolutionPickerBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolutionPickerBoxActionPerformed
     }//GEN-LAST:event_resolutionPickerBoxActionPerformed
-
     // <editor-fold defaultstate="collapsed" desc="Einstiegspunkt">
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new Splash().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button exitButton;
     private javax.swing.JCheckBox fullscreenCheckBox;
