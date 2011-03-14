@@ -40,7 +40,7 @@ public class CorStarter {
     /**
      * Konstruktor
      */
-    public CorStarter() {
+    public CorStarter(String resolution) {
         try {
             // Hauptmenü erstellen:
             MainMenu smm = new MainMenu(new MainMenuGraphics());
