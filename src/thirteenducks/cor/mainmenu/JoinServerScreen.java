@@ -25,7 +25,13 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashMap;
 import org.lwjgl.opengl.DisplayMode;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.mainmenu.components.Container;
@@ -86,7 +92,16 @@ public class JoinServerScreen extends Container {
                 System.out.println("Joining Game: " + textBox.getText());
 
                 try {
-                    //ClientCore clientCore = new ClientCore(true, InetAddress.getByName(textBox.getText()), port, "testname", new DisplayMode(mainMenu.graphics.getResX(), mainMenu.graphics.getResY()), mainMenu.getFullScreen(), cfg);
+                    boolean debug = true;
+                    InetAddress address = InetAddress.getByName(textBox.getText());
+                    // port wird am Anfang dieser Datei deklariert
+                    String playerName = "testname";
+                    DisplayMode displayMode = new DisplayMode(mainMenu.getResX(), mainMenu.getResY());
+                    boolean fullScreen = mainMenu.getFullScreen();
+                    HashMap cfg = readCfg();
+
+                    ClientCore clientCore = new ClientCore(debug, address, port, playerName, displayMode, fullScreen, cfg);
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -97,5 +112,54 @@ public class JoinServerScreen extends Container {
         });
 
 
+    }
+
+    /**
+     * Liest die Einstellungen ein
+     */
+    private HashMap readCfg() {
+        HashMap cfg = new HashMap();
+        File cfgFile = new File("client_cfg.txt");
+        try {
+            FileReader cfgReader = new FileReader(cfgFile);
+            BufferedReader reader = new BufferedReader(cfgReader);
+            String zeile = null;
+            int i = 0; // Anzahl der Durchläufe zählen
+            while ((zeile = reader.readLine()) != null) {
+                if (i == 0) {
+                    // Die erste Zeile überspringen
+                    //   continue;
+                }
+                // Liest Zeile fuer Zeile, jetzt auswerten und in Variablen
+                // schreiben
+                int indexgleich = zeile.indexOf('='); // Istgleich suchen
+                if (indexgleich == -1) {
+                } else {
+                    String v1 = zeile.substring(0, indexgleich); // Vor dem =
+                    // rauschneiden
+                    String v2 = zeile.substring(indexgleich + 1); // Nach dem
+                    // =
+                    // rausschneiden
+                    System.out.println(v1 + " = " + v2);
+                    cfg.put(v1, v2);
+
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException e1) {
+            // cfg-Datei nicht gefunden -  egal, wird automatisch neu angelegt
+            System.out.println("client_cfg.txt not found, creating new one...");
+            try {
+                cfgFile.createNewFile();
+            } catch (IOException ex) {
+                System.out.println("[Core-Error] Failed to create client_cfg.txt .");
+            }
+        } catch (IOException e2) {
+            // Inakzeptabel
+            e2.printStackTrace();
+            System.out.println("[Core-ERROR] Critical I/O ERROR!");
+            System.exit(1);
+        }
+        return cfg;
     }
 }
