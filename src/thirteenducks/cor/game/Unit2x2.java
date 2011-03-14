@@ -56,7 +56,7 @@ public class Unit2x2 extends Unit {
      */
     private Position[] lastPositions;
 
-     public Unit2x2(int newNetId, Position mainPos) {
+    public Unit2x2(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
         positions = new Position[4];
     }

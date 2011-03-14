@@ -63,7 +63,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         hitpoints = 100;
         maxhitpoints = 100;
         armorType = GameObject.ARMORTYPE_BUILDING;
-        path = new Path();
+        path = new Path(10);
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     protected Unit(int newNetId, Unit copyFrom) {
         super(newNetId, copyFrom);
-        path = new Path();
+        path = new Path(copyFrom.speed);
         this.speed = copyFrom.speed;
     }
 
@@ -228,18 +228,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
      */
     public void serverManagePath(ServerCore.InnerServer rgi) {
-        if (path.isMoving()) {
             path.serverManagePath(rgi, this);
-        }
     }
 
     /**
      * Muss regelmäßig aufgerufen werden, damit die Einheit ihr Bewegung berechnen kann.
      */
     public void clientManagePath(InnerClient rgi) {
-        if (path.isMoving()) {
             path.clientManagePath(rgi, this);
-        }
     }
 
     /**
@@ -501,8 +497,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
+        int[] xy = path.calcExcactPosition(x,y);
         if (img != null) {
-            img.getImage().draw(x, y);
+            img.getImage().draw(xy[0], xy[1]);
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
