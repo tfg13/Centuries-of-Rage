@@ -67,14 +67,12 @@ public class ClientCore extends Core {
     String playername;
     Lobby lobby;
     ClientStatistics cs;
-    boolean isAIClient;
 
 
     public ClientCore(){}
 
-    public ClientCore(boolean debug, InetAddress connectTo, int port, String playername_t, DisplayMode mode, boolean fullScreen, HashMap newcfg, boolean ai) throws SlickException {
+    public ClientCore(boolean debug, InetAddress connectTo, int port, String playername_t, DisplayMode mode, boolean fullScreen, HashMap newcfg) throws SlickException {
 
-        isAIClient = ai;
         playername = playername_t;
         lobby = new Lobby();
         cfgvalues = newcfg;
@@ -84,7 +82,7 @@ public class ClientCore extends Core {
         // Einstellungen aus Startoptionen übernehmen
         debugmode = debug;
 
-        rgi = new ClientCore.InnerClient(playername, isAIClient);
+        rgi = new ClientCore.InnerClient(playername);
 
         gamectrl = new ClientGameController(rgi);
 
@@ -203,14 +201,12 @@ public class ClientCore extends Core {
         //RogGameLogic rogGameLogic;
         public SoundModule rogSound;
         public String lastlog = "";
-        public boolean isAIClient;
         public TeamSelector teamSel;
 
         public InnerClient(){}
 
-        private InnerClient(String playername_t, boolean ai) {
+        private InnerClient(String playername_t) {
             playername = playername_t;
-            isAIClient = ai;
         }
 
         @Override

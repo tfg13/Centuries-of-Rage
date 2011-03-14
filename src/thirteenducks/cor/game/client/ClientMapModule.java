@@ -1222,9 +1222,7 @@ public class ClientMapModule {
         }
 
         // Selektionsschatten einfügen
-        if (!rgi.isAIClient) {
             rgi.rogGraphics.builingsChanged();
-        }
     }
 
     public collision getCollision(int x, int y) {
@@ -1360,7 +1358,7 @@ public class ClientMapModule {
      * @param building
      */
     public void buildingKilled(Building building) {
-        if (building != null && !rgi.isAIClient) {
+        if (building != null ) {
             building.kill();
             // Für eigene Gebäude den Sichtbereich auf erkundet setzen
             if (building.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
