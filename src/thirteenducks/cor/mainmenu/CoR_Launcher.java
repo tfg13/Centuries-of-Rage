@@ -28,7 +28,7 @@ package thirteenducks.cor.mainmenu;
 /**
  * Der Einstiegspunkt
  * Im Launcher können Bildschirmauflösung und Vollbildmodus gewählt werden.
- * Der Launcher startet dann das grafische Hauptmenü.
+ * Der Launcher startet dann den CorStarter und dieser das grafische Hauptmenü.
  * 
  * @author michael
  */
@@ -51,10 +51,10 @@ public class CoR_Launcher extends javax.swing.JFrame {
     private void initComponents() {
 
         jSpinner1 = new javax.swing.JSpinner();
-        jComboBox1 = new javax.swing.JComboBox();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        button2 = new java.awt.Button();
-        button3 = new java.awt.Button();
+        resolutionPickerBox = new javax.swing.JComboBox();
+        fullscreenCheckBox = new javax.swing.JCheckBox();
+        goButton = new java.awt.Button();
+        exitButton = new java.awt.Button();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -62,26 +62,26 @@ public class CoR_Launcher extends javax.swing.JFrame {
         setName("Centuries of Rage"); // NOI18N
         setResizable(false);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1024*768", "1200*800", "1440*900", "1600*1200" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        resolutionPickerBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1024*768", "1200*800", "1440*900", "1600*1200" }));
+        resolutionPickerBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                resolutionPickerBoxActionPerformed(evt);
             }
         });
 
-        jCheckBox1.setText("Fullscreen");
+        fullscreenCheckBox.setText("Fullscreen");
 
-        button2.setLabel(",.-~'~-,. }  GO  { '~-,.,-~'");
-        button2.addActionListener(new java.awt.event.ActionListener() {
+        goButton.setLabel(",.-~'~-,. }  GO  { '~-,.,-~'");
+        goButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button2ActionPerformed(evt);
+                goButtonActionPerformed(evt);
             }
         });
 
-        button3.setLabel("ENDE");
-        button3.addActionListener(new java.awt.event.ActionListener() {
+        exitButton.setLabel("ENDE");
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button3ActionPerformed(evt);
+                exitButtonActionPerformed(evt);
             }
         });
 
@@ -95,10 +95,10 @@ public class CoR_Launcher extends javax.swing.JFrame {
                 .addContainerGap(341, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(button3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(button2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fullscreenCheckBox)
+                    .addComponent(goButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(resolutionPickerBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -107,13 +107,13 @@ public class CoR_Launcher extends javax.swing.JFrame {
                 .addContainerGap(155, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(resolutionPickerBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(fullscreenCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(goButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -125,30 +125,28 @@ public class CoR_Launcher extends javax.swing.JFrame {
      * 
      * Startet den CorStarter in einem eigenen Thread
      */
-    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
-        Thread launcherthread = new Thread(new Runnable() {
+    private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
+        Thread launcherThread = new Thread(new Runnable() {
 
             public void run() {
-                new CorStarter(jComboBox1.getSelectedItem().toString());
+                new CorStarter(resolutionPickerBox.getSelectedItem().toString());
             }
         });
-        launcherthread.setName("launcherthread");
-        launcherthread.start();
+        launcherThread.setName("launcherthread");
+        launcherThread.start();
 
         this.setVisible(false);
-    }//GEN-LAST:event_button2ActionPerformed
+    }//GEN-LAST:event_goButtonActionPerformed
 
     /**
      * Beednen-Button
-     * @param evt
      */
-    private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_button3ActionPerformed
+    }//GEN-LAST:event_exitButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void resolutionPickerBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolutionPickerBoxActionPerformed
+    }//GEN-LAST:event_resolutionPickerBoxActionPerformed
 
     // <editor-fold defaultstate="collapsed" desc="Einstiegspunkt">
     /**
@@ -163,12 +161,12 @@ public class CoR_Launcher extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button button2;
-    private java.awt.Button button3;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox jComboBox1;
+    private java.awt.Button exitButton;
+    private javax.swing.JCheckBox fullscreenCheckBox;
+    private java.awt.Button goButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JComboBox resolutionPickerBox;
     // End of variables declaration//GEN-END:variables
 // </editor-fold>
 }

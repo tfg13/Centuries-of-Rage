@@ -35,10 +35,10 @@
               <EmptySpace pref="341" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jLabel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="button3" alignment="0" max="32767" attributes="1"/>
-                  <Component id="jCheckBox1" alignment="0" min="-2" max="-2" attributes="1"/>
-                  <Component id="button2" alignment="0" max="32767" attributes="1"/>
-                  <Component id="jComboBox1" alignment="0" max="32767" attributes="1"/>
+                  <Component id="exitButton" alignment="0" max="32767" attributes="1"/>
+                  <Component id="fullscreenCheckBox" alignment="0" min="-2" max="-2" attributes="1"/>
+                  <Component id="goButton" alignment="0" max="32767" attributes="1"/>
+                  <Component id="resolutionPickerBox" alignment="0" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -50,20 +50,20 @@
               <EmptySpace pref="155" max="32767" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
+              <Component id="resolutionPickerBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+              <Component id="fullscreenCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="button2" min="-2" pref="34" max="-2" attributes="0"/>
+              <Component id="goButton" min="-2" pref="34" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="button3" min="-2" pref="34" max="-2" attributes="0"/>
+              <Component id="exitButton" min="-2" pref="34" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="javax.swing.JComboBox" name="resolutionPickerBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -75,28 +75,28 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resolutionPickerBoxActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+    <Component class="javax.swing.JCheckBox" name="fullscreenCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Fullscreen"/>
       </Properties>
     </Component>
-    <Component class="java.awt.Button" name="button2">
+    <Component class="java.awt.Button" name="goButton">
       <Properties>
         <Property name="label" type="java.lang.String" value=",.-~&apos;~-,. }  GO  { &apos;~-,.,-~&apos;"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="goButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="java.awt.Button" name="button3">
+    <Component class="java.awt.Button" name="exitButton">
       <Properties>
         <Property name="label" type="java.lang.String" value="ENDE"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitButtonActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
