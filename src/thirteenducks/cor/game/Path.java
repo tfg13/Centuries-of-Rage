@@ -405,8 +405,8 @@ public class Path implements Pauseable, Serializable {
                     // Prozentanteil der Stecke, die zurückgelegt wurde
                     double potPathWay = Math.sqrt(Math.pow(Math.abs(diffX), 2) + Math.pow(Math.abs(diffY), 2));
                     double faktor = diffLength / potPathWay * 100;
-                    double lDiffX = diffX * faktor / 100;
-                    double lDiffY = diffY * faktor / 100;
+                    double lDiffX = diffX * faktor / 10; //    / 100 * 10
+                    double lDiffY = diffY * faktor / 100 * 7.5;
 
                     // Aktuelle Koordinaten reinrechnen:
                     x += lDiffX;
