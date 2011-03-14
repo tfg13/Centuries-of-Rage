@@ -62,7 +62,7 @@ public class CoR_Launcher extends javax.swing.JFrame {
         setName("Centuries of Rage"); // NOI18N
         setResizable(false);
 
-        resolutionPickerBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1024*768", "1200*800", "1440*900", "1600*1200" }));
+        resolutionPickerBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1024*768", "1152*864", "1360*768", "1440*900", "1680*1050" }));
         resolutionPickerBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resolutionPickerBoxActionPerformed(evt);
@@ -129,7 +129,7 @@ public class CoR_Launcher extends javax.swing.JFrame {
         Thread launcherThread = new Thread(new Runnable() {
 
             public void run() {
-                new CorStarter(resolutionPickerBox.getSelectedItem().toString());
+                new CorStarter(resolutionPickerBox.getSelectedItem().toString(), fullscreenCheckBox.isSelected());
             }
         });
         launcherThread.setName("launcherthread");

@@ -50,8 +50,8 @@ public class MainMenu extends AppGameContainer {
     /**
      * Konstruktor
      */
-    public MainMenu(MainMenuGraphics g, int resX, int resY) throws SlickException {
-        super(g, resX, resY, false);
+    public MainMenu(MainMenuGraphics g, int resX, int resY, boolean fullScreen) throws SlickException {
+        super(g, resX, resY, fullScreen);
 
         this.setTargetFrameRate(65);
 
@@ -95,7 +95,7 @@ public class MainMenu extends AppGameContainer {
 
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
-        g.components.add(new Frame(this, 0,0,99.9999f,99.9999f));
+        g.components.add(new Frame(this, 0, 0, 99.9999f, 99.9999f));
 
         // Mauskoordiaten anzeigen:
         g.components.add(new CoordinateView(this));

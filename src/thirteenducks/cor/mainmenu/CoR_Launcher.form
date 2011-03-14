@@ -66,11 +66,12 @@
     <Component class="javax.swing.JComboBox" name="resolutionPickerBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
+          <StringArray count="5">
             <StringItem index="0" value="1024*768"/>
-            <StringItem index="1" value="1200*800"/>
-            <StringItem index="2" value="1440*900"/>
-            <StringItem index="3" value="1600*1200"/>
+            <StringItem index="1" value="1152*864"/>
+            <StringItem index="2" value="1360*768"/>
+            <StringItem index="3" value="1440*900"/>
+            <StringItem index="4" value="1680*1050"/>
           </StringArray>
         </Property>
       </Properties>
