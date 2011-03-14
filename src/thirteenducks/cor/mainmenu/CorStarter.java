@@ -52,7 +52,7 @@ public class CorStarter {
      */
     public CorStarter() {
         // cfg einlesen
-        new Splash(this);
+        new Splash(this).setVisible(true);
     }
 
     /**
