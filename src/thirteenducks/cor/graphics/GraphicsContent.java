@@ -42,6 +42,42 @@ import thirteenducks.cor.game.Unit;
 
 @SuppressWarnings("CallToThreadDumpStack")
 public class GraphicsContent extends BasicGame {
+
+    /**
+     * Die Größe eines Feldes Richtung X.
+     * Für Zeichenkoordinatenbestimmungen durch multiplizieren wird aber die Halbe benötigt!
+     */
+    public static final int FIELD_SIZE_X = 20;
+    /**
+     * Die Größe eines Feldes Richtung Y.
+     * Für Zeichenkoordinatenbestimmungen durch multiplizieren wird aber die Halbe benötigt!
+     */
+    public static final int FIELD_SIZE_Y = 15;
+    /**
+     * Die halbe Größe eines Feldes in X-Richtung
+     */
+    public static final int FIELD_HALF_X = FIELD_SIZE_X / 2;
+    /**
+     * Die halbe Größe eines Feldes in Y-Richtung
+     */
+    public static final int FIELD_HALF_Y = FIELD_SIZE_Y / 2;
+    /**
+     * Wie viele Pixel das tatsächlich gezeichnete Feld von den Zeichenkoordinaten entfernt ist.
+     */
+    public static final int BASIC_FIELD_OFFSET_X = 5;
+    /**
+     * Wie viele Pixel das tatsächlich gezeichnete Feld von den Zeichenkoordinaten entfernt ist.
+     */
+    public static final int BASIC_FIELD_OFFSET_Y = 10;
+    /**
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     */
+    public static final int OFFSET_2x2_X = -5;
+    /**
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     */
+    public static final int OFFSET_2x2_Y = -17;
+
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
 
     public GraphicsImage colModeImage;

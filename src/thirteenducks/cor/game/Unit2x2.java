@@ -33,6 +33,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.graphics.GraphicsContent;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
@@ -210,7 +211,7 @@ public class Unit2x2 extends Unit {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
         int[] xy = path.calcExcactPosition(x,y);
         if (img != null) {
-            img.getImage().draw(xy[0], xy[1]);
+            img.getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
