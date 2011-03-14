@@ -38,11 +38,9 @@ import org.newdawn.slick.SlickException;
 public class CorStarter {
 
     /**
-     * Einstiegspunkt
-     *
-     * @param args - Kommandozeilenargumente
+     * Konstruktor
      */
-    public static void main(final String[] args) {
+    public CorStarter() {
         try {
             // Hauptmenü erstellen:
             MainMenu smm = new MainMenu(new MainMenuGraphics());
