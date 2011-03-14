@@ -32,11 +32,11 @@ package thirteenducks.cor.mainmenu;
  * 
  * @author michael
  */
-public class CoR_Launcher extends javax.swing.JFrame {
+public class Splash extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="swing-zeug">
 
     /** Creates new form CoR_Launcher */
-    public CoR_Launcher() {
+    public Splash() {
         initComponents();
     }
 
@@ -156,7 +156,7 @@ public class CoR_Launcher extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new CoR_Launcher().setVisible(true);
+                new Splash().setVisible(true);
             }
         });
     }
