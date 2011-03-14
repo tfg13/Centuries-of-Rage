@@ -26,28 +26,14 @@
 package thirteenducks.cor.tools;
 
 /**
- * MapElement-Hilfsklasse
+ * Platziert neutrale Dörfer
  *
- * @deprecated
+ * @author Johannes
  */
-public class RandomMapBuilderMapElement {
+public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
-    private int tex;
-    private boolean collision;
-
-    public int getTex() {
-        return tex;
-    }
-
-    public void setTex(int i) {
-        tex = i;
-    }
-
-    public boolean isBlocked() {
-        return collision;
-    }
-
-    public void setBlocked(boolean collision) {
-        this.collision = collision;
+    @Override
+    public void performJob() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

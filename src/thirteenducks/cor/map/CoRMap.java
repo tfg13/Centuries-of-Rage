@@ -46,6 +46,8 @@ public class CoRMap implements Serializable {
     public String mapName; // Name der Map, Datei und Programmintern
     private int xSize;
     private int ySize;
+    private int playernumber;
+    int nextNetID = 1;
 
     public CoRMap(int x, int y, String name, CoRMapElement[][] levelOneMap) {
         // Initiiert eine neue Map
@@ -152,6 +154,25 @@ public class CoRMap implements Serializable {
     public CoRMapElement[][] getVisMap() {
         // Damit kommt man an den Inhalt der Map
         return visMap;
+    }
+
+    /**
+     * @return the playernumber
+     */
+    public int getPlayernumber() {
+	return playernumber;
+    }
+
+    /**
+     * @param playernumber the playernumber to set
+     */
+    public void setPlayernumber(int playernumber) {
+	this.playernumber = playernumber;
+    }
+
+    public int getNewNetID() {
+	nextNetID++;
+	return (nextNetID - 1);
     }
 }
 
