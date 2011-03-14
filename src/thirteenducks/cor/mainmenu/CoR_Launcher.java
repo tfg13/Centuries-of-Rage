@@ -138,8 +138,12 @@ public class CoR_Launcher extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_button2ActionPerformed
 
+    /**
+     * Beednen-Button
+     * @param evt
+     */
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
-        // TODO add your handling code here:
+        System.exit(0);
     }//GEN-LAST:event_button3ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
