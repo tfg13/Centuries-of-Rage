@@ -160,8 +160,10 @@ public class Path implements Pauseable, Serializable {
         startPos = newPath.get(0);
         targetPos = newPath.get(newPath.size() - 1);
         lastWayPoint = 0;
+        gLastPointIdx = 0;
         computePath(newPath);
         this.nextWayPointDist = path.get(1).getDistance();
+        gNextPointDist = nextWayPointDist;
         moveStartTime = System.currentTimeMillis();
     }
 
@@ -177,6 +179,7 @@ public class Path implements Pauseable, Serializable {
             if (lastWayPoint + 1 > path.size() - 1) {
                 // Automatisch zurückstellen, falls Überschreitung festgestellt.
                 lastWayPoint = path.size() - 2;
+                gLastPointIdx = lastWayPoint;
                 System.out.println("WARNING: Setting unit back on Path-Switch, probably causes Pfusch");
             }
         } catch (Exception ex) {
@@ -184,6 +187,7 @@ public class Path implements Pauseable, Serializable {
             ex.printStackTrace();
         }
         nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
+        gNextPointDist = nextWayPointDist;
     }
 
     /**
