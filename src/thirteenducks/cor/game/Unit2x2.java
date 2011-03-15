@@ -197,12 +197,13 @@ public class Unit2x2 extends Unit {
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         //Einheit gehört zu / Selektiert
+        int[] xy = path.calcExcactPosition(x,y);
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(x + GraphicsContent.OFFSET_2x2_X, y + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png0").getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x + GraphicsContent.OFFSET_2x2_X, y + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
         }
     }
 
