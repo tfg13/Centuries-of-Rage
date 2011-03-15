@@ -70,6 +70,14 @@ public class GraphicsContent extends BasicGame {
      */
     public static final int BASIC_FIELD_OFFSET_Y = 10;
     /**
+     * Wie viele Pixel der Zeichenursprung für ein 1x1 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     */
+    public static final int OFFSET_1x1_X = 3;
+    /**
+     * Wie viele Pixel der Zeichenursprung für ein 1x1 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     */
+    public static final int OFFSET_1x1_Y = 3;
+    /**
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
      */
     public static final int OFFSET_2x2_X = -5;
@@ -884,7 +892,7 @@ public class GraphicsContent extends BasicGame {
                             GraphicsImage tempImage = imgMap.get(ground);
 
                             if (tempImage != null) {
-                                g3.drawImage(tempImage.getImage(), x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                                g3.drawImage(tempImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
                             } else {
                                 System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
                             }
@@ -893,7 +901,7 @@ public class GraphicsContent extends BasicGame {
                                 GraphicsImage fixImage = imgMap.get(fix);
 
                                 if (fixImage != null) {
-                                    g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                                    g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
                                 } else {
                                     System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
                                 }
