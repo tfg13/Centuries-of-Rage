@@ -107,48 +107,6 @@ public class MapEditorGui extends javax.swing.JFrame {
         jSpinner2 = new javax.swing.JSpinner();
         jLabel26 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox();
-        jPanel7 = new javax.swing.JPanel();
-        jTabbedPane3 = new javax.swing.JTabbedPane();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jSpinner3 = new javax.swing.JSpinner();
-        jLabel10 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jLabel22 = new javax.swing.JLabel();
-        jTextField12 = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        jTextField13 = new javax.swing.JTextField();
-        jLabel24 = new javax.swing.JLabel();
-        jTextField14 = new javax.swing.JTextField();
-        jLabel25 = new javax.swing.JLabel();
-        jTextField15 = new javax.swing.JTextField();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        jSpinner4 = new javax.swing.JSpinner();
-        jLabel16 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jTextField10 = new javax.swing.JTextField();
-        jTextField11 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
         mapEditorMiniMap1 = new thirteenducks.cor.tools.mapeditor.MapEditorMiniMap();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -196,7 +154,7 @@ public class MapEditorGui extends javax.swing.JFrame {
         jLabel2.setText("CoR Level Editor (alpha) v0.6.1");
         jLabel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MAP", "COL", "UNIT" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MAP", "COL" }));
         jComboBox2.setMinimumSize(new java.awt.Dimension(100, 24));
         jComboBox2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -542,293 +500,6 @@ public class MapEditorGui extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Map/Col", jPanel6);
 
-        jTabbedPane3.setEnabled(false);
-
-        jPanel9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jPanel9MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jPanel9MouseExited(evt);
-            }
-        });
-
-        jLabel7.setText("Settings:");
-
-        jLabel8.setText("Texture:");
-
-        jTextField1.setText("Choose unit!");
-
-        jLabel9.setText("Player no:");
-
-        jLabel10.setText("Speed (F/s):");
-
-        jTextField2.setText("0.0");
-
-        jLabel11.setText("Max. HP :");
-
-        jTextField3.setText("0");
-
-        jLabel12.setText("Hitpoints:");
-
-        jTextField4.setText("0");
-
-        jButton1.setEnabled(false);
-        jButton1.setLabel("OK");
-
-        jLabel22.setText("Damage:");
-
-        jTextField12.setText("0");
-
-        jLabel23.setText("Cooldown:");
-
-        jTextField13.setText("0.0");
-
-        jLabel24.setText("Range:");
-
-        jTextField14.setText("0.0");
-
-        jLabel25.setText("Aggro-Range:");
-
-        jTextField15.setText("0.0");
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel7)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel9)
-                .addGap(60, 60, 60)
-                .addComponent(jSpinner3, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel10)
-                .addGap(44, 44, 44)
-                .addComponent(jTextField2, 0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel22))
-                .addGap(62, 62, 62)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
-                    .addComponent(jTextField4, 0, 0, Short.MAX_VALUE)))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel23)
-                    .addComponent(jLabel24)
-                    .addComponent(jLabel25))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextField14, 0, 0, Short.MAX_VALUE)
-                        .addComponent(jTextField13, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(111, Short.MAX_VALUE)
-                .addComponent(jButton1))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel22)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel24)
-                    .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25)
-                    .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(91, Short.MAX_VALUE))
-        );
-
-        jTabbedPane3.addTab("Units", jPanel9);
-
-        jPanel10.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jPanel10MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jPanel10MouseExited(evt);
-            }
-        });
-
-        jLabel13.setText("Settings:");
-
-        jLabel14.setText("Texture:");
-
-        jTextField5.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
-        jTextField5.setText("Choose Building!");
-
-        jLabel15.setText("Player no:");
-
-        jLabel16.setText("Max. HP :");
-
-        jTextField6.setText("0");
-
-        jLabel17.setText("Hitpoints:");
-
-        jTextField7.setText("0");
-
-        jLabel18.setText("Z1-Size:");
-
-        jTextField8.setText("0");
-
-        jLabel19.setText("Z2-Size:");
-
-        jTextField9.setText("0");
-
-        jLabel20.setText("OffsetX:");
-
-        jLabel21.setText("OffsetY:");
-
-        jTextField10.setText("0");
-
-        jTextField11.setText("0");
-
-        jButton2.setText("OK");
-        jButton2.setEnabled(false);
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel13)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jLabel15)
-                .addGap(60, 60, 60)
-                .addComponent(jSpinner4, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jLabel16)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jLabel21)
-                .addContainerGap())
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20))
-                .addGap(59, 59, 59)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(jTextField7, 0, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(111, Short.MAX_VALUE)
-                .addComponent(jButton2))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel15)
-                    .addComponent(jSpinner4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addContainerGap(116, Short.MAX_VALUE))
-        );
-
-        jTabbedPane3.addTab("Buildings:", jPanel10);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Units/Build.", jPanel7);
-
         mapEditorMiniMap1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         mapEditorMiniMap1.setText("mapEditorMiniMap1");
 
@@ -992,7 +663,7 @@ public class MapEditorGui extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(mapEditorMiniMap1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                     .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1019,30 +690,6 @@ public class MapEditorGui extends javax.swing.JFrame {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox3MouseEntered
-        setTempStatus("select a filling-mode");
-    }//GEN-LAST:event_jComboBox3MouseEntered
-
-    private void jComboBox3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox3MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jComboBox3MouseExited
-
-    private void jSpinner1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner1MouseEntered
-        setTempStatus("select X-size of cursor");
-    }//GEN-LAST:event_jSpinner1MouseEntered
-
-    private void jSpinner1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner1MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jSpinner1MouseExited
-
-    private void jSpinner2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner2MouseEntered
-        setTempStatus("select Y-size of cursor");
-    }//GEN-LAST:event_jSpinner2MouseEntered
-
-    private void jSpinner2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner2MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jSpinner2MouseExited
-
     private void jComboBox2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox2MouseEntered
         setTempStatus("select edit-mode: (Map, Collision, Unit/Building modifier)");
     }//GEN-LAST:event_jComboBox2MouseEntered
@@ -1050,102 +697,6 @@ public class MapEditorGui extends javax.swing.JFrame {
     private void jComboBox2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox2MouseExited
         deleteTempStatus();
     }//GEN-LAST:event_jComboBox2MouseExited
-
-    private void jComboBox1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseEntered
-        setTempStatus("select mapping-mode: ground-textures, objects, units, resources, buildings");
-    }//GEN-LAST:event_jComboBox1MouseEntered
-
-    private void jComboBox1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jComboBox1MouseExited
-
-    private void groundPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groundPanelMouseEntered
-        setTempStatus("click to select texture, shift+click to select multiple (for mixer)");
-    }//GEN-LAST:event_groundPanelMouseEntered
-
-    private void groundPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groundPanelMouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_groundPanelMouseExited
-
-    private void fixPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fixPanelMouseEntered
-        setTempStatus("click to select a texture");
-    }//GEN-LAST:event_fixPanelMouseEntered
-
-    private void fixPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fixPanelMouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_fixPanelMouseExited
-
-    private void jTabbedPane1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseEntered
-        setTempStatus("click to select a unit");
-    }//GEN-LAST:event_jTabbedPane1MouseEntered
-
-    private void jTabbedPane1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jTabbedPane1MouseExited
-
-    private void jCheckBox1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseEntered
-        setTempStatus("set team for new unit?");
-    }//GEN-LAST:event_jCheckBox1MouseEntered
-
-    private void jCheckBox1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jCheckBox1MouseExited
-
-    private void jSpinner5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner5MouseEntered
-        setTempStatus("team for new units");
-    }//GEN-LAST:event_jSpinner5MouseEntered
-
-    private void jSpinner5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner5MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jSpinner5MouseExited
-
-    private void jScrollPane5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseEntered
-        setTempStatus("click to select a resource");
-    }//GEN-LAST:event_jScrollPane5MouseEntered
-
-    private void jScrollPane5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jScrollPane5MouseExited
-
-    private void buildPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buildPanelMouseEntered
-        setTempStatus("click to select a building");
-    }//GEN-LAST:event_buildPanelMouseEntered
-
-    private void buildPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buildPanelMouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_buildPanelMouseExited
-
-    private void jCheckBox2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MouseEntered
-        setTempStatus("set team for new building?");
-    }//GEN-LAST:event_jCheckBox2MouseEntered
-
-    private void jCheckBox2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jCheckBox2MouseExited
-
-    private void jSpinner6MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner6MouseEntered
-        setTempStatus("team for new buildings");
-    }//GEN-LAST:event_jSpinner6MouseEntered
-
-    private void jSpinner6MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner6MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jSpinner6MouseExited
-
-    private void jPanel9MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel9MouseEntered
-        setTempStatus("CoR will ignore most of these parameters, but team changes are ok");
-    }//GEN-LAST:event_jPanel9MouseEntered
-
-    private void jPanel9MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel9MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jPanel9MouseExited
-
-    private void jPanel10MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseEntered
-        setTempStatus("CoR will ignore most of these parameters, but team changes are ok");
-    }//GEN-LAST:event_jPanel10MouseEntered
-
-    private void jPanel10MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel10MouseExited
-        deleteTempStatus();
-    }//GEN-LAST:event_jPanel10MouseExited
 
     private void jMenuItem1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseEntered
         setTempStatus("create a new map");
@@ -1211,6 +762,110 @@ public class MapEditorGui extends javax.swing.JFrame {
         deleteTempStatus();
     }//GEN-LAST:event_jMenuItem5MouseExited
 
+    private void jSpinner2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner2MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jSpinner2MouseExited
+
+    private void jSpinner2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner2MouseEntered
+        setTempStatus("select Y-size of cursor");
+}//GEN-LAST:event_jSpinner2MouseEntered
+
+    private void jSpinner1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner1MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jSpinner1MouseExited
+
+    private void jSpinner1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner1MouseEntered
+        setTempStatus("select X-size of cursor");
+}//GEN-LAST:event_jSpinner1MouseEntered
+
+    private void jComboBox3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox3MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jComboBox3MouseExited
+
+    private void jComboBox3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox3MouseEntered
+        setTempStatus("select a filling-mode");
+}//GEN-LAST:event_jComboBox3MouseEntered
+
+    private void jComboBox1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jComboBox1MouseExited
+
+    private void jComboBox1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseEntered
+        setTempStatus("select mapping-mode: ground-textures, objects, units, resources, buildings");
+}//GEN-LAST:event_jComboBox1MouseEntered
+
+    private void jTabbedPane1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jTabbedPane1MouseExited
+
+    private void jTabbedPane1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseEntered
+        setTempStatus("click to select a unit");
+}//GEN-LAST:event_jTabbedPane1MouseEntered
+
+    private void jSpinner6MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner6MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jSpinner6MouseExited
+
+    private void jSpinner6MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner6MouseEntered
+        setTempStatus("team for new buildings");
+}//GEN-LAST:event_jSpinner6MouseEntered
+
+    private void jCheckBox2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jCheckBox2MouseExited
+
+    private void jCheckBox2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MouseEntered
+        setTempStatus("set team for new building?");
+}//GEN-LAST:event_jCheckBox2MouseEntered
+
+    private void buildPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buildPanelMouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_buildPanelMouseExited
+
+    private void buildPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buildPanelMouseEntered
+        setTempStatus("click to select a building");
+}//GEN-LAST:event_buildPanelMouseEntered
+
+    private void jScrollPane5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jScrollPane5MouseExited
+
+    private void jScrollPane5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseEntered
+        setTempStatus("click to select a resource");
+}//GEN-LAST:event_jScrollPane5MouseEntered
+
+    private void jSpinner5MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner5MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jSpinner5MouseExited
+
+    private void jSpinner5MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner5MouseEntered
+        setTempStatus("team for new units");
+}//GEN-LAST:event_jSpinner5MouseEntered
+
+    private void jCheckBox1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_jCheckBox1MouseExited
+
+    private void jCheckBox1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseEntered
+        setTempStatus("set team for new unit?");
+}//GEN-LAST:event_jCheckBox1MouseEntered
+
+    private void fixPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fixPanelMouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_fixPanelMouseExited
+
+    private void fixPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fixPanelMouseEntered
+        setTempStatus("click to select a texture");
+}//GEN-LAST:event_fixPanelMouseEntered
+
+    private void groundPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groundPanelMouseExited
+        deleteTempStatus();
+}//GEN-LAST:event_groundPanelMouseExited
+
+    private void groundPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_groundPanelMouseEntered
+        setTempStatus("click to select texture, shift+click to select multiple (for mixer)");
+}//GEN-LAST:event_groundPanelMouseEntered
+
 
     /**
      * @param args the command line arguments
@@ -1234,9 +889,7 @@ public class MapEditorGui extends javax.swing.JFrame {
     protected thirteenducks.cor.graphics.GraphicsComponent content;
     protected thirteenducks.cor.graphics.GraphicsPanel creepPanel;
     protected thirteenducks.cor.graphics.GraphicsPanel fixPanel;
-    protected thirteenducks.cor.graphics.GraphicsPanel groundPanel;
-    javax.swing.JButton jButton1;
-    javax.swing.JButton jButton2;
+    public thirteenducks.cor.graphics.GraphicsPanel groundPanel;
     javax.swing.JCheckBox jCheckBox1;
     javax.swing.JCheckBox jCheckBox2;
     protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
@@ -1252,31 +905,12 @@ public class MapEditorGui extends javax.swing.JFrame {
     javax.swing.JComboBox jComboBox3;
     public javax.swing.JComboBox jComboBox4;
     private javax.swing.JLabel jLabel1;
-    javax.swing.JLabel jLabel10;
-    javax.swing.JLabel jLabel11;
-    javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    javax.swing.JLabel jLabel15;
-    javax.swing.JLabel jLabel16;
-    javax.swing.JLabel jLabel17;
-    javax.swing.JLabel jLabel18;
-    javax.swing.JLabel jLabel19;
     javax.swing.JLabel jLabel2;
-    javax.swing.JLabel jLabel20;
-    javax.swing.JLabel jLabel21;
-    javax.swing.JLabel jLabel22;
-    javax.swing.JLabel jLabel23;
-    javax.swing.JLabel jLabel24;
-    javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    javax.swing.JLabel jLabel9;
     protected javax.swing.JMenu jMenu1;
     protected javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -1292,15 +926,12 @@ public class MapEditorGui extends javax.swing.JFrame {
     javax.swing.JMenuItem jMenuItem7;
     javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
-    javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    javax.swing.JPanel jPanel9;
     protected javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1310,28 +941,10 @@ public class MapEditorGui extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     javax.swing.JSpinner jSpinner1;
     javax.swing.JSpinner jSpinner2;
-    javax.swing.JSpinner jSpinner3;
-    javax.swing.JSpinner jSpinner4;
     javax.swing.JSpinner jSpinner5;
     javax.swing.JSpinner jSpinner6;
     protected javax.swing.JTabbedPane jTabbedPane1;
     javax.swing.JTabbedPane jTabbedPane2;
-    javax.swing.JTabbedPane jTabbedPane3;
-    javax.swing.JTextField jTextField1;
-    javax.swing.JTextField jTextField10;
-    javax.swing.JTextField jTextField11;
-    javax.swing.JTextField jTextField12;
-    javax.swing.JTextField jTextField13;
-    javax.swing.JTextField jTextField14;
-    javax.swing.JTextField jTextField15;
-    javax.swing.JTextField jTextField2;
-    javax.swing.JTextField jTextField3;
-    javax.swing.JTextField jTextField4;
-    javax.swing.JTextField jTextField5;
-    javax.swing.JTextField jTextField6;
-    javax.swing.JTextField jTextField7;
-    javax.swing.JTextField jTextField8;
-    javax.swing.JTextField jTextField9;
     public thirteenducks.cor.tools.mapeditor.MapEditorMiniMap mapEditorMiniMap1;
     protected thirteenducks.cor.graphics.GraphicsPanel miscPanel;
     // End of variables declaration//GEN-END:variables

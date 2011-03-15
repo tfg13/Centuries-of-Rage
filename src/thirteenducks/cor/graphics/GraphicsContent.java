@@ -85,9 +85,7 @@ public class GraphicsContent extends BasicGame {
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
      */
     public static final int OFFSET_2x2_Y = -17;
-
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
-
     public GraphicsImage colModeImage;
     public int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
     CoRMapElement[][] visMap; // Die angezeigte Map
@@ -896,19 +894,38 @@ public class GraphicsContent extends BasicGame {
                             } else {
                                 System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
                             }
-                            if (fix != null) {
-                                // Bild suchen und einfügen
-                                GraphicsImage fixImage = imgMap.get(fix);
+                        }
+                    }
+                }
 
-                                if (fixImage != null) {
-                                    g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
-                                } else {
-                                    System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
-                                }
+                for (int x = -2; x < sizeX && x < (viewX + 1); x += 1) {
+                    for (int y = -2; y < sizeY && y < (viewY + 1); y += 1) {
+                        if ((x + y) % 2 == 1) {
+                            continue;
+                        }
+                        // X und Y durchlaufen, wenn ein Bild da ist, dann einbauen
+                        //              System.out.println("Searching for " + x + "," + y);
+                        String ground = null;
+                        String fix = null;
+                        try {
+                            ground = visMap[x + positionX][y + positionY].getProperty("ground_tex");
+                            fix = visMap[x + positionX][y + positionY].getProperty("fix_tex");
+                        } catch (Exception ex) {
+                            // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
+                        }
+                        if (fix != null) {
+                            // Bild suchen und einfügen
+                            GraphicsImage fixImage = imgMap.get(fix);
 
+                            if (fixImage != null) {
+                                g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
+                            } else {
+                                System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
                             }
 
                         }
+
+
                         //  System.out.println(x + " " + y);
                     }
                 }
@@ -1005,7 +1022,7 @@ public class GraphicsContent extends BasicGame {
         // Rendert die rote Kollisionsfarbe
         for (int x = 0; x < sizeX && x < viewX; x = x + 4) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X  + 5, (int) (y * FIELD_HALF_Y) + 10);
+                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X + 5, (int) (y * FIELD_HALF_Y) + 10);
             }
         }
         for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 4) {
