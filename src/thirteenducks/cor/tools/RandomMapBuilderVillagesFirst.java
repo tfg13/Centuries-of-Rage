@@ -90,7 +90,7 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
 	    int x = 0;
 	    int y = 0;
-	    final int rand = 15;
+	    final int rand = 30;
 
 	    if (randompos + umfang * i / spielerzahl >= 2 * mapX + 2 * mapY - 8 * rand) {
 		randompos -= 2 * mapX + 2 * mapY - 8 * rand;
@@ -100,13 +100,13 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 		x = (int) randompos + umfang * i / spielerzahl + rand;
 		y = rand;
 	    } else if (randompos + umfang * i / spielerzahl < mapX + mapY - 4 * rand) {
-		x = mapX - 2 * rand + 3;
+		x = mapX - 2 * rand + 8;
 		y = (int) randompos + umfang * i / spielerzahl - mapX + 3 * rand;// + 12;
 	    } else if (randompos + umfang * i / spielerzahl < 2 * mapX + mapY - 6 * rand) {
 		x = (int) (mapX - rand - 30 - (randompos + umfang * i / spielerzahl - mapX - mapY + 4 * rand));
 		y = mapY - rand + 3;
 	    } else if (randompos + umfang * i / spielerzahl < 2 * mapX + 2 * mapY - 8 * rand) {
-		x = 3;
+		x = 8;
 		y = (int) (mapY - rand - (randompos + umfang * i / spielerzahl - 2 * mapX - mapY + 6 * rand));
 	    } else {
 		System.out.println("Panik");
