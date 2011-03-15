@@ -475,16 +475,8 @@ public class GraphicsComponent extends JLabel {
     }
 
     public void setVisibleArea(int vX, int vY) {
-        //Setzt die Größe des sichtbaren Bereichs
-        double hudxxrelation = (realPixX - (realPixY / 2.5)) / realPixX;
-        if (byPass) {
-            viewX = (int) (vX * hudxxrelation); // Hud hat feste Größe
-        } else {
-            viewX = vX;
-        }
         viewY = vY;
-        hudX = (int) (realPixX * hudxxrelation) + 1; // Erster Pixel vom Hud.
-        hudSizeX = realPixX - hudX + 1;
+        viewX = vX;
         if (modi != 3) { // Im echten Rendern refreshed die Mainloop
             repaint();
         }
