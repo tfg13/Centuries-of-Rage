@@ -54,6 +54,7 @@ public class RandomMapBuilder {
 	RMBJob = new ArrayList<RandomMapBuilderJob>();
 	RMBJob.add(new RandomMapBuilderTerrainFormer());
 	RMBJob.add(new RandomMapBuilderVillagesFirst());
+	RMBJob.add(new RandomMapBuilderVillagesNeutral());
 
 	long zstVorher = System.currentTimeMillis(); // Zeit stoppen
 
@@ -78,6 +79,8 @@ public class RandomMapBuilder {
 	RMBJob.get(0).performJob(); //TerrainFormer setzt Startdörfer
 
 	RMBJob.get(1).performJob(); //VillagesFirst setzt Startdörfer
+
+	RMBJob.get(2).performJob(); //VillagesFirst setzt neutrale Dörfer
 
 	RandomRogMap.setMapProperty("NEXTNETID", RandomRogMap.getNewNetID());
 	saveMap(RandomRogMap);
