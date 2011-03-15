@@ -1629,7 +1629,7 @@ public final class MapEditor {
         rmegui.content.updateBuildings(buildingList);
         System.out.println("[RLE] Loading map done. Displaying...");
         rmegui.content.setPosition(0, 0);
-        rmegui.content.setVisibleArea(34, 42);
+        rmegui.content.setVisibleArea(68, 84);
         rmegui.mapEditorMiniMap1.imgMap = rmegui.content.imgMap;
         rmegui.mapEditorMiniMap1.content = rmegui.content;
         rmegui.mapEditorMiniMap1.map = theMap;
