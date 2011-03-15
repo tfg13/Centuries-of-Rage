@@ -149,10 +149,10 @@ public class GraphicsComponent extends JLabel {
                     //Am oberen Rand entlanggehen, linie nach Rechts unten zeichnen
                     int startX = i;
                     int startY = 0;
-                    g2.drawLine((startX * 40) + 5, startY * 30, (sizeX * 40) + 5, ((sizeX - startX)) * 30);
+                    g2.drawLine((startX * 20) + 5, startY * 15, (sizeX * 20) + 5, ((sizeX - startX)) * 15);
 
                     //Am oberen Rand entlanggehen, linie nach Links unten zeichnen
-                    g2.drawLine((startX * 40) - 10, startY * 30, -10, ((startX)) * 30);
+                    g2.drawLine((startX * 20) - 10, startY * 15, -10, ((startX)) * 15);
                 }
 
                 for (int i = 0; i < sizeY; i++) {
@@ -160,7 +160,7 @@ public class GraphicsComponent extends JLabel {
                     int startX = 0;
                     int startY = i;
 
-                    g2.drawLine(startX * 40, (startY * 30) + 25, (sizeY - i) * 40, (sizeY * 30) + 25);
+                    g2.drawLine(startX * 20, (startY * 15) + 25, (sizeY - i) * 20, (sizeY * 15) + 25);
                 }
             }
             if (renderBuildings) {
@@ -214,7 +214,7 @@ public class GraphicsComponent extends JLabel {
                         continue;
                     }
                     if (curArray[x][y]) {
-                        g2.drawImage(imgMap.get("cur1").getImage(), (framePos.width + x) * 20, (framePos.height + y) * 15, null);
+                        g2.drawImage(imgMap.get("cur1").getImage(), (framePos.width + x) * 10, (int) ((framePos.height + y) * 7.5), null);
                     }
                 }
             }
@@ -222,7 +222,7 @@ public class GraphicsComponent extends JLabel {
         } else {
             // Pic-Cursor
             // Einfach Bild an die gerasterte Cursorposition rendern.
-            g2.drawImage(renderPic.getImage(), framePos.width * 20, framePos.height * 15, null);
+            g2.drawImage(renderPic.getImage(), framePos.width * 10, (int) (framePos.height * 7.5), null);
         }
     }
 
@@ -239,7 +239,7 @@ public class GraphicsComponent extends JLabel {
                 // Bild da?
                 if (tempImage != null) {
                     // Ok, zeichnen
-                    g2.drawImage(tempImage.getImage(), (tempB.getMainPosition().getX() - tempB.getGraphicsData().offsetX - positionX) * 20, (tempB.getMainPosition().getY() - tempB.getGraphicsData().offsetY - positionY) * 15, null);
+                    g2.drawImage(tempImage.getImage(), (tempB.getMainPosition().getX() - tempB.getGraphicsData().offsetX - positionX) * 10, (int) ((tempB.getMainPosition().getY() - tempB.getGraphicsData().offsetY - positionY) * 7.5), null);
                 } else {
                     System.out.println("[RogGraphics][ERROR]: Image \"" + tex + "\" not found!");
                 }
@@ -271,7 +271,7 @@ public class GraphicsComponent extends JLabel {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        g2.drawImage(colModeImage.getImage(), x * 20, y * 15, null);
+                        g2.drawImage(colModeImage.getImage(), x * 10, (int) (y * 7.5), null);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -284,7 +284,7 @@ public class GraphicsComponent extends JLabel {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        g2.drawImage(colModeImage.getImage(), x * 20, y * 15, null);
+                        g2.drawImage(colModeImage.getImage(), x * 10, (int) (y * 7.5), null);
                     }
                 } catch (Exception ex) {
                 }
@@ -303,7 +303,7 @@ public class GraphicsComponent extends JLabel {
                     CoRImage tempImage= imgMap.get(tex);
                     if (tempImage != null) {
                         // Einheit zeichnen
-                        g2.drawImage(tempImage.getImage(), (unit.getMainPosition().getX() - positionX) * 20, (unit.getMainPosition().getY() - positionY) * 15, null);
+                        g2.drawImage(tempImage.getImage(), (unit.getMainPosition().getX() - positionX) * 10, (int) ((unit.getMainPosition().getY() - positionY) * 7.5), null);
 
                     } else {
                         System.out.println("[RogGraphics][ERROR]: Image \"" + tex + "\" not found!");
@@ -339,7 +339,7 @@ public class GraphicsComponent extends JLabel {
                     }
 
                     if (tempImage != null) {
-                        g2.drawImage(tempImage.getImage(), x * 20, y * 15, null);
+                        g2.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5), null);
                     } else {
                         System.out.println("[RME][ERROR]: Image \"" + tex + "\" not found!");
                     }
@@ -373,7 +373,7 @@ public class GraphicsComponent extends JLabel {
                     }
 
                     if (tempImage != null) {
-                        g2.drawImage(tempImage.getImage(), x * 20, y * 15, null);
+                        g2.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5), null);
                     } else {
                         System.out.println("[RME][ERROR]: Image \"" + tex + "\" not found!");
                     }
@@ -389,7 +389,7 @@ public class GraphicsComponent extends JLabel {
             return new Dimension(defaultimage.getImage().getWidth(), defaultimage.getImage().getHeight()); // Größe vom Bild
         } else if (modi == 2) {
             // return new Dimension(12000,12000); // Nur ein TEST
-            return new Dimension(sizeX * 20, (sizeY * 15) + 10); // Echtes rendern
+            return new Dimension(sizeX * 10, (int) ((sizeY * 7.5) + 10)); // Echtes rendern
         } else { // Modi == 0;
             return new Dimension(100, 100); // Einfach irgendwas
         }
@@ -599,8 +599,8 @@ public class GraphicsComponent extends JLabel {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 20;
-        int coordY = selY / 15;
+        int coordX = selX / 10;
+        int coordY = (int) (selY / 7.5);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
@@ -620,8 +620,8 @@ public class GraphicsComponent extends JLabel {
         selX = selX - 10;
         selY = selY - 15;
         // Grundposition bestimmen
-        int coordX = selX / 20;
-        int coordY = selY / 15;
+        int coordX = selX / 10;
+        int coordY = (int) (selY / 7.5);
         // Scrollposition addieren
         boolean xg = (coordX % 2 == 0);
         boolean yg = (coordY % 2 == 0);
@@ -636,8 +636,8 @@ public class GraphicsComponent extends JLabel {
         // Versatz beachten
         x = x - 10;
         y = y - 15;
-        int coordX = x / 20;
-        int coordY = y / 15;
+        int coordX = x / 10;
+        int coordY = (int) (y / 7.5);
         // Scrollposition addieren
         coordX = coordX + positionX;
         coordY = coordY + positionY;
@@ -744,22 +744,6 @@ public class GraphicsComponent extends JLabel {
         if (modi != 3) {
             repaint();
         }
-    }
-
-    public void calcScaledBuildingLocations(double scalefactorX, double scalefactorY) {
-        // Alle Bilder gemäß des Scale-Faktors skalieren und einfügen
-        // Scalefacor = MiniMap-Auflösung / Volle Hudgroundauflösung
-        // Größe der Bilder errechnen:
-        int tarX = (int) (40 * scalefactorX);
-        int tarY = (int) (40 * scalefactorY);
-        // Bilder anlegen & gleich reinrendern
-        BufferedImage nimg = cgc.createCompatibleImage(tarX + 1, tarY + 1, Transparency.TRANSLUCENT);
-        Graphics2D g = nimg.createGraphics();
-        g.drawImage(coloredImgMap.get("img/game/ground.png").getImage(), 0, 0, nimg.getWidth(), nimg.getHeight(), 0, 0, 40, 40, null);
-        CoRImage timg = new CoRImage(nimg);
-        timg.setImageName("img/game/ground.png");
-        coloredImgMap.put("img/game/ground.png", timg);
-        // Fertig
     }
 
     protected void resortAllList() {
