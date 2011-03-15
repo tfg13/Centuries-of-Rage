@@ -199,10 +199,10 @@ public class Unit2x2 extends Unit {
         //Einheit gehört zu / Selektiert
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(x, y);
+            imgMap.get("img/game/sel_s2.png0").getImage().draw(x + GraphicsContent.OFFSET_2x2_X, y + GraphicsContent.OFFSET_2x2_Y);
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x, y);
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(x + GraphicsContent.OFFSET_2x2_X, y + GraphicsContent.OFFSET_2x2_Y);
         }
     }
 
