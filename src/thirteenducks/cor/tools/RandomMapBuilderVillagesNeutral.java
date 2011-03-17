@@ -54,19 +54,19 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
 	//zufällige Dorfpositionen
 	for (int i = 0; i < dorfzahl; i++) {
-	    double RndPunktX = Math.random() * (maxX - minX) / 2;
+	    double RndPunktX = ((Math.random() * (maxX - minX)) + minX) / 2;
 	    int RndPunktXi = (int) RndPunktX;
-	    double RndPunktY = Math.random() * (maxY - minY) / 2;
+	    double RndPunktY = ((Math.random() * (maxY - minY)) + minY)/ 2;
 	    int RndPunktYi = (int) RndPunktY;
 	    Position alpha = new Position(RndPunktXi * 2, RndPunktYi * 2);
 	    wippos.add(alpha);
 	}
 
 	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 40; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
 		double mindist = 999999; // kleinste gefundene Distanz
-		Position nextdorf; // nächstes Dorf
+		Position nextdorf = new Position(-1, -1); // nächstes Dorf
 		for (int k = 0; k < wippos.size(); k++) {
 		    //distanz j und k!=j
 		    if (j == k) {
@@ -80,14 +80,44 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 		}
 		// Distanz zu Startdörfern
 		for (int l = 0; l < RandomMapBuilder.RandomRogMap.getPlayernumber(); l++) {
-		    double dist = wippos.get(l).getDistance(buildingList.get(l).getMainPosition()); //Distanz zwischen den 2 Dörfern
+		    double dist = wippos.get(j).getDistance(buildingList.get(l).getMainPosition()); //Distanz zwischen den 2 Dörfern
 		    if (dist < mindist) {
 			mindist = dist;
-			nextdorf = wippos.get(l);
+			nextdorf = buildingList.get(l).getMainPosition();
 		    }
 		}
 		// entfernen von nächstem Dorf
+		Position vector = new Position(wippos.get(j).getX() - nextdorf.getX(), wippos.get(j).getY() - nextdorf.getY());
+		Position newvec = new Position(0, 0);
+
+		if (vector.getX() > 0) {
+		    newvec.setX(1);
+		} else if (vector.getX() < 0) {
+		    newvec.setX(-1);
+		} else {
+		    newvec.setX(0);
+		}
+		if (vector.getY() > 0) {
+		    newvec.setY(1);
+		} else if (vector.getY() < 0) {
+		    newvec.setY(-1);
+		} else {
+		    newvec.setY(0);
+		}
+
+		if (newvec.getX() == 0 || newvec.getY() == 0) {
+		    newvec.setX(newvec.getX() * 2);
+		    newvec.setY(newvec.getY() * 2);
+		}
 		
+		wippos.get(j).setX(wippos.get(j).getX() + newvec.getX());
+		wippos.get(j).setY(wippos.get(j).getY() + newvec.getY());
+
+		// überprüfen ob gültig
+		if (wippos.get(j).getX() < minX || wippos.get(j).getX() > maxX || wippos.get(j).getY() < minY || wippos.get(j).getY() > maxY) {
+		    wippos.get(j).setX(wippos.get(j).getX() - newvec.getX());
+		    wippos.get(j).setY(wippos.get(j).getY() - newvec.getY());
+		}
 	    }
 	}
 

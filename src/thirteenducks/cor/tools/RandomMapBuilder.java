@@ -80,7 +80,12 @@ public class RandomMapBuilder {
 
 	RMBJob.get(1).performJob(); //VillagesFirst setzt Startdörfer
 
+	long zstMitte1 = System.currentTimeMillis();
+
 	RMBJob.get(2).performJob(); //VillagesFirst setzt neutrale Dörfer
+
+	long zstMitte2 = System.currentTimeMillis();
+	System.out.println("Dauer neutrale Dörfer setzen: " + (zstMitte2 - zstMitte1) + " ms");
 
 	RandomRogMap.setMapProperty("NEXTNETID", RandomRogMap.getNewNetID());
 	saveMap(RandomRogMap);
