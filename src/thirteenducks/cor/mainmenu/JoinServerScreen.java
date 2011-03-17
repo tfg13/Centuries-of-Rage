@@ -85,7 +85,7 @@ public class JoinServerScreen extends Container {
         super.addComponent(textBox);
 
         // Join-Button:
-        super.addComponent(new ImageButton(mainMenu, 47, 50, 10, 8, "img/mainmenu/buttonnew.png", "Join") {
+        super.addComponent(new ImageButton(mainMenu, 47, 50, 13, 6, "img/mainmenu/buttonnew.png", "Join") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
