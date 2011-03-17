@@ -627,7 +627,7 @@ public class MapIO {
                     } else {
                         try {
                             BufferedImage field = imgMap.get(map.getElementProperty(x, y, "ground_tex"));
-                            int col = field.getRGB(30, 30);
+                            int col = field.getRGB(15, 15);
                             g3.setColor(new Color(col));
                             g3.fillRect(x * 2, y * 2, 4, 4);
                         } catch (Exception ex) {
