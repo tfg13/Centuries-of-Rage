@@ -266,10 +266,11 @@ public class Path implements Pauseable, Serializable {
                         // Fertig, Bewegung stoppen
                         caster2.setMainPosition(targetPos);
                         targetPos = null;
+                        System.out.println("Stiop");
                         path = null;
                         rgi.netmap.setCollision(caster2.getMainPosition(), collision.occupied);
                         rgi.netmap.setUnitRef(caster2.getMainPosition(), caster2, caster2.getPlayerId());
-                        caster2.attackManager.moveStopped();
+                        //caster2.attackManager.moveStopped();
                         moving = false;
                         return;
                     }
