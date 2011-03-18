@@ -785,7 +785,10 @@ public class CoRInput implements Pauseable {
             InteractableGameElement elem = elems.get(i);
             if (elem.selectable() && elem.isSelectableByPlayer(myPlayer)) {
                 if (elem.isMultiSelectable()) {
-                    containsMulti = true;
+                    // Das ist ein Multi, ok. Nur eines Anwählen!
+                    elems.clear();
+                    elems.add(elem);
+                    break;
                 }
             } else {
                 // Rauswerfen, das können wir nicht anklicken
