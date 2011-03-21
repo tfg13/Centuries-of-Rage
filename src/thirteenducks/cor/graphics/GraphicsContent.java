@@ -869,18 +869,16 @@ public class GraphicsContent extends BasicGame {
                 g3.setColor(Color.white);
                 g3.fillRect(0, 0, renderBackground.getWidth(), renderBackground.getHeight());
 
-                for (int x = -2; x < sizeX && x < (viewX + 1); x += 1) {
-                    for (int y = -2; y < sizeY && y < (viewY + 1); y += 1) {
+                for (int x = 0; x < sizeX && x < viewX; x += 1) {
+                    for (int y = 0; y < sizeY && y < viewY; y += 1) {
                         if ((x + y) % 2 == 1) {
                             continue;
                         }
                         // X und Y durchlaufen, wenn ein Bild da ist, dann einbauen
                         //              System.out.println("Searching for " + x + "," + y);
                         String ground = null;
-                        String fix = null;
                         try {
                             ground = visMap[x + positionX][y + positionY].getProperty("ground_tex");
-                            fix = visMap[x + positionX][y + positionY].getProperty("fix_tex");
                         } catch (Exception ex) {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                         }
@@ -903,12 +901,8 @@ public class GraphicsContent extends BasicGame {
                         if ((x + y) % 2 == 1) {
                             continue;
                         }
-                        // X und Y durchlaufen, wenn ein Bild da ist, dann einbauen
-                        //              System.out.println("Searching for " + x + "," + y);
-                        String ground = null;
                         String fix = null;
                         try {
-                            ground = visMap[x + positionX][y + positionY].getProperty("ground_tex");
                             fix = visMap[x + positionX][y + positionY].getProperty("fix_tex");
                         } catch (Exception ex) {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
