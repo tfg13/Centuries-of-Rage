@@ -45,6 +45,10 @@ public class TextBox extends Component {
      * Der Text der Textbox
      */
     private String text;
+    /**
+     * Gibt an, ob die Textbox aktiv ist
+     */
+    private boolean active;
 
     /**
      * Konstruktor
@@ -55,18 +59,22 @@ public class TextBox extends Component {
     public TextBox(MainMenu mainMenuReference, int x, int y) {
         super(mainMenuReference, x, y, 30, 7);
         text = "";
+        active = false;
     }
 
     @Override
     public void render(Graphics g) {
-
         // Kasten mit Hintergrundfarbe füllen:
-        g.setColor(Color.gray);
+        if (this.active) {
+            g.setColor(Color.lightGray);
+        } else {
+            g.setColor(Color.gray);
+        }
         g.fillRect(getX1(), getY1(), this.getWidth(), this.getHeight());
 
-        g.setColor(Color.black);
 
         // Rahmen zeichnen:
+        g.setColor(Color.black);
         g.drawLine(getX1(), getY1(), getX2(), getY1());
         g.drawLine(getX2(), getY1(), getX2(), getY2());
         g.drawLine(getX1(), getY2(), getX2(), getY2());
@@ -77,15 +85,36 @@ public class TextBox extends Component {
     }
 
     @Override
+    /**
+     * Wenn die Textbox gerade aktiv ist wird der Tastendruck verarbeitet
+     */
     public void keyPressed(int key, char c) {
-        // Bei return(14) das letzte Zeichen entfernen, ansonsten den entsprechenden Buchstaben dranhängen:
-        if (key != 14) {
-            setText(getText() + c);
-        } else {
-            if (getText().length() > 0) {
-                setText(getText().substring(0, getText().length() - 1));
+        if (active) {
+            // Bei return(14) das letzte Zeichen entfernen, ansonsten den entsprechenden Buchstaben dranhängen:
+            if (key != 14) {
+                setText(getText() + c);
+            } else {
+                if (getText().length() > 0) {
+                    setText(getText().substring(0, getText().length() - 1));
+                }
             }
         }
+    }
+
+    @Override
+    /**
+     * Wenn die TextBox angeklickt wird ist sie aktiv
+     */
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+        active = true;
+    }
+
+    @Override
+    /**
+     * Wenn die MAus irgendwo hinklickt wird die TextBox deaktiviert
+     */
+    public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
+        active = false;
     }
 
     /**
