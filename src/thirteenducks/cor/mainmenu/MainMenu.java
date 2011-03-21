@@ -25,9 +25,11 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.net.InetAddress;
 import thirteenducks.cor.mainmenu.components.*;
 import thirteenducks.cor.mainmenu.components.AnimatedImage;
 import java.util.HashMap;
+import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -144,7 +146,7 @@ public class MainMenu extends AppGameContainer {
         menus.put("startserverscreen", startServerScreen);
         g.addComponent(startServerScreen);
         startServerScreen.fadeOut();
-        
+
 
     }
 
@@ -180,5 +182,24 @@ public class MainMenu extends AppGameContainer {
      */
     public int getResY() {
         return resY;
+    }
+
+    /**
+     * Startet einen Server
+     *
+     * @param debug - soll der Server im Debug-Modus gestartet werden?
+     * @param map   - der Name der Map, z.B. "/map/main/Randommap.map"
+     */
+    public void startServer(boolean debug, String map) {
+        System.out.println("Starting Server with debug=" + debug + " and map=" + map);
+    }
+
+    /**
+     * Tritt einer Partie bei
+     */
+    public void joinServer() {
+        {
+            System.out.println("Joining Server...");
+        }
     }
 }

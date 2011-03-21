@@ -25,9 +25,12 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.net.InetAddress;
+import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.mainmenu.components.CheckBox;
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.ImageButton;
+import thirteenducks.cor.mainmenu.components.TextBox;
 import thirteenducks.cor.mainmenu.components.TiledImage;
 
 /**
@@ -38,6 +41,16 @@ import thirteenducks.cor.mainmenu.components.TiledImage;
 public class StartServerScreen extends Container {
 
     /**
+     * Die Debug-CheckBox
+     * damit kann man steuern ob der Server im Debug-Modus gestartet wird
+     */
+    CheckBox myCheckBox;
+    /**
+     * Die Textbox, mit der provisorisch die Map ausgewählt wird
+     */
+    TextBox myTextBox;
+
+    /**
      * Konstruktor
      *
      * @param m     Referenz auf das Hauptmenü
@@ -46,17 +59,35 @@ public class StartServerScreen extends Container {
         super(m, 15, 15, 80, 80);
 
         // Hintergrund:
-        super.addComponent(new TiledImage(super.getMainMenu(), 30,30,30,30,"/img/mainmenu/rost.png"));
+        super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 30, 30, "/img/mainmenu/rost.png"));
 
         // Die Debug-Checkbox:
-        super.addComponent(new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png"));
+        myCheckBox = new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png");
+        super.addComponent(myCheckBox);
+
+        // MapWahl-Textbox (provisorisch)
+        myTextBox = new TextBox(super.getMainMenu(), 40, 60);
+        myTextBox.setText("Randommap.map");
 
         // Der Start-Button
         super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "/img/mainmenu/buttonnew.png", "Start Server") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                System.out.print("Starting Server...\n");
+                super.getMainMenu().getMenu("startscreen").fadeIn();
+
+                // @TODO: Server Starten und selber joinen
+
+                boolean debug = myCheckBox.isChecked();
+                String map = "/map/main/" + myTextBox.getText();
+
+                super.getMainMenu().startServer(debug, map);
+                super.getMainMenu().joinServer();
+
+
+
+                fadeOut();
+
             }
         });
     }
