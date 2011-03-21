@@ -256,7 +256,7 @@ public class GraphicsContent extends BasicGame {
                 g.setColor(Color.darkGray);
                 g.setFont(fonts[0]);
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
-                g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, realPixY - 20);
+                g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, 2);
                 if (serverColMode) {
                     this.renderServerCol();
                 }
