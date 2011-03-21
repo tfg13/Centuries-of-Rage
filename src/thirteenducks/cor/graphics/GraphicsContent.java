@@ -60,7 +60,7 @@ public class GraphicsContent extends BasicGame {
     /**
      * Die halbe Größe eines Feldes in Y-Richtung
      */
-    public static final int FIELD_HALF_Y = FIELD_SIZE_Y / 2;
+    public static final double FIELD_HALF_Y = FIELD_SIZE_Y / 2.0;
     /**
      * Wie viele Pixel das tatsächlich gezeichnete Feld von den Zeichenkoordinaten entfernt ist.
      */
@@ -932,42 +932,6 @@ public class GraphicsContent extends BasicGame {
 
     }
 
-    private void renderCol() {
-        // Murks, aber die position müssen gerade sein...
-        if (positionX % 2 == 1) {
-            positionX--;
-        }
-        if (positionY % 2 == 1) {
-            positionY--;
-        }
-        // Rendert die rote Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                // Hat dieses Feld Kollision?
-                try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        colModeImage.getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                // Hat dieses Feld Kollision?
-                try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        colModeImage.getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                    }
-                } catch (Exception ex) {
-                }
-            }
-        }
-    }
-
     private void renderServerCol() {
         // Murks, aber die position müssen gerade sein...
         if (positionX % 2 == 1) {
@@ -983,7 +947,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y )+ OFFSET_1x1_Y);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -996,7 +960,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
                     }
                 } catch (Exception ex) {
                 }
@@ -1005,25 +969,32 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderCoords(Graphics g2) {
-        // Murks, aber die position müssen gerade sein...
-        if (positionX % 2 == 1) {
-            positionX--;
+        // Gitter rendern
+        g2.setColor(Color.black);
+        g2.setLineWidth(1);
+        for (int i = 0; i < viewX * 2; i += 2) { // Doppelt so lang, das Bildverhältniss ist ja in der Regel nicht quadratisch
+            // Linie von der Oberen Kante nach rechts unten
+            g2.drawLine((int) i * FIELD_HALF_X + OFFSET_1x1_X + 2, OFFSET_1x1_Y, viewX * FIELD_HALF_X + OFFSET_1x1_X + 20, (int) ((viewX - 1 - i) * FIELD_HALF_Y + OFFSET_1x1_Y + 21));
+            // Linie von der Oberen Kante nach links unten
+            g2.drawLine((int) i * FIELD_HALF_X + OFFSET_1x1_X + 28, OFFSET_1x1_Y, OFFSET_1x1_X, (int) (i * FIELD_HALF_Y + OFFSET_1x1_Y + 21));
         }
-        if (positionY % 2 == 1) {
-            positionY--;
+
+        for (int i = 0; i < viewY; i+= 2) {
+            // Linie von der Linken Kante nach Rechts Unten
+             g2.drawLine(OFFSET_1x1_X,(int) (i * FIELD_HALF_Y) + OFFSET_1x1_Y - 1, (viewY - 1 - i) * FIELD_HALF_X + OFFSET_1x1_X + 42, (int) ((viewY * FIELD_HALF_Y) + OFFSET_1x1_Y + 22.5));
         }
-        g2.setFont(fonts[4]);
-        // Rendert die rote Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x + 4) {
-            for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X + 5, (int) (y * FIELD_HALF_Y) + 10);
-            }
-        }
-        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 4) {
-            for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                g2.drawString((x + positionX) + "|" + (y + positionY), x * FIELD_HALF_X + 5, (int) (y * FIELD_HALF_Y) + 10);
-            }
-        }
+        // Aktuelle Position suchen:
+        Position mouse = translateCoordinatesToField(mouseX, mouseY);
+        // Position markieren:
+        imgMap.get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X + OFFSET_1x1_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y) + OFFSET_1x1_Y);
+        // Position anzeigen
+        g2.setColor(Color.white);
+        Font font = rgi.chat.getFont();
+        String output = "Mouse: " + mouse.getX() + " " + mouse.getY();
+        g2.fillRect(5, 40, font.getWidth(output), font.getHeight(output));
+        g2.setFont(font);
+        g2.setColor(Color.black);
+        g2.drawString(output, 5, 40);
     }
 
     private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {
