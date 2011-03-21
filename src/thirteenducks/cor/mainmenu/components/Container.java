@@ -134,6 +134,8 @@ public class Container extends Component {
             for (Component m : components) {
                 if (m.getX1() < x && x < m.getX2() && m.getY1() < y && y < m.getY2()) {
                     m.mouseClicked(button, x, y, clickCount);
+                } else {
+                    m.mouseClickedAnywhere(button, x, y, clickCount);
                 }
             }
         }
