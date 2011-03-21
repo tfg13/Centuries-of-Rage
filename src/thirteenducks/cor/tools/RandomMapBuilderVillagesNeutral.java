@@ -63,7 +63,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	}
 
 	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 100; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
 		double mindist = 999999; // kleinste gefundene Distanz
 		Position nextdorf = new Position(-1, -1); // nächstes Dorf
@@ -148,6 +148,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
 		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
+		    RandomMapBuilder.RandomRogMap.changeElementProperty(Haus.getMainPosition().getX() + z1c + z2c, Haus.getMainPosition().getY() - z1c + z2c, "ground_tex", "img/ground/testground1.png");
 		}
 	    }
 	}

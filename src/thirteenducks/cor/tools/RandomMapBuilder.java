@@ -58,8 +58,8 @@ public class RandomMapBuilder {
 
 	long zstVorher = System.currentTimeMillis(); // Zeit stoppen
 
-	int newMapX = 161 + Size * 20 + PlayerNumber * 20;
-	int newMapY = 141 + Size * 20 + PlayerNumber * 20;
+	int newMapX = 261 + Size * 40 + PlayerNumber * 40;
+	int newMapY = 241 + Size * 40 + PlayerNumber * 40;
 
 	descBuilding = new HashMap<Integer, Building>();
 	CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
