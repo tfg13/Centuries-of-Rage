@@ -1084,9 +1084,6 @@ public class GraphicsContent extends BasicGame {
     public void setFramePosition(Dimension td) {
         // Setzt die Position des Rahmens, inzwischen Editor&Game
         framePos = td;
-        if (modi != 3) {
-            repaint();
-        }
     }
 
     public void setVisMap(CoRMapElement[][] newVisMap, int X, int Y) {
@@ -1113,9 +1110,6 @@ public class GraphicsContent extends BasicGame {
         // Setzt die aktuell sichtbare Position
         positionX = posX;
         positionY = posY;
-        if (modi != 3) { // Im echten Rendern refreshed die Mainloop
-            repaint();
-        }
         viewPosChanged();
     }
 
@@ -1123,9 +1117,6 @@ public class GraphicsContent extends BasicGame {
         //Setzt die Größe des sichtbaren Bereichs
         viewX = vX;
         viewY = vY;
-        if (modi != 3) { // Im echten Rendern refreshed die Mainloop
-            repaint();
-        }
 
     }
 
@@ -1190,9 +1181,6 @@ public class GraphicsContent extends BasicGame {
         }
         if (positionY % 2 == 1) {
             positionY++;
-            if (modi != 3) {
-                repaint();
-            }
         }
         viewPosChanged();
     }
@@ -1201,9 +1189,6 @@ public class GraphicsContent extends BasicGame {
         if (viewX < sizeX) { // Ans sonsten ist eh alles drin
             if (positionX < (sizeX - viewX)) {
                 positionX = positionX + 2;
-                if (modi != 3) {
-                    repaint();
-                }
             }
 
         }
@@ -1222,9 +1207,6 @@ public class GraphicsContent extends BasicGame {
         if (positionX % 2 == 1) {
             positionX--;
         }
-        if (modi != 3) {
-            repaint();
-        }
         viewPosChanged();
     }
 
@@ -1232,9 +1214,6 @@ public class GraphicsContent extends BasicGame {
         if (viewY < sizeY) { // Ansonsten ist eh alles drin, da brauch mer nicht scrollen...
             if (positionY < (sizeY - viewY)) {
                 positionY = positionY + 2;
-            }
-            if (modi != 3) {
-                repaint();
             }
         }
         viewPosChanged();
@@ -1323,17 +1302,6 @@ public class GraphicsContent extends BasicGame {
     public int getModi() {
         // liefert den aktuellen renderModus zurück
         return modi;
-    }
-
-    /*  public Dimension searchMiniMid(int cX, int cY) {
-    // Sucht die Koordinaten eines Klicks auf die Minimap, also die Koordinaten des Feldes in der Mitte der Scollbox
-    // Input muss auf Minimap gefiltert sein, sonst kommt nur Müll raus
-    return new Dimension((int) (((cX - (hudX + hudSizeX * 0.1)) / (hudSizeX * 0.8)) * sizeX), (int) (((cY - realPixY / 7 * 1.4) / (realPixY / 7 * 2 * 0.8)) * sizeY));
-    }*/
-    public void startDebugMode() {
-        modi = 4;
-        repaint();
-
     }
 
     public void calcColoredMaps(Color[] colors) {
