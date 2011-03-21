@@ -54,11 +54,12 @@ public class RandomMapBuilder {
 	RMBJob = new ArrayList<RandomMapBuilderJob>();
 	RMBJob.add(new RandomMapBuilderTerrainFormer());
 	RMBJob.add(new RandomMapBuilderVillagesFirst());
+	RMBJob.add(new RandomMapBuilderVillagesNeutral());
 
 	long zstVorher = System.currentTimeMillis(); // Zeit stoppen
 
-	int newMapX = 121 + Size * 20 + PlayerNumber * 20;
-	int newMapY = 101 + Size * 20 + PlayerNumber * 20;
+	int newMapX = 161 + Size * 20 + PlayerNumber * 20;
+	int newMapY = 141 + Size * 20 + PlayerNumber * 20;
 
 	descBuilding = new HashMap<Integer, Building>();
 	CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
@@ -78,6 +79,13 @@ public class RandomMapBuilder {
 	RMBJob.get(0).performJob(); //TerrainFormer setzt Startdörfer
 
 	RMBJob.get(1).performJob(); //VillagesFirst setzt Startdörfer
+
+	long zstMitte1 = System.currentTimeMillis();
+
+	RMBJob.get(2).performJob(); //VillagesFirst setzt neutrale Dörfer
+
+	long zstMitte2 = System.currentTimeMillis();
+	System.out.println("Dauer neutrale Dörfer setzen: " + (zstMitte2 - zstMitte1) + " ms");
 
 	RandomRogMap.setMapProperty("NEXTNETID", RandomRogMap.getNewNetID());
 	saveMap(RandomRogMap);
