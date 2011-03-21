@@ -78,11 +78,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public Position[] getPositions() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Position getCentralPosition() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

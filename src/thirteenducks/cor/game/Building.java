@@ -101,6 +101,12 @@ public abstract class Building extends GameObject {
      */
     private Position[] positions;
     /**
+     * Cacht alle Positionen, die für die Sichtbarkeitsberechnung relevant sind.
+     * In der Regel sind das die 4 Ecken.
+     * Wird zwischengespeichert, weils dauernd benötigt wird (bei jedem Frame)
+     */
+    private Position[] visPositions;
+    /**
      * Wurde die Selektion schon eingetragen?
      * Muss in der Regel nur ein einiziges Mal geschehen
      */
@@ -116,6 +122,7 @@ public abstract class Building extends GameObject {
         super(newNetId, mainPos);
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
+        visPositions = new Position[4];
         setVisrange(7); // Default für Gebäude
     }
 
@@ -143,6 +150,7 @@ public abstract class Building extends GameObject {
         this.z2 = copyFrom.z2;
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
+        visPositions = new Position[4];
     }
 
     /**
@@ -383,6 +391,11 @@ public abstract class Building extends GameObject {
 
     @Override
     public Position[] getVisisbilityPositions() {
+        return visPositions;
+    }
+
+    @Override
+    public Position[] getPositions() {
         return positions;
     }
 
@@ -395,6 +408,14 @@ public abstract class Building extends GameObject {
             for (int z2c = 0; z2c < z2; z2c++) {
                 positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c,(int) mainPosition.getY() - z1c + z2c);
             }
+        }
+        try {
+        visPositions[0] = mainPosition.clone();
+        visPositions[1] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() - z2 + 1);
+        visPositions[2] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() + z2 - 1);
+        visPositions[3] = new Position(mainPosition.getX() + (z1 - 1) * 2, mainPosition.getY());
+        } catch (CloneNotSupportedException ex) {
+            // Passiert net.
         }
     }
 
