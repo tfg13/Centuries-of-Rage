@@ -76,7 +76,7 @@ public class GraphicsContent extends BasicGame {
     /**
      * Wie viele Pixel der Zeichenursprung für ein 1x1 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
      */
-    public static final int OFFSET_1x1_Y = 3;
+    public static final int OFFSET_1x1_Y = 0;
     /**
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
      */
@@ -947,7 +947,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y )+ OFFSET_1x1_Y);
+                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -960,7 +960,7 @@ public class GraphicsContent extends BasicGame {
                 try {
                     if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
                         // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
+                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                     }
                 } catch (Exception ex) {
                 }
@@ -974,19 +974,19 @@ public class GraphicsContent extends BasicGame {
         g2.setLineWidth(1);
         for (int i = 0; i < viewX * 2; i += 2) { // Doppelt so lang, das Bildverhältniss ist ja in der Regel nicht quadratisch
             // Linie von der Oberen Kante nach rechts unten
-            g2.drawLine((int) i * FIELD_HALF_X + OFFSET_1x1_X + 2, OFFSET_1x1_Y, viewX * FIELD_HALF_X + OFFSET_1x1_X + 20, (int) ((viewX - 1 - i) * FIELD_HALF_Y + OFFSET_1x1_Y + 21));
+            g2.drawLine((int) i * FIELD_HALF_X + 2, 0, viewX * FIELD_HALF_X + 20, (int) ((viewX - 1 - i) * FIELD_HALF_Y + 21));
             // Linie von der Oberen Kante nach links unten
-            g2.drawLine((int) i * FIELD_HALF_X + OFFSET_1x1_X + 28, OFFSET_1x1_Y, OFFSET_1x1_X, (int) (i * FIELD_HALF_Y + OFFSET_1x1_Y + 21));
+            g2.drawLine((int) i * FIELD_HALF_X + 28, 0, 0, (int) (i * FIELD_HALF_Y + 21));
         }
 
         for (int i = 0; i < viewY; i+= 2) {
             // Linie von der Linken Kante nach Rechts Unten
-             g2.drawLine(OFFSET_1x1_X,(int) (i * FIELD_HALF_Y) + OFFSET_1x1_Y - 1, (viewY - 1 - i) * FIELD_HALF_X + OFFSET_1x1_X + 42, (int) ((viewY * FIELD_HALF_Y) + OFFSET_1x1_Y + 22.5));
+             g2.drawLine(0,(int) (i * FIELD_HALF_Y) - 1, (viewY - 1 - i) * FIELD_HALF_X + 42, (int) ((viewY * FIELD_HALF_Y) + 22.5));
         }
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
         // Position markieren:
-        imgMap.get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X + OFFSET_1x1_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y) + OFFSET_1x1_Y);
+        imgMap.get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();
