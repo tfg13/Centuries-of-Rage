@@ -25,9 +25,10 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import thirteenducks.cor.mainmenu.components.CheckBox;
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.ImageButton;
-import thirteenducks.cor.mainmenu.components.ScaledImage;
+import thirteenducks.cor.mainmenu.components.TiledImage;
 
 /**
  * Hier kann man einen Server starten
@@ -37,25 +38,26 @@ import thirteenducks.cor.mainmenu.components.ScaledImage;
 public class StartServerScreen extends Container {
 
     /**
-     * MainMenu-Referenz
-     */
-    MainMenu mainMenu;
-
-    /**
      * Konstruktor
      *
      * @param m     Referenz auf das Hauptmenü
      */
     public StartServerScreen(MainMenu m) {
-        super(m, 15, 85, 80, 8);
+        super(m, 15, 15, 80, 80);
 
-        mainMenu = m;
+        // Hintergrund:
+        super.addComponent(new TiledImage(super.getMainMenu(), 30,30,30,30,"/img/mainmenu/rost.png"));
 
+        // Die Debug-Checkbox:
+        super.addComponent(new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png"));
 
-        
+        // Der Start-Button
+        super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "/img/mainmenu/buttonnew.png", "Start Server") {
 
-
-
-      
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                System.out.print("Starting Server...\n");
+            }
+        });
     }
 }
