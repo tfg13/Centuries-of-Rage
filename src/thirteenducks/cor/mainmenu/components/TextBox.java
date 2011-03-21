@@ -57,7 +57,7 @@ public class TextBox extends Component {
      * @param y                     Y-Position der TextBox
      */
     public TextBox(MainMenu mainMenuReference, int x, int y) {
-        super(mainMenuReference, x, y, 30, 7);
+        super(mainMenuReference, x, y, 30, 4);
         text = "";
         active = false;
     }
