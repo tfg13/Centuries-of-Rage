@@ -60,6 +60,9 @@ public class StartScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
+                mainMenu.getMenu("startserverscreen").fadeIn();
+                fadeOut();
+
             }
         });
 

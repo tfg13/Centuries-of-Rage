@@ -139,6 +139,13 @@ public class MainMenu extends AppGameContainer {
         g.addComponent(randomMapBuilderScreen);
         randomMapBuilderScreen.fadeOut();
 
+        // Server starten:
+        Container startServerScreen = new StartServerScreen(this);
+        menus.put("startserverscreen", startServerScreen);
+        g.addComponent(startServerScreen);
+        startServerScreen.fadeOut();
+        
+
     }
 
     /**
