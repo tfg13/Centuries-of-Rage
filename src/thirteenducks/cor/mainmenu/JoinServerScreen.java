@@ -67,7 +67,8 @@ public class JoinServerScreen extends Container {
      * Konstruktor
      *
      * @param m     Referenz auf das Hauptmenü
-     */
+     * @deprecated 
+     **/
     public JoinServerScreen(MainMenu m) {
         super(m, 15, 30, 70, 40);
 

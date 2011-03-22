@@ -37,6 +37,7 @@ import thirteenducks.cor.mainmenu.components.TiledImage;
  * Hier kann man einen Server starten
  *
  * @author michael
+ * @deprecated 
  */
 public class StartServerScreen extends Container {
 
