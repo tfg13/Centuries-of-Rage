@@ -27,29 +27,25 @@
 
 package thirteenducks.cor.map;
 
-import thirteenducks.cor.map.CoRMapElement.collision;
-import java.io.*;
 import java.util.HashMap;
 
 /**
- *
- * @author tfg
- * Klasse beschreibt eine Map - Objekt wird vom RogMapEditor erstellt und in eine Datei serialisiert - Das RogGraphics Modul kann Maps wieder öffnen
- *
+ * Die Map.
+ * Enthält und speichert Texturen, Einheiten etc.
+ * Kann im Gegensatz zu früheren Versionen nichtmehr serialisiert werden.
+ * Zum Speichern wird nurnoch das RMAP-System verwendet.
  */
-public class CoRMap implements Serializable {
-
-    static final long serialVersionUID = -5532503078112972431L;
+public class CoRMap {
     // Variablen
-    public CoRMapElement[][] visMap; // Die Map
+    private AbstractMapElement[][] visMap; // Die Map
     private HashMap<String,Object> mapStuff; // Infos in Form von Objekten über die Map
-    public String mapName; // Name der Map, Datei und Programmintern
+    private String mapName; // Name der Map, Datei und Programmintern
     private int xSize;
     private int ySize;
     private int playernumber;
-    int nextNetID = 1;
+    private int nextNetID = 1;
 
-    public CoRMap(int x, int y, String name, CoRMapElement[][] levelOneMap) {
+    public CoRMap(int x, int y, String name, AbstractMapElement[][] levelOneMap) {
         // Initiiert eine neue Map
         // name name der Map und der Datei
 
@@ -58,7 +54,6 @@ public class CoRMap implements Serializable {
         visMap = levelOneMap;
         // Name übernehmen
         mapName = name;
-        // isTown übernehmen
         // Größe Übernehmen
         xSize = x;
         ySize = y;
@@ -67,70 +62,12 @@ public class CoRMap implements Serializable {
 
     }
 
-
-    @Deprecated
-    public int getMapSize(String side) {
-        // Liefert den x (side = x ) oder y-Wert (side = y) zurück
-        if (side.equals("x") || side.equals("X")) {
-            return xSize;
-        } else {
-            return ySize;
-        }
-    }
-
     public int getMapSizeX() {
         return xSize;
     }
 
     public int getMapSizeY() {
         return ySize;
-    }
-
-    /**
-     * @deprecated  RogMapModule ruft jetzt direkt RogMap.getvismap[x][y].getcollision auf
-     */
-    public collision isBlocking(int x, int y) {
-        // Bestimmt, ob ein bestimmtes Feld nicht begehbar ist
-        try {
-        return visMap[x][y].getCollision();
-        } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
-            return collision.blocked;
-        } catch (java.lang.NullPointerException ex) {
-            return collision.free;
-        }
-    }
-
-    public void changeElement(int x, int y, CoRMapElement elem) {
-        // Tauscht ein Mapelement gegen das neue aus
-        visMap[x][y] = elem;
-    }
-
-    public void changeElementProperty(int x, int y, String prop, String value) {
-        // Ändet die Eigenschaften eines Feldes
-        visMap[x][y].setProperty(prop, value);
-    }
-
-    public void deleteElementProperty(int x, int y, String prop) {
-        // Löscht eine Eigenschaft
-        visMap[x][y].deleteProperty(prop);
-    }
-
-        public void changeElementObjectProperty(int x, int y, String prop, String value) {
-        // Ändet die Eigenschaften eines Feldes
-        visMap[x][y].setObjectProperty(prop, value);
-    }
-
-    public void deleteElementObjectProperty(int x, int y, String prop) {
-        // Löscht eine Eigenschaft
-        visMap[x][y].deleteObjectProperty(prop);
-    }
-
-    public String getElementProperty(int x, int y, String prop) {
-        return visMap[x][y].getProperty(prop);
-    }
-
-    public Object getElementObjectProperty(int x, int y, String prop) {
-        return visMap[x][y].getObjectProperty(prop);
     }
 
     public Object getMapPoperty(String prop) {
@@ -151,7 +88,7 @@ public class CoRMap implements Serializable {
         return "map/" + mapName + ".map";
     }
 
-    public CoRMapElement[][] getVisMap() {
+    public AbstractMapElement[][] getVisMap() {
         // Damit kommt man an den Inhalt der Map
         return visMap;
     }
@@ -173,6 +110,13 @@ public class CoRMap implements Serializable {
     public int getNewNetID() {
 	nextNetID++;
 	return (nextNetID - 1);
+    }
+
+    /**
+     * @return the mapName
+     */
+    public String getMapName() {
+        return mapName;
     }
 }
 

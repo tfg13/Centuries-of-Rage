@@ -31,7 +31,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.input.OverlayMouseListener;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 
 /**
  * Die Minimap.
@@ -144,7 +144,7 @@ public class Minimap extends Overlay {
         view[3] = 1.0f * viewY / sizeY;
     }
 
-    public static Minimap createMinimap(CoRMapElement[][] visMap, Map<String, GraphicsImage> imgMap, final int fullResX, final int fullResY, ClientCore.InnerClient rgi) {
+    public static Minimap createMinimap(AbstractMapElement[][] visMap, Map<String, GraphicsImage> imgMap, final int fullResX, final int fullResY, ClientCore.InnerClient rgi) {
         Minimap minimap = new Minimap(fullResX, fullResY);
         try {
             // Erstellt einen neue Basis-Minimap
@@ -157,7 +157,7 @@ public class Minimap extends Overlay {
                         continue;
                     } else {
                         try {
-                            GraphicsImage tex = imgMap.get(visMap[x][y].getProperty("ground_tex"));
+                            GraphicsImage tex = imgMap.get(visMap[x][y].getGround_tex());
                             if (tex != null) {
                                 Color pcol = tex.getImage().getColor(20, 20);
                                 tempGra.setColor(pcol);

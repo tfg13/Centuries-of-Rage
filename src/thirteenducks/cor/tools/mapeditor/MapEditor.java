@@ -28,7 +28,6 @@ package thirteenducks.cor.tools.mapeditor;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -54,7 +53,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import thirteenducks.cor.graphics.GraphicsComponent;
 import thirteenducks.cor.graphics.CoRImage;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
+import thirteenducks.cor.map.ClientMapElement;
 import thirteenducks.cor.map.MapIO;
 
 public final class MapEditor {
@@ -932,16 +932,8 @@ public final class MapEditor {
                                                         // In Map schreiben
                                                         for (int z = 0; z < fList.size(); z++) {
                                                             try {
-                                                                // Bei Wasser Kollision setzten
-                                                                if (fList.get(z).tex.contains("water")) {
-                                                                    // Kollision setzen
-                                                                    theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.blocked);
-                                                                } else if (theMap.getElementProperty(fList.get(z).posX + (int) selField.getWidth(), fList.get(z).posY + (int) selField.getHeight(), "ground_tex").contains("water")) {
-                                                                    // Wenn das alte Wasser war wieder Kollision wegmachen
-                                                                    theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.free);
-                                                                }
-                                                                theMap.changeElementProperty(fList.get(z).posX + (int) selField.getWidth(), fList.get(z).posY + (int) selField.getHeight(), "ground_tex", fList.get(z).tex);
-
+                                                                theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setGround_tex(fList.get(z).tex);
+                                                                theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setUnreachable(fList.get(z).tex.contains("water"));
                                                             } catch (ArrayIndexOutOfBoundsException ex) {
                                                             }
                                                         }
@@ -968,19 +960,14 @@ public final class MapEditor {
                                                         for (int z = 0; z < fList.size(); z++) {
                                                             if (fList.get(z).tex.equals("noTex")) {
                                                                 // Textur löschen - das ist möglich
-                                                                theMap.deleteElementProperty(fList.get(z).posX + (int) selField.getWidth(), fList.get(z).posY + (int) selField.getHeight(), "fix_tex");
-                                                                // Kollision weg! AutoCol?
-                                                                if (rmegui.jCheckBoxMenuItem5.isSelected()) {
-                                                                    // Col löschen
-                                                                    theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.free);
-                                                                }
+                                                                theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setFix_tex(null);
+                                                                theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setUnreachable(true);
                                                             } else {
                                                                 // In Map schreiben
-                                                                theMap.deleteElementProperty(fList.get(z).posX + (int) selField.getWidth(), fList.get(z).posY + (int) selField.getHeight(), "unit_tex");
-                                                                theMap.changeElementProperty(fList.get(z).posX + (int) selField.getWidth(), fList.get(z).posY + (int) selField.getHeight(), "fix_tex", fList.get(z).tex);
+                                                                theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setFix_tex(fList.get(z).tex);
                                                                 // Produziert Kollision! - Falls AutoCol
                                                                 if (rmegui.jCheckBoxMenuItem5.isSelected()) {
-                                                                    theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.blocked);
+                                                                    theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setUnreachable(true);
                                                                 }
                                                             }
                                                         }
@@ -995,47 +982,30 @@ public final class MapEditor {
                                                         // Löschen?
                                                         if (selUnitId == 0) {
                                                             // Unit löschen
-                                                            if (!newMode) {
-                                                                theMap.deleteElementProperty((int) selField.getWidth(), (int) selField.getHeight(), "unit_tex");
-                                                            } else {
-                                                                // DeleteUnit
-                                                                // Suchen
-                                                                Unit tUnit = identifyUnit((int) selField.getWidth(), (int) selField.getHeight());
-                                                                if (tUnit != null) {
-                                                                    unitList.remove(tUnit);
-                                                                }
-                                                            }
-                                                            // Kollision weg! AutoCol?
-                                                            if (rmegui.jCheckBoxMenuItem5.isSelected()) {
-                                                                // Col löschen
-                                                                theMap.visMap[(int) selField.getWidth()][(int) selField.getHeight()].setCollision(collision.free);
+                                                            // DeleteUnit
+                                                            // Suchen
+                                                            Unit tUnit = identifyUnit((int) selField.getWidth(), (int) selField.getHeight());
+                                                            if (tUnit != null) {
+                                                                unitList.remove(tUnit);
                                                             }
                                                         } else {
                                                             // Einheit einfügen
                                                             // Keine Bäume oder sowas da erlaubt
-                                                            theMap.deleteElementProperty((int) selField.getWidth(), (int) selField.getHeight(), "fix_tex");
-                                                            if (!newMode) {
-                                                                theMap.changeElementProperty((int) selField.getWidth(), (int) selField.getHeight(), "unit_tex", selTex);
-                                                            } else {
-                                                                //Einfach neu erstellen und hinzufügen
-                                                                    Unit kUnit = (Unit) descUnit.get(selUnitId).getCopy(getNextNetID());
-                                                                    // Spieler festgelegt?
-                                                                    if (rmegui.jCheckBox1.isSelected()) {
-                                                                        try {
-                                                                            int trans = Integer.parseInt(rmegui.jSpinner5.getValue().toString());
-                                                                            if (trans >= 0 && trans <= 8) {
-                                                                                kUnit.setPlayerId(trans);
-                                                                            }
-                                                                        } catch (java.lang.NumberFormatException exx) {
-                                                                        }
+                                                            theMap.getVisMap()[(int) selField.getWidth()][(int) selField.getHeight()].setFix_tex(null);
+                                                            //Einfach neu erstellen und hinzufügen
+                                                            Unit kUnit = (Unit) descUnit.get(selUnitId).getCopy(getNextNetID());
+                                                            // Spieler festgelegt?
+                                                            if (rmegui.jCheckBox1.isSelected()) {
+                                                                try {
+                                                                    int trans = Integer.parseInt(rmegui.jSpinner5.getValue().toString());
+                                                                    if (trans >= 0 && trans <= 8) {
+                                                                        kUnit.setPlayerId(trans);
                                                                     }
-                                                                    kUnit.setMainPosition(new Position((int) selField.getWidth(), (int) selField.getHeight()));
-                                                                    unitList.add(kUnit);
+                                                                } catch (java.lang.NumberFormatException exx) {
+                                                                }
                                                             }
-                                                            // Produziert Kollision!
-                                                            if (rmegui.jCheckBoxMenuItem5.isSelected()) {
-                                                                theMap.visMap[(int) selField.getWidth()][(int) selField.getHeight()].setCollision(collision.blocked);
-                                                            }
+                                                            kUnit.setMainPosition(new Position((int) selField.getWidth(), (int) selField.getHeight()));
+                                                            unitList.add(kUnit);
                                                         }
                                                         // Dem Grafiksystem mitteilen - nur einmal nötig, bin aber zu faul für if's...
                                                         rmegui.content.changeVisMap(theMap.getVisMap());
@@ -1052,11 +1022,6 @@ public final class MapEditor {
                                                             if (tempBu != null) {
                                                                 // Ist da, löschen!
                                                                 buildingList.remove(tempBu);
-                                                                // Neu sortieren ist nich nötig!
-                                                                Position[] colPos = tempBu.getPositions();
-                                                                for (Position pos : colPos) {
-                                                                    theMap.visMap[pos.getX()][pos.getY()].setCollision(collision.free);
-                                                                }
                                                                 rmegui.content.updateBuildings(buildingList);
                                                             }
                                                         } else {
@@ -1084,7 +1049,7 @@ public final class MapEditor {
                                                 ArrayList<MapEditorCursorField> fList = paintCursor.getFields(texes);
                                                 // In Map schreiben
                                                 for (int z = 0; z < fList.size(); z++) {
-                                                    theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.blocked);
+                                                    theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setUnreachable(true);
                                                 }
                                                 // Dem Grafikmodul schicken
                                                 rmegui.content.changeVisMap(theMap.getVisMap());
@@ -1101,12 +1066,8 @@ public final class MapEditor {
                                                 ArrayList<MapEditorCursorField> fList = paintCursor.getFields(texes);
                                                 // In Map schreiben
                                                 for (int z = 0; z < fList.size(); z++) {
-                                                    if (theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].getProperty("is_border") != null) {
-                                                        // Nicht erlaubt
-                                                    } else {
-                                                        // Ok, Kollision löschen
-                                                        theMap.visMap[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setCollision(collision.free);
-                                                    }
+                                                    // Ok, Kollision löschen
+                                                    theMap.getVisMap()[fList.get(z).posX + (int) selField.getWidth()][fList.get(z).posY + (int) selField.getHeight()].setUnreachable(false);
                                                 }
                                                 rmegui.content.changeVisMap(theMap.getVisMap());
                                             }
@@ -1342,7 +1303,7 @@ public final class MapEditor {
                                 for (int y = 0; y < theMap.getMapSizeY(); y++) {
                                     if (x % 2 == y % 2) {
                                         // Einfach schreiben
-                                        theMap.changeElementProperty(x, y, "ground_tex", selTex);
+                                        theMap.getVisMap()[x][y].setGround_tex(selTex);
                                     }
                                 }
                             }
@@ -1558,12 +1519,12 @@ public final class MapEditor {
         // Die Werte wurden bereits erstellt, sie sind in Ordnung!
         // Mapobject anlegen
         // Erstmap das MapArray anlegen:
-        CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
+        AbstractMapElement[][] newMapArray = new AbstractMapElement[newMapX][newMapY];
         for (int x = 0; x < newMapX; x++) {
             for (int y = 0; y < newMapY; y++) {
                 // Jedes 2. Feld überspringen, da es die nicht gibt:
                 if (x % 2 == y % 2) {
-                    newMapArray[x][y] = new CoRMapElement();
+                    newMapArray[x][y] = new ClientMapElement();
                 }
             }
         }
@@ -1575,8 +1536,7 @@ public final class MapEditor {
                 if (x == 0 || x == (newMapX - 1) || y == 0 || y == (newMapY - 1)) {
                     if (x % 2 == y % 2) {
                         // Feld hat Kollision
-                        newRogMap.changeElementProperty(x, y, "is_border", "true");
-                        newRogMap.visMap[x][y].setCollision(collision.blocked);
+                        newRogMap.getVisMap()[x][y].setUnreachable(true);
                     }
                 }
             }
@@ -1616,12 +1576,12 @@ public final class MapEditor {
             firstMapRun = false;
         }
         // Datei speichern anlegen
-        MapIO.saveMap(newRogMap, newRogMap.mapName);
+        MapIO.saveMap(newRogMap, newRogMap.getMapName());
     }
 
     public void openMap(String openMapPath) {
         // Öffnet eine Map anhand des Dateinamens
-        theMap = MapIO.readMap(openMapPath);
+        theMap = MapIO.readMap(openMapPath, MapIO.MODE_CLIENT);
         unitList = (ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST");
         buildingList = (ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST");
         nextNetID = (Integer) theMap.getMapPoperty("NEXTNETID");
@@ -1731,7 +1691,7 @@ public final class MapEditor {
     public void refreshMap() {
         // Zeigt die derzeitige Map (theMap) auch entgültig an
         // Mesh oder nicht?
-        rmegui.content.setVisMap(theMap.getVisMap(), theMap.getMapSize("x"), theMap.getMapSize("y"));
+        rmegui.content.setVisMap(theMap.getVisMap(), theMap.getMapSizeX(), theMap.getMapSizeY());
         rmegui.content.setMesh(rmegui.jCheckBoxMenuItem1.isSelected());
         rmegui.content.setGround(rmegui.jCheckBoxMenuItem2.isSelected());
         rmegui.content.setObjects(rmegui.jCheckBoxMenuItem3.isSelected());
@@ -1807,7 +1767,7 @@ public final class MapEditor {
     }
 
     public static void main(String args[]) {
-         //Einfach durchstarten
+        //Einfach durchstarten
         JOptionPane.showMessageDialog(new JFrame(), "NOT FINISHED, sry!");
         MapEditor RME = new MapEditor();
     }

@@ -30,7 +30,7 @@ import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import java.io.*;
 import java.util.*;
-import thirteenducks.cor.map.CoRMapElement.collision;
+import thirteenducks.cor.map.AbstractMapElement.collision;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade.upgradeaffects;
 import java.security.*;
 import jonelo.jacksum.*;
@@ -42,7 +42,7 @@ import thirteenducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import thirteenducks.cor.game.NetPlayer;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.map.CoRMap;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
@@ -695,7 +695,7 @@ public class ServerMapModule {
                 rgi.logger(ex2);
             }
             // Jetzt Map öffnen
-            theMap = MapIO.readMap(tempMap.getPath());
+            theMap = MapIO.readMap(tempMap.getPath(), MapIO.MODE_SERVER);
             unitList = Collections.synchronizedList((ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST"));
             buildingList = Collections.synchronizedList((ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST"));
             refreshUnits();
@@ -758,159 +758,51 @@ public class ServerMapModule {
         return theMap.getMapSizeY();
     }
 
-    public collision getCollision(int x, int y) {
-        // Prüft ob ein Feld blockiert, also ob Einheiten drauf laufen können
-        try {
-            return theMap.visMap[x][y].getCollision();
-        } catch (Exception ex) {
-            System.out.println("GetCollision-Error: " + x + "||" + y);
-            rgi.logger(ex);
-            return collision.blocked;
-        }
-    }
-
-    public collision getCollision(Position pos) {
-        // Prüft ob ein Feld blockiert, also ob Einheiten drauf laufen können
-        try {
-            return theMap.visMap[pos.getX()][pos.getY()].getCollision();
-        } catch (Exception ex) {
-            System.out.println("GetCollision-Error: " + pos);
-            rgi.logger(ex);
-            return collision.blocked;
-        }
-    }
-
-    public void setCollision(int x, int y, collision blocking) {
-        // Setzt die Kollision
-        try {
-            theMap.visMap[x][y].setCollision(blocking);
-            if (rgi.isInDebugMode()) {
-                if (blocking == collision.free) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, x, y, 0, 0));
-                } else {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, x, y, 1, 0));
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("SetCollision-Error: " + x + "||" + y);
-            rgi.logger(ex);
-        }
-    }
-
-    public void setCollision(Position position, collision blocking) {
-        // Setzt die Kollision
-        try {
-            theMap.visMap[position.getX()][position.getY()].setCollision(blocking);
-            if (rgi.isInDebugMode()) {
-                if (blocking == collision.free) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, position.getX(), position.getY(), 0, 0));
-                } else {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, position.getX(), position.getY(), 1, 0));
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("SetCollision-Error: " + position);
-            rgi.logger(ex);
-        }
-    }
-
     /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
+     * Findet heraus, ob die angegebene Position für Boden-GO's Kollision hat.
      * @return true bedeutet, dass es besetzt ist
      */
-    public boolean isGroundColliding(Position pos) {
+    public boolean isGroundColliding(Position pos, GameObject obj) {
         try {
-            return (theMap.visMap[pos.getX()][pos.getY()].collision != collision.free);
+            return theMap.getVisMap()[pos.getX()][pos.getY()].validGroundTarget(obj);
         } catch (Exception ex) {
             return true;
         }
     }
 
     /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
+     * Findet heraus, ob die angegebene Position für Boden-GO's Kollision hat.
      * @return true bedeutet, dass es besetzt ist
      */
-    public boolean isGroundColliding(int x, int y) {
+    public boolean isGroundColliding(int x, int y, GameObject obj) {
         try {
-            return (theMap.visMap[x][y].collision != collision.free);
+            return theMap.getVisMap()[x][y].validGroundTarget(obj);
         } catch (Exception ex) {
             return true;
         }
     }
 
     /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * spezielle Version für Einheiten, die durch eigene durchlaufen können
+     * Findet heraus, ob die angegebene Position für Boden'GO's als Wegposition (durchlaufen) Kollision hat.
      * @return true bedeutet, dass es besetzt ist
      */
-    public boolean isGroundCollidingForUnit(Position pos, int playerId) {
+    public boolean isGroundCollidingMove(Position pos, GameObject obj) {
         try {
-            if (theMap.visMap[pos.getX()][pos.getY()].collision != collision.free) {
-                if (theMap.visMap[pos.getX()][pos.getY()].collision == collision.occupied && theMap.visMap[pos.getX()][pos.getY()].unitref[playerId] != null) {
-                    return false;
-                }
-                return true;
-            } else {
-                return false;
-            }
+            return theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPath(obj);
         } catch (Exception ex) {
             return true;
         }
     }
 
     /**
-     * Findet heraus, ob das Feld für Bodeneinheiten nicht begehbar ist
-     * spezielle Version für Einheiten, die durch eigene durchlaufen können
+     * Findet heraus, ob die angegebene Position für Boden'GO's als Wegposition (durchlaufen) Kollision hat.
      * @return true bedeutet, dass es besetzt ist
      */
-    public boolean isGroundCollidingForUnit(int x, int y, int playerId) {
+    public boolean isGroundCollidingForMove(int x, int y, GameObject obj) {
         try {
-            if (theMap.visMap[x][y].collision != collision.free) {
-                if (theMap.visMap[x][y].collision == collision.occupied && theMap.visMap[x][y].unitref[playerId] != null) {
-                    return false;
-                }
-                return true;
-            } else {
-                return false;
-            }
+            return theMap.getVisMap()[x][y].validGroundPath(obj);
         } catch (Exception ex) {
             return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob ein Feld für Lufteinheiten nicht "begehbar" ist
-     * @param pos
-     * @return true bedeutet, es ist NICHT begehbar
-     */
-    public boolean isAirColliding(Position pos) {
-        try {
-            return (theMap.visMap[pos.getX()][pos.getY()].collision == collision.unreachable);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob ein Feld für Lufteinheiten nicht "begehbar" ist
-     * @return true bedeutet, es ist NICHT begehbar
-     */
-    public boolean isAirColliding(int x, int y) {
-        try {
-            return (theMap.visMap[x][y].collision == collision.unreachable);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    public void initUnitRefLists(int numberOfPlayers) {
-        for (int x = 0; x < theMap.visMap.length; x++) {
-            for (int y = 0; y < theMap.visMap[0].length; y++) {
-                if ((x + y) % 2 == 1) {
-                    continue;
-                }
-                theMap.visMap[x][y].unitref = new Unit[numberOfPlayers + 1];
-            }
         }
     }
 
@@ -981,29 +873,6 @@ public class ServerMapModule {
 
     public boolean isValidBuildingDesc(int playerId, int desc) {
         return (rgi.game.getPlayer(playerId).descBuilding.get(desc) != null);
-    }
-
-    /**
-     * Gibt die Einheitenreferenz eines Feldes zurück.
-     */
-    public Unit getUnitRef(Position pos, int playerId) {
-        try {
-            return theMap.visMap[pos.getX()][pos.getY()].unitref[playerId];
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Setzt die Einheitenreferenz eines Feldes.
-     */
-    public void setUnitRef(Position pos, Unit unit, int playerId) {
-        try {
-            theMap.visMap[pos.getX()][pos.getY()].unitref[playerId] = unit;
-        } catch (Exception ex) {
-            System.out.println("SetUnitRef-ERROR: " + pos + "|" + unit);
-            rgi.logger(ex);
-        }
     }
 
     public List<Unit> getUnitList() {
@@ -1314,9 +1183,9 @@ public class ServerMapModule {
      */
     public void setFieldReserved(Position field, long reserveFor, Unit reserver) {
         try {
-            CoRMapElement ele = theMap.visMap[field.getX()][field.getY()];
+            AbstractMapElement ele = theMap.getVisMap()[field.getX()][field.getY()];
             if (ele.isReserved()) {
-                rgi.moveMan.cancelledReservationFor(ele.getReserver());
+                rgi.moveMan.cancelledReservationFor((Unit) ele.getReserver());
             }
             ele.setReserved(reserveFor, reserver);
         } catch (Exception ex) {
@@ -1331,7 +1200,7 @@ public class ServerMapModule {
      */
     public void deleteFieldReservation(Position field) {
         try {
-            theMap.visMap[field.getX()][field.getY()].deleteReservation();
+            theMap.getVisMap()[field.getX()][field.getY()].deleteReservation();
         } catch (Exception ex) {
         }
         return;
@@ -1345,25 +1214,25 @@ public class ServerMapModule {
      */
     public boolean checkFieldReservation(int X, int Y) {
         try {
-            return theMap.visMap[X][Y].isReserved();
+            return theMap.getVisMap()[X][Y].isReserved();
         } catch (Exception ex) {
             // Nicht-existente Felder sind besetzt
             return true;
         }
     }
 
-    public Unit getEnemyUnitRef(int x, int y, int playerId) {
+   /* public Unit getEnemyUnitRef(int x, int y, int playerId) {
         for (int i = 1; i < rgi.game.playerList.size(); i++) {
             if (i == playerId || rgi.game.areAllies(rgi.game.getPlayer(i), rgi.game.getPlayer(playerId))) {
                 continue;
             }
             try {
-                Unit unit = theMap.visMap[x][y].unitref[i];
+                Unit unit = theMap.getVisMap()[x][y].unitref[i];
                 if (unit != null) {
                     // Wartung
                     if (unit.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
                         // Referenz löschen, andere suchen
-                        theMap.visMap[x][y].unitref[i] = null;
+                        theMap.getVisMap()[x][y].unitref[i] = null;
                         continue;
                     }
                     return unit;
@@ -1373,7 +1242,7 @@ public class ServerMapModule {
             }
         }
         return null;
-    }
+    } */
 
     /**
      * Verwaltet komplexere toDESC-Upgrades
@@ -1437,5 +1306,16 @@ public class ServerMapModule {
                 }
             }
         }
+    }
+
+    /**
+     * Aufrufen, um die Position eines GO so zu ändern, dass es auch die Kollision & das Ref-System mitbekommt.
+     * @param obj Das GO zum Ändern
+     * @param newMain die neue Zurordnungposition
+     */
+    public void changePosition(GameObject obj, Position newMain) {
+        // Alte Kollision austragen:
+
+        obj.setMainPosition(newMain);
     }
 }

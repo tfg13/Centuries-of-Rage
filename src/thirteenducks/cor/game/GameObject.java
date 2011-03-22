@@ -839,6 +839,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Gets all Abilitys as unmodifiable List.
      * @return all Abilitys as unmodifiable List.
      */
+    @Override
     public List<Ability> getAbilitys() {
         return Collections.unmodifiableList(abilitys);
     }

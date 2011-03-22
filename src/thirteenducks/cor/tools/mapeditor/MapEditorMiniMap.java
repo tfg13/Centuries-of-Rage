@@ -58,7 +58,7 @@ public class MapEditorMiniMap extends JLabel {
                             continue;
                         } else {
                             try {
-                                CoRImage tex = imgMap.get(map.getElementProperty(x, y, "ground_tex"));
+                                CoRImage tex = imgMap.get(map.getVisMap()[x][y].getGround_tex());
                                 if (tex != null) {
                                     int color = tex.getImage().getRGB(20, 20);
                                     g3.setColor(new java.awt.Color(color));

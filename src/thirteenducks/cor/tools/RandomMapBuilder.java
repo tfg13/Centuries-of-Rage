@@ -32,14 +32,10 @@ package thirteenducks.cor.tools;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.util.*;
-import thirteenducks.cor.game.DescParamsBuilding;
-import thirteenducks.cor.game.DescParamsUnit;
-import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.game.Unit2x2;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
+import thirteenducks.cor.map.ClientMapElement;
 import thirteenducks.cor.map.MapIO;
 
 public class RandomMapBuilder {
@@ -62,7 +58,7 @@ public class RandomMapBuilder {
 	int newMapY = 241 + Size * 40 + PlayerNumber * 40;
 
 	descBuilding = new HashMap<Integer, Building>();
-	CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
+	AbstractMapElement[][] newMapArray = new AbstractMapElement[newMapX][newMapY];
 	String newMapName = "Random Map";
 	RandomRogMap = new CoRMap(newMapX, newMapY, newMapName, newMapArray);
 	RandomRogMap.setPlayernumber(PlayerNumber);
@@ -71,7 +67,7 @@ public class RandomMapBuilder {
 	for (int x = 0; x < newMapX; x++) {
 	    for (int y = 0; y < newMapY; y++) {
 		if (x % 2 == y % 2) {
-		    newMapArray[x][y] = new CoRMapElement();
+		    newMapArray[x][y] = new ClientMapElement();
 		}
 	    }
 	}
@@ -95,7 +91,7 @@ public class RandomMapBuilder {
     }
 
     public static void saveMap(CoRMap RandomRogMap) { // Speichert die Map ab
-	MapIO.saveMap(RandomRogMap, RandomRogMap.mapName);
+	MapIO.saveMap(RandomRogMap, RandomRogMap.getMapName());
     }
 
     public void zKreis(int x, int y, double r, String tex) {
@@ -162,12 +158,8 @@ public class RandomMapBuilder {
 
     public void zFeld(int x, int y, String tex) { //ein einzelnes Feld zeichnen
 	if (x % 2 == y % 2 && x >= 0 && x < RandomRogMap.getMapSizeX() && y >= 0 && y < RandomRogMap.getMapSizeY()) {
-	    RandomRogMap.changeElementProperty(x, y, "ground_tex", tex); //[x][y].setTex(tex);
-	    if (tex.equals("img/ground/testwater1.png")) {
-		RandomRogMap.visMap[x][y].setCollision(collision.blocked);
-	    } else {
-		RandomRogMap.visMap[x][y].setCollision(collision.free);
-	    }
+            RandomRogMap.getVisMap()[x][y].setGround_tex(tex);
+            RandomRogMap.getVisMap()[x][y].setUnreachable(tex.equals("img/ground/testwater1.png"));
 	} else {
 	    System.out.println("Invalid Field! " + x + "|" + y);
 	}

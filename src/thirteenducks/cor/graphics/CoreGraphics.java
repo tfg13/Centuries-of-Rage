@@ -42,7 +42,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.graphics.input.CoRInput;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 
 /**
  *
@@ -1287,7 +1287,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         inputM.initAsSub(this, content.visMap.length, content.visMap[0].length);
     }
 
-    public void activateMap(CoRMapElement[][] newVisMap) {
+    public void activateMap(AbstractMapElement[][] newVisMap) {
         content.setVisMap(newVisMap, rgi.mapModule.getMapSizeX(), rgi.mapModule.getMapSizeY());
         content.setPosition(0, 0);
         rgi.rogGraphics.initSubs();

@@ -33,7 +33,7 @@ package thirteenducks.cor.game;
 //import elementcorp.rog.RogMapElement.collision;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.map.CoRMapElement.collision;
+import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.ArrayList;
 import java.io.*;
 

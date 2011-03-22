@@ -29,7 +29,6 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.AbilityUpgrade.upgradeaffects;
 import thirteenducks.cor.game.ability.AbilityUpgrade.upgradetype;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.io.*;
 import java.util.*;
 import java.security.*;
@@ -923,7 +922,7 @@ public class ClientMapModule {
     public void gotMap() {
         rgi.rogGraphics.setLoadStatus(8);
 
-        theMap = MapIO.readMap(mapFile.getPath());
+        theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT);
 
         if (rgi.isInDebugMode()) {
             serverCollision = new boolean[theMap.getMapSizeX()][theMap.getMapSizeY()];
@@ -989,17 +988,6 @@ public class ClientMapModule {
         }
         for (Building building : buildingList) {
             netIDList.put(building.netID, building);
-        }
-    }
-
-    public void initUnitRefLists(int numberOfPlayers) {
-        for (int x = 0; x < theMap.visMap.length; x++) {
-            for (int y = 0; y < theMap.visMap[0].length; y++) {
-                if ((x + y) % 2 == 1) {
-                    continue;
-                }
-                theMap.visMap[x][y].unitref = new Unit[numberOfPlayers + 1];
-            }
         }
     }
 
@@ -1235,46 +1223,6 @@ public class ClientMapModule {
         // Selektionsschatten einfügen
         if (!rgi.isAIClient) {
             rgi.rogGraphics.builingsChanged();
-        }
-    }
-
-    public collision getCollision(int x, int y) {
-        // Prüft ob ein Feld blockiert, also ob Einheiten drauf laufen können
-        try {
-            return theMap.visMap[x][y].getCollision();
-        } catch (Exception ex) {
-            return collision.blocked;
-        }
-    }
-
-    public collision getCollision(Position pos) {
-        // Prüft ob ein Feld blockiert, also ob Einheiten drauf laufen können
-        try {
-            return theMap.visMap[pos.getX()][pos.getY()].getCollision();
-        } catch (Exception ex) {
-            return collision.blocked;
-        }
-    }
-
-    public void setCollision(int x, int y, collision blocking) {
-        // Setzt die Kollision
-        try {
-            theMap.visMap[x][y].setCollision(blocking);
-        } catch (Exception ex) {
-            System.out.println("SetCollision-Error: " + x + "||" + y);
-            rgi.logger(ex);
-        }
-    }
-
-    public void setCollision(Position position, collision blocking) {
-        // Setzt die Kollision
-        if (position != null) {
-            try {
-                theMap.visMap[position.getX()][position.getY()].setCollision(blocking);
-            } catch (Exception ex) {
-                System.out.println("SetCollision-Error: " + position);
-                rgi.logger(ex);
-            }
         }
     }
 

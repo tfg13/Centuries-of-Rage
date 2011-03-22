@@ -101,8 +101,6 @@ public class ClientGameController implements Runnable {
         myself.lobbyRace = this.playerList.get(myself.playerId).lobbyRace;
         this.playerList.set(myself.playerId, myself);
 
-        rgi.mapModule.initUnitRefLists(numberOfPlayers);
-
         // Upgradesystem initialisieren:
         for (NetPlayer player : playerList) {
             player.clientDescAbilities = completeCloneAbilitys(myself.clientDescAbilities);
