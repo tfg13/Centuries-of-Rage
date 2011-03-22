@@ -68,13 +68,9 @@ public class TheMainMenu extends Container {
         super.addComponent(new AnimatedImage(this, "/img/mainmenu/test.png"));
 
         // Rahmen:
-        // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
         super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
 
         // Mauskoordiaten anzeigen:
-        super.addComponent(new CoordinateView(this));
-
-        // Koordinatenanzeige:
         super.addComponent(new CoordinateView(this));
 
 
@@ -98,6 +94,12 @@ public class TheMainMenu extends Container {
         menus.put("multiplayerscreen", MultiplayerScreen);
         super.addComponent(MultiplayerScreen);
         MultiplayerScreen.fadeOut();
+
+        // Lobby
+        Container LobbyScreen = new LobbyScreen(this);
+        menus.put("LobbyScreen", LobbyScreen);
+        super.addComponent(LobbyScreen);
+        LobbyScreen.fadeOut();
 
 
 
