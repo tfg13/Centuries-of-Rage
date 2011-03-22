@@ -36,5 +36,7 @@ public class TheMainMenu extends Container {
 
     public TheMainMenu() {
         super(null, 1, 1, 1, 1); // Dummy, funktioniert nicht
+
+
     }
 }

@@ -72,6 +72,7 @@ public class Container extends Component {
         this.components.add(component);
     }
 
+    
     @Override
     public void render(Graphics g) {
 
@@ -79,17 +80,6 @@ public class Container extends Component {
         if (!active) {
             return;
         }
-
-
-
-//        // Rahmen zeichnen:
-//        g.setColor(Color.gray);
-//        g.fillRect(getX1(), getY1(), getX2() - getX1(), getY2() - getY1());
-//        g.setColor(Color.black);
-//        g.drawLine(getX1(), getY1(), getX2(), getY1());
-//        g.drawLine(getX1(), getY1(), getX1(), getY2());
-//        g.drawLine(getX2(), getY1(), getX2(), getY2());
-//        g.drawLine(getX1(), getY2(), getX2(), getY2());
 
         for (Component c : components) {
             c.render(g);
