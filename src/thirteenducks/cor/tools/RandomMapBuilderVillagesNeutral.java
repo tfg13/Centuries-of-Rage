@@ -30,7 +30,6 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Platziert neutrale Dörfer
@@ -145,11 +144,13 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
 	    buildingList.add(Haus);
 
+            /*
 	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
 		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
 		}
 	    }
+            */
 	}
     }
 }

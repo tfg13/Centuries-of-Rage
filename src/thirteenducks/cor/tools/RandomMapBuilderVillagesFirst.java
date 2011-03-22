@@ -30,10 +30,6 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
-import thirteenducks.cor.map.CoRMapElement.collision;
-import thirteenducks.cor.game.DescParamsUnit;
-import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.game.Unit2x2;
 
 /**
  * Setzt für jeden Spieler ein Startdorf
@@ -97,11 +93,12 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
 	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 
-	    for (int z1c = 0; z1c < 12; z1c++) {
+	    /* Kollision nichtmehr nötig.
+            for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
 		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
 		}
-	    }
+	    } */
 
 	    StartG.add(Haus); //Startgebäude in Arraylist eintragen
 	}

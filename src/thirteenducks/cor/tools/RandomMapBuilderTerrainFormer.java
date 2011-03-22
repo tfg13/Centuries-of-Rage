@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Baut das Terrain
@@ -55,10 +54,7 @@ public class RandomMapBuilderTerrainFormer extends RandomMapBuilderJob {
 		}
 		if (x == 0 || x == (newMapX - 1) || y == 0 || y == (newMapY - 1)) {
 		    // Feld hat Kollision
-		    RandomMapBuilder.RandomRogMap.changeElementProperty(x, y, "is_border", "true");
-		    RandomMapBuilder.RandomRogMap.visMap[x][y].setCollision(collision.blocked);
-		} else {
-		    RandomMapBuilder.RandomRogMap.visMap[x][y].setCollision(collision.free);
+                    RandomMapBuilder.RandomRogMap.getVisMap()[x][y].setUnreachable(true);
 		}
 	    }
 	}
@@ -215,14 +211,10 @@ public class RandomMapBuilderTerrainFormer extends RandomMapBuilderJob {
 	return Land;
     }
 
-    public void zFeld(int x, int y, String tex) { //ein einzelnes Feld zeichnen
+     public void zFeld(int x, int y, String tex) { //ein einzelnes Feld zeichnen
 	if (x % 2 == y % 2 && x >= 0 && x < RandomMapBuilder.RandomRogMap.getMapSizeX() && y >= 0 && y < RandomMapBuilder.RandomRogMap.getMapSizeY()) {
-	    RandomMapBuilder.RandomRogMap.changeElementProperty(x, y, "ground_tex", tex); //[x][y].setTex(tex);
-	    if (tex.equals("img/ground/testwater1.png")) {
-		RandomMapBuilder.RandomRogMap.visMap[x][y].setCollision(collision.blocked);
-	    } else {
-		RandomMapBuilder.RandomRogMap.visMap[x][y].setCollision(collision.free);
-	    }
+            RandomMapBuilder.RandomRogMap.getVisMap()[x][y].setGround_tex(tex);
+            RandomMapBuilder.RandomRogMap.getVisMap()[x][y].setUnreachable(tex.equals("img/ground/testwater1.png"));
 	} else {
 	    System.out.println("Invalid Field! " + x + "|" + y);
 	}

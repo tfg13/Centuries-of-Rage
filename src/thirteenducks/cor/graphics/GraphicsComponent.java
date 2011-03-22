@@ -31,7 +31,6 @@ import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
@@ -39,7 +38,7 @@ import java.awt.image.VolatileImage;
 import java.util.*;
 import javax.swing.JLabel;
 import org.apache.commons.collections.buffer.PriorityBuffer;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 
 public class GraphicsComponent extends JLabel {
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
@@ -48,7 +47,7 @@ public class GraphicsComponent extends JLabel {
     CoRImage colModeImage;
     Color color;
     protected int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
-    CoRMapElement[][] visMap; // Die angezeigte Map
+    AbstractMapElement[][] visMap; // Die angezeigte Map
     boolean renderMesh = false; // Gitter rendern
     boolean renderGround = false; // Boden rendern
     boolean renderObjects = false; // Objecte (Bäuume etc) rendern
@@ -139,7 +138,7 @@ public class GraphicsComponent extends JLabel {
 
             if (renderGround) {
                 // OK, Boden rendern!
-                runRenderRound("ground_tex", g2);
+                runRenderRoundGround(g2);
             }
             // Mesh rendern?
             if (renderMesh) {
@@ -176,26 +175,16 @@ public class GraphicsComponent extends JLabel {
 
             if (renderObjects) {
                 // Feste Objekte
-                runRenderRound("fix_tex", g2);
+                runRenderRoundFix(g2);
             }
 
             if (renderCreeps) {
                 // Einheiten
-                if (!newMode) {
-                    runRenderRound("unit_tex", g2);
-                } else {
-                    renderUnits(g2);
-                }
+                renderUnits(g2);
             }
             if (renderPicCursor) {
                 // Nochmal, damit es über Einheiten schwebt (naja, leichter Pfusch)
                 renderCursor(g2);
-            }
-
-            // Mesh rendern fertig, oder gar nicht gemacht
-            if (colMode) {
-                // Kollision drauf rendern
-                renderCol(g2);
             }
 
 
@@ -256,42 +245,6 @@ public class GraphicsComponent extends JLabel {
         drawCursor = rmec;
     }
 
-    private void renderCol(Graphics2D g2) {
-        // Murks, aber die position müssen gerade sein...
-        if (positionX % 2 == 1) {
-            positionX--;
-        }
-        if (positionY % 2 == 1) {
-            positionY--;
-        }
-        // Rendert die rote Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
-                // Hat dieses Feld Kollision?
-                try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        g2.drawImage(colModeImage.getImage(), x * 10, (int) (y * 7.5), null);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                // Hat dieses Feld Kollision?
-                try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        g2.drawImage(colModeImage.getImage(), x * 10, (int) (y * 7.5), null);
-                    }
-                } catch (Exception ex) {
-                }
-            }
-        }
-    }
-
     private void renderUnits(Graphics2D g2) {
         selectionShadows = new ArrayList();
         if (unitList != null) {
@@ -313,7 +266,7 @@ public class GraphicsComponent extends JLabel {
         }
     }
 
-    private void runRenderRound(String searchprop, Graphics2D g2) {
+    private void runRenderRoundGround(Graphics2D g2) {
         //System.out.println("This is runRenderRound, searching for <" + searchprop + "> mapsize(x,y) view [x,y]: (" + sizeX + "," + sizeY + ") [" + viewX + "," + viewY + "]");
         for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
             for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
@@ -321,7 +274,7 @@ public class GraphicsComponent extends JLabel {
                 //              System.out.println("Searching for " + x + "," + y);
                 String tex = null;
                 try {
-                    tex = visMap[x + positionX][y + positionY].getProperty(searchprop);
+                    tex = visMap[x + positionX][y + positionY].getGround_tex();
                 } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
                     // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                 }
@@ -354,7 +307,77 @@ public class GraphicsComponent extends JLabel {
                 // System.out.println("Searching for " + x + "," + y);
                 String tex = null;
                 try {
-                    tex = visMap[x + positionX][y + positionY].getProperty(searchprop);
+                    tex = visMap[x + positionX][y + positionY].getGround_tex();
+                } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
+                    // Siehe oben, egal weil hier die Map zu Ende ist...
+                }
+                // Was da?
+                if (tex != null) {
+                    // Bild suchen und einfügen
+                    CoRImage tempImage;
+                    if (colMode) {
+                        // SW-Modus
+                        BufferedImage newTemp = grayImgMap.get(tex).getImage();
+                        tempImage =
+                                new CoRImage(newTemp);
+                    } else {
+                        // Normalfall
+                        tempImage = imgMap.get(tex);
+                    }
+
+                    if (tempImage != null) {
+                        g2.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5), null);
+                    } else {
+                        System.out.println("[RME][ERROR]: Image \"" + tex + "\" not found!");
+                    }
+
+                }
+            }
+        }
+    }
+
+    private void runRenderRoundFix(Graphics2D g2) {
+        //System.out.println("This is runRenderRound, searching for <" + searchprop + "> mapsize(x,y) view [x,y]: (" + sizeX + "," + sizeY + ") [" + viewX + "," + viewY + "]");
+        for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
+            for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
+                // X und Y durchlaufen, wenn ein Bild da ist, dann einbauen
+                //              System.out.println("Searching for " + x + "," + y);
+                String tex = null;
+                try {
+                    tex = visMap[x + positionX][y + positionY].getFix_tex();
+                } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
+                    // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
+                }
+                // Was da?
+                if (tex != null) {
+                    // Bild suchen und einfügen
+                    CoRImage tempImage;
+                    if (colMode) {
+                        // SW-Modus
+                        BufferedImage newTemp = grayImgMap.get(tex).getImage();
+                        tempImage = new CoRImage(newTemp);
+                    } else {
+                        // Normalfall
+                        tempImage = imgMap.get(tex);
+                    }
+
+                    if (tempImage != null) {
+                        g2.drawImage(tempImage.getImage(), x * 10, (int) (y * 7.5), null);
+                    } else {
+                        System.out.println("[RME][ERROR]: Image \"" + tex + "\" not found!");
+                    }
+
+                }
+                //  System.out.println(x + " " + y);
+            }
+        }
+        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
+            for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
+                // X und Y durchlaufen, wenn ein Bild da ist, dann einbauen
+                // System.out.println("Searching for " + x + "," + y);
+                String tex = null;
+                try {
+                    tex = visMap[x + positionX][y + positionY].getFix_tex();
                 } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
                     // Siehe oben, egal weil hier die Map zu Ende ist...
                 }
@@ -431,14 +454,14 @@ public class GraphicsComponent extends JLabel {
         this.repaint();
     }
 
-    public void setVisMap(CoRMapElement[][] newVisMap, int X, int Y) {
+    public void setVisMap(AbstractMapElement[][] newVisMap, int X, int Y) {
         // Einfach einsetzen
         visMap = newVisMap;
         sizeX = X;
         sizeY = Y;
     }
 
-    public void changeVisMap(CoRMapElement[][] newVisMap) {
+    public void changeVisMap(AbstractMapElement[][] newVisMap) {
         // Einfach einsetzen
         visMap = newVisMap;
         if (modi != 3) { // Im echten Rendern refreshed die Mainloop

@@ -27,12 +27,9 @@ package thirteenducks.cor.game;
 
 import java.io.*;
 import java.util.*;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.graphics.GraphicsImage;
 
 /**
  * Superklasse für Einheiten
@@ -254,7 +251,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @param rgi
      * @return
      */
-    public Unit enemyInRangeAroundMe(ServerCore.InnerServer rgi) {
+  /*  public Unit enemyInRangeAroundMe(ServerCore.InnerServer rgi) {
         int searchRange = (int) (getRange() / 1.41);
         int i = 1;
         int kreis = 1;
@@ -305,7 +302,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         }
 
         return rgi.netmap.getEnemyUnitRef(kreismember.getX(), kreismember.getY(), getPlayerId());
-    }
+    } */
 
     /**
      * Sucht Feinde in der Umgebung dieser Einheit und dazugehörige Angriffspositionen

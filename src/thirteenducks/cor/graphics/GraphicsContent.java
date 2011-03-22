@@ -28,7 +28,7 @@ package thirteenducks.cor.graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.map.CoRMapElement.collision;
+import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.awt.Dimension;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -36,7 +36,7 @@ import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 
@@ -88,7 +88,7 @@ public class GraphicsContent extends BasicGame {
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
     public GraphicsImage colModeImage;
     public int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
-    CoRMapElement[][] visMap; // Die angezeigte Map
+    AbstractMapElement[][] visMap; // Die angezeigte Map
     public boolean renderCursor = false;
     public boolean renderPicCursor = false; // Cursor, der ein Bild anzeigt, z.B. ein Haus, das gebaut werden soll
     public boolean renderFogOfWar = false;
@@ -878,7 +878,7 @@ public class GraphicsContent extends BasicGame {
                         //              System.out.println("Searching for " + x + "," + y);
                         String ground = null;
                         try {
-                            ground = visMap[x + positionX][y + positionY].getProperty("ground_tex");
+                            ground = visMap[x + positionX][y + positionY].getGround_tex();
                         } catch (Exception ex) {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                         }
@@ -903,7 +903,7 @@ public class GraphicsContent extends BasicGame {
                         }
                         String fix = null;
                         try {
-                            fix = visMap[x + positionX][y + positionY].getProperty("fix_tex");
+                            fix = visMap[x + positionX][y + positionY].getFix_tex();
                         } catch (Exception ex) {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                         }
@@ -1051,7 +1051,7 @@ public class GraphicsContent extends BasicGame {
         framePos = td;
     }
 
-    public void setVisMap(CoRMapElement[][] newVisMap, int X, int Y) {
+    public void setVisMap(AbstractMapElement[][] newVisMap, int X, int Y) {
         // Einfach einsetzen
         visMap = newVisMap;
         sizeX = X;

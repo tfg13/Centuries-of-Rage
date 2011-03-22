@@ -28,14 +28,14 @@ package thirteenducks.cor.tools;
 import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.Unit;
-import thirteenducks.cor.map.CoRMapElement.collision;
+import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.*;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit2x2;
-import thirteenducks.cor.map.CoRMapElement;
+import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.map.MapIO;
 
 /**
@@ -472,7 +472,7 @@ public class RandomMapBuilder_Old {
      */
     private void prepareMap(int newMapX, int newMapY) {
         descBuilding = new HashMap<Integer, Building>();
-        CoRMapElement[][] newMapArray = new CoRMapElement[newMapX][newMapY];
+        AbstractMapElement[][] newMapArray = new AbstractMapElement[newMapX][newMapY];
         String newMapName = "Random Map";
         RandomRogMap = new CoRMap(newMapX, newMapY, newMapName, newMapArray);
 
@@ -480,7 +480,7 @@ public class RandomMapBuilder_Old {
         for (int x = 0; x < newMapX; x++) {
             for (int y = 0; y < newMapY; y++) {
                 if (x % 2 == y % 2) {
-                    newMapArray[x][y] = new CoRMapElement();
+                    newMapArray[x][y] = new AbstractMapElement();
                 }
             }
         }

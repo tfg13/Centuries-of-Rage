@@ -28,7 +28,7 @@ package thirteenducks.cor.game.server;
 import thirteenducks.cor.game.client.ClientIALGroup;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.map.CoRMapElement.collision;
+import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
