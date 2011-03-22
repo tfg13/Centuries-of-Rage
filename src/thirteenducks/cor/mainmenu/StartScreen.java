@@ -100,6 +100,7 @@ public class StartScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
+                System.exit(0);
             }
         });
     }
