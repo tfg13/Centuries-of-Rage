@@ -28,7 +28,7 @@ package thirteenducks.cor.tools;
 import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
-import thirteenducks.cor.game.PlayersBuilding;
+import thirteenducks.cor.game.NeutralBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.map.CoRMapElement.collision;
 
@@ -135,8 +135,8 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    param.setZ1(12);
 	    param.setZ2(12);
 
-	    PlayersBuilding tmp = new PlayersBuilding(param);
-	    PlayersBuilding Haus = new PlayersBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
+	    NeutralBuilding tmp = new NeutralBuilding(param);
+	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
 	    Haus.getGraphicsData().offsetY = 8;
 	    Haus.setPlayerId(1);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
