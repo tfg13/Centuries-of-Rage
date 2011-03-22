@@ -51,18 +51,16 @@ public class StartScreen extends Container {
 
         mainMenu = m;
 
-        // Hintergrund
+        // Hintergrund:
         super.addComponent(new ScaledImage(mainMenu, -20, 85, 140, 8, "img/mainmenu/buttonnew.png"));
 
 
-        // Start Game Button:
+        // Einzelspieler:
         super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "Singleplayer") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                mainMenu.getMenu("singleplayer").fadeIn();
-                fadeOut();
-
+                // @TODO ert mal singleplayer programmieren....
             }
         });
 

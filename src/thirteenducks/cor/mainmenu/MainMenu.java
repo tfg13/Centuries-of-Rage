@@ -119,6 +119,9 @@ public class MainMenu extends AppGameContainer {
         // Mauskoordiaten anzeigen:
         g.components.add(new CoordinateView(this));
 
+        // Koordinatenanzeige:
+        g.addComponent(new CoordinateView(this));
+
 
         /**********************************************************************
          * Menüs:
