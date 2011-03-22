@@ -39,10 +39,6 @@ import thirteenducks.cor.mainmenu.components.Frame;
 public class TheMainMenu extends Container {
 
     /**
-     * Die einzelnen Menüs
-     */
-    HashMap<String, Container> menus;
-    /**
      * X-Bildschirmauflösung
      */
     private int resX;
@@ -53,7 +49,7 @@ public class TheMainMenu extends Container {
     /**
      * Die Lobby
      */
-    private Container LobbyScreen;
+    private Container lobbyScreen;
 
     /**
      * Konstruktor
@@ -83,40 +79,30 @@ public class TheMainMenu extends Container {
          *********************************************************************/
         // Hauptmenü:
         Container startScreen = new StartScreen(this);
-        menus.put("startscreen", startScreen);
+        startScreen.setName("startscreen");
         super.addComponent(startScreen);
         startScreen.fadeIn();
 
         // RandomMapBuilder
         Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
-        menus.put("randommapbuilderscreen", randomMapBuilderScreen);
+        randomMapBuilderScreen.setName("randommapbuilderscreen");
         super.addComponent(randomMapBuilderScreen);
         randomMapBuilderScreen.fadeOut();
 
         // Mehrspieler:
-        Container MultiplayerScreen = new MultiplayerScreen(this);
-        menus.put("multiplayerscreen", MultiplayerScreen);
-        super.addComponent(MultiplayerScreen);
-        MultiplayerScreen.fadeOut();
+        Container multiplayerScreen = new MultiplayerScreen(this);
+        multiplayerScreen.setName("multiplayerscreen");
+        super.addComponent(multiplayerScreen);
+        multiplayerScreen.fadeOut();
 
         // Lobby
-        LobbyScreen = new LobbyScreen(this);
-        menus.put("LobbyScreen", LobbyScreen);
-        super.addComponent(LobbyScreen);
-        LobbyScreen.fadeOut();
+        lobbyScreen = new LobbyScreen(this);
+        lobbyScreen.setName("lobbyscreen");
+        super.addComponent(lobbyScreen);
+        lobbyScreen.fadeOut();
 
 
 
-    }
-
-    /**
-     * Gibt ein bestimmtes Menü zurück
-     *
-     * @param name - Name des Menüs
-     * @return     - Das Menü
-     */
-    public Container getMenu(String name) {
-        return menus.get(name);
     }
 
     /**
@@ -141,6 +127,6 @@ public class TheMainMenu extends Container {
      * @return - das LobbySreen-Objekt
      */
     public Container getLobby() {
-        return LobbyScreen;
+        return lobbyScreen;
     }
 }
