@@ -45,6 +45,10 @@ public class Component {
      */
     private MainMenu mainMenu;
     /**
+     * Der name dieser Komponente (optional)
+     */
+    private String name;
+    /**
      * Die Koordinaten der linken oberen Ecke in Pixel
      */
     private int x1, y1;
@@ -248,5 +252,21 @@ public class Component {
      */
     public void setY2(int y2) {
         this.y2 = y2;
+    }
+
+    /**
+     * Getter für name
+     * @return - der Name der Komponente
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter für den Namen der Komponente
+     * @param name - der Name den die Komponente haben soll
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }

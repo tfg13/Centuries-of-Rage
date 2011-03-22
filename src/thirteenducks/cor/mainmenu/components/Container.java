@@ -72,6 +72,21 @@ public class Container extends Component {
         this.components.add(component);
     }
 
+    /**
+     * Gibt die Komponente mit dem entsprechenden Namen zurück, WENN es eine gibt
+     * @param name - der Name der gesuchten Komponente
+     * @return - die Komponente, WENN eine mit dem Namen gefunden wurde
+     */
+    public Component getComponent(String name) {
+        for (Component c : this.components) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
+        System.out.print("keine Komponente mit Namen <" + name + "> gefunden.");
+        return null;
+    }
+
     @Override
     public void render(Graphics g) {
 
