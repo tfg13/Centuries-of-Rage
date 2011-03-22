@@ -25,7 +25,11 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.util.HashMap;
+import thirteenducks.cor.mainmenu.components.AnimatedImage;
 import thirteenducks.cor.mainmenu.components.Container;
+import thirteenducks.cor.mainmenu.components.CoordinateView;
+import thirteenducks.cor.mainmenu.components.Frame;
 
 /**
  * Hauptmenü
@@ -34,9 +38,94 @@ import thirteenducks.cor.mainmenu.components.Container;
  */
 public class TheMainMenu extends Container {
 
-    public TheMainMenu() {
-        super(null, 1, 1, 1, 1); // Dummy, funktioniert nicht
+    /**
+     * Die einzelnen Menüs
+     */
+    HashMap<String, Container> menus;
+    /**
+     * X-Bildschirmauflösung
+     */
+    private int resX;
+    /**
+     * Y-Bildschirmauflösung
+     */
+    private int resY;
+
+    /**
+     * Konstruktor
+     *
+     * @param resX - X-Auflösung
+     * @param resY - Y-Auflösung
+     */
+    public TheMainMenu(int resX, int resY) {
+        super(null, 1, 1, 100, 100); // Dummy, funktioniert nicht
 
 
+        /**********************************************************************
+         * Hintergrund:
+         *********************************************************************/
+        // Animierter Hintergrund:
+        super.addComponent(new AnimatedImage(this, "/img/mainmenu/test.png"));
+
+        // Rahmen:
+        // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
+        super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
+
+        // Mauskoordiaten anzeigen:
+        super.addComponent(new CoordinateView(this));
+
+        // Koordinatenanzeige:
+        super.addComponent(new CoordinateView(this));
+
+
+        /**********************************************************************
+         * Menüs:
+         *********************************************************************/
+        // Hauptmenü:
+        Container startScreen = new StartScreen(this);
+        menus.put("startscreen", startScreen);
+        super.addComponent(startScreen);
+        startScreen.fadeIn();
+
+        // RandomMapBuilder
+        Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
+        menus.put("randommapbuilderscreen", randomMapBuilderScreen);
+        super.addComponent(randomMapBuilderScreen);
+        randomMapBuilderScreen.fadeOut();
+
+        // Mehrspieler:
+        Container MultiplayerScreen = new MultiplayerScreen(this);
+        menus.put("multiplayerscreen", MultiplayerScreen);
+        super.addComponent(MultiplayerScreen);
+        MultiplayerScreen.fadeOut();
+
+
+
+    }
+
+    /**
+     * Gibt ein bestimmtes Menü zurück
+     *
+     * @param name - Name des Menüs
+     * @return     - Das Menü
+     */
+    public Container getMenu(String name) {
+        return menus.get(name);
+    }
+
+    /**
+     * Getter für X-Auflösung
+     * @return X-Auflösung
+     */
+    public int getResX() {
+        return resX;
+    }
+
+    /**
+     * Getter für Y-Auflösung
+     * @return Y-Auflösung
+     */
+    public int getResY() {
+        return resY;
     }
 }
