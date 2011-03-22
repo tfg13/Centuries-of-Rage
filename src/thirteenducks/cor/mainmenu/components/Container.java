@@ -72,7 +72,6 @@ public class Container extends Component {
         this.components.add(component);
     }
 
-    
     @Override
     public void render(Graphics g) {
 
@@ -152,6 +151,11 @@ public class Container extends Component {
         active = false;
     }
 
+    /**
+     * Setter für Alpha (Transparenz)
+     * setzt den alpha-Wert der SubKomponenten
+     * @param alpha
+     */
     @Override
     public void setAlpha(float alpha) {
         for (Component c : components) {
