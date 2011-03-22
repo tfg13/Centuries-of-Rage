@@ -23,14 +23,28 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package thirteenducks.cor.mainmenu;
+
+import thirteenducks.cor.mainmenu.components.Container;
+import thirteenducks.cor.mainmenu.components.ScaledImage;
 
 /**
  * Die Lobby
  * hier werde nTeams, Servereinstellungen, Map etc festgelegt und das Spiel gestartet
  * @author michael
  */
-public class LobbyScreen {
+public class LobbyScreen extends Container {
 
+    /**
+     * Konstruktor
+     * @param m - Hauptmenü-Referenz
+     */
+    public LobbyScreen(MainMenu m) {
+        super(m, 1, 1, 100, 100);
+
+        // Map-Preview
+        // @TODO: Die startposition in diesem Preview auswählen
+        super.addComponent(new ScaledImage(m, 70, 8, 28, 28, "/img/mainmenu/rost.png"));
+
+    }
 }
