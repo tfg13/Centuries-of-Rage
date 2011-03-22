@@ -1,0 +1,208 @@
+B 1 {
+name=Village Center
+defaultTexture=img/buildings/human_main_e1.png
+hitpoints=5000
+maxhitpoints=5000
+Gdesc=Main building
+offsetY=8
+z1=12
+z2=12
+ability=401 #Recruit worker
+ability=402 #Recruit scout
+ability=800 #Epoch2
+ability=801 #Epoch3
+ability=802 #Epoch4
+}
+
+B 7712 {
+name=Village Center Epoch II
+# Just for overwriting the animator
+}
+
+B 7713 {
+name=Village Center Epoch III
+# Just for overwriting the animator
+}
+
+B 2 {
+name=Hut
+defaultTexture=img/buildings/human_house_e1.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=Increases Unit Limit
+offsetY=2
+z1=3
+z2=3
+limit=-5
+ability=825 #+5 Limit
+}
+
+B 7722 {
+name=Hut Epoch II
+}
+
+B 7723 {
+name=Hut Epoch III
+}
+
+B 7724 {
+name=Hut Epoch IV
+}
+
+B 3 {
+name=Barracks
+defaultTexture=img/buildings/human_barracks_e1.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Infantry
+offsetY=4
+z1=5
+z2=5
+ability=403 #Warrior
+ability=405 #Archer
+ability=406 #Spear
+ability=407 #Legionnaire
+ability=408 #Spear Legionnaire
+ability=412 #Swordman
+ability=413 #Pike
+ability=414 #XBow
+}
+
+B 7733 {
+name=Barracks Epoch III
+}
+
+B 4 {
+name=Storage
+defaultTexture=img/buildings/human_storage_e1.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=Improves Ressource-gaining
+offsetY=4
+z1=4
+z2=3
+ability=809 #Food Upgrade
+ability=810 #Wood Upgrade
+ability=811 #Metal Upgrade
+ability=812 #Gold Upgrade
+}
+
+B 5 {
+name=Watchtower
+defaultTexture=img/buildings/human_tower_e1.png
+hitpoints=1000
+maxhitpoints=1000
+damage=6
+range=13
+bulletspeed=15
+bullettexture=img/bullets/genericarrow.png
+antikav=150
+Gdesc=Defence
+offsetY=2
+z1=2
+z2=2
+visrange=10
+limit=1
+ability=826 #Tower Upg
+ability=827 #Tower Upg
+}
+
+B 6 {
+name=Stable
+defaultTexture=img/buildings/human_stable_e2.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Cavalry
+offsetY=4
+z1=4
+z2=4
+ability=404 #Horseman
+ability=409 #Cav Archer
+ability=410 #Knight
+}
+
+B 7 {
+name=Farm
+defaultTexture=img/buildings/human_farm_e2.png
+hitpoints=1000
+maxhitpoints=1000
+Gdesc=Produces Food
+offsetY=4
+z1=5
+z2=5
+maxIntra=3
+harvRate=0.8
+harvests=1
+}
+
+B 7773 {
+name=Farm Epoch III
+}
+
+B 8 {
+name=Forge
+defaultTexture=img/buildings/human_forge_e2.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=Improves Weapons, Generates Metal
+offsetY=3
+offsetX=1
+z1=3
+z2=5
+ability=814 #Upg
+ability=815 #Upg
+ability=816 #Upg
+ability=817 #Upg
+ability=818 #Upg
+ability=819 #Upg
+ability=820 #Upg
+maxIntra=2
+harvRate=0.8
+harvests=3
+}
+
+B 7783 {
+name=Forge Epoch III
+}
+
+B 9 {
+name=Workshop
+defaultTexture=img/buildings/human_workshop_e3.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=?
+offsetY=4
+offsetX=2
+z1=4
+z2=4
+ability=411 #Catapult
+}
+
+B 10 {
+name=Marketplace
+defaultTexture=img/buildings/human_market_e3.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=Generates Gold
+offsetY=4
+z1=5
+z2=5
+maxIntra=3
+harvRate=0.8
+harvests=4
+ability=822 #Trade Gold for Food
+ability=823 #Trade Gold for Wood
+ability=824 #Trade Gold for Metal
+}
+
+B 11 {
+name=Temple
+defaultTexture=img/buildings/human_temple_e3.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=?
+offsetY=4
+heal=8
+z1=4
+z2=5
+}

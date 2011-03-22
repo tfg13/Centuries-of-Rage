@@ -1,0 +1,39 @@
+2 {
+type=build
+shownname=Build Storage
+reference=B4
+cooldown=0.0
+duration=8000
+e1tex=img/buildings/human_storage_e1.png
+e2tex=img/buildings/human_storage_e2.png
+e3tex=img/buildings/human_storage_e3.png
+e4tex=img/buildings/human_storage_e3.png
+cost2=100
+}
+
+3 {
+type=build
+shownname=Build Barracks
+reference=B3
+cooldown=0.0
+duration=10000
+e1tex=img/buildings/human_barracks_e1.png
+e2tex=img/buildings/human_barracks_e2.png
+e3tex=img/buildings/human_barracks_e3.png
+e4tex=img/buildings/human_barracks_e3.png
+cost2=200
+}
+
+4 {
+type=build
+shownname=Build Watchtower
+Gdesc=Does nothing in this Alpha
+reference=B5
+cooldown=0.0
+duration=15000
+e1tex=img/buildings/human_tower_e1.png
+e2tex=img/buildings/human_tower_e2.png
+e3tex=img/buildings/human_tower_e3.png
+e4tex=img/buildings/human_tower_e3.png
+cost2=150
+}

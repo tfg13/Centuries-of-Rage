@@ -1,0 +1,39 @@
+5 {
+type=build
+shownname=Build Forge
+reference=B5
+cooldown=0.0
+duration=12000
+e2tex=img/buildings/human_forge_e2.png
+e3tex=img/buildings/human_forge_e3.png
+e4tex=img/buildings/human_forge_e3.png
+cost2=225
+locked=true
+}
+
+6 {
+type=build
+shownname=Build Farm
+Gdesc=Does nothing in this Alpha
+reference=B6
+cooldown=0.0
+duration=10000
+e2tex=img/buildings/human_farm_e2.png
+e3tex=img/buildings/human_farm_e3.png
+e4tex=img/buildings/human_farm_e3.png
+cost2=200
+locked=true
+}
+
+7 {
+type=build
+shownname=Build Stable
+reference=B7
+cooldown=0.0
+duration=10000
+e2tex=img/buildings/human_stable_e2.png
+e3tex=img/buildings/human_stable_e3.png
+e4tex=img/buildings/human_stable_e3.png
+cost2=175
+locked=true
+}

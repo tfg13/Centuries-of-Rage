@@ -1,0 +1,40 @@
+U 401 {
+speed=6
+name=Scout
+armortype=lightinf
+defaultTexture=img/creeps/testhuman2.png
+hitpoints=100
+maxhitpoints=100
+range=2
+idlerange=5
+damage=5
+cooldownmax=1000
+Gdesc=Fast, but Weak
+Gpro=Nothing
+Gcon=All
+Gimg=img/creeps/testhuman2.png
+ability=807
+visrange=8
+limit=1
+}
+
+U 402 {
+speed=4
+name=Warrior
+armortype=heavyinf
+defaultTexture=img/creeps/testhuman1.png
+hitpoints=150
+maxhitpoints=150
+range=2
+idlerange=5
+damage=7
+antikav=150
+antibuilding=250
+cooldownmax=1000
+Gdesc=Basic Fighting Unit
+Gpro=Cavalry, Buildings
+Gcon=Light Infantry
+Gimg=img/creeps/testhuman1.png
+visrange=6
+limit=1
+}

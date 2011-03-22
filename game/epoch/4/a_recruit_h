@@ -1,0 +1,38 @@
+
+
+411 {
+type=recruit
+shownname=Recruit Swordman
+reference=U411
+cooldown=0.0
+duration=10000
+e0tex=img/creeps/h_swordman.png
+cost1=110
+cost4=60
+locked=true
+}
+
+412 {
+type=recruit
+shownname=Recruit Pikeman
+reference=U412
+cooldown=0.0
+duration=10000
+e0tex=img/creeps/h_pike.png
+cost1=100
+cost3=70
+locked=true
+}
+
+413 {
+type=recruit
+shownname=Recruit Crossbowman
+reference=U413
+cooldown=0.0
+duration=10000
+e0tex=img/creeps/h_xbow.png
+cost1=80
+cost2=20
+cost4=80
+locked=true
+}

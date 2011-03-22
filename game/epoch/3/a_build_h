@@ -1,0 +1,10 @@
+8 {
+type=build
+shownname=Build Workshop
+reference=B8
+cooldown=0.0
+duration=12000
+e0tex=img/buildings/human_workshop_e3.png
+cost2=250
+locked=true
+}

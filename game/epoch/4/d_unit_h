@@ -1,0 +1,62 @@
+U 411 {
+speed=3.5
+name=Swordman
+armortype=heavyinf
+defaultTexture=img/creeps/h_swordman.png
+hitpoints=260
+maxhitpoints=260
+range=2
+idlerange=5
+damage=12
+antibuilding=200
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=?
+Gcon=Light Infantry
+Gimg=img/creeps//h_swordman.png
+visrange=6
+limit=1
+}
+
+U 412 {
+speed=4.5
+name=Pikeman
+armortype=heavyinf
+defaultTexture=img/creeps/h_pike.png
+hitpoints=200
+maxhitpoints=200
+range=2
+idlerange=5
+damage=8
+antikav=300
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=Cavalry
+Gcon=Light Infantry
+Gimg=img/creeps/h_pike.png
+visrange=6
+limit=1
+}
+
+U 413 {
+speed=4
+name=Crossbowman
+armortype=lightinf
+defaultTexture=img/creeps/h_xbow.png
+hitpoints=130
+maxhitpoints=130
+range=10
+idlerange=8
+damage=15
+bulletspeed=15
+bullettexture=img/bullets/genericarrow.png
+antikav=70
+antiheavyinf=200
+cooldownmax=1300
+Gdesc=Range
+Gpro=Heavy Infantry
+Gcon=Cavalry
+Gimg=img/creeps/h_xbow.png
+visrange=6
+limit=1
+}

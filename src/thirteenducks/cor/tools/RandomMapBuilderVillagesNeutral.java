@@ -28,7 +28,7 @@ package thirteenducks.cor.tools;
 import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
-import thirteenducks.cor.game.PlayersBuilding;
+import thirteenducks.cor.game.NeutralBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.map.CoRMapElement.collision;
 
@@ -63,7 +63,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	}
 
 	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 100; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
 		double mindist = 999999; // kleinste gefundene Distanz
 		Position nextdorf = new Position(-1, -1); // nächstes Dorf
@@ -135,8 +135,8 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    param.setZ1(12);
 	    param.setZ2(12);
 
-	    PlayersBuilding tmp = new PlayersBuilding(param);
-	    PlayersBuilding Haus = new PlayersBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
+	    NeutralBuilding tmp = new NeutralBuilding(param);
+	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
 	    Haus.getGraphicsData().offsetY = 8;
 	    Haus.setPlayerId(1);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
@@ -148,6 +148,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
 		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
+		    RandomMapBuilder.RandomRogMap.changeElementProperty(Haus.getMainPosition().getX() + z1c + z2c, Haus.getMainPosition().getY() - z1c + z2c, "ground_tex", "img/ground/testground1.png");
 		}
 	    }
 	}
