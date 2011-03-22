@@ -129,25 +129,17 @@ public class MainMenu extends AppGameContainer {
         g.addComponent(startScreen);
         startScreen.fadeIn();
 
-        // Spiel beitreten:
-        Container joinServerScreen = new JoinServerScreen(this);
-        menus.put("joinserverscreen", joinServerScreen);
-        g.addComponent(joinServerScreen);
-        joinServerScreen.fadeOut();
-
         // RandomMapBuilder
         Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
         menus.put("randommapbuilderscreen", randomMapBuilderScreen);
         g.addComponent(randomMapBuilderScreen);
         randomMapBuilderScreen.fadeOut();
 
-        // Server starten:
-        Container startServerScreen = new StartServerScreen(this);
-        menus.put("startserverscreen", startServerScreen);
-        g.addComponent(startServerScreen);
-        startServerScreen.fadeOut();
-
-
+        // Mehrspieler:
+        Container MultiplayerScreen = new MultiplayerScreen(this);
+        menus.put("multiplayerscreen", MultiplayerScreen);
+        g.addComponent(MultiplayerScreen);
+        MultiplayerScreen.fadeOut();
     }
 
     /**

@@ -56,22 +56,22 @@ public class StartScreen extends Container {
 
 
         // Start Game Button:
-        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "Start Game") {
+        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "Singleplayer") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                mainMenu.getMenu("startserverscreen").fadeIn();
+                mainMenu.getMenu("singleplayer").fadeIn();
                 fadeOut();
 
             }
         });
 
         // Join Game Button:
-        super.addComponent(new ImageButton(mainMenu, 30, 86, 13, 6, "img/mainmenu/buttonnew.png", "Join Game") {
+        super.addComponent(new ImageButton(mainMenu, 30, 86, 13, 6, "img/mainmenu/buttonnew.png", "Multiplayer") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                mainMenu.getMenu("joinserverscreen").fadeIn();
+                mainMenu.getMenu("multiplayerscreen").fadeIn();
                 fadeOut();
 
             }
