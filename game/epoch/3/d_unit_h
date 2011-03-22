@@ -1,0 +1,105 @@
+U 406 {
+speed=3.5
+name=Legionnaire
+armortype=heavyinf
+defaultTexture=img/creeps/testhuman7.png
+hitpoints=220
+maxhitpoints=220
+range=2
+idlerange=5
+damage=9
+antibuilding=200
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=?
+Gcon=Light Infantry
+Gimg=img/creeps/testhuman7.png
+visrange=6
+limit=1
+}
+
+U 407 {
+speed=3.5
+name=Spear Legionnaire
+armortype=heavyinf
+defaultTexture=img/creeps/testhuman8.png
+hitpoints=220
+maxhitpoints=220
+range=2
+idlerange=5
+damage=6
+antikav=300
+cooldownmax=1000
+Gdesc=Strong Melee Unit
+Gpro=Cavalry
+Gcon=Light Infantry
+Gimg=img/creeps/testhuman7.png
+visrange=6
+limit=1
+}
+
+U 408 {
+speed=5.5
+name=Cavalry Archer
+armortype=kav
+defaultTexture=img/creeps/testhuman9.png
+hitpoints=175
+maxhitpoints=175
+range=8
+idlerange=8
+damage=10
+antivehicle=250
+antibuilding=300
+bulletspeed=15
+bullettexture=img/bullets/firearrow.png
+cooldownmax=1250
+Gdesc=Ranged Cavalry
+Gpro=Catapults, Buildings
+Gcon=?
+Gimg=img/creeps/testhuman9.png
+visrange=6
+limit=2
+}
+
+U 409 {
+speed=5.5
+name=Knight
+armortype=kav
+defaultTexture=img/creeps/testhuman10.png
+hitpoints=300
+maxhitpoints=300
+range=2
+idlerange=5
+damage=20
+antilightinf=150
+cooldownmax=1000
+Gdesc=Cavalry
+Gpro=Light Infantry
+Gcon=Heavy Infantry
+Gimg=img/creeps/testhuman10.png
+visrange=6
+limit=3
+}
+
+U 410 {
+speed=3
+name=Catapult
+armortype=vehicle
+defaultTexture=img/creeps/testcatapult.png
+hitpoints=200
+maxhitpoints=200
+range=15
+idlerange=8
+damage=40
+bulletspeed=15
+bullettexture=img/bullets/catapult_stone.png
+antilightinf=200
+antibuilding=250
+antikav=60
+cooldownmax=2500
+Gdesc=Artillery
+Gpro=Light Infantry, Buildings
+Gcon=Cavalry
+Gimg=img/creeps/testcatapult.png
+limit=3
+}

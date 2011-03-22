@@ -1,0 +1,12 @@
+B 8 {
+name=Workshop
+defaultTexture=img/buildings/human_workshop_e3.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=?
+offsetY=4
+offsetX=2
+z1=4
+z2=4
+ability=411 #Catapult
+}

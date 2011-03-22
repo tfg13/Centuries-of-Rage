@@ -1,0 +1,44 @@
+B 5 {
+name=Mine
+defaultTexture=img/buildings/human_forge_e2.png
+hitpoints=1200
+maxhitpoints=1200
+Gdesc=Produces Resources
+offsetY=3
+offsetX=1
+z1=3
+z2=5
+}
+
+B 7783 {
+name=Mine Epoch III
+}
+
+B 6 {
+name=Farm
+defaultTexture=img/buildings/human_farm_e2.png
+hitpoints=1000
+maxhitpoints=1000
+Gdesc=Increases Population
+offsetY=4
+z1=5
+z2=5
+}
+
+B 7773 {
+name=Farm Epoch III
+}
+
+B 7 {
+name=Stable
+defaultTexture=img/buildings/human_stable_e2.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Cavalry
+offsetY=4
+z1=4
+z2=4
+ability=404 #Horseman
+ability=409 #Cav Archer
+ability=410 #Knight
+}

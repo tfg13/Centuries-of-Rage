@@ -1,0 +1,78 @@
+B 1 {
+name=Village Center
+defaultTexture=img/buildings/human_main_e1.png
+hitpoints=5000
+maxhitpoints=5000
+Gdesc=Main building
+offsetY=8
+z1=12
+z2=12
+ability=401 #Recruit scout
+}
+
+B 7712 {
+name=Village Center Epoch II
+# Just for overwriting the animator
+}
+
+B 7713 {
+name=Village Center Epoch III
+# Just for overwriting the animator
+}
+
+B 2 {
+name=Storage
+defaultTexture=img/buildings/human_storage_e1.png
+hitpoints=1500
+maxhitpoints=1500
+Gdesc=Improves Ressource-gaining
+offsetY=4
+z1=4
+z2=3
+ability=809 #Food Upgrade
+ability=810 #Wood Upgrade
+ability=811 #Metal Upgrade
+ability=812 #Gold Upgrade
+}
+
+B 3 {
+name=Barracks
+defaultTexture=img/buildings/human_barracks_e1.png
+hitpoints=2000
+maxhitpoints=2000
+Gdesc=Recruits Infantry
+offsetY=4
+z1=5
+z2=5
+ability=403 #Warrior
+ability=405 #Archer
+ability=406 #Spear
+ability=407 #Legionnaire
+ability=408 #Spear Legionnaire
+ability=412 #Swordman
+ability=413 #Pike
+ability=414 #XBow
+}
+
+B 7733 {
+name=Barracks Epoch III
+}
+
+B 4 {
+name=Watchtower
+defaultTexture=img/buildings/human_tower_e1.png
+hitpoints=1000
+maxhitpoints=1000
+damage=6
+range=13
+bulletspeed=15
+bullettexture=img/bullets/genericarrow.png
+antikav=150
+Gdesc=Defence
+offsetY=2
+z1=2
+z2=2
+visrange=10
+ability=826 #Tower Upg
+ability=827 #Tower Upg
+}

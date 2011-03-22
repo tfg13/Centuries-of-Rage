@@ -1,0 +1,416 @@
+800 {
+type=upgrade
+uptype=epoche
+shownname=Age 2
+Gdesc=The Next Epoch
+e0tex=img/upgrade/upg_e1_e2.png
+duration=20000
+lock=800
+unlock=6 #Stable
+unlock=7 #Farm
+unlock=8 #Forge
+unlock=405 #Archer
+unlock=406 #Spear
+unlock=801 #Age 3
+unlock=810 #Wood Upgrade
+unlock=815 #Upg HInf Def
+unlock=817 #Upg LInf Def
+unlock=819 #Upg Cav Def
+unlock=826 #Tower Upg
+toEpoche=2
+B1.newTex=img/buildings/human_main_e2.png
+B1.toAnimDesc=7712
+B2.newTex=img/buildings/human_house_e2.png
+B2.toAnimDesc=7722
+B3.newTex=img/buildings/human_barracks_e2.png
+B4.newTex=img/buildings/human_storage_e2.png
+B2.offsetY=4
+B3.offsetY=6
+cost1=400
+}
+
+801 {
+type=upgrade
+uptype=epoche
+shownname=Age 3
+Gdesc=The Next Epoch
+e0tex=img/upgrade/upg_e2_e3.png
+duration=20000
+lock=402 #Scout
+lock=403 #Warrior
+lock=406 #Spear
+unlock=9 #Workshop
+unlock=10 #Market
+unlock=11 #Temple
+unlock=407 #Legionnaire
+unlock=408 #Spear Legionnaire
+unlock=802 #Age 4
+unlock=811 #Metal Upgrade
+unlock=825 #Better Houses
+unlock=827 #Tower Upg
+lock=801
+toEpoche=3
+locked=true
+B1.newTex=img/buildings/human_main_e3.png
+B1.toAnimDesc=7713
+B2.newTex=img/buildings/human_house_e3.png
+B2.toAnimDesc=7723
+B3.newTex=img/buildings/human_barracks_e3.png
+B3.toAnimDesc=7733
+B4.newTex=img/buildings/human_storage_e3.png
+B6.newTex=img/buildings/human_stable_e3.png
+B7.newTex=img/buildings/human_farm_e3.png
+B7.toAnimDesc=7773
+B8.newTex=img/buildings/human_forge_e3.png
+B8.toAnimDesc=7783
+B1.offsetY=6
+B2.offsetX=2
+B3.offsetX=0
+B7.offsetX=2
+B7.offsetY=6
+B8.offsetX=-1
+B8.offsetY=5
+cost1=600
+cost3=300
+}
+
+802 {
+type=upgrade
+uptype=epoche
+shownname=Age 4
+Gdesc=The Next Epoch
+e0tex=img/upgrade/upg_e3_e4.png
+duration=20000
+lock=405 #Archer
+lock=407 #Legionnaire
+lock=408 #Spear Legionnaire
+unlock=410 #Knight
+unlock=412 #Swordman
+unlock=413 #Pike
+unlock=414 #Xbow
+unlock=812 #Gold Upgrade
+unlock=814 #Upg HInf Damage
+unlock=816 #Upg LInf Damage
+unlock=818 #Upg Cav Damage
+#unlock=820 #All Unit Upg
+lock=802
+toEpoche=4
+locked=true
+B2.newTex=img/buildings/human_house_e4.png
+B2.toAnimDesc=7724
+B2.offsetX=0
+cost1=800
+cost4=500
+}
+
+807 {
+type=upgrade
+uptype=upgrade
+shownname=Become a Worker
+Gdesc=Changes the Scout into a Worker
+e0tex=img/creeps/testhuman3.png
+duration=2000
+affects=self
+transformTo=401
+epoche=0
+depends=B4
+cost1=30
+}
+
+809 {
+type=upgrade
+uptype=epoche
+shownname=Food Upgrade
+Gdesc=Increased Food Gathering Rate
+e0tex=img/upgrade/upg_food.png
+duration=10000
+epoche=0
+G.harvrate1up=6
+B7.harvrateup=0.2
+B7.maxIntraup=1
+lock=809
+cost1=100
+cost2=100
+}
+
+810 {
+type=upgrade
+uptype=epoche
+shownname=Wood Upgrade
+Gdesc=Increased Wood Gathering Rate
+e0tex=img/upgrade/upg_wood.png
+duration=10000
+epoche=0
+G.harvrate2up=12
+lock=810
+cost1=200
+cost3=200
+locked=true
+}
+
+811 {
+type=upgrade
+uptype=epoche
+shownname=Metal Upgrade
+Gdesc=Increased Metal Gathering Rate
+e0tex=img/upgrade/upg_metal.png
+duration=10000
+epoche=0
+G.harvrate3up=6
+B8.harvrateup=0.2
+B8.maxIntraup=1
+lock=811
+cost3=200
+cost4=300
+locked=true
+}
+
+812 {
+type=upgrade
+uptype=epoche
+shownname=Gold Upgrade
+Gdesc=Increased Gold Gathering Rate
+e0tex=img/upgrade/upg_gold.png
+duration=10000
+epoche=0
+G.harvrate4up=6
+B10.harvrateup=0.2
+B10.maxIntraup=1
+lock=812
+cost3=300
+cost4=200
+locked=true
+}
+
+814 {
+type=upgrade
+uptype=epoche
+shownname=Heavy Infantry Damage
+Gdesc=Increases Damage dealt by Heavy Infantry
+e0tex=img/upgrade/upg_heavyinf1.png
+duration=10000
+epoche=0
+U403.damageup=3
+U406.damageup=1
+U407.damageup=2
+U408.damageup=1
+U412.damageup=2
+U413.damageup=1
+lock=814
+cost4=300
+locked=true
+}
+
+815 {
+type=upgrade
+uptype=epoche
+shownname=Heavy Infantry Defense
+Gdesc=Increases Health Points of Heavy Infantry
+e0tex=img/upgrade/upg_heavyinf2.png
+duration=10000
+epoche=0
+U403.maxhitpointsup=30
+U406.maxhitpointsup=30
+U407.maxhitpointsup=30
+U408.maxhitpointsup=30
+U412.maxhitpointsup=30
+U413.maxhitpointsup=30
+lock=815
+cost4=300
+locked=true
+}
+
+816 {
+type=upgrade
+uptype=epoche
+shownname=Light Infantry Damage
+Gdesc=Increases Damage dealt by Light Infantry
+e0tex=img/upgrade/upg_lightinf1.png
+duration=10000
+epoche=0
+U401.damageup=1
+U401.harv=true
+U402.damageup=1
+U405.damageup=1
+U414.damageup=1
+lock=816
+cost4=300
+locked=true
+}
+
+817 {
+type=upgrade
+uptype=epoche
+shownname=Light Infantry Defense
+Gdesc=Increases Health Points of Light Infantry
+e0tex=img/upgrade/upg_lightinf2.png
+duration=10000
+epoche=0
+U401.maxhitpointsup=15
+U401.harv=true
+U402.maxhitpointsup=15
+U405.maxhitpointsup=15
+U414.maxhitpointsup=20
+lock=817
+cost4=300
+locked=true
+}
+
+818 {
+type=upgrade
+uptype=epoche
+shownname=Cavalry Damage
+Gdesc=Increases Damage dealt by Cavalry
+e0tex=img/upgrade/upg_cav1.png
+duration=10000
+epoche=0
+U404.damageup=2
+U409.damageup=2
+U410.damageup=4
+lock=818
+cost4=300
+locked=true
+}
+
+819 {
+type=upgrade
+uptype=epoche
+shownname=Cavalry Defense
+Gdesc=Increases Health Points of Cavalry
+e0tex=img/upgrade/upg_cav2.png
+duration=10000
+epoche=0
+U404.maxhitpointsup=30
+U409.maxhitpointsup=25
+U410.maxhitpointsup=50
+lock=819
+cost4=300
+locked=true
+}
+
+820 {
+type=upgrade
+uptype=epoche
+shownname=Unit Upgrade
+Gdesc=Increases Damage and Healthpoints of all Units
+e0tex=img/upgrade/upg_all.png
+duration=10000
+epoche=0
+U401.damageup=1
+U401.harv=true
+U402.damageup=1
+U403.damageup=1
+U404.damageup=1
+U405.damageup=1
+U406.damageup=1
+U407.damageup=1
+U408.damageup=1
+U409.damageup=1
+U410.damageup=1
+U411.damageup=1
+U401.maxhitpointsup=10
+U402.maxhitpointsup=10
+U403.maxhitpointsup=10
+U404.maxhitpointsup=10
+U405.maxhitpointsup=10
+U406.maxhitpointsup=10
+U407.maxhitpointsup=10
+U408.maxhitpointsup=10
+U409.maxhitpointsup=10
+U410.maxhitpointsup=10
+U411.maxhitpointsup=10
+lock=820
+cost1=400
+cost3=400
+cost4=800
+locked=true
+allowMultipleUses=true
+}
+
+822 {
+type=upgrade
+uptype=epoche
+shownname=Trade Gold for Food
+Gdesc=+100 Food
+e0tex=img/upgrade/upg_food.png
+duration=0
+epoche=0
+G.res1up=75
+cost4=100
+allowMultipleUses=true
+}
+
+823 {
+type=upgrade
+uptype=epoche
+shownname=Trade Gold for Wood
+Gdesc=+100 Wood
+e0tex=img/upgrade/upg_wood.png
+duration=0
+epoche=0
+G.res2up=75
+cost4=100
+allowMultipleUses=true
+}
+
+824 {
+type=upgrade
+uptype=epoche
+shownname=Trade Gold for Metal
+Gdesc=+100 Metal
+e0tex=img/upgrade/upg_metal.png
+duration=0
+epoche=0
+G.res3up=75
+cost4=100
+allowMultipleUses=true
+}
+
+825 {
+type=upgrade
+uptype=deltaupgrade
+shownname=Increases the Limit of this House
+Gdesc=+5 Limit
+e0tex=img/upgrade/upg_house.png
+duration=3000
+affects=self
+limitupone=-5
+maxhitpointsup=800
+cost2=40
+cost4=50
+locked=true
+}
+
+826 {
+type=upgrade
+uptype=epoche
+shownname=Watchtower Upgrade
+Gdesc=Increases Health Points and Damage
+e0tex=img/buildings/human_tower_e2.png
+duration=10000
+epoche=0
+B5.maxhitpointsup=200
+B5.damageup=1
+B5.newTex=img/buildings/human_tower_e2.png
+B5.offsetY=4
+lock=826
+cost3=100
+locked=true
+}
+
+827 {
+type=upgrade
+uptype=epoche
+shownname=Watchtower Upgrade
+Gdesc=Increases Health Points and Damage
+e0tex=img/buildings/human_tower_e3.png
+duration=10000
+epoche=0
+B5.maxhitpointsup=200
+B5.damageup=1
+B5.newTex=img/buildings/human_tower_e3.png
+lock=827
+cost3=200
+cost4=100
+locked=true
+}
