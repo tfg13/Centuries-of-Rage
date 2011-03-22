@@ -144,7 +144,7 @@ public class Component {
     }
 
     /**
-     * Wird gerufen, wenn die Maus anfängt oder aufhrt über der Komponente zu hovern
+     * Wird gerufen, wenn die Maus anfängt oder aufhört über der Komponente zu hovern
      * @param newstate
      */
     public void mouseHoverChanged(boolean newstate) {

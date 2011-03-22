@@ -46,25 +46,9 @@ public class Container extends Component {
      */
     private boolean active;
     /**
-     * Die Transparenz des Containers, für ein/ausblenden
-     */
-    private float alpha;
-    /**
-     * Die Veränderung des Alpha-Wertes
-     */
-    private float deltaAlpha;
-    /**
      * Die Zeit, in der ein Container ein- oder ausgeblendet wird
      */
     static long fadeTime = 800;
-    /**
-     * Der Startzeitpunkt der Fade-Animation
-     */
-    private long fadeStartTime;
-    /**
-     * Die Zeit der letzten Änderung an alpha
-     */
-    private long lastAlphaChange;
 
     /**
      * Konstruktor
@@ -78,7 +62,6 @@ public class Container extends Component {
     public Container(MainMenu m, double X, double Y, double width, double heigth) {
         super(m, X, Y, width, heigth);
         components = new ArrayList<Component>();
-        alpha = 1.0f;
     }
 
     /**
