@@ -50,6 +50,10 @@ public class TheMainMenu extends Container {
      * Y-Bildschirmauflösung
      */
     private int resY;
+    /**
+     * Die Lobby
+     */
+    private Container LobbyScreen;
 
     /**
      * Konstruktor
@@ -96,7 +100,7 @@ public class TheMainMenu extends Container {
         MultiplayerScreen.fadeOut();
 
         // Lobby
-        Container LobbyScreen = new LobbyScreen(this);
+        LobbyScreen = new LobbyScreen(this);
         menus.put("LobbyScreen", LobbyScreen);
         super.addComponent(LobbyScreen);
         LobbyScreen.fadeOut();
@@ -129,5 +133,14 @@ public class TheMainMenu extends Container {
      */
     public int getResY() {
         return resY;
+    }
+
+    /**
+     * Gibt die Lobby zurück, für die Client-Lobby Kommunikation
+     *
+     * @return - das LobbySreen-Objekt
+     */
+    public Container getLobby() {
+        return LobbyScreen;
     }
 }
