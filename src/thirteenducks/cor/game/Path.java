@@ -264,11 +264,9 @@ public class Path implements Pauseable, Serializable {
                     // Schon fertig?
                     if (passedWay >= length) {
                         // Fertig, Bewegung stoppen
-                        caster2.setMainPosition(targetPos);
+                        rgi.netmap.changePosition(caster2, targetPos);
                         targetPos = null;
                         path = null;
-                        rgi.netmap.setCollision(caster2.getMainPosition(), collision.occupied);
-                        rgi.netmap.setUnitRef(caster2.getMainPosition(), caster2, caster2.getPlayerId());
                         //caster2.attackManager.moveStopped();
                         moving = false;
                         return;
@@ -282,7 +280,7 @@ public class Path implements Pauseable, Serializable {
                         }
                         lastWayPoint += weiter;
                         nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
-                        caster2.setMainPosition(path.get(lastWayPoint).getPos());
+                        rgi.netmap.changePosition(caster2, path.get(lastWayPoint).getPos());
 
                         // Ziel in Reichweite? (für Anhalten)
                         // Neuer Wegpunkt! - Berechnungen durchführen:

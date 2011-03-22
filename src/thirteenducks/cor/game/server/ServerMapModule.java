@@ -1438,4 +1438,13 @@ public class ServerMapModule {
             }
         }
     }
+
+    /**
+     * Aufrufen, um die Position eines GO so zu ändern, dass es auch die Kollision & das Ref-System mitbekommt.
+     * @param obj Das GO zum Ändern
+     * @param newMain die neue Zurordnungposition
+     */
+    public void changePosition(GameObject obj, Position newMain) {
+        obj.setMainPosition(newMain);
+    }
 }
