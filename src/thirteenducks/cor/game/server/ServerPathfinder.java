@@ -27,7 +27,6 @@
 // von 2nd Calc
 package thirteenducks.cor.game.server;
 
-import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.*;
 import org.apache.commons.collections.buffer.PriorityBuffer;
 import thirteenducks.cor.game.GameObject;
@@ -77,7 +76,7 @@ public class ServerPathfinder {
 	containopen.add(start);
 	ziel.setParent(null);    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
 
-	if (rgi.netmap.getCollision(ziel.getX(), ziel.getY()) == collision.blocked || rgi.netmap.checkFieldReservation(ziel.getX(), ziel.getY())) {
+        if (rgi.netmap.isGroundColliding(ziel, unit) || rgi.netmap.checkFieldReservation(ziel)) {
 	    if (allowDifferentTarget) {
 		ziel = ziel.aroundMe(1, rgi);
 	    } else {
@@ -116,7 +115,7 @@ public class ServerPathfinder {
 
 			Position unitpos[] = unit.getPositions();
 			for (int i = 0; i < unitpos.length; i++) {
-			    if (rgi.netmap.isGroundCollidingForMove(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getX() + unitpos[i].getX(), unit.getPlayerId())) {
+			    if (rgi.netmap.isGroundCollidingForMove(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getX() + unitpos[i].getX(), unit)) {
 				allesfrei = false; //Nicht alle Felder frei
 			    }
 			}
@@ -148,7 +147,7 @@ public class ServerPathfinder {
 				    diay = neighbour.getY() - 1;
 				    dia2y = neighbour.getY() + 1;
 				}
-				if (rgi.netmap.isGroundCollidingForMove(diax, diay, unit.getPlayerId()) || rgi.netmap.isGroundCollidingForMove(dia2x, dia2y, unit.getPlayerId())) {
+				if (rgi.netmap.isGroundCollidingForMove(diax, diay, unit) || rgi.netmap.isGroundCollidingForMove(dia2x, dia2y, unit)) {
 				    continue;	//abbrechen, wenn Zwischenfelder blockiert sind (-> keine Ecken schneiden)
 				}
 
