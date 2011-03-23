@@ -118,4 +118,33 @@ public abstract class AbstractMapElement {
      */
     public abstract boolean validGroundPath(GameObject obj);
 
+    /**
+     * Registriert das angegebene Object als langfristigen Besetzer dieses Feldes.
+     * Das kann eine stehende Einheit oder ein Gebäude sein.
+     * Der Return-Wert gibt an, ob es geklappt hat oder nicht.
+     * Falles es nicht klappt, liegt es vermutlich daran, dass nur ein Object registriert werden kann.
+     * @param obj das zu registrierende Object
+     * @return true, wenns geklappt hat, sonst false
+     */
+    public abstract boolean addPermanentObject(GameObject obj);
+
+    /**
+     * Entfernt den langfristigen Besetzer dieses Feldes wieder.
+     * Sollte keiner Existieren, passiert gar nix.
+     */
+    public abstract void removePermanentObject();
+
+    /**
+     * Registriert das angegebene Object als kurzfristigen Besetzter dieses Feldes.
+     * In der Regel Einheiten, die gerade über diese Feld laufen.
+     * @param obj das zu registrierende Objekt
+     */
+    public abstract void addTempObject(GameObject obj);
+
+    /**
+     * Enfernt das angegeneme Object wieder von diesem Feld, sofern es überhaupt da war.
+     * @param obj das zu entfernende objekt
+     */
+    public abstract void removeTempObject(GameObject obj);
+
 }

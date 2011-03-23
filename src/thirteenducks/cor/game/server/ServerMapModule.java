@@ -476,132 +476,132 @@ public class ServerMapModule {
                                     v2 = v2.substring(0, indexraute - 1);
                                 }
                                 if (mode.equals("B")) {
-                                // Gebäude
-                                if (v1.equals("name")) {
-                                    rB.setDescName(v2);
-                                } else if (v1.equals("hitpoints")) {
-                                    rB.setHitpoints(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("maxhitpoints")) {
-                                    rB.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("Gdesc")) {
-                                    rB.setDescDescription(v2);
-                                } else if (v1.equals("z1")) {
-                                    rB.setZ1(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("z2")) {
-                                    rB.setZ2(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("maxIntra")) {
-                                    rB.setMaxIntra(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("harvests")) {
-                                    rB.setHarvests(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("harvRate")) {
-                                    rB.setHarvRate(saveStrtoDouble(v2, zeile, line));
-                                } else if (v1.equals("range")) {
-                                    rB.setRange(saveStrtoDouble(v2, zeile, line));
-                                } else if (v1.equals("damage")) {
-                                    rB.setDamage(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("cooldownmax")) {
-                                    rB.setFireDelay(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("bulletspeed")) {
-                                    rB.setBulletspeed(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("bullettexture")) {
-                                    rB.setBullettexture(v2);
-                                } else if (v1.equals("atkdelay")) {
-                                    rB.setAtkdelay(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("antiair")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antibuilding")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antiheavyinf")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antikav")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antilightinf")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antitank")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antivehicle")) {
-                                    int[] damageFactors = rB.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("accepts")) {
-                                    if ("all".equals(v2)) {
-                                        rB.setAccepts(Building.ACCEPTS_ALL);
+                                    // Gebäude
+                                    if (v1.equals("name")) {
+                                        rB.setDescName(v2);
+                                    } else if (v1.equals("hitpoints")) {
+                                        rB.setHitpoints(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("maxhitpoints")) {
+                                        rB.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("Gdesc")) {
+                                        rB.setDescDescription(v2);
+                                    } else if (v1.equals("z1")) {
+                                        rB.setZ1(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("z2")) {
+                                        rB.setZ2(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("maxIntra")) {
+                                        rB.setMaxIntra(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("harvests")) {
+                                        rB.setHarvests(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("harvRate")) {
+                                        rB.setHarvRate(saveStrtoDouble(v2, zeile, line));
+                                    } else if (v1.equals("range")) {
+                                        rB.setRange(saveStrtoDouble(v2, zeile, line));
+                                    } else if (v1.equals("damage")) {
+                                        rB.setDamage(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("cooldownmax")) {
+                                        rB.setFireDelay(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("bulletspeed")) {
+                                        rB.setBulletspeed(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("bullettexture")) {
+                                        rB.setBullettexture(v2);
+                                    } else if (v1.equals("atkdelay")) {
+                                        rB.setAtkdelay(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("antiair")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antibuilding")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antiheavyinf")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antikav")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antilightinf")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antitank")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antivehicle")) {
+                                        int[] damageFactors = rB.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("accepts")) {
+                                        if ("all".equals(v2)) {
+                                            rB.setAccepts(Building.ACCEPTS_ALL);
+                                        }
+                                    } else if (v1.equals("visrange")) {
+                                        rB.setVisrange(saveStrtoInt(v2, zeile, line));
                                     }
-                                } else if (v1.equals("visrange")) {
-                                    rB.setVisrange(saveStrtoInt(v2, zeile, line));
-                                }
-                            } else if (mode.equals("U")) {
-                                // Einheiten
-                                if (v1.equals("name")) {
-                                    rU.setDescName(v2);
-                                } else if (v1.equals("hitpoints")) {
-                                    rU.setHitpoints(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("maxhitpoints")) {
-                                    rU.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("Gdesc")) {
-                                    rU.setDescDescription(v2);
-                                } else if (v1.equals("Gpro")) {
-                                    rU.setDescPro(v2);
-                                } else if (v1.equals("Gcon")) {
-                                    rU.setDescCon(v2);
-                                } else if (v1.equals("speed")) {
-                                    rU.setSpeed(saveStrtoDouble(v2, zeile, line));
-                                } else if (v1.equals("range")) {
-                                    rU.setRange(saveStrtoDouble(v2, zeile, line));
-                                } else if (v1.equals("damage")) {
-                                    rU.setDamage(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("cooldownmax")) {
-                                    rU.setFireDelay(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("bulletspeed")) {
-                                    rU.setBulletspeed(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("bullettexture")) {
-                                    rU.setBullettexture(v2);
-                                } else if (v1.equals("atkdelay")) {
-                                    rU.setAtkdelay(saveStrtoInt(v2, zeile, line));
-                                } else if (v1.equals("armortype")) {
-                                    if ("lightinf".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_LIGHTINF);
-                                    } else if ("heavyinf".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_HEAVYINF);
-                                    } else if ("air".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_AIR);
-                                    } else if ("kav".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_KAV);
-                                    } else if ("tank".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_TANK);
-                                    } else if ("vehicle".equals(v2)) {
-                                        rU.setArmorType(GameObject.ARMORTYPE_VEHICLE);
+                                } else if (mode.equals("U")) {
+                                    // Einheiten
+                                    if (v1.equals("name")) {
+                                        rU.setDescName(v2);
+                                    } else if (v1.equals("hitpoints")) {
+                                        rU.setHitpoints(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("maxhitpoints")) {
+                                        rU.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("Gdesc")) {
+                                        rU.setDescDescription(v2);
+                                    } else if (v1.equals("Gpro")) {
+                                        rU.setDescPro(v2);
+                                    } else if (v1.equals("Gcon")) {
+                                        rU.setDescCon(v2);
+                                    } else if (v1.equals("speed")) {
+                                        rU.setSpeed(saveStrtoDouble(v2, zeile, line));
+                                    } else if (v1.equals("range")) {
+                                        rU.setRange(saveStrtoDouble(v2, zeile, line));
+                                    } else if (v1.equals("damage")) {
+                                        rU.setDamage(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("cooldownmax")) {
+                                        rU.setFireDelay(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("bulletspeed")) {
+                                        rU.setBulletspeed(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("bullettexture")) {
+                                        rU.setBullettexture(v2);
+                                    } else if (v1.equals("atkdelay")) {
+                                        rU.setAtkdelay(saveStrtoInt(v2, zeile, line));
+                                    } else if (v1.equals("armortype")) {
+                                        if ("lightinf".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_LIGHTINF);
+                                        } else if ("heavyinf".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_HEAVYINF);
+                                        } else if ("air".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_AIR);
+                                        } else if ("kav".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_KAV);
+                                        } else if ("tank".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_TANK);
+                                        } else if ("vehicle".equals(v2)) {
+                                            rU.setArmorType(GameObject.ARMORTYPE_VEHICLE);
+                                        }
+                                    } else if (v1.equals("antiair")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antibuilding")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antiheavyinf")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antikav")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antilightinf")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antitank")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("antivehicle")) {
+                                        int[] damageFactors = rU.getDamageFactors();
+                                        damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
+                                    } else if (v1.equals("visrange")) {
+                                        rU.setVisrange(saveStrtoInt(v2, zeile, line));
                                     }
-                                } else if (v1.equals("antiair")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antibuilding")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antiheavyinf")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antikav")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antilightinf")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antitank")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("antivehicle")) {
-                                    int[] damageFactors = rU.getDamageFactors();
-                                    damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
-                                } else if (v1.equals("visrange")) {
-                                    rU.setVisrange(saveStrtoInt(v2, zeile, line));
                                 }
-                            }
                             }
                         }
 
@@ -712,7 +712,7 @@ public class ServerMapModule {
 
         }
     }
-    
+
     /**
      * Erstellt alle intern notwendigen Listen
      */
@@ -950,7 +950,7 @@ public class ServerMapModule {
         }
 
         for (Position pos : b.getPositions()) {
-            setCollision(pos, collision.blocked);
+            theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(b);
             if (rgi.isInDebugMode()) {
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 1, 0));
             }
@@ -971,10 +971,10 @@ public class ServerMapModule {
         // Einheit ServerBehaviourMove adden
         ServerBehaviourMove smove = new ServerBehaviourMove(rgi, u);
         u.addServerBehaviour(smove);
-      //  u.moveManager = smove;
+        //  u.moveManager = smove;
         ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, u);
         u.addServerBehaviour(amove);
-       // u.attackManager = amove;
+        // u.attackManager = amove;
 
         this.unitList.add(u);
 
@@ -987,7 +987,7 @@ public class ServerMapModule {
         }
 
         for (Position pos : u.getPositions()) {
-            setCollision(pos, collision.blocked);
+            theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(u);
             if (rgi.isInDebugMode()) {
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 1, 0));
             }
@@ -1006,28 +1006,30 @@ public class ServerMapModule {
     public void killUnit(Unit u) {
         if (u != null && u.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
             u.kill();
-           /* // Eventuelles Bauen abschalten
+            /* // Eventuelles Bauen abschalten
             ServerBehaviour b = u.getbehaviourS(5);
             if (b != null && b.active) {
-                b.deactivate();
+            b.deactivate();
             } */
             System.out.println("AddMe: Stop behaviours");
             // Behaviours sofort stoppen
             // Kollision aufheben
             for (Position pos : u.getPositions()) {
-                setCollision(pos, collision.free);
+                theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
+                if (rgi.isInDebugMode()) {
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 0, 0));
+                }
             }
             System.out.println("AddMe: Check for reserved fields.");
-         /*   if (!u.isMoving()) {
-                this.setCollision(u.position, collision.free);
+            /*   if (!u.isMoving()) {
+            this.setCollision(u.position, collision.free);
             } else {
-                rgi.netmap.deleteFieldReservation(u.movingtarget);
+            rgi.netmap.deleteFieldReservation(u.movingtarget);
             } */
             // Unit-Referenz
      /*       if (rgi.netmap.getUnitRef(u.position, u.getPlayerId()) == u) {
-                rgi.netmap.setUnitRef(u.position, null, u.getPlayerId());
+            rgi.netmap.setUnitRef(u.position, null, u.getPlayerId());
             } */
-            System.out.println("AddMe: Delete UnitRefs");
 
             // Allen mitteilen
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 28, u.netID, 0, 0, 0));
@@ -1060,7 +1062,10 @@ public class ServerMapModule {
             // Kollision aufheben
             // Kollsion entfernen
             for (Position pos : u.getPositions()) {
-                setCollision(pos, collision.free);
+                theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
+                if (rgi.isInDebugMode()) {
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 0, 0));
+                }
             }
 
             // Allen mitteilen
@@ -1221,29 +1226,28 @@ public class ServerMapModule {
         }
     }
 
-   /* public Unit getEnemyUnitRef(int x, int y, int playerId) {
-        for (int i = 1; i < rgi.game.playerList.size(); i++) {
-            if (i == playerId || rgi.game.areAllies(rgi.game.getPlayer(i), rgi.game.getPlayer(playerId))) {
-                continue;
-            }
-            try {
-                Unit unit = theMap.getVisMap()[x][y].unitref[i];
-                if (unit != null) {
-                    // Wartung
-                    if (unit.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
-                        // Referenz löschen, andere suchen
-                        theMap.getVisMap()[x][y].unitref[i] = null;
-                        continue;
-                    }
-                    return unit;
-                }
-            } catch (Exception ex) {
-                return null;
-            }
-        }
-        return null;
+    /* public Unit getEnemyUnitRef(int x, int y, int playerId) {
+    for (int i = 1; i < rgi.game.playerList.size(); i++) {
+    if (i == playerId || rgi.game.areAllies(rgi.game.getPlayer(i), rgi.game.getPlayer(playerId))) {
+    continue;
+    }
+    try {
+    Unit unit = theMap.getVisMap()[x][y].unitref[i];
+    if (unit != null) {
+    // Wartung
+    if (unit.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
+    // Referenz löschen, andere suchen
+    theMap.getVisMap()[x][y].unitref[i] = null;
+    continue;
+    }
+    return unit;
+    }
+    } catch (Exception ex) {
+    return null;
+    }
+    }
+    return null;
     } */
-
     /**
      * Verwaltet komplexere toDESC-Upgrades
      *

@@ -138,6 +138,7 @@ public class ServerMapElement extends AbstractMapElement {
      * @param obj das zu registrierende Object
      * @return true, wenns geklappt hat, sonst false
      */
+    @Override
     public boolean addPermanentObject(GameObject obj) {
         if (collision != collision.unreachable) {
             if (permRef == null) {
@@ -153,6 +154,7 @@ public class ServerMapElement extends AbstractMapElement {
      * Entfernt den langfristigen Besetzer dieses Feldes wieder.
      * Sollte keiner Existieren, passiert gar nix.
      */
+    @Override
     public void removePermanentObject() {
         if (collision != collision.unreachable) {
             if (moveRefs.isEmpty()) {
@@ -169,6 +171,7 @@ public class ServerMapElement extends AbstractMapElement {
      * In der Regel Einheiten, die gerade über diese Feld laufen.
      * @param obj das zu registrierende Objekt
      */
+    @Override
     public void addTempObject(GameObject obj) {
         if (collision != collision.unreachable) {
             if (!moveRefs.contains(obj)) {
@@ -184,6 +187,7 @@ public class ServerMapElement extends AbstractMapElement {
      * Enfernt das angegeneme Object wieder von diesem Feld, sofern es überhaupt da war.
      * @param obj das zu entfernende objekt
      */
+    @Override
     public void removeTempObject(GameObject obj) {
         if (collision != collision.unreachable) {
             moveRefs.remove(obj);
