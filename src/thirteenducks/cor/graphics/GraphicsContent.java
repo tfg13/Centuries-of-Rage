@@ -940,8 +940,8 @@ public class GraphicsContent extends BasicGame {
             positionY--;
         }
         // Rendert die blaueb Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x++) {
-            for (int y = 0; y < sizeY && y < viewY; y = y++) {
+        for (int x = 0; x < sizeX && x < viewX; x++) {
+            for (int y = 0; y < sizeY && y < viewY; y++) {
                 if (x % 2 != y % 2) {
                     continue; // Nur echte Felder
                 }
