@@ -145,4 +145,32 @@ public class ServerMapElement extends AbstractMapElement {
         return false;
     }
 
+    /**
+     * Entfernt den langfristigen Besetzer dieses Feldes wieder.
+     * Sollte keiner Existieren, passiert gar nix.
+     */
+    public void removePermanentObject() {
+        permRef = null;
+    }
+
+    /**
+     * Registriert das angegebene Object als kurzfristigen Besetzter dieses Feldes.
+     * In der Regel Einheiten, die gerade über diese Feld laufen.
+     * @param obj das zu registrierende Objekt
+     */
+    public void addTempObject(GameObject obj) {
+        if (!moveRefs.contains(obj)) {
+            moveRefs.add(obj);
+        }
+    }
+
+    /**
+     * Enfernt das angegeneme Object wieder von diesem Feld, sofern es überhaupt da war.
+     * @param obj das zu entfernende objekt
+     */
+    public void removeTempObject(GameObject obj) {
+        moveRefs.remove(obj);
+    }
+
+
 }
