@@ -86,8 +86,9 @@ public class MapIO {
         CoRMap theMap = null;
         ZipFile zipfile = null;
         BufferedReader reader = null;
-        ZipEntry rmap = zipfile.getEntry("RMAP");
         try {
+            zipfile = new ZipFile(path);
+            ZipEntry rmap = zipfile.getEntry("RMAP");
             reader = new BufferedReader(new InputStreamReader(zipfile.getInputStream(rmap)));
             String infoline = reader.readLine();
             // Die Infozeile enthält (in dieser Reihenfolge): X Y unitList.size() buildingList.size() resList.size() nextNetID
