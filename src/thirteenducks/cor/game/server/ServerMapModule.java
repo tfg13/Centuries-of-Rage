@@ -1362,4 +1362,15 @@ public class ServerMapModule {
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
         }
     }
+
+    /**
+     * Nimmt dieses GO mit seiner derzeitigen Position ins Kollisionssystem auf.
+     * @param obj ein Object
+     */
+    public void trackCollision(GameObject obj) {
+        Position[] positions = obj.getPositions();
+        for (Position pos : positions) {
+            addPerm(pos, obj);
+        }
+    }
 }

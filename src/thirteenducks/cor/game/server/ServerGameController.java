@@ -104,7 +104,6 @@ public class ServerGameController implements Runnable {
     public void prepareStart(int numberOfPlayers) {
         // Map vorbereiten
         rgi.serverstats.createStatArrays(numberOfPlayers); //Der Serverstatistik die Spielerzahl mitteilen
-        rgi.netmap.initUnitRefLists(numberOfPlayers);
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
             ServerBehaviourMove smove = new ServerBehaviourMove(rgi, unit);
@@ -113,8 +112,7 @@ public class ServerGameController implements Runnable {
             unit.addServerBehaviour(amove);
             unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
-            System.out.println("AddMe: Set UnitRefs for all Positions!");
-            rgi.netmap.setUnitRef(unit.getMainPosition(), unit, unit.getPlayerId());
+            rgi.netmap.trackCollision(unit);
         }
         // Alle auf fertig setzen
         for (NetPlayer player : playerList) {
@@ -122,6 +120,7 @@ public class ServerGameController implements Runnable {
         }
         // Die die Gebäude haben auf "noch spielend" setzen
         for (Building b : rgi.netmap.buildingList) {
+            rgi.netmap.trackCollision(b);
             try {
                 playerList.get(b.getPlayerId()).setFinished(false);
             } catch (Exception ex) {
