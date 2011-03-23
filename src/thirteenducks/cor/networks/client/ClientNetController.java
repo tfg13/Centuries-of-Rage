@@ -239,6 +239,7 @@ public class ClientNetController {
             cmdMap[49] = new thirteenducks.cor.networks.cmd.client.C049_DEAL_DAMAGE_BUILDINGATK();
             cmdMap[50] = new thirteenducks.cor.networks.cmd.client.C050_SET_ANIM();
             cmdMap[51] = new thirteenducks.cor.networks.cmd.client.C051_SET_TEAMS();
+            cmdMap[53] = new thirteenducks.cor.networks.cmd.client.C053_DEBUG_SERVER_COLLISION();
         }
 
         void sendDATA(byte[] b) {

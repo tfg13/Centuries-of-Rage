@@ -44,6 +44,7 @@ public class C053_DEBUG_SERVER_COLLISION extends ClientCommand {
             try {
                 rgi.mapModule.serverCollision[pos.getX()][pos.getY()] = rgi.readInt(data, 3);
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
