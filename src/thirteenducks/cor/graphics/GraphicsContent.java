@@ -28,7 +28,6 @@ package thirteenducks.cor.graphics;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.awt.Dimension;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -941,28 +940,27 @@ public class GraphicsContent extends BasicGame {
             positionY--;
         }
         // Rendert die blaueb Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0; y < sizeY && y < viewY; y = y + 2) {
+        for (int x = 0; x < sizeX && x < viewX; x = x++) {
+            for (int y = 0; y < sizeY && y < viewY; y = y++) {
+                if (x % 2 != y % 2) {
+                    continue; // Nur echte Felder
+                }
                 // Hat dieses Feld Kollision?
                 try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                    int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
+                    switch (val) {
+                        case 1:
+                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            break;
+                        case 2:
+                            imgMap.get("img/game/highlight_orange.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            break;
+                        case 3:
+                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            break;
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }
-            }
-        }
-        for (int x = 0 + 1; x < sizeX && x < viewX; x = x + 2) {
-            for (int y = 0 + 1; y < sizeY && y < viewY; y = y + 2) {
-                // Hat dieses Feld Kollision?
-                try {
-                    if (visMap[x + positionX][y + positionY].getCollision() != collision.free) {
-                        // Bild einfügen
-                        imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                    }
-                } catch (Exception ex) {
                 }
             }
         }
