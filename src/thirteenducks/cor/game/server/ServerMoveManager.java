@@ -28,12 +28,8 @@ package thirteenducks.cor.game.server;
 import thirteenducks.cor.game.client.ClientIALGroup;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Timer;
-import java.util.TimerTask;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.Unit;
@@ -90,7 +86,8 @@ public class ServerMoveManager {
      * @param victim
      */
     public void humanSingleAttack(Unit atk, GameObject victim) {
-        // Allgemeine Absicherungen:
+        System.out.println("AddMe: HUMAN_SINGLE_ATTACK");
+   /*     // Allgemeine Absicherungen:
         if (atk == null || victim == null) {
             throw new NullPointerException();
         }
@@ -121,7 +118,7 @@ public class ServerMoveManager {
                 unit.attackManager.ialBuilding(bVic);
             }
         }
-
+*/
     }
 
     /**
@@ -132,7 +129,8 @@ public class ServerMoveManager {
      * @param victim
      */
     public void humanGroupAttack(ArrayList<Unit> attackers, GameObject victim) {
-        // Allgemeine Absicherungen:
+        System.out.println("AddMe: HUMAN_GROUP_ATTACK");
+     /*   // Allgemeine Absicherungen:
         if (attackers == null || victim == null) {
             throw new NullPointerException();
         }
@@ -164,7 +162,7 @@ public class ServerMoveManager {
                 unit.attackManager.ialBuilding(bVic);
             }
         }
-        // Fertig.
+        // Fertig. */
     }
 
     /**
@@ -222,9 +220,10 @@ public class ServerMoveManager {
      */
     public void humanGroupMove(Position target, final ArrayList<Unit> movers) {
         // Die Positionen aller Einheiten freigeben:
-        for (Unit unit : movers) {
+       /* for (Unit unit : movers) {
             inner.netmap.setCollision(unit.getMainPosition(), collision.free);
-        }
+        } */
+        System.out.println("CheckMe: Free position for GROUP_MOVE?");
 
         // Jetzt alle Einheiten laufen lassen:
         for (int i = 0; i < movers.size(); i++) {
@@ -238,22 +237,6 @@ public class ServerMoveManager {
 
     public void cancelledReservationFor(Unit unit) {
         System.out.println("AddMe: Cancel reservation!");
-    }
-
-    /**
-     * Lässt die Einheit sofort hier anhalten, sofern  dieses Feld frei ist. Ansonsten läuft sie weiter
-     * @param unit
-     */
-    public void autoMoveStop(Unit unit) {
-        // Frei?
-        if (!inner.netmap.isGroundColliding(unit.getMainPosition().getX(), unit.getMainPosition().getY()) && !inner.netmap.checkFieldReservation(unit.getMainPosition())) {
-            // Ursprüngliche Reservierung löschen
-            //inner.netmap.deleteFieldReservation(unit.movingtarget);
-            System.out.println("AddMe: Delete Field ReservatioN!");
-            // Hinschicken
-            ialSendTo(unit, unit.getMainPosition());
-
-        }
     }
 
     /**
@@ -275,7 +258,7 @@ public class ServerMoveManager {
      * Einheiten suchen nicht nach Zielen, wenn sie einen Baubefehl haben, dieser geht vor
      * @param unit
      */
-    public void searchNewAtkPosForMeele(final Unit unit) {
+ /*   public void searchNewAtkPosForMeele(final Unit unit) {
         // Es darf nur ein neues Ziel gesucht werden, wenn die Einheit gerade nicht mit wichtigerem Beschäftigt ist
         // Nicht während dem Bauen:
         ServerBehaviour constructing = unit.getServerBehaviour(5);
@@ -336,7 +319,7 @@ public class ServerMoveManager {
                 }
             }
         }, 3000);
-    }
+    } */
 
     /**
      * Sucht dem Angriffsbehaviour eine neue Position zum Angreiffen für das bisherige Ziel.
@@ -352,7 +335,7 @@ public class ServerMoveManager {
      * ... ansonsten wird das Client-Idle wieder aktiviert, soll der sich drum kümmern.
      * @param unit
      */
-    public void searchNewAtkPosForRange(final Unit unit) {
+  /*  public void searchNewAtkPosForRange(final Unit unit) {
         // Es darf nur ein neues Ziel gesucht werden, wenn die Einheit gerade nicht mit wichtigerem Beschäftigt ist
         // Nicht während dem Bauen:
         ServerBehaviour constructing = unit.getServerBehaviour(5);
@@ -371,7 +354,7 @@ public class ServerMoveManager {
         }
         // Nichts hat geklappt, den Client neu suchen lassen:
         unit.attackManager.setIdle(true, true);
-    }
+    } */
 
     /**
      * Sucht um die gegebene Einheit nach freien Nahkampf-Angriffspositionen
@@ -390,7 +373,7 @@ public class ServerMoveManager {
      * @param playerId
      * @return
      */
-    private Unit searchDirectEnemys(Position pos, int playerId) {
+ /*   private Unit searchDirectEnemys(Position pos, int playerId) {
         // 8 Felder absuchen
         int px = pos.getX();
         int py = pos.getY();
@@ -433,7 +416,7 @@ public class ServerMoveManager {
             }
         }
         return null;
-    }
+    } */
 
     /**
      * Reserviert das Ziel für die Anstehende Bewegung. Überschreibt vorhandene
@@ -453,7 +436,7 @@ public class ServerMoveManager {
      * @param unit
      * @param to
      */
-    private synchronized void ialSendTo(Unit unit, Position to) {
+ /*   private synchronized void ialSendTo(Unit unit, Position to) {
 
         // aktuelle Position freimachen:
         inner.netmap.setCollision(unit.getMainPosition(), collision.free);
@@ -475,7 +458,7 @@ public class ServerMoveManager {
         }
         } */
 
-        if (newpath == null) {
+   /*     if (newpath == null) {
             System.out.println("FixMoveMan: IAL-SendTo, no path!");
             return;
         }
@@ -501,8 +484,8 @@ public class ServerMoveManager {
         inner.logger(ex);
         }
 
-        } */
-    }
+        } 
+    } */
 
     /**
      * Bewegung initialisieren & an Clients schicken.
@@ -626,7 +609,7 @@ public class ServerMoveManager {
      *
      * @param victim Die Einheit, das Angegriffen werden soll
      */
-    private void intelligentAttack(Unit victim, ArrayList<Unit> selected) {
+   /* private void intelligentAttack(Unit victim, ArrayList<Unit> selected) {
         // Wir brauchen einen Liste mit Units:
         ArrayList<Unit> ial = new ArrayList<Unit>(selected.size());
         for (GameObject obj : selected) {
@@ -1089,7 +1072,7 @@ public class ServerMoveManager {
             }
 
         }
-    }
+    } */
 
     /**
      * Intelligente Feldzuteilung beim Angriff auf Gebäude.
@@ -1103,7 +1086,7 @@ public class ServerMoveManager {
      *
      * @param victim Das Gebäude, das Angegriffen werden soll
      */
-    private void intelligentAttack(Building victim, ArrayList<Unit> selected) {
+  /*  private void intelligentAttack(Building victim, ArrayList<Unit> selected) {
         // Wir brauchen einen Liste mit Units:
         ArrayList<Unit> ial = new ArrayList<Unit>(selected.size());
         for (GameObject obj : selected) {
@@ -1593,7 +1576,7 @@ public class ServerMoveManager {
             }
 
         }
-    }
+    } */
 
     /**
      * Verteilt überschüssige Einheiten auf andere Gruppen, soweit möglich
