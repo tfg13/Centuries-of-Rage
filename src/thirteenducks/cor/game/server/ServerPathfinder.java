@@ -78,7 +78,7 @@ public class ServerPathfinder {
 
         if (rgi.netmap.isGroundColliding(ziel, unit) || rgi.netmap.checkFieldReservation(ziel)) {
 	    if (allowDifferentTarget) {
-		ziel = ziel.aroundMe(1, rgi);
+		ziel = ziel.aroundMe(1, rgi, unit);
 	    } else {
 		return null;
 	    }

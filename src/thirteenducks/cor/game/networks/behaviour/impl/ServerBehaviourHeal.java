@@ -31,7 +31,6 @@ import thirteenducks.cor.game.Position;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
 import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.GameObject;
-import thirteenducks.cor.game.Unit;
 
 public class ServerBehaviourHeal extends ServerBehaviour {
 
@@ -66,8 +65,9 @@ public class ServerBehaviourHeal extends ServerBehaviour {
             kreismember.setY(kreismember.getY() - 1);
 	    kreis = 3;
 	}
+        System.out.println("Reimplement healing!");
 	// Jetzt im Kreis herum gehen
-	for (int k = 0; true; k++) {
+	/*for (int k = 0; true; k++) {
 	    // Es gibt vier Schritte, welcher ist als nächster dran?
 	    if (k == 0) {
 		// Zum allerersten Feld springen
@@ -114,7 +114,7 @@ public class ServerBehaviourHeal extends ServerBehaviour {
 		}
 	    } catch (Exception ex) {
 	    }
-	}
+	} */
 
     }
 
@@ -123,9 +123,11 @@ public class ServerBehaviourHeal extends ServerBehaviour {
 	throw new UnsupportedOperationException("The Voices are talking to me.");
     }
 
+    @Override
     public void pause() {
     }
 
+    @Override
     public void unpause() {
     }
 }

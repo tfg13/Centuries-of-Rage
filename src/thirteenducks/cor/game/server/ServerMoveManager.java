@@ -229,7 +229,7 @@ public class ServerMoveManager {
         for (int i = 0; i < movers.size(); i++) {
             Position individualTarget = target;
             if (i > 0) {
-                individualTarget = target.aroundMe(1, inner);
+                individualTarget = target.aroundMe(1, inner, movers.get(i));
             }
             this.humanSingleMove(movers.get(i), individualTarget, true);
         }
@@ -361,10 +361,10 @@ public class ServerMoveManager {
      * @param target
      * @return
      */
-    private Position searchAtkPosForTarget(Unit target) {
+ /*   private Position searchAtkPosForTarget(Unit target) {
         return target.getMainPosition().aroundMe(1, inner, 8);
 
-    }
+    } */
 
     /**
      * Sucht in der direkten Nahkampf-Umgebung nach möglichen Zielen, die

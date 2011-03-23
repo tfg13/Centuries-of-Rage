@@ -314,7 +314,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @param searchDist Suchweite in Kreisen um die Einheit, sehr laufzeitkritisch, sollte < 6 sein!
      * @return Feindliche Einheit, falls gefunden.
      */
-    public Position meeleAttackableEnemyAroundMe(int searchDist, ServerCore.InnerServer rgi) {
+ /*   public Position meeleAttackableEnemyAroundMe(int searchDist, ServerCore.InnerServer rgi) {
         int i = 1;
         int kreis = 1;
         // Startfeld des Kreises:
@@ -370,7 +370,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         }
 
         return null;
-    }
+    }  */
 
     /**
      * @return the speed

@@ -94,14 +94,14 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      * @param i Das wievielte Nachbarfeld gesucht ist - Im Zweifelsfall 1, 0 kann auch sich selbst zurückgeben
      * @return Das Nachbarfeld oder dieses selbst, wenn i = 0 war.
      */
-    public Position aroundMe(int i, ServerCore.InnerServer inner) {
+    public Position aroundMe(int i, ServerCore.InnerServer inner, GameObject forObject) {
         // Diese Position als Startfeld überhaupt zulässig?
         if ((this.X + this.Y) % 2 == 1) {
             System.out.println("FixMe: Someone trys to find the neighbour of an invalid field! Field: (" + this + ")");
             return null;
         }
         if (i == 0) {
-            if (!inner.netmap.isGroundColliding(this.X, this.Y) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
+            if (!inner.netmap.isGroundColliding(this.X, this.Y, forObject) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
                 return this;
             } else {
                 i = 1;
@@ -150,7 +150,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
                 i = i - (kreis * 8);
                 kreis++;
             }
-            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
+            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y, forObject) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
                 i++;
             }
         }
@@ -166,14 +166,14 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      * @param i Das wievielte Nachbarfeld gesucht ist - Im Zweifelsfall 1, 0 kann auch sich selbst zurückgeben
      * @return Das Nachbarfeld oder dieses selbst, wenn i = 0 war.
      */
-    public Position aroundMe(int i, ServerCore.InnerServer inner, int limit) {
+    public Position aroundMe(int i, ServerCore.InnerServer inner, int limit, GameObject forObject) {
         // Diese Position als Startfeld überhaupt zulässig?
         if ((this.X + this.Y) % 2 == 1) {
             System.out.println("FixMe: Someone trys to find the neighbour of an invalid field! Field: (" + this + ")");
             return null;
         }
         if (i == 0) {
-            if (!inner.netmap.isGroundColliding(this.X, this.Y) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
+            if (!inner.netmap.isGroundColliding(this.X, this.Y, forObject) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
                 return this;
             } else {
                 i = 1;
@@ -220,7 +220,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
                 i = i - (kreis * 8);
                 kreis++;
             }
-            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
+            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y, forObject) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
                 i++;
             }
         }
@@ -237,14 +237,14 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      * @param vector Die Richtung, in der die Einheiten um das Ziel platziert werden sollen - muss als Vector angegeben werden
      * @return Das Zielfeld, im normalfall ein freies Nachbarfeld, eventuell dieses selbst (bei i = 0)
      */
-    public Position aroundMe(int i, ServerCore.InnerServer inner, Position vector) {
+    public Position aroundMe(int i, ServerCore.InnerServer inner, Position vector, GameObject forObject) {
         // Diese Position als Startfeld überhaupt zulässig?
         if ((this.X + this.Y) % 2 == 1) {
             System.out.println("FixMe: Someone trys to find the neighbour of an invalid field! Field: (" + this + ")");
             return null;
         }
         if (i == 0) {
-            if (!inner.netmap.isGroundColliding(this.X, this.Y) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
+            if (!inner.netmap.isGroundColliding(this.X, this.Y, forObject) && !inner.netmap.checkFieldReservation(this.X, this.Y)) {
                 return this;
             } else {
                 i = 1;
@@ -350,216 +350,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
                 i = i - (kreis * 8);
                 kreis++;
             }
-            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
-                i++;
-            }
-        }
-        return kreismember;
-
-    }
-
-    /**
-     * Sucht freie Felder um diese Position.
-     * @param i Das wievielte freie Feld. (Bei 0 auch sich selbst)
-     * @param inner
-     * @param limit Wie lange suchen (default ist 1000)
-     * @return
-     */
-    public Position aroundMe(int i, ClientCore.InnerClient inner, int limit) {
-        // Diese Position als Startfeld überhaupt zulässig?
-        if ((this.X + this.Y) % 2 == 1) {
-            System.out.println("FixMe: Someone trys to find the neighbour of an invalid field! Field: (" + this + ")");
-            return null;
-        }
-        if (i == 0) {
-            if (inner.mapModule.getCollision(this.X, this.Y).equals(collision.free)) {
-                return this;
-            } else {
-                i = 1;
-            }
-        }
-        // Das i-te freie Nachbarfeld suchen
-        if (i < 1) {
-            return null;
-        }
-        int kreis = 1;
-        // Startfeld des Kreises:
-        Position kreismember = new Position(this.X, this.Y);
-        // Jetzt im Kreis herum gehen
-        for (int k = 0; k < i; k++) {
-            limit--;
-            if (limit == 0) {
-                System.out.println("Warning: FixMe: AroundMe reached its limit for " + this);
-                return null;
-            }
-            // Es gibt vier Schritte, welcher ist als nächster dran?
-            if (k == 0) {
-                // Zum allerersten Feld springen
-                kreismember.Y -= 2;
-            } else if (k <= (kreis * 2)) {
-                // Der nach links unten
-                kreismember.X--;
-                kreismember.Y++;
-            } else if (k <= (kreis * 4)) {
-                // rechts unten
-                kreismember.X++;
-                kreismember.Y++;
-            } else if (k <= (kreis * 6)) {
-                // rechts oben
-                kreismember.X++;
-                kreismember.Y--;
-            } else if (k <= ((kreis * 7) + kreis - 1)) {
-                // links oben
-                kreismember.X--;
-                kreismember.Y--;
-            } else {
-                // Sprung in den nächsten Kreis
-                kreismember.X--;
-                kreismember.Y -= 3;
-                k = 0;
-                i = i - (kreis * 8);
-                kreis++;
-            }
-            if (inner.mapModule.getCollision(kreismember.X, kreismember.Y) != collision.free) {
-                i++;
-            }
-        }
-        return kreismember;
-    }
-
-    /**
-     * Gibt ein möglichst nahes Nachbarfeld zurück, das keine Kollision hat, also nicht blockiert UND nicht besetzt ist
-     *
-     *
-     * @param i Das wievielte Nachbarfeld gesucht ist - Im Zweifelsfall 1, 0 kann auch sich selbst zurückgeben
-     * @return Das Nachbarfeld oder dieses selbst, wenn i = 0 war.
-     */
-    public Position aroundMe(int i, ClientCore.InnerClient inner) {
-        return aroundMe(i, inner, 1000);
-    }
-
-    /**
-     * Gibt ein möglichst nahes Nachbarfeld zurück, das keine Kollision hat, also nicht blockiert ist UND nicht besetzt ist.
-     * Die
-     *
-     * @param i Das wievielte Nachbarfeld gesucht ist - Im Zweifelsfall 1, 0 wenn auch das Feld selber Antwort sein kann
-     * @param vector Die Richtung, in der die Einheiten um das Ziel platziert werden sollen - muss als Vector angegeben werden
-     * @return Das Zielfeld, im normalfall ein freies Nachbarfeld, eventuell dieses selbst (bei i = 0)
-     */
-    public Position aroundMe(int i, ClientCore.InnerClient inner, Position vector) {
-        // Diese Position als Startfeld überhaupt zulässig?
-        if ((this.X + this.Y) % 2 == 1) {
-            System.out.println("FixMe: Someone trys to find the neighbour of an invalid field! Field: (" + this + ")");
-            return null;
-        }
-        if (i == 0) {
-            if (inner.mapModule.getCollision(this.X, this.Y).equals(collision.free)) {
-                return this;
-            } else {
-                i = 1;
-            }
-        }
-        // Werte checken
-        if (vector.X < -1 || vector.X > 1 || vector.Y < -1 || vector.Y > 1) {
-            return null;
-        }
-        // Das i-te freie Nachbarfeld suchen
-        if (i < 1) {
-            return null;
-        }
-        int kreis = 1;
-        int limit = 1000;
-        // Startfeld des Kreises:
-        Position kreismember = new Position(this.X, this.Y);
-        // Jetzt im Kreis herum gehen
-        for (int k = 0; k < i; k++) {
-            limit--;
-            if (limit == 0) {
-                System.out.println("Warning: FixMe: reached its limit for " + this + " vector " + vector);
-                return null;
-            }
-            // Es gibt vier Schritte, welcher ist als nächster dran?
-            int nxt = transVec(vector, k, kreis);
-            if (k == 0) {
-                // Zum allerersten Feld springen - hängt vom Vector ab
-                if (vector.X == 0) {
-                    if (vector.Y == -1) {
-                        kreismember.Y -= 2;
-                    } else {
-                        kreismember.Y += 2;
-                    }
-                } else if (vector.X == 1) {
-                    if (vector.Y == -1) {
-                        kreismember.X++;
-                        kreismember.Y--;
-                    } else if (vector.Y == 0) {
-                        kreismember.X += 2;
-                    } else {
-                        kreismember.X++;
-                        kreismember.Y++;
-                    }
-                } else if (vector.X == -1) {
-                    if (vector.Y == -1) {
-                        kreismember.X--;
-                        kreismember.Y--;
-                    } else if (vector.Y == 0) {
-                        kreismember.X -= 2;
-                    } else {
-                        kreismember.X--;
-                        kreismember.Y++;
-                    }
-                }
-            } else if (nxt != 0 && nxt <= (kreis * 2)) {
-                // Der nach links unten
-                kreismember.X--;
-                kreismember.Y++;
-            } else if (nxt != 0 && nxt <= (kreis * 4)) {
-                // rechts unten
-                kreismember.X++;
-                kreismember.Y++;
-            } else if (nxt != 0 && nxt <= (kreis * 6)) {
-                // rechts oben
-                kreismember.X++;
-                kreismember.Y--;
-            } else if (nxt != 0 && nxt <= ((kreis * 7) + kreis - 1)) {
-                // links oben
-                kreismember.X--;
-                kreismember.Y--;
-            }
-            if (k > ((kreis * 7) + kreis - 1)) {
-                // Sprung in den nächsten Kreis - Richtung hängt vom Vector ab
-                if (vector.X == 0) {
-                    if (vector.Y == -1) {
-                        kreismember.X--;
-                        kreismember.Y -= 3;
-                    } else {
-                        kreismember.X++;
-                        kreismember.Y += 3;
-                    }
-                } else if (vector.X == 1) {
-                    if (vector.Y == -1) {
-                        kreismember.Y -= 2;
-                    } else if (vector.Y == 0) {
-                        kreismember.X += 3;
-                        kreismember.Y--;
-                    } else {
-                        kreismember.X += 2;
-                    }
-                } else if (vector.X == -1) {
-                    if (vector.Y == -1) {
-                        kreismember.X -= 2;
-                    } else if (vector.Y == 0) {
-                        kreismember.X -= 3;
-                        kreismember.Y++;
-                    } else {
-                        kreismember.Y += 2;
-                    }
-                }
-                k = 0;
-                i = i - (kreis * 8);
-                kreis++;
-            }
-            if (inner.mapModule.getCollision(kreismember.X, kreismember.Y) != collision.free) {
+            if (inner.netmap.isGroundColliding(kreismember.X, kreismember.Y, forObject) || inner.netmap.checkFieldReservation(kreismember.X, kreismember.Y)) {
                 i++;
             }
         }
