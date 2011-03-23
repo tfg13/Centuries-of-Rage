@@ -79,7 +79,14 @@ public class ClientMapModule {
     public byte[] mapData;             // Die Map, falls ein Senden vom Server nötig war.
     File mapFile;
     String mapFileName;
-    public boolean[][] serverCollision; // Kollisionsdaten vom Server, debug only
+    /**
+     * Server-Kollision (nur für Debug)
+     * 0 = Frei
+     * 1 = Unerreichbar
+     * 2 = Blockiert
+     * 3 = Besetzt (drüberlaufen)
+     */
+    public int[][] serverCollision;
 
     public ClientMapModule(ClientCore.InnerClient in) {
         rgi = in;
@@ -925,7 +932,7 @@ public class ClientMapModule {
         theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT);
 
         if (rgi.isInDebugMode()) {
-            serverCollision = new boolean[theMap.getMapSizeX()][theMap.getMapSizeY()];
+            serverCollision = new int[theMap.getMapSizeX()][theMap.getMapSizeY()];
         }
 
         unitList = Collections.synchronizedList((ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST"));

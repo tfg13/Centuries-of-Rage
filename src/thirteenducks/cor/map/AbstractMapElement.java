@@ -126,25 +126,25 @@ public abstract class AbstractMapElement {
      * @param obj das zu registrierende Object
      * @return true, wenns geklappt hat, sonst false
      */
-    public abstract boolean addPermanentObject(GameObject obj);
+    public abstract int addPermanentObject(GameObject obj);
 
     /**
      * Entfernt den langfristigen Besetzer dieses Feldes wieder.
      * Sollte keiner Existieren, passiert gar nix.
      */
-    public abstract void removePermanentObject();
+    public abstract int removePermanentObject();
 
     /**
      * Registriert das angegebene Object als kurzfristigen Besetzter dieses Feldes.
      * In der Regel Einheiten, die gerade über diese Feld laufen.
      * @param obj das zu registrierende Objekt
      */
-    public abstract void addTempObject(GameObject obj);
+    public abstract int addTempObject(GameObject obj);
 
     /**
      * Enfernt das angegeneme Object wieder von diesem Feld, sofern es überhaupt da war.
      * @param obj das zu entfernende objekt
      */
-    public abstract void removeTempObject(GameObject obj);
+    public abstract int removeTempObject(GameObject obj);
 
 }

@@ -42,11 +42,7 @@ public class C053_DEBUG_SERVER_COLLISION extends ClientCommand {
         Position pos = rgi.readPosition(data, 1);
         if (pos != null) {
             try {
-                if (rgi.readInt(data, 3) == 1) {
-                    rgi.mapModule.serverCollision[pos.getX()][pos.getY()] = true;
-                } else {
-                    rgi.mapModule.serverCollision[pos.getX()][pos.getY()] = false;
-                }
+                rgi.mapModule.serverCollision[pos.getX()][pos.getY()] = rgi.readInt(data, 3);
             } catch (Exception ex) {
             }
         }

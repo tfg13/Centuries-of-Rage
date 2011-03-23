@@ -30,11 +30,11 @@ import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import java.io.*;
 import java.util.*;
-import thirteenducks.cor.map.AbstractMapElement.collision;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade.upgradeaffects;
 import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
+import thirteenducks.cor.map.ServerMapElement;
 import thirteenducks.cor.game.BehaviourProcessor;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
@@ -950,10 +950,7 @@ public class ServerMapModule {
         }
 
         for (Position pos : b.getPositions()) {
-            theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(b);
-            if (rgi.isInDebugMode()) {
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 1, 0));
-            }
+            addPerm(pos, b);
         }
 
         // Broadcasten
@@ -987,10 +984,7 @@ public class ServerMapModule {
         }
 
         for (Position pos : u.getPositions()) {
-            theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(u);
-            if (rgi.isInDebugMode()) {
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 1, 0));
-            }
+            addPerm(pos, u);
         }
 
         // Broadcasten
@@ -1014,11 +1008,9 @@ public class ServerMapModule {
             System.out.println("AddMe: Stop behaviours");
             // Behaviours sofort stoppen
             // Kollision aufheben
+            System.out.println("Achtung: Kollisions-Problem!");
             for (Position pos : u.getPositions()) {
-                theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
-                if (rgi.isInDebugMode()) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 0, 0));
-                }
+                removePerm(pos);
             }
             System.out.println("AddMe: Check for reserved fields.");
             /*   if (!u.isMoving()) {
@@ -1062,10 +1054,7 @@ public class ServerMapModule {
             // Kollision aufheben
             // Kollsion entfernen
             for (Position pos : u.getPositions()) {
-                theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
-                if (rgi.isInDebugMode()) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), 0, 0));
-                }
+                removePerm(pos);
             }
 
             // Allen mitteilen
@@ -1321,5 +1310,56 @@ public class ServerMapModule {
         // Alte Kollision austragen:
 
         obj.setMainPosition(newMain);
+    }
+
+    /**
+     * Registiert die angegebene Einheit als dauerhafte Kollisionsquelle bei dem angegebenen Feld.
+     * @param pos die Position
+     * @param obj die zu reg. Einheit
+     * @see ServerMapElement
+     */
+    private void addPerm(Position pos, GameObject obj) {
+        int result = theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(obj);
+        if (rgi.isInDebugMode()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
+        }
+    }
+
+    /**
+     * Registriert die Einheit als tempöräre Kollisionsquelle bei dem angegebenen Feld.
+     * @param pos die Position
+     * @param obj die zu reg. Einheit
+     * @see ServerMapElement
+     */
+    private void addTemp(Position pos, GameObject obj) {
+        int result = theMap.getVisMap()[pos.getX()][pos.getY()].addTempObject(obj);
+        if (rgi.isInDebugMode()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
+        }
+    }
+
+    /**
+     * Entfernt die Einheit vom angegebenen Feld.
+     * @param pos die Position
+     * @see ServerMapElement
+     */
+    private void removePerm(Position pos) {
+        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
+        if (rgi.isInDebugMode()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
+        }
+    }
+
+    /**
+     * Entfernt die Einheit vom angegebene Feld.
+     * @param pos die Position
+     * @param obj die Einheit
+     * @see ServerMapElement
+     */
+    private void removeTemp(Position pos, GameObject obj) {
+        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removeTempObject(obj);
+        if (rgi.isInDebugMode()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
+        }
     }
 }

@@ -89,22 +89,22 @@ public class ClientMapElement extends AbstractMapElement {
     }
 
     @Override
-    public boolean addPermanentObject(GameObject obj) {
+    public int addPermanentObject(GameObject obj) {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 
     @Override
-    public void removePermanentObject() {
+    public int removePermanentObject() {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 
     @Override
-    public void addTempObject(GameObject obj) {
+    public int addTempObject(GameObject obj) {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 
     @Override
-    public void removeTempObject(GameObject obj) {
+    public int removeTempObject(GameObject obj) {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 

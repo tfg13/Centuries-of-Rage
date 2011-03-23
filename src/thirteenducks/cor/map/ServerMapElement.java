@@ -31,7 +31,6 @@ public class ServerMapElement extends AbstractMapElement {
     /**
      * Reservierungssystem.
      * Sagt, wer dieses Feld gerade reserviert hat.
-     *
      */
     private GameObject reserver;
 
@@ -133,21 +132,19 @@ public class ServerMapElement extends AbstractMapElement {
     /**
      * Registriert das angegebene Object als langfristigen Besetzer dieses Feldes.
      * Das kann eine stehende Einheit oder ein Gebäude sein.
-     * Der Return-Wert gibt an, ob es geklappt hat oder nicht.
-     * Falles es nicht klappt, liegt es vermutlich daran, dass nur ein Object registriert werden kann.
      * @param obj das zu registrierende Object
-     * @return true, wenns geklappt hat, sonst false
+     * @return den neuen collisions-status in int-Darstellung
      */
     @Override
-    public boolean addPermanentObject(GameObject obj) {
+    public int addPermanentObject(GameObject obj) {
         if (collision != collision.unreachable) {
             if (permRef == null) {
                 permRef = obj;
                 collision = collision.blocked;
-                return true;
             }
+            return 2;
         }
-        return false;
+        return 1;
     }
 
     /**
@@ -155,15 +152,18 @@ public class ServerMapElement extends AbstractMapElement {
      * Sollte keiner Existieren, passiert gar nix.
      */
     @Override
-    public void removePermanentObject() {
+    public int removePermanentObject() {
         if (collision != collision.unreachable) {
+            permRef = null;
             if (moveRefs.isEmpty()) {
                 collision = collision.free;
+                return 0;
             } else {
                 collision = collision.occupied;
+                return 3;
             }
-            permRef = null;
         }
+        return 1;
     }
 
     /**
@@ -172,15 +172,19 @@ public class ServerMapElement extends AbstractMapElement {
      * @param obj das zu registrierende Objekt
      */
     @Override
-    public void addTempObject(GameObject obj) {
+    public int addTempObject(GameObject obj) {
         if (collision != collision.unreachable) {
             if (!moveRefs.contains(obj)) {
                 moveRefs.add(obj);
-                if (permRef == null) {
-                    collision = collision.occupied;
-                }
+            }
+            if (permRef == null) {
+                collision = collision.occupied;
+                return 3;
+            } else {
+                return 2;
             }
         }
+        return 1;
     }
 
     /**
@@ -188,14 +192,24 @@ public class ServerMapElement extends AbstractMapElement {
      * @param obj das zu entfernende objekt
      */
     @Override
-    public void removeTempObject(GameObject obj) {
+    public int removeTempObject(GameObject obj) {
         if (collision != collision.unreachable) {
             moveRefs.remove(obj);
             if (moveRefs.isEmpty()) {
                 if (permRef == null) {
                     collision = collision.free;
+                    return 0;
+                } else {
+                    return 2;
+                }
+            } else {
+                if (permRef == null) {
+                    return 3;
+                } else {
+                    return 2;
                 }
             }
         }
+        return 1;
     }
 }
