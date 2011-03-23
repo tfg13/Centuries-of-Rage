@@ -93,6 +93,14 @@ public abstract class AbstractMapElement {
     }
 
     /**
+     * Findet heraus, ob dieses Feld prinzipiell unerreichbar ist.
+     * @return true, wenn prinzipiell unerreichbar.
+     */
+    public boolean isUnreachable() {
+        return collision == collision.unreachable;
+    }
+
+    /**
      * Die Bodentextur. Das alte HashMap-System wurde abgeschafft, das frisst nur unnötig viel Speicher
      * @return the ground_tex
      */

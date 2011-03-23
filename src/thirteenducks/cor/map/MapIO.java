@@ -408,7 +408,7 @@ public class MapIO {
                         continue;
                     }
                     String read = reader.readLine();
-                    if (mapMode == MODE_SERVER && "unreachable".equals(read)) {
+                    if ("unreachable".equals(read)) {
                         theMap.getVisMap()[x][y].setUnreachable(true);
                     }
                 }
@@ -454,8 +454,7 @@ public class MapIO {
                 // Res-List ignorieren, nur aus Kompatibiltätsgründen da
             }
 
-            // Grenzen der Map mit Kollision und isborder ausstatten
-            if (mapMode == MODE_SERVER) {
+            // Grenzen der Map mit Kollision ausstatten
                 for (int x = 0; x < newMapX; x++) {
                     for (int y = 0; y < newMapY; y++) {
                         if (x % 2 != y % 2) {
@@ -467,13 +466,12 @@ public class MapIO {
                         }
                     }
                 }
-            }
 
             theMap.setMapProperty("NEXTNETID", nnid);
         } catch (Exception ex2) {
             // Auch das hat versagt, Exception werfen
             System.out.println("Cannot load map!");
-            throw new RuntimeException("Unable to load map!");
+            throw new RuntimeException("Unable to load map!", ex2);
         }
 
         return theMap;
@@ -504,10 +502,10 @@ public class MapIO {
         try {
             // Map serialisieren und speichern
             ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(newMapSaver)));
-            ObjectOutputStream objOut = new ObjectOutputStream(zipOut);
             // META - Header
             ZipEntry meta = new ZipEntry("META");
             zipOut.putNextEntry(meta);
+            ObjectOutputStream objOut = new ObjectOutputStream(zipOut);
             objOut.writeObject((CoRMapMetaInf) map.getMapPoperty("META"));
             zipOut.closeEntry();
             // PREV - Vorschaubild
@@ -559,7 +557,9 @@ public class MapIO {
                         if (x % 2 != y % 2) {
                             continue;
                         }
-                        // Nur aus Kompatibilitätsgründen da. Maps enthalten keine Kollisionsinfos mehr!
+                        if (map.getVisMap()[x][y].isUnreachable()) {
+                            writer.write("unreachable");
+                        }
                         writer.newLine();
                     }
                 }

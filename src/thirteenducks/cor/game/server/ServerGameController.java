@@ -126,6 +126,9 @@ public class ServerGameController implements Runnable {
             } catch (Exception ex) {
             }
         }
+        if (rgi.isInDebugMode()) {
+            rgi.netmap.sendInitialCollisionMap();
+        }
         this.startMainloop();
     }
 

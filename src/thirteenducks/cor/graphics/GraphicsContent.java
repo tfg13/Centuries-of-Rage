@@ -960,7 +960,6 @@ public class GraphicsContent extends BasicGame {
                             break;
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
         }

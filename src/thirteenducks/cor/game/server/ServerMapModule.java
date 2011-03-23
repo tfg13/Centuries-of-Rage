@@ -1373,4 +1373,22 @@ public class ServerMapModule {
             addPerm(pos, obj);
         }
     }
+
+    /**
+     * Sendet die start-Kollisionsmap an den Client.
+     * Wird nur im Debug-Mode aufgerufen
+     */
+    void sendInitialCollisionMap() {
+        AbstractMapElement[][] visMap = theMap.getVisMap();
+        for (int x = 0; x < visMap.length; x++) {
+            for (int y = 0; y < visMap[0].length; y++) {
+                if (x % 2 != y % 2) {
+                    continue; // Nur echte Felder
+                }
+                if (visMap[x][y].isUnreachable()) {
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, x, y, 1, 0));
+                }
+            }
+        }
+    }
 }
