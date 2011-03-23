@@ -9,12 +9,6 @@ import thirteenducks.cor.game.GameObject;
 public class ServerMapElement extends AbstractMapElement {
 
     /**
-     * Die Kollision wird automatisch verwaltet.
-     * Es können GameObjects zugeordnet werden, dann wird die Kollision automatisch verwaltet.
-     * Es gibt nur einen setter für unreachable (Mapränder, Klippen, nicht entfernbare Sachen).
-     */
-    private collision collision;
-    /**
      * Hält das Haupt-Objekt fest, das auf diesem Feld steht.
      */
     private GameObject permRef;
@@ -33,15 +27,6 @@ public class ServerMapElement extends AbstractMapElement {
      * Sagt, wer dieses Feld gerade reserviert hat.
      */
     private GameObject reserver;
-
-    @Override
-    public void setUnreachable(boolean unreachable) {
-        if (unreachable) {
-            collision = collision.unreachable;
-        } else {
-            collision = collision.free;
-        }
-    }
 
     @Override
     public boolean isReserved() {

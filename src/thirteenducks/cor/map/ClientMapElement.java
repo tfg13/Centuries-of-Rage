@@ -18,11 +18,6 @@ public class ClientMapElement extends AbstractMapElement {
     private String fix_tex;
 
     @Override
-    public void setUnreachable(boolean unreachable) {
-        throw new UnsupportedOperationException("Not supported for Client!");
-    }
-
-    @Override
     public boolean isReserved() {
         throw new UnsupportedOperationException("Not supported for Client!");
     }

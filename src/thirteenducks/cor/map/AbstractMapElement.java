@@ -47,6 +47,13 @@ public abstract class AbstractMapElement {
     public enum collision{free, blocked, occupied, unreachable};
 
     /**
+     * Die Kollision wird automatisch verwaltet.
+     * Es können GameObjects zugeordnet werden, dann wird die Kollision automatisch verwaltet.
+     * Es gibt nur einen setter für unreachable (Mapränder, Klippen, nicht entfernbare Sachen).
+     */
+    protected collision collision;
+
+    /**
      * Überprüft, ob dieses Feld gerade Reserviert ist.
      *
      * Bereits ausgelaufene Reservierungen werden automatisch berücksichtigt.
@@ -77,7 +84,13 @@ public abstract class AbstractMapElement {
      * Vorsicht: Darf im laufenden Spiel nicht verändert werden!!!
      * @param unreachable true, wenn für immer unerreichbar (Maprand, Klippen, Fix, etc.)
      */
-    public abstract void setUnreachable(boolean unreachable);
+    public void setUnreachable(boolean unreachable) {
+        if (unreachable) {
+            collision = collision.unreachable;
+        } else {
+            collision = collision.free;
+        }
+    }
 
     /**
      * Die Bodentextur. Das alte HashMap-System wurde abgeschafft, das frisst nur unnötig viel Speicher
