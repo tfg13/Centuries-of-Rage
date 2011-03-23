@@ -138,9 +138,11 @@ public class ServerMapElement extends AbstractMapElement {
      * @return true, wenns geklappt hat, sonst false
      */
     public boolean addPermanentObject(GameObject obj) {
-        if (permRef == null) {
-            permRef = obj;
-            return true;
+        if (collision != collision.unreachable) {
+            if (permRef == null) {
+                permRef = obj;
+                return true;
+            }
         }
         return false;
     }
@@ -150,7 +152,9 @@ public class ServerMapElement extends AbstractMapElement {
      * Sollte keiner Existieren, passiert gar nix.
      */
     public void removePermanentObject() {
-        permRef = null;
+        if (collision != collision.unreachable) {
+            permRef = null;
+        }
     }
 
     /**
@@ -159,8 +163,10 @@ public class ServerMapElement extends AbstractMapElement {
      * @param obj das zu registrierende Objekt
      */
     public void addTempObject(GameObject obj) {
-        if (!moveRefs.contains(obj)) {
-            moveRefs.add(obj);
+        if (collision != collision.unreachable) {
+            if (!moveRefs.contains(obj)) {
+                moveRefs.add(obj);
+            }
         }
     }
 
@@ -169,8 +175,8 @@ public class ServerMapElement extends AbstractMapElement {
      * @param obj das zu entfernende objekt
      */
     public void removeTempObject(GameObject obj) {
-        moveRefs.remove(obj);
+        if (collision != collision.unreachable) {
+            moveRefs.remove(obj);
+        }
     }
-
-
 }
