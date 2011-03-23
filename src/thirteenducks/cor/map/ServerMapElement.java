@@ -119,10 +119,11 @@ public class ServerMapElement extends AbstractMapElement {
     public boolean validGroundPath(GameObject obj) {
         switch (collision) {
             case unreachable:
-            case blocked:
                 return false;
             case free:
                 return true;
+            case blocked:
+                return obj.getPlayerId() == permRef.getPlayerId();
             case occupied:
                 return obj.getPlayerId() == moveRefs.get(0).getPlayerId();
         }
@@ -141,6 +142,7 @@ public class ServerMapElement extends AbstractMapElement {
         if (collision != collision.unreachable) {
             if (permRef == null) {
                 permRef = obj;
+                collision = collision.blocked;
                 return true;
             }
         }
@@ -153,6 +155,11 @@ public class ServerMapElement extends AbstractMapElement {
      */
     public void removePermanentObject() {
         if (collision != collision.unreachable) {
+            if (moveRefs.isEmpty()) {
+                collision = collision.free;
+            } else {
+                collision = collision.occupied;
+            }
             permRef = null;
         }
     }
@@ -166,6 +173,9 @@ public class ServerMapElement extends AbstractMapElement {
         if (collision != collision.unreachable) {
             if (!moveRefs.contains(obj)) {
                 moveRefs.add(obj);
+                if (permRef == null) {
+                    collision = collision.occupied;
+                }
             }
         }
     }
@@ -177,6 +187,11 @@ public class ServerMapElement extends AbstractMapElement {
     public void removeTempObject(GameObject obj) {
         if (collision != collision.unreachable) {
             moveRefs.remove(obj);
+            if (moveRefs.isEmpty()) {
+                if (permRef == null) {
+                    collision = collision.free;
+                }
+            }
         }
     }
 }
