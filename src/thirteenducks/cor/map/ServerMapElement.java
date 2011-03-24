@@ -2,6 +2,7 @@ package thirteenducks.cor.map;
 
 import java.util.ArrayList;
 import thirteenducks.cor.game.GameObject;
+import thirteenducks.cor.game.Unit;
 
 /**
  *
@@ -107,7 +108,7 @@ public class ServerMapElement extends AbstractMapElement {
             case free:
                 return true;
             case blocked:
-                return obj.getPlayerId() == permRef.getPlayerId();
+                return obj.getPlayerId() == permRef.getPlayerId() && permRef instanceof Unit;
             case occupied:
                 return obj.getPlayerId() == moveRefs.get(0).getPlayerId();
         }
