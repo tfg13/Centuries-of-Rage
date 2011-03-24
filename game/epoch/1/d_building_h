@@ -1,3 +1,16 @@
+# NeutralBuilding
+B 0 {
+name=Village Center
+defaultTexture=img/buildings/human_main_e1.png
+hitpoints=5000
+maxhitpoints=5000
+Gdesc=Main building
+offsetY=60
+z1=12
+z2=12
+ability=401 #Recruit scout
+}
+# PlayersBuilding
 B 1 {
 name=Village Center
 defaultTexture=img/buildings/human_main_e1.png
