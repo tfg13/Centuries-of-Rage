@@ -32,14 +32,6 @@ public class NeutralBuilding extends Building {
     }
 
     /**
-     * Erzeugt ein Platzhalter-Gebäude, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
-     * Attribute und Fähigkeiten dient.
-     */
-    public NeutralBuilding(DescParamsBuilding params) {
-        super(params);
-    }
-
-    /**
      * Erzeugt ein neues Gebäude als eigenständige Kopie des Übergebenen.
      * Wichtige Parameter werden kopiert, Sachen die jedes Gebäude selber haben sollte nicht.
      * Wichtig: Die Position muss noch gesetzt werden, die ist Anfangs 0,0
@@ -52,11 +44,6 @@ public class NeutralBuilding extends Building {
 
     @Override
     public Position freeDirectAroundMe() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Position[] getPositions() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -82,7 +69,7 @@ public class NeutralBuilding extends Building {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - (getGraphicsData().offsetX * 10), (int) (y - (getGraphicsData().offsetY * 10)));
+        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (int) (y - getGraphicsData().offsetY));
     }
 
     @Override
