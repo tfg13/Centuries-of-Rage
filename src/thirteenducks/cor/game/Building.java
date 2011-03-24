@@ -60,12 +60,12 @@ public abstract class Building extends GameObject {
      * Größe dieses Gebäudes in Feldern Richtung rechts oben.
      * Ausgehend von der Zuordnungsposition ganz links.
      */
-    private int z1 = 2;
+    protected int z1 = 2;
     /**
      * Größe dieses Gebäudes in Feldern Richtung rechts unten.
      * Ausgehend von der Zuordnungsposition ganz links.
      */
-    private int z2 = 2;
+    protected int z2 = 2;
     /**
      * Der derzeitige Baufortschritt, in 0.Prozent
      * Nur relevant, wenn lifeStatus noch auf unborn steht.
@@ -99,7 +99,7 @@ public abstract class Building extends GameObject {
     /**
      * Cacht alle Positionen dieses Gebäudes, weils dauernd benötigt wird.
      */
-    private Position[] positions;
+    protected Position[] positions;
     /**
      * Cacht alle Positionen, die für die Sichtbarkeitsberechnung relevant sind.
      * In der Regel sind das die 4 Ecken.

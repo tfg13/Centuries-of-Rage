@@ -29,6 +29,9 @@ public class NeutralBuilding extends Building {
      */
     public NeutralBuilding(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
+        z1 = 12;
+        z2 = 12;
+        positions = new Position[z1 * z2];
     }
 
     /**
