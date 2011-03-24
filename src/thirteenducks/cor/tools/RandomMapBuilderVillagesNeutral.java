@@ -125,22 +125,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    int x = wippos.get(i).getX();
 	    int y = wippos.get(i).getY();
 
-	    DescParamsBuilding param = new DescParamsBuilding();
-	    param.setDescTypeId(1);
-	    param.setDescName("Village Center");
-	    param.setHitpoints(2000);
-	    param.setMaxhitpoints(2000);
-
-	    param.setZ1(12);
-	    param.setZ2(12);
-
-	    NeutralBuilding tmp = new NeutralBuilding(param);
-	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
-	    Haus.getGraphicsData().offsetY = 8;
-	    Haus.setPlayerId(1);
-	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
-
-	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
+	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 
 	    buildingList.add(Haus);
 
