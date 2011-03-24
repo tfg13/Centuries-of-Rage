@@ -144,14 +144,13 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
 	    buildingList.add(Haus);
 
-            /*
+            
 	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
-		    RandomMapBuilder.RandomRogMap.visMap[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setCollision(collision.blocked);
-		    RandomMapBuilder.RandomRogMap.changeElementProperty(Haus.getMainPosition().getX() + z1c + z2c, Haus.getMainPosition().getY() - z1c + z2c, "ground_tex", "img/ground/testground1.png");
+		    RandomMapBuilder.RandomRogMap.getVisMap()[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setGround_tex("img/ground/testground1.png");
 		}
 	    }
-            */
+            
 	}
     }
 }
