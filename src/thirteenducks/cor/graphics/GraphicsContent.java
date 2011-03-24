@@ -953,7 +953,7 @@ public class GraphicsContent extends BasicGame {
                             imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
                             break;
                         case 2:
-                            imgMap.get("img/game/highlight_orange.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
                             break;
                         case 3:
                             imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
