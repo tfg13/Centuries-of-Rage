@@ -52,6 +52,7 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.DescParamsUnit;
 import thirteenducks.cor.game.GameObject;
+import thirteenducks.cor.game.NeutralBuilding;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
@@ -401,7 +402,7 @@ public class MapIO {
                     }
                 }
             }
-            // Kollision - nur aus Kompatibilitätsgrunden da. (Gespeicherte Maps enthalten keine Kollision)
+            // Kollision - nur unreachable
             for (int x = 0; x < newMapX; x++) {
                 for (int y = 0; y < newMapY; y++) {
                     if (x % 2 != y % 2) {
@@ -441,11 +442,26 @@ public class MapIO {
                 int y = Integer.parseInt(pos.substring(pos.indexOf("|") + 1, pos.length()));
                 int playerId = Integer.parseInt(unitData[2]);
                 int netId = Integer.parseInt(unitData[3]);
-                Building b = null;
-                b = (Building) descTypeBuilding.get(desc).getCopy(netId);
-                b.setPlayerId(playerId);
-                b.setMainPosition(new Position(x, y));
-                buildingList.add(b);
+                String s = null;
+                try {
+                    s = unitData[4];
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    // Ok, das ist nur aus Kompatibilitätsgründen da
+                }
+                if (s == null || s.equals("p")) {
+                    // Players Building
+                    Building b = null;
+                    b = (Building) descTypeBuilding.get(desc).getCopy(netId);
+                    b.setPlayerId(playerId);
+                    b.setMainPosition(new Position(x, y));
+                    buildingList.add(b);
+                } else if (s.equals("n")) {
+                    // Neutral Building!
+                    NeutralBuilding nb = new NeutralBuilding(netId, new Position(x, y));
+                    nb.setMainPosition(new Position(x, y));
+                    buildingList.add(nb);
+                    
+                }
             }
 
             // Gebäude
@@ -455,17 +471,17 @@ public class MapIO {
             }
 
             // Grenzen der Map mit Kollision ausstatten
-                for (int x = 0; x < newMapX; x++) {
-                    for (int y = 0; y < newMapY; y++) {
-                        if (x % 2 != y % 2) {
-                            continue;
-                        }
-                        if (x == 0 || x == (newMapX - 1) || y == 0 || y == (newMapY - 1)) {
-                            // Feld hat Kollision
-                            theMap.getVisMap()[x][y].setUnreachable(true);
-                        }
+            for (int x = 0; x < newMapX; x++) {
+                for (int y = 0; y < newMapY; y++) {
+                    if (x % 2 != y % 2) {
+                        continue;
+                    }
+                    if (x == 0 || x == (newMapX - 1) || y == 0 || y == (newMapY - 1)) {
+                        // Feld hat Kollision
+                        theMap.getVisMap()[x][y].setUnreachable(true);
                     }
                 }
+            }
 
             theMap.setMapProperty("NEXTNETID", nnid);
         } catch (Exception ex2) {
@@ -570,7 +586,11 @@ public class MapIO {
                 }
                 // Gebäude
                 for (Building building : buildingList) {
-                    writer.write(building.getDescTypeId() + " " + building.getMainPosition() + " " + building.getPlayerId() + " " + building.netID);
+                    if (!(building instanceof NeutralBuilding)) {
+                        writer.write(building.getDescTypeId() + " " + building.getMainPosition() + " " + building.getPlayerId() + " " + building.netID + " p");
+                    } else {
+                        writer.write("1 " + building.getMainPosition() + " 0 " + building.netID + " n");
+                    }
                     writer.newLine();
                 }
                 // Fertig
