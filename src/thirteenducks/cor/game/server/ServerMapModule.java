@@ -1338,6 +1338,18 @@ public class ServerMapModule {
     }
 
     /**
+     * Stellt die aktuellt Position der gegebene Einheit von
+     * @param obj
+     */
+    public void releasePosition(Unit obj) {
+        Position[] oldpos = obj.getPositions();
+        for (Position pos : oldpos) {
+            removePerm(pos);
+            addTemp(pos, obj);
+        }
+    }
+
+    /**
      * Registiert die angegebene Einheit als dauerhafte Kollisionsquelle bei dem angegebenen Feld.
      * @param pos die Position
      * @param obj die zu reg. Einheit

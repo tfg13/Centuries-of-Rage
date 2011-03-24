@@ -195,6 +195,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         //rgi.mapModule.setCollision(newPath.get(0), collision.free);
         //rgi.mapModule.setUnitRef(newPath.get(0), null, playerId);
         path.overwritePath(newPath);
+
     }
 
     /**

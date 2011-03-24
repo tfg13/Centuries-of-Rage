@@ -507,6 +507,8 @@ public class ServerMoveManager {
         if (compressed) {
             inner.extractPath(path);
         }
+        // Kollision umstellen
+        inner.netmap.releasePosition(unit);
         unit.applyNewPath(inner, path);
       /*  unit.movingtarget = path.get(path.size() - 1);
         unit.position = path.get(0);
