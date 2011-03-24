@@ -263,7 +263,7 @@ public class Path implements Pauseable, Serializable {
                     // Schon fertig?
                     if (passedWay >= length) {
                         // Fertig, Bewegung stoppen
-                        rgi.netmap.changePosition(caster2, targetPos);
+                        rgi.netmap.setPosition(caster2, targetPos);
                         targetPos = null;
                         path = null;
                         //caster2.attackManager.moveStopped();

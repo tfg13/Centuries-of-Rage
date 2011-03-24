@@ -1308,8 +1308,33 @@ public class ServerMapModule {
      */
     public void changePosition(GameObject obj, Position newMain) {
         // Alte Kollision austragen:
-
+        Position[] oldpos = obj.getPositions();
+        for (Position pos : oldpos) {
+            removeTemp(pos, obj);
+        }
         obj.setMainPosition(newMain);
+        Position[] newpos = obj.getPositions();
+        for (Position pos : newpos) {
+            addTemp(pos, obj);
+        }
+    }
+
+    /**
+     * Aufrufen, um die Position eines GO so zu setzen, dass es auch die Kollision & das Ref-System mitbekommt.
+     * @param caster2
+     * @param targetPos
+     */
+    public void setPosition(Unit obj, Position targetPos) {
+        // Eventuelle Temppos löschen
+        Position[] oldpos = obj.getPositions();
+        for (Position pos : oldpos) {
+            removeTemp(pos, obj);
+        }
+        obj.setMainPosition(targetPos);
+        Position[] newpos = obj.getPositions();
+        for (Position pos : newpos) {
+            addPerm(pos, obj);
+        }
     }
 
     /**
