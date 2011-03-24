@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
-import thirteenducks.cor.map.AbstractMapElement.collision;
 
 /**
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
