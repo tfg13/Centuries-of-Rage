@@ -764,7 +764,7 @@ public class ServerMapModule {
      */
     public boolean isGroundColliding(Position pos, GameObject obj) {
         try {
-            return theMap.getVisMap()[pos.getX()][pos.getY()].validGroundTarget(obj);
+            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundTarget(obj);
         } catch (Exception ex) {
             return true;
         }
@@ -776,7 +776,7 @@ public class ServerMapModule {
      */
     public boolean isGroundColliding(int x, int y, GameObject obj) {
         try {
-            return theMap.getVisMap()[x][y].validGroundTarget(obj);
+            return !theMap.getVisMap()[x][y].validGroundTarget(obj);
         } catch (Exception ex) {
             return true;
         }
@@ -788,7 +788,7 @@ public class ServerMapModule {
      */
     public boolean isGroundCollidingMove(Position pos, GameObject obj) {
         try {
-            return theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPath(obj);
+            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPath(obj);
         } catch (Exception ex) {
             return true;
         }
@@ -800,7 +800,7 @@ public class ServerMapModule {
      */
     public boolean isGroundCollidingForMove(int x, int y, GameObject obj) {
         try {
-            return theMap.getVisMap()[x][y].validGroundPath(obj);
+            return !theMap.getVisMap()[x][y].validGroundPath(obj);
         } catch (Exception ex) {
             return true;
         }
