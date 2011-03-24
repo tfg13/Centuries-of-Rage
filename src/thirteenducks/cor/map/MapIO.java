@@ -107,7 +107,7 @@ public class MapIO {
             ArrayList<File> flist = new ArrayList<File>();
             ArrayList<File> dlist = new ArrayList<File>();
 
-            File OrdnerSuchen = new File("game/"); //Unterordner in "game" suchen
+            File OrdnerSuchen = new File("game/epoch"); //Unterordner in "game" suchen
             File[] Ordner = OrdnerSuchen.listFiles();
             for (File ord : Ordner) {
                 if (ord.isDirectory() && !ord.getName().startsWith(".") && !ord.getName().startsWith(".")) {
