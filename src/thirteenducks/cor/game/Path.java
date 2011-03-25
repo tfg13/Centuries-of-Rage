@@ -341,7 +341,7 @@ public class Path implements Pauseable, Serializable {
      * @param y Koordinate des letzten Zuordnungsfeldes
      * @return x und y die korrekten Zeichenkoordinaten.
      */
-    public synchronized int[] calcExcactPosition(int x, int y, Unit caster2) {
+    public synchronized float[] calcExcactPosition(float x, float y, Unit caster2) {
         if (isMoving()) {
             // Berechnung notwendig:
             // Default-Berechnung:
@@ -387,9 +387,9 @@ public class Path implements Pauseable, Serializable {
                     // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
                     //Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
-                    x += lDiffX - (editDelta.getX() * 10);
-                    y += lDiffY - (editDelta.getY() * 7.5);
-                } else {
+                    x += lDiffX - (editDelta.getX() * GraphicsContent.FIELD_HALF_X);
+                    y += lDiffY - (editDelta.getY() * GraphicsContent.FIELD_HALF_Y);
+                } else {    
                     // Fertig, Bewegung stoppen
                     Position diff = caster2.getMainPosition().subtract(targetPos);
                     caster2.setMainPosition(targetPos);
@@ -405,7 +405,7 @@ public class Path implements Pauseable, Serializable {
         }
 
         // Egal ob was reingerechnet wurde, oder nicht:
-        return new int[]{x, y};
+        return new float[]{x, y};
     }
 
     /**
