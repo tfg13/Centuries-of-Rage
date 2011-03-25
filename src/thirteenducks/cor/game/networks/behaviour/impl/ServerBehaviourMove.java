@@ -49,7 +49,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     Unit caster2;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 5, true);
+        super(newinner, caster, 1, 10, true);
         caster2 = caster;
     }
 

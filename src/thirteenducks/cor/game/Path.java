@@ -89,6 +89,10 @@ public class Path implements Pauseable, Serializable {
      */
     private List<PathElement> path;
     /**
+     * Der Weg der Grafikengine. Berechnet Feldersprünge immer bei Feldern, nicht bei halben.
+     */
+    private List<PathElement> gPath;
+    /**
      * True, während sich die Einheit bewegt, also das Behaviour laufen soll.
      */
     private boolean moving;
@@ -122,17 +126,24 @@ public class Path implements Pauseable, Serializable {
         pathComputed = false;
         length = 0;
         path = new ArrayList<PathElement>();
+        gPath = new ArrayList<PathElement>();
         path.add(new PathElement(newPath.get(0)));
+        gPath.add(new PathElement(newPath.get(0)));
+        double lasthalf = 0; // Neu: Das neue Feld wird jetzt schon bei der Hälfte eingestellt. Dies speichert die halben.
         for (int i = 1; i < newPath.size(); i++) {
             Position pos = newPath.get(i);
             Position old = newPath.get(i - 1);
             // Richtung berechnen
             int vec = pos.subtract(old).transformToIntVector();
             // Strecke berechnen, mit Pytagoras
-            double abschnitt = Math.sqrt(Math.pow(old.getX() - pos.getX(), 2) + Math.pow(old.getY() - pos.getY(), 2));
-            length = length + abschnitt;
+            double abschnitt = Math.sqrt(Math.pow(old.getX() - pos.getX(), 2) + Math.pow(old.getY() - pos.getY(), 2)) / 2;
+            length = length + abschnitt + lasthalf;
+            lasthalf = abschnitt;
             path.add(new PathElement(pos, length, vec));
+            gPath.add(new PathElement(pos, length + lasthalf, vec));
         }
+        // Letztes halbes noch adden
+        length += lasthalf;
         pathComputed = true;
         moving = true;
     }
@@ -162,7 +173,7 @@ public class Path implements Pauseable, Serializable {
         gLastPointIdx = 0;
         computePath(newPath);
         this.nextWayPointDist = path.get(1).getDistance();
-        gNextPointDist = nextWayPointDist;
+        this.gNextPointDist = gPath.get(1).getDistance();
         moveStartTime = System.currentTimeMillis();
     }
 
@@ -215,9 +226,15 @@ public class Path implements Pauseable, Serializable {
             // Zuletzt erreichten Wegpunkt finden
             if (passedWay >= nextWayPointDist) {
                 // Sind wir einen weiter oder mehrere
-                int weiter = 1;
+                int weiter = 0;
                 while (passedWay > path.get(lastWayPoint + 1 + weiter).getDistance()) {
                     weiter++;
+                    if (path.size() == lastWayPoint + 1 + weiter) {
+                        // Sonderfall - nach dem letzten halben Feld, vor dem Ziel
+                        nextWayPointDist = length;
+                        caster2.setMainPosition(path.get(path.size() - 1).getPos());
+                        return;
+                    }
                 }
                 lastWayPoint += weiter;
                 nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
@@ -273,9 +290,15 @@ public class Path implements Pauseable, Serializable {
                     // Zuletzt erreichten Wegpunkt finden
                     if (passedWay >= nextWayPointDist) {
                         // Sind wir einen weiter oder mehrere
-                        int weiter = 1;
+                        int weiter = 0;
                         while (passedWay > path.get(lastWayPoint + 1 + weiter).getDistance()) {
                             weiter++;
+                            if (path.size() == lastWayPoint + 1 + weiter) {
+                                // Sonderfall - nach dem letzten halben Feld, vor dem Ziel
+                                nextWayPointDist = length;
+                                rgi.netmap.changePosition(caster2, path.get(path.size() - 1).getPos());
+                                return;
+                            }
                         }
                         lastWayPoint += weiter;
                         nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
@@ -364,7 +387,7 @@ public class Path implements Pauseable, Serializable {
         if (isMoving()) {
             // Berechnung notwendig:
             // Letze Zuordnung holen:
-            Position zPos = path.get(lastWayPoint).getPos();
+            Position zPos = gPath.get(lastWayPoint).getPos();
             // Default-Berechnung:
             try {
                 long passedTime = 0;
@@ -374,7 +397,7 @@ public class Path implements Pauseable, Serializable {
                     passedTime = System.currentTimeMillis() - moveStartTime;
                 }
                 double passedWay = passedTime * speed / 1000;
-                // Schon fertig?
+                // Noch am laufen?
                 if (passedWay < length) {
                     // Zuletzt erreichten Wegpunkt finden
                     if (passedWay >= this.gNextPointDist) {
@@ -386,26 +409,26 @@ public class Path implements Pauseable, Serializable {
                         }
                         gLastPointIdx += weiter;
 
-                        gNextPointDist = path.get(gLastPointIdx + 1).getDistance();
+                        gNextPointDist = gPath.get(gLastPointIdx + 1).getDistance();
                     }
                     // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
                     // Daher erst checken und ggf. reduzieren:
-                    if (gLastPointIdx >= path.size() - 1) {
+                    if (gLastPointIdx >= gPath.size() - 1) {
                         System.out.println("Client: Lastwaypoint-Error, setting back. May causes jumps!?");
-                        gLastPointIdx = path.size() - 2;
+                        gLastPointIdx = gPath.size() - 2;
                     }
-                    double diffLength = passedWay - path.get(gLastPointIdx).getDistance();
+                    double diffLength = passedWay - gPath.get(gLastPointIdx).getDistance();
                     // Wir haben jetzt den letzten Punkt der Route, der bereits erreicht wurde, und die Strecke, die danach noch gefahren wurde...
                     // Jetzt noch die Richtung
-                    int diffX = path.get(gLastPointIdx + 1).getPos().getX() - path.get(gLastPointIdx).getPos().getX();
-                    int diffY = path.get(gLastPointIdx + 1).getPos().getY() - path.get(gLastPointIdx).getPos().getY();
+                    int diffX = gPath.get(gLastPointIdx + 1).getPos().getX() - gPath.get(gLastPointIdx).getPos().getX();
+                    int diffY = gPath.get(gLastPointIdx + 1).getPos().getY() - gPath.get(gLastPointIdx).getPos().getY();
                     // Prozentanteil der Stecke, die zurückgelegt wurde
                     double potPathWay = Math.sqrt(Math.pow(Math.abs(diffX), 2) + Math.pow(Math.abs(diffY), 2));
                     double faktor = diffLength / potPathWay * 100;
                     double lDiffX = diffX * faktor / 10; //    / 100 * 10
                     double lDiffY = diffY * faktor / 100 * 7.5;
                     // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
-                    Position pdiff = zPos.subtract(path.get(gLastPointIdx).getPos());
+                    Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
                     x += lDiffX - (pdiff.getX() * 10);
                     y += lDiffY - (pdiff.getY() * 7.5);
