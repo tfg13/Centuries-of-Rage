@@ -140,6 +140,15 @@ public abstract class AbstractMapElement {
     public abstract boolean validGroundPath(GameObject obj);
 
     /**
+     * Findet heraus, ob dieses Feld derzeit eine gültige Bewegungsposition für die Planung einer Route des
+     * angegebenen Objekts ist.
+     * Defaultmäßig ist so ziemlich alles ein gültiger Planungsweg, aber Feindliche Sachen blockieren im Endeffekt dann.
+     * @param obj Für dieses Objekt wird der Kollisionszustand ermittelt
+     * @return true, wenn darüber gelaufen werden darf, false wenn nicht.
+     */
+    public abstract boolean validGroundPathWhilePlanning(GameObject obj);
+
+    /**
      * Registriert das angegebene Object als langfristigen Besetzer dieses Feldes.
      * Das kann eine stehende Einheit oder ein Gebäude sein.
      * Der Return-Wert gibt an, ob es geklappt hat oder nicht.

@@ -103,4 +103,9 @@ public class ClientMapElement extends AbstractMapElement {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 
+    @Override
+    public boolean validGroundPathWhilePlanning(GameObject obj) {
+        throw new UnsupportedOperationException("Not supported for Client!");
+    }
+
 }

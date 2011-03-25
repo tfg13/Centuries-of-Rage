@@ -115,6 +115,20 @@ public class ServerMapElement extends AbstractMapElement {
         return false;
     }
 
+    @Override
+    public boolean validGroundPathWhilePlanning(GameObject obj) {
+        switch (collision) {
+            case unreachable:
+                return false;
+            case free:
+            case occupied:
+                return true;
+            case blocked:
+                return permRef instanceof Unit;
+        }
+        return false;
+    }
+
     /**
      * Registriert das angegebene Object als langfristigen Besetzer dieses Feldes.
      * Das kann eine stehende Einheit oder ein Gebäude sein.

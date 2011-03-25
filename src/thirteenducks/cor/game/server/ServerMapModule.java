@@ -806,6 +806,39 @@ public class ServerMapModule {
         }
     }
 
+    /**
+     * Findet heraus, ob die angegebene Position für Boden-GO's als Wegposition
+     * bei der Wegeplanung als Hinderniss betrachtet werden soll.
+     * Wenn nicht, dort aber was ist (groundcollidingformove), dann wird die Einheit normalerweise anhalten und kämpfen.
+     * @param pos die Position
+     * @param obj das objekt, das da laufen soll
+     * @return true, wenn hinderniss
+     */
+    public boolean isGroundCollidingForMovePlanning(Position pos, GameObject obj) {
+        try {
+            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPathWhilePlanning(obj);
+        } catch (Exception ex) {
+            return true;
+        }
+    }
+
+        /**
+     * Findet heraus, ob die angegebene Position für Boden-GO's als Wegposition
+     * bei der Wegeplanung als Hinderniss betrachtet werden soll.
+     * Wenn nicht, dort aber was ist (groundcollidingformove), dann wird die Einheit normalerweise anhalten und kämpfen.
+     * @param x die x - koordinate
+     * @param y die y - koordinate
+     * @param obj das objekt, das da laufen soll
+     * @return true, wenn hinderniss
+     */
+    public boolean isGroundCollidingForMovePlanning(int x, int y, GameObject obj) {
+        try {
+            return !theMap.getVisMap()[x][y].validGroundPathWhilePlanning(obj);
+        } catch (Exception ex) {
+            return true;
+        }
+    }
+
     private void createIDList() {
         // Verlässt sich darauf, dass der MapEditor/RandomMapGenerator korrekte netIDs vergeben hat...
         netIDList.clear();
