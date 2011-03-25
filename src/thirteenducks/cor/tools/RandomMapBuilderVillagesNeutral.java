@@ -55,14 +55,14 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	for (int i = 0; i < dorfzahl; i++) {
 	    double RndPunktX = ((Math.random() * (maxX - minX)) + minX) / 2;
 	    int RndPunktXi = (int) RndPunktX;
-	    double RndPunktY = ((Math.random() * (maxY - minY)) + minY)/ 2;
+	    double RndPunktY = ((Math.random() * (maxY - minY)) + minY) / 2;
 	    int RndPunktYi = (int) RndPunktY;
 	    Position alpha = new Position(RndPunktXi * 2, RndPunktYi * 2);
 	    wippos.add(alpha);
 	}
 
 	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 200; i++) {
+	for (int i = 0; i < 500; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
 		double mindist = 999999; // kleinste gefundene Distanz
 		Position nextdorf = new Position(-1, -1); // nächstes Dorf
@@ -86,29 +86,74 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 		    }
 		}
 		// entfernen von nächstem Dorf
-		Position vector = new Position(wippos.get(j).getX() - nextdorf.getX(), wippos.get(j).getY() - nextdorf.getY());
 		Position newvec = new Position(0, 0);
 
-		if (vector.getX() > 0) {
-		    newvec.setX(1);
-		} else if (vector.getX() < 0) {
-		    newvec.setX(-1);
+		int mx = wippos.get(j).getX();
+		int my = wippos.get(j).getY();
+		int bx = nextdorf.getX();
+		int by = nextdorf.getY();
+
+		if (mx == bx) {
+		    if (my - by > 0) {
+			newvec.setY(2); //unten
+		    } else {
+			newvec.setY(-2); //oben
+		    }
 		} else {
-		    newvec.setX(0);
-		}
-		if (vector.getY() > 0) {
-		    newvec.setY(1);
-		} else if (vector.getY() < 0) {
-		    newvec.setY(-1);
-		} else {
-		    newvec.setY(0);
+		    // Winkel berechnen:
+		    double deg = (double) Math.atan(-(my - by) / (mx - bx)); // Gk durch Ak
+		    // In 360Grad System umrechnen (falls negativ)
+		    if (deg < 0) {
+			deg += 2 * Math.PI;
+		    }
+		    // Winkel sind kleinstmöglich, wir brauchen aber einen vollen 360°-Umlauf
+		    if (mx - bx < 0 && my - by < 0) { //links oben
+			deg -= Math.PI;
+		    } else if (mx - bx < 0 && my - by > 0) { //links unten
+			deg += Math.PI;
+		    }
+		    if (deg == 0 || deg == -0) {
+			if (mx - bx < 0) {
+			    deg = Math.PI;
+			}
+		    }
+		    if (deg < 0) {
+			deg += 2 * Math.PI;
+		    }
+		    if (deg < Math.PI / 8) {
+			// rechts
+			newvec.setX(2);
+		    } else if (deg < Math.PI * 3 / 8) {
+			// rechts oben
+			newvec.setX(1);
+			newvec.setY(-1);
+		    } else if (deg < Math.PI * 5 / 8) {
+			// oben
+			newvec.setY(-2);
+		    } else if (deg < Math.PI * 7 / 8) {
+			// oben links
+			newvec.setX(-1);
+			newvec.setY(-1);
+		    } else if (deg < Math.PI * 9 / 8) {
+			// links
+			newvec.setX(-2);
+		    } else if (deg < Math.PI * 11 / 8) {
+			// links unten
+			newvec.setX(-1);
+			newvec.setY(1);
+		    } else if (deg < Math.PI * 13 / 8) {
+			// unten
+			newvec.setY(2);
+		    } else if (deg < Math.PI * 15 / 8) {
+			// unten rechts
+			newvec.setX(1);
+			newvec.setY(1);
+		    } else {
+			// rechts
+			newvec.setX(2);
+		    }
 		}
 
-		if (newvec.getX() == 0 || newvec.getY() == 0) {
-		    newvec.setX(newvec.getX() * 2);
-		    newvec.setY(newvec.getY() * 2);
-		}
-		
 		wippos.get(j).setX(wippos.get(j).getX() + newvec.getX());
 		wippos.get(j).setY(wippos.get(j).getY() + newvec.getY());
 
