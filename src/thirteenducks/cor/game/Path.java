@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.graphics.GraphicsContent;
 
 /**
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
@@ -343,8 +344,6 @@ public class Path implements Pauseable, Serializable {
     public synchronized int[] calcExcactPosition(int x, int y, Unit caster2) {
         if (isMoving()) {
             // Berechnung notwendig:
-            // Letze Zuordnung holen:
-            Position zPos = gPath.get(lastWayPoint).getPos();
             // Default-Berechnung:
             try {
                 long passedTime = 0;
@@ -357,8 +356,8 @@ public class Path implements Pauseable, Serializable {
                 // Noch am laufen?
                 if (passedWay < length) {
                     // Zuletzt erreichten Wegpunkt finden
+                    Position editDelta = new Position(0,0); // Wenn die Position umgestellt wird, stimmt ja die alte zuordnungsPosition nichtmehr. Hier wird das Delta gespeichert.
                     if (passedWay >= this.gNextPointDist) {
-
                         // Sind wir einen weiter oder mehrere
                         int weiter = 1;
                         while (passedWay > path.get(gLastPointIdx + 1 + weiter).getDistance()) {
@@ -366,7 +365,8 @@ public class Path implements Pauseable, Serializable {
                         }
                         gLastPointIdx += weiter;
                         gNextPointDist = gPath.get(gLastPointIdx + 1).getDistance();
-                        //caster2.setMainPosition(gPath.get(gLastPointIdx).getPos());
+                        editDelta = caster2.getMainPosition().subtract(gPath.get(gLastPointIdx).getPos());
+                        caster2.setMainPosition(gPath.get(gLastPointIdx).getPos());
                     }
                     // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
                     // Daher erst checken und ggf. reduzieren:
@@ -385,13 +385,16 @@ public class Path implements Pauseable, Serializable {
                     double lDiffX = diffX * faktor / 10; //    / 100 * 10
                     double lDiffY = diffY * faktor / 100 * 7.5;
                     // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
-                    Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
+                    //Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
-                    x += lDiffX - (pdiff.getX() * 10);
-                    y += lDiffY - (pdiff.getY() * 7.5);
+                    x += lDiffX - (editDelta.getX() * 10);
+                    y += lDiffY - (editDelta.getY() * 7.5);
                 } else {
                     // Fertig, Bewegung stoppen
+                    Position diff = caster2.getMainPosition().subtract(targetPos);
                     caster2.setMainPosition(targetPos);
+                    x -= diff.getX() * GraphicsContent.FIELD_HALF_X;
+                    y -= diff.getY() * GraphicsContent.FIELD_HALF_Y;
                     targetPos = null;
                     path = null;
                     moving = false;

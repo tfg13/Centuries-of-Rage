@@ -177,6 +177,7 @@ public class ServerNetController implements Runnable {
                 cmd = 25;
             }
             boolean sendFinal = false;
+            System.out.println("WARNING: Possible loss of Posision during move-broadcast!!!");
             for (int i = 0; i < path.size(); i += 2) {
                 int x1 = path.get(i).getX();
                 int y1 = path.get(i).getY();
