@@ -41,11 +41,10 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
     @Override
     public void performJob() {
-	final int rand = 40;
-	final int minX = 40;
-	final int minY = 40;
-	final int maxX = RandomMapBuilder.RandomRogMap.getMapSizeX() - 40;
-	final int maxY = RandomMapBuilder.RandomRogMap.getMapSizeY() - 40;
+	final int minX = 20;
+	final int minY = 20;
+	final int maxX = RandomMapBuilder.RandomRogMap.getMapSizeX() - 20;
+	final int maxY = RandomMapBuilder.RandomRogMap.getMapSizeY() - 20;
 
 	ArrayList<Position> wippos = new ArrayList<Position>();
 	ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
@@ -63,7 +62,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	}
 
 	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 200; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
 		double mindist = 999999; // kleinste gefundene Distanz
 		Position nextdorf = new Position(-1, -1); // nächstes Dorf
@@ -113,7 +112,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 		wippos.get(j).setX(wippos.get(j).getX() + newvec.getX());
 		wippos.get(j).setY(wippos.get(j).getY() + newvec.getY());
 
-		// überprüfen ob gültig
+		// Rückgängig machen wenn ungültig
 		if (wippos.get(j).getX() < minX || wippos.get(j).getX() > maxX || wippos.get(j).getY() < minY || wippos.get(j).getY() > maxY) {
 		    wippos.get(j).setX(wippos.get(j).getX() - newvec.getX());
 		    wippos.get(j).setY(wippos.get(j).getY() - newvec.getY());
@@ -141,7 +140,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    Haus.setPlayerId(1);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
 
-	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
+	    Haus.setMainPosition(new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y));
 
 	    buildingList.add(Haus);
 
