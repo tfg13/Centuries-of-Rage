@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
+import thirteenducks.cor.graphics.GraphicsContent;
 
 /**
  * Ein Weg ist eine Folge von Feldern, die eine Einheit entlang laufen kann.
@@ -340,7 +341,7 @@ public class Path implements Pauseable, Serializable {
      * @param y Koordinate des letzten Zuordnungsfeldes
      * @return x und y die korrekten Zeichenkoordinaten.
      */
-    public synchronized int[] calcExcactPosition(int x, int y, Unit caster2) {
+    public synchronized float[] calcExcactPosition(float x, float y, Unit caster2) {
         if (isMoving()) {
             // Berechnung notwendig:
             // Letze Zuordnung holen:
@@ -387,8 +388,8 @@ public class Path implements Pauseable, Serializable {
                     // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
                     Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
-                    x += lDiffX - (pdiff.getX() * 10);
-                    y += lDiffY - (pdiff.getY() * 7.5);
+                    x += lDiffX - (pdiff.getX() * GraphicsContent.FIELD_HALF_X);
+                    y += lDiffY - (pdiff.getY() * GraphicsContent.FIELD_HALF_Y);
                 } else {
                     // Fertig, Bewegung stoppen
                     caster2.setMainPosition(targetPos);
@@ -402,7 +403,7 @@ public class Path implements Pauseable, Serializable {
         }
 
         // Egal ob was reingerechnet wurde, oder nicht:
-        return new int[]{x, y};
+        return new float[]{x, y};
     }
 
     /**
