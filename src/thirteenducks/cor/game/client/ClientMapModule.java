@@ -55,7 +55,6 @@ import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.map.MapIO;
-import thirteenducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
 /**
  * Das MapModul auf der Client-Seite
@@ -1005,7 +1004,6 @@ public class ClientMapModule {
         for (Unit unit : unitList) {
             // Alle Parameter kopieren
             unit.copyPropertiesFrom(descUnit.get(unit.getDescTypeId()));
-            unit.addClientBehaviour(new ClientBehaviourMove(rgi, unit));
         }
     }
 
@@ -1277,8 +1275,6 @@ public class ClientMapModule {
                 rgi.game.getOwnPlayer().uList.add(u.getDescTypeId());
             }
         }
-        
-        u.addClientBehaviour(new ClientBehaviourMove(rgi, u));
     }
 
     /**

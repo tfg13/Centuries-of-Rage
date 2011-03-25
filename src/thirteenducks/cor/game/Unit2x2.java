@@ -197,7 +197,7 @@ public class Unit2x2 extends Unit {
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         //Einheit gehört zu / Selektiert
-        int[] xy = path.calcExcactPosition(x,y);
+        int[] xy = path.calcExcactPosition(x,y, this);
         if (isSelected()) {
             // Weiße Bodenmarkierung
             imgMap.get("img/game/sel_s2.png0").getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
@@ -210,7 +210,7 @@ public class Unit2x2 extends Unit {
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
-        int[] xy = path.calcExcactPosition(x,y);
+        int[] xy = path.calcExcactPosition(x,y, this);
         if (img != null) {
             img.getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
         } else {

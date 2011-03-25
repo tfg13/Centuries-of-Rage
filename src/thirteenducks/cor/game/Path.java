@@ -28,7 +28,6 @@ package thirteenducks.cor.game;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 
 /**
@@ -200,49 +199,6 @@ public class Path implements Pauseable, Serializable {
         gNextPointDist = nextWayPointDist;
     }
 
-    /**
-     * Verwaltet die Bewegung der Unit auf dem Path.
-     * Muss regelmäßig aufgerufen werden
-     * @param caster2 Die Einheit, deren Pfad verwaltet wird.
-     */
-    public synchronized void clientManagePath(ClientCore.InnerClient rgi, Unit caster2) { // ugly
-        if (isMoving()) {
-            long passedTime = 0;
-            if (movePaused) {
-                passedTime = movePauseTime - moveStartTime;
-            } else {
-                passedTime = System.currentTimeMillis() - moveStartTime;
-            }
-            double passedWay = passedTime * caster2.speed / 1000;
-            // Schon fertig?
-            if (passedWay >= length) {
-                // Fertig, Bewegung stoppen
-                caster2.setMainPosition(targetPos);
-                targetPos = null;
-                path = null;
-                moving = false;
-                return;
-            }
-            // Zuletzt erreichten Wegpunkt finden
-            if (passedWay >= nextWayPointDist) {
-                // Sind wir einen weiter oder mehrere
-                int weiter = 0;
-                while (passedWay > path.get(lastWayPoint + 1 + weiter).getDistance()) {
-                    weiter++;
-                    if (path.size() == lastWayPoint + 1 + weiter) {
-                        // Sonderfall - nach dem letzten halben Feld, vor dem Ziel
-                        nextWayPointDist = length;
-                        caster2.setMainPosition(path.get(path.size() - 1).getPos());
-                        return;
-                    }
-                }
-                lastWayPoint += weiter;
-                nextWayPointDist = path.get(lastWayPoint + 1).getDistance();
-                caster2.setMainPosition(path.get(lastWayPoint).getPos());
-            }
-        }
-    }
-
     @Override
     public void pause() {
         movePaused = true;
@@ -379,11 +335,12 @@ public class Path implements Pauseable, Serializable {
      * Berechnet die exakte Position der Einheit und berechnet die Zeichenkoordinaten.
      * Dazu werden x und y - die Zeichenkoordinaten des Zuordnungsfeldes benötigt.
      * Diese Methode liefert die gegebenen Werte zurück, falls gerade keine Bewegung läuft.
+     * Diese Methode verwaltet das gesamte Client-Bewegungssytem. Alles andere wäre Pfusch.
      * @param x Koordinate des letzten Zuordnungsfeldes
      * @param y Koordinate des letzten Zuordnungsfeldes
      * @return x und y die korrekten Zeichenkoordinaten.
      */
-    public synchronized int[] calcExcactPosition(int x, int y) {
+    public synchronized int[] calcExcactPosition(int x, int y, Unit caster2) {
         if (isMoving()) {
             // Berechnung notwendig:
             // Letze Zuordnung holen:
@@ -408,8 +365,8 @@ public class Path implements Pauseable, Serializable {
                             weiter++;
                         }
                         gLastPointIdx += weiter;
-
                         gNextPointDist = gPath.get(gLastPointIdx + 1).getDistance();
+                        //caster2.setMainPosition(gPath.get(gLastPointIdx).getPos());
                     }
                     // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
                     // Daher erst checken und ggf. reduzieren:
@@ -432,6 +389,12 @@ public class Path implements Pauseable, Serializable {
                     // Aktuelle Koordinaten reinrechnen:
                     x += lDiffX - (pdiff.getX() * 10);
                     y += lDiffY - (pdiff.getY() * 7.5);
+                } else {
+                    // Fertig, Bewegung stoppen
+                    caster2.setMainPosition(targetPos);
+                    targetPos = null;
+                    path = null;
+                    moving = false;
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
