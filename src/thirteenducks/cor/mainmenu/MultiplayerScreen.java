@@ -55,6 +55,9 @@ public class MultiplayerScreen extends Container {
 
         // Hintergrund:
         super.addComponent(new TiledImage(m, 10, 10, 80, 70, "/img/mainmenu/rost.png"));
+
+        // Rahmen:
+        super.addComponent(new Frame(m,10,10,80,70));
         
         // Rahmen für serverauswahl
         super.addComponent(new Frame(m,15,14,71,54));
@@ -79,6 +82,7 @@ public class MultiplayerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 // @TODO: Server Starten, Lobby anzeigen
+                super.getMainMenu().startServer(true, "map/main/Randommap.map");
                 super.getMainMenu().joinServer("localhost");
             }
         });
