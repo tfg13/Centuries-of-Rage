@@ -43,7 +43,7 @@ public class MultiplayerScreen extends Container {
      * Konstruktor
      * @param m - Hauptmenü-Referenz
      */
-    public MultiplayerScreen(MainMenu m) {
+    public MultiplayerScreen(final MainMenu m) {
         super(m, 0, 0, 100, 100);
 
         // Hintergrund:
@@ -60,6 +60,7 @@ public class MultiplayerScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
+                // @TODO: Mainmenu.joinServer() aufrufen, bei Erfolg Lobby anzeigen
             }
         });
 
@@ -68,6 +69,8 @@ public class MultiplayerScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
+                // @TODO: Server Starten, Lobby anzeigen
+                m.getMenu("lobbyscreen").fadeIn();
             }
         });
 

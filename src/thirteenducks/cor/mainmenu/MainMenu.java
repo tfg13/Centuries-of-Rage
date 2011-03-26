@@ -143,6 +143,13 @@ public class MainMenu extends AppGameContainer {
         menus.put("multiplayerscreen", MultiplayerScreen);
         g.addComponent(MultiplayerScreen);
         MultiplayerScreen.fadeOut();
+
+        // Lobby
+        LobbyScreen lobbyScreen;
+        lobbyScreen = new LobbyScreen(this);
+        menus.put("lobbyscreen", lobbyScreen);
+        g.addComponent(lobbyScreen);
+        lobbyScreen.fadeOut();
     }
 
     /**
