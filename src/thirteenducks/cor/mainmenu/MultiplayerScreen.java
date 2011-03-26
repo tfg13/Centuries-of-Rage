@@ -26,7 +26,9 @@
 package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.Container;
+import thirteenducks.cor.mainmenu.components.Frame;
 import thirteenducks.cor.mainmenu.components.ImageButton;
+import thirteenducks.cor.mainmenu.components.TextBox;
 import thirteenducks.cor.mainmenu.components.TiledImage;
 
 /**
@@ -46,9 +48,15 @@ public class MultiplayerScreen extends Container {
 
         // Hintergrund:
         super.addComponent(new TiledImage(m, 10, 10, 80, 70, "/img/mainmenu/rost.png"));
+        
+        // Rahmen für serverauswahl
+        super.addComponent(new Frame(m,15,14,71,54));
+
+        // Ip-Eingabefeld:
+        super.addComponent(new TextBox(m,14,71));
 
         // Join-Button:
-        super.addComponent(new ImageButton(m, 15, 70, 12, 6, "img/mainmenu/buttonnew.png", "Join") {
+        super.addComponent(new ImageButton(m, 45, 70, 12, 6, "img/mainmenu/buttonnew.png", "Join") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -56,7 +64,7 @@ public class MultiplayerScreen extends Container {
         });
 
         // Start-Servr-Button:
-        super.addComponent(new ImageButton(m, 30, 70, 12, 6, "img/mainmenu/buttonnew.png", "Sart Server") {
+        super.addComponent(new ImageButton(m, 60, 70, 12, 6, "img/mainmenu/buttonnew.png", "Sart Server") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -64,7 +72,7 @@ public class MultiplayerScreen extends Container {
         });
 
         // zurück-button:
-        super.addComponent(new ImageButton(m, 45, 70, 12, 6, "img/mainmenu/buttonnew.png", "BACK") {
+        super.addComponent(new ImageButton(m, 75, 70, 12, 6, "img/mainmenu/buttonnew.png", "BACK") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
