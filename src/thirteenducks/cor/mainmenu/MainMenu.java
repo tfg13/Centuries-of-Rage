@@ -199,7 +199,7 @@ public class MainMenu extends AppGameContainer {
     /**
      * Tritt einer Partie bei
      */
-    public void joinServer() {
+    public void joinServer(String server) {
         {
             System.out.println("Joining Server...");
         }

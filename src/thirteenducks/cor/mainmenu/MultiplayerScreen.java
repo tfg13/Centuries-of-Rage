@@ -39,6 +39,13 @@ import thirteenducks.cor.mainmenu.components.TiledImage;
  */
 public class MultiplayerScreen extends Container {
 
+    
+    /**
+     * Die Textbox für Join to IP
+     */
+    private TextBox serverBox;
+
+
     /**
      * Konstruktor
      * @param m - Hauptmenü-Referenz
@@ -53,7 +60,8 @@ public class MultiplayerScreen extends Container {
         super.addComponent(new Frame(m,15,14,71,54));
 
         // Ip-Eingabefeld:
-        super.addComponent(new TextBox(m,14,71));
+        serverBox = new TextBox(m,14,71);
+        super.addComponent(serverBox);
 
         // Join-Button:
         super.addComponent(new ImageButton(m, 45, 70, 12, 6, "img/mainmenu/buttonnew.png", "Join") {
@@ -61,6 +69,7 @@ public class MultiplayerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 // @TODO: Mainmenu.joinServer() aufrufen, bei Erfolg Lobby anzeigen
+                super.getMainMenu().joinServer(serverBox.getText());
             }
         });
 
@@ -70,7 +79,7 @@ public class MultiplayerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 // @TODO: Server Starten, Lobby anzeigen
-                m.getMenu("lobbyscreen").fadeIn();
+                super.getMainMenu().joinServer("localhost");
             }
         });
 
