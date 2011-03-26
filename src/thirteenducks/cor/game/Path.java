@@ -28,6 +28,7 @@ package thirteenducks.cor.game;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsContent;
 
@@ -213,6 +214,49 @@ public class Path implements Pauseable, Serializable {
     }
 
     /**
+     * Verwaltet die Bewegung der Unit auf dem Path.
+     * Muss regelmäßig aufgerufen werden
+     * @param caster2 Die Einheit, deren Pfad verwaltet wird.
+     */
+    public synchronized void clientManagePath(ClientCore.InnerClient rgi, Unit caster2) { // ugly
+        if (isMoving()) {
+            long passedTime = 0;
+            if (movePaused) {
+                passedTime = movePauseTime - moveStartTime;
+            } else {
+                passedTime = System.currentTimeMillis() - moveStartTime;
+            }
+            double passedWay = passedTime * caster2.speed / 1000;
+            // Schon fertig?
+            if (passedWay >= length) {
+                // Fertig, Bewegung stoppen
+                caster2.setMainPosition(targetPos);
+                targetPos = null;
+                gPath = null;
+                moving = false;
+                return;
+            }
+            // Zuletzt erreichten Wegpunkt finden
+            if (passedWay >= nextWayPointDist) {
+                // Sind wir einen weiter oder mehrere
+                int weiter = 0;
+                while (passedWay > gPath.get(lastWayPoint + 1 + weiter).getDistance()) {
+                    weiter++;
+                    if (gPath.size() == lastWayPoint + 1 + weiter) {
+                        // Sonderfall - nach dem letzten halben Feld, vor dem Ziel
+                        nextWayPointDist = length;
+                        caster2.setMainPosition(gPath.get(gPath.size() - 1).getPos());
+                        return;
+                    }
+                }
+                lastWayPoint += weiter;
+                nextWayPointDist = gPath.get(lastWayPoint + 1).getDistance();
+                caster2.setMainPosition(gPath.get(lastWayPoint).getPos());
+            }
+        }
+    }
+
+    /**
      * Verwaltet den Pfad Serverseitig (Server-Behaviour)
      * Tut nichts, wenn sich die Einheit gerade nicht bewegt.
      * @param rgi
@@ -336,7 +380,6 @@ public class Path implements Pauseable, Serializable {
      * Berechnet die exakte Position der Einheit und berechnet die Zeichenkoordinaten.
      * Dazu werden x und y - die Zeichenkoordinaten des Zuordnungsfeldes benötigt.
      * Diese Methode liefert die gegebenen Werte zurück, falls gerade keine Bewegung läuft.
-     * Diese Methode verwaltet das gesamte Client-Bewegungssytem. Alles andere wäre Pfusch.
      * @param x Koordinate des letzten Zuordnungsfeldes
      * @param y Koordinate des letzten Zuordnungsfeldes
      * @return x und y die korrekten Zeichenkoordinaten.
@@ -344,6 +387,7 @@ public class Path implements Pauseable, Serializable {
     public synchronized float[] calcExcactPosition(float x, float y, Unit caster2) {
         if (isMoving()) {
             // Berechnung notwendig:
+            Position zPos = gPath.get(lastWayPoint).getPos(); // Wichtig: Behaviour-Variable, nicht die der Grafik!
             // Default-Berechnung:
             try {
                 long passedTime = 0;
@@ -356,7 +400,6 @@ public class Path implements Pauseable, Serializable {
                 // Noch am laufen?
                 if (passedWay < length) {
                     // Zuletzt erreichten Wegpunkt finden
-                    Position editDelta = new Position(0,0); // Wenn die Position umgestellt wird, stimmt ja die alte zuordnungsPosition nichtmehr. Hier wird das Delta gespeichert.
                     if (passedWay >= this.gNextPointDist) {
                         // Sind wir einen weiter oder mehrere
                         int weiter = 1;
@@ -365,8 +408,6 @@ public class Path implements Pauseable, Serializable {
                         }
                         gLastPointIdx += weiter;
                         gNextPointDist = gPath.get(gLastPointIdx + 1).getDistance();
-                        editDelta = caster2.getMainPosition().subtract(gPath.get(gLastPointIdx).getPos());
-                        caster2.setMainPosition(gPath.get(gLastPointIdx).getPos());
                     }
                     // In ganz seltenen Fällen ist hier lastwaypoint zu hoch (vermutlich (tfg) ein multithreading-bug)
                     // Daher erst checken und ggf. reduzieren:
@@ -385,19 +426,16 @@ public class Path implements Pauseable, Serializable {
                     double lDiffX = diffX * faktor / 10; //    / 100 * 10
                     double lDiffY = diffY * faktor / 100 * 7.5;
                     // Eventuell ist die gegebene x und y Zuordungsposition schlecht - prüfen
-                    //Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
+                    Position pdiff = zPos.subtract(gPath.get(gLastPointIdx).getPos());
                     // Aktuelle Koordinaten reinrechnen:
-                    x += lDiffX - (editDelta.getX() * GraphicsContent.FIELD_HALF_X);
-                    y += lDiffY - (editDelta.getY() * GraphicsContent.FIELD_HALF_Y);
-                } else {    
-                    // Fertig, Bewegung stoppen
-                    Position diff = caster2.getMainPosition().subtract(targetPos);
-                    caster2.setMainPosition(targetPos);
-                    x -= diff.getX() * GraphicsContent.FIELD_HALF_X;
-                    y -= diff.getY() * GraphicsContent.FIELD_HALF_Y;
-                    targetPos = null;
-                    path = null;
-                    moving = false;
+                    x += lDiffX - (pdiff.getX() * GraphicsContent.FIELD_HALF_X);
+                    y += lDiffY - (pdiff.getY() * GraphicsContent.FIELD_HALF_Y);
+                } else {
+                    // Sonderfall, wir laufen nichtmehr, aber das Behaviour hat das noch nicht umgestellt.
+                    // Unterschied berechnen:
+                    Position diff = gPath.get(lastWayPoint).getPos().subtract(targetPos); // Wichtig: Behaviour-Variable, nicht Grafik!
+                    x -= (diff.getX() * GraphicsContent.FIELD_HALF_X);
+                    y -= (diff.getY() * GraphicsContent.FIELD_HALF_Y);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
