@@ -25,7 +25,7 @@ public class AbilityStop extends Ability {
 
     @Override
     public void perform(GameObject caster) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.caster.stopMovement();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class AbilityStop extends Ability {
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return caster.moveStoppable();
     }
 
 

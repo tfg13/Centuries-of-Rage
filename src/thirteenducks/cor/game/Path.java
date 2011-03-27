@@ -447,6 +447,22 @@ public class Path implements Pauseable, Serializable {
     }
 
     /**
+     * Versucht, die Einheit sofort zu stoppen.
+     * Client only!
+     */
+    public void stopMovement() {
+
+    }
+
+    /**
+     * Findet heraus, ob sich die Einheit derzeit Bewegt (also stoppbar ist)
+     * @return
+     */
+    public boolean moveStoppable() {
+        return this.isMoving();
+    }
+
+    /**
      * Mini-Klasse, um mehrere Werte zu Speichern.
      * Speichert den Wegpunkt, die Strecke bis dort hin und die Richtung bis dort hin.
      */

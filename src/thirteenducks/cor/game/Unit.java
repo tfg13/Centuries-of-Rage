@@ -496,4 +496,23 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public int getColorId() {
         return getPlayerId();
     }
+
+    /**
+     * Stoppt die Einheit sofort - sofern genug Platz ist und die Einheit sich überhaupt bewegt.
+     * Falls hier gerade kein Platz ist, wird die Einheit zur nächstmöglichen Position laufen.
+     * Nur Client!
+     */
+    public void stopMovement() {
+        if (moveStoppable()) {
+            path.stopMovement();
+        }
+    }
+
+    /**
+     * Findet heraus, ob die Einheit sich derzeit in einer Stoppbaren Bewegung befindet.
+     * @return
+     */
+    public boolean moveStoppable() {
+        return path.moveStoppable();
+    }
 }
