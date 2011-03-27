@@ -21,6 +21,7 @@ public class AbilityStop extends Ability {
         this.name = "Stop movement";
         rgi = newinner;
         this.symbols = new String[]{"img/game/stop.png"};
+        this.useForAll = true;
     }
 
     @Override
