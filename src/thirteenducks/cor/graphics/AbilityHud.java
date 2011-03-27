@@ -25,11 +25,11 @@
  */
 package thirteenducks.cor.graphics;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.ability.Ability;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
@@ -61,9 +61,19 @@ public class AbilityHud extends Overlay {
      */
     public static final int ICON_SIZE_XY = 40;
     /**
-     * Das IGE dessen Fähigkeiten derzeit angezeigt werden.
+     * Die IGE'S deren Fähigkeiten derzeit angezeigt werden.
      */
-    private InteractableGameElement ige;
+    private List<InteractableGameElement> iges;
+    /**
+     * Immer, wenn sich die IGE's ändern, wird diese Liste geupdated.
+     * Hier sind alle Fähigkeiten enthalten, die angezeigt werden.
+     * Es werden nur Fähigkeiten angezeigt, die alle IGE's haben (und die multi-fähig sind)
+     */
+    private List<Ability> abList;
+    /**
+     * Änderungs-Indikator für iges-abList sync.
+     */
+    private boolean igesUpdated;
     /**
      * Die letzen Zeichenkoordinaten, für den MouseInput
      */
@@ -75,32 +85,57 @@ public class AbilityHud extends Overlay {
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
-        if (ige != null) {
-            List<Ability> abList = ige.getAbilitys();
+        if (iges != null && !iges.isEmpty()) {
+            // Liste updaten?
+            if (igesUpdated) {
+                igesUpdated = false;
+                // Nur Abilitys in die Liste aufnehmen, die alle IGEs haben
+                abList = new ArrayList<Ability>(iges.get(0).getAbilitys());
+                for (int i = 1; i < iges.size(); i++) {
+                    List<Ability> abs = iges.get(i).getAbilitys();
+                    for (int o = 0; o < abList.size(); o++) {
+                        Ability ability = abList.get(o);
+                        if (!(ability.useForAll && abs.contains(ability))) {
+                            // Raus damit
+                            abList.remove(o);
+                            o--;
+                        }
+                    }
+                }
+            }
             if (abList != null) {
                 int visCounter = 0;
                 for (int i = 0; i < abList.size(); i++) {
                     Ability ab = abList.get(i);
-                    if (ab.isVisible()) {
+                    if (ab.isVisible()) { // Ist global, muss nicht für jeden erfasst werden
                         String tex = ab.symbols[0];
                         if (tex == null) {
                             tex = ab.symbols[1];
                         }
                         if (tex != null) {
                             GraphicsImage img = imgMap.get(tex);
+                            boolean available = false;
+                            // Fähigkeit ist anklickbar, wenns nur bei einem einzigen Verfügbar ist.
+                            for (InteractableGameElement elem : iges) {
+                                List<Ability> avabilitys = elem.getAbilitys();
+                                if (avabilitys.get(avabilitys.indexOf(ab)).isAvailable()) {
+                                    available = true;
+                                    break;
+                                }
+                            }
                             if (img != null) {
                                 switch (edge) {
                                     case EDGE_TOP_LEFT:
-                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                                         break;
                                     case EDGE_TOP_RIGHT:
-                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                                         break;
                                     case EDGE_BOTTOM_LEFT:
-                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                                         break;
                                     case EDGE_BOTTOM_RIGHT:
-                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, ab.isAvailable() ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                                         break;
                                 }
                             }
@@ -150,8 +185,9 @@ public class AbilityHud extends Overlay {
         }
     }
 
-    public void setActiveObject(InteractableGameElement elem) {
-        this.ige = elem;
+    public void setActiveObjects(List<InteractableGameElement> elems) {
+        this.iges = elems;
+        igesUpdated = true;
     }
 
     private AbilityHud(ClientCore.InnerClient rgi) {
@@ -196,7 +232,6 @@ public class AbilityHud extends Overlay {
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                List<Ability> abList = ige.getAbilitys();
                 // Ability finden
                 int index = i1 / ICON_SIZE_XY;
                 int counter = 0;
@@ -204,11 +239,13 @@ public class AbilityHud extends Overlay {
                     Ability ab = abList.get(o);
                     if (ab.isVisible()) {
                         if (counter++ == index) {
-                            // Diese hier!
-                            if (i == 0) {
-                                ab.perform(ige.getAbilityCaster());
-                            } else {
-                                ab.antiperform(ige.getAbilityCaster());
+                            for (InteractableGameElement ige : iges) {
+                                // Diese hier!
+                                if (i == 0) {
+                                    ab.perform(ige.getAbilityCaster());
+                                } else {
+                                    ab.antiperform(ige.getAbilityCaster());
+                                }
                             }
                         }
 

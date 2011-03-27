@@ -369,15 +369,15 @@ public class CoRInput implements Pauseable {
                                                     selected.get(i).setSelected(false);
                                                 }
                                                 selected.clear();
-                                                abHud.setActiveObject(null);
+                                                abHud.setActiveObjects(null);
                                             }
                                             List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
                                             if (selectedIGE != null) {
                                                 for (InteractableGameElement ige : selectedIGE) {
                                                     ige.setSelected(true);
                                                     selected.add(ige);
-                                                    abHud.setActiveObject(ige);
                                                 }
+                                                abHud.setActiveObjects(selectedIGE);
                                             }
 
                                         }
@@ -818,7 +818,7 @@ public class CoRInput implements Pauseable {
                 System.out.println("Deselected: " + selected.get(i).toString());
             }
             selected.clear();
-            abHud.setActiveObject(null);
+            abHud.setActiveObjects(null);
         }
 
         // Alles, was noch da ist anwählen:
@@ -826,8 +826,8 @@ public class CoRInput implements Pauseable {
             elem.setSelected(true);
             selected.add(elem);
             System.out.println("Selected: " + elem.toString());
-            abHud.setActiveObject(elem);
         }
+        abHud.setActiveObjects(elems);
     }
 
     /**
