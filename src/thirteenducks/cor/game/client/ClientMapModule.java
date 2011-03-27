@@ -52,6 +52,7 @@ import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.game.Unit2x2;
+import thirteenducks.cor.game.ability.AbilityStop;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
 import thirteenducks.cor.map.MapIO;
@@ -1006,6 +1007,7 @@ public class ClientMapModule {
             // Alle Parameter kopieren
             unit.copyPropertiesFrom(descUnit.get(unit.getDescTypeId()));
             unit.addClientBehaviour(new ClientBehaviourMove(rgi, unit));
+            unit.addAbility(new AbilityStop(unit, rgi));
         }
     }
 
@@ -1278,6 +1280,7 @@ public class ClientMapModule {
             }
         }
         u.addClientBehaviour(new ClientBehaviourMove(rgi, u));
+        u.addAbility(new AbilityStop(u, rgi));
     }
 
     /**
