@@ -158,7 +158,7 @@ public class ClientCore extends Core {
                 public void run() {
                     soundM = new SoundModule();
                     rgi.rogSound = soundM;
-                    soundM.loopSound("wolfe.ogg");
+                    //soundM.loopSound("wolfe.ogg");
                     lobby.jButton2.setEnabled(true);
                 }
             });
