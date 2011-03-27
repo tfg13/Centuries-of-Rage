@@ -38,6 +38,18 @@ public class AbilityStop extends Ability {
         return caster.moveStoppable();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AbilityStop) {
+            return true;
+        }
+        return false;
+    }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
 
 }
