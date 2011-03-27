@@ -26,7 +26,7 @@ public class AbilityStop extends Ability {
 
     @Override
     public void perform(GameObject caster) {
-        this.caster.stopMovement();
+        this.caster.stopMovement(rgi);
     }
 
     @Override

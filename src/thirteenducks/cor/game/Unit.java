@@ -502,9 +502,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Falls hier gerade kein Platz ist, wird die Einheit zur nächstmöglichen Position laufen.
      * Nur Client!
      */
-    public void stopMovement() {
+    public void stopMovement(ClientCore.InnerClient rgi) {
         if (moveStoppable()) {
-            path.stopMovement();
+            path.stopMovement(rgi, this);
         }
     }
 

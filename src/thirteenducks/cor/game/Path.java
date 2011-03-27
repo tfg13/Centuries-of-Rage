@@ -450,8 +450,9 @@ public class Path implements Pauseable, Serializable {
      * Versucht, die Einheit sofort zu stoppen.
      * Client only!
      */
-    public void stopMovement() {
-
+    public void stopMovement(ClientCore.InnerClient rgi, Unit caster) {
+        // Signal an den Server senden, dass muss der machen.
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 54, caster.netID, 0, 0, 0));
     }
 
     /**
