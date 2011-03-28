@@ -214,6 +214,14 @@ public class ServerMoveManager {
     }
 
     /**
+     * Versucht, die angegebene Einheit so schnell wie möglich zu stoppen
+     * @param unit
+     */
+    public void stopMovement(Unit unit) {
+        System.out.println("AddMe: aroundMe() required!");
+    }
+
+    /**
      * Bewegungsbefehl vom Spieler für mehrere Einheiten
      * @param target - das angeklickte Bewegungsziel
      * @param movers - alle Einheiten, die dort hin sollen
