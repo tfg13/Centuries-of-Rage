@@ -67,8 +67,10 @@ public class Player extends Container {
             public void checkboxChanged() {
                 if (this.isChecked()) {
                     ready = true;
+                    nameLabel.setColor(Color.green);
                 } else {
                     ready = false;
+                    nameLabel.setColor(Color.black);
                 }
             }
         });

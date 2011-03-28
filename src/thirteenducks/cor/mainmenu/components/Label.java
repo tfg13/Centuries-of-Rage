@@ -107,4 +107,12 @@ public class Label extends Component {
 
         g.drawString(labelText, getX1() + space, getY1());
     }
+
+    /**
+     * Setzt die Textfarbe
+     * @param color - die gewünschte Textfarbe
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }
