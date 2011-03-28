@@ -89,7 +89,6 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 	    } else {
 		System.out.println("Panik");
 	    }
-	    System.out.println("x " + x + ", y " + y);
 
 	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 

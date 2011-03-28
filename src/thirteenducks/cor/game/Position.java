@@ -42,8 +42,9 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
     public static final int AROUNDME_COLMODE_GROUNDTARGET = 10;
     public static final int AROUNDME_COLMODE_GROUNDPATH = 11;
     public static final int AROUNDME_COLMODE_GROUNDPATHPLANNING = 12;
-    private int X;                                    //X-Koodrinate
-    private int Y;                                    //Y-Koordinate
+    protected int X;                                    //X-Koodrinate
+    protected int Y;
+
     private int cost;
     private int heuristic;
     private int valF;

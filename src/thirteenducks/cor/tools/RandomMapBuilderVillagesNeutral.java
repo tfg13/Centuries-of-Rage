@@ -30,6 +30,8 @@ import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.NeutralBuilding;
 import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.FloatingPointPosition;
+import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Platziert neutrale Dörfer
@@ -40,79 +42,128 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 
     @Override
     public void performJob() {
-	final int rand = 40;
-	final int minX = 40;
-	final int minY = 40;
-	final int maxX = RandomMapBuilder.RandomRogMap.getMapSizeX() - 40;
-	final int maxY = RandomMapBuilder.RandomRogMap.getMapSizeY() - 40;
+	final int minX = 30;
+	final int minY = 30;
+	final int maxX = RandomMapBuilder.RandomRogMap.getMapSizeX() - 30;
+	final int maxY = RandomMapBuilder.RandomRogMap.getMapSizeY() - 30;
 
-	ArrayList<Position> wippos = new ArrayList<Position>();
+	ArrayList<Position> wippos = new ArrayList<Position>(); // Die WIP-Positionen der neutralen Dörfer
 	ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
 
-	int dorfzahl = (int) ((Math.random() * 2.5 + 1.5) * RandomMapBuilder.RandomRogMap.getPlayernumber()); //für jeden Spieler 1.5 bis 3 neutrale Dörfer
+	int dorfzahl = (int) ((Math.random() * 1.5 + 2) * RandomMapBuilder.RandomRogMap.getPlayernumber()); //für jeden Spieler 1.5 bis 3 neutrale Dörfer
 
 	//zufällige Dorfpositionen
 	for (int i = 0; i < dorfzahl; i++) {
 	    double RndPunktX = ((Math.random() * (maxX - minX)) + minX) / 2;
 	    int RndPunktXi = (int) RndPunktX;
-	    double RndPunktY = ((Math.random() * (maxY - minY)) + minY)/ 2;
+	    double RndPunktY = ((Math.random() * (maxY - minY)) + minY) / 2;
 	    int RndPunktYi = (int) RndPunktY;
 	    Position alpha = new Position(RndPunktXi * 2, RndPunktYi * 2);
 	    wippos.add(alpha);
 	}
 
-	//neutrale Dörfer voneinander abstoßen
-	for (int i = 0; i < 100; i++) {
+	//neutrale Dörfer voneinander und von Startdörfen abstoßen
+	for (int i = 0; i < 2000; i++) {
 	    for (int j = 0; j < wippos.size(); j++) {
-		double mindist = 999999; // kleinste gefundene Distanz
-		Position nextdorf = new Position(-1, -1); // nächstes Dorf
+		//Vektoren von gerade überprüftem Dorf zum Dorf, das verschoben wird
+		ArrayList<FloatingPointPosition> VektorenNeutral = new ArrayList<FloatingPointPosition>();
+		ArrayList<FloatingPointPosition> VektorenStart = new ArrayList<FloatingPointPosition>();
+
+		//Distanz zu anderen neutralen Dörfern
 		for (int k = 0; k < wippos.size(); k++) {
-		    //distanz j und k!=j
 		    if (j == k) {
 			continue;
 		    }
 		    double dist = wippos.get(j).getDistance(wippos.get(k)); //Distanz zwischen den 2 Dörfern
-		    if (dist < mindist) {
-			mindist = dist;
-			nextdorf = wippos.get(k);
-		    }
+		    VektorenNeutral.add(new FloatingPointPosition(((wippos.get(j).getX() - wippos.get(k).getX()) / Math.pow(dist, 5)), ((wippos.get(j).getY() - wippos.get(k).getY()) / Math.pow(dist, 5))));
 		}
+
 		// Distanz zu Startdörfern
-		for (int l = 0; l < RandomMapBuilder.RandomRogMap.getPlayernumber(); l++) {
-		    double dist = wippos.get(j).getDistance(buildingList.get(l).getMainPosition()); //Distanz zwischen den 2 Dörfern
-		    if (dist < mindist) {
-			mindist = dist;
-			nextdorf = buildingList.get(l).getMainPosition();
+		for (int k = 0; k < RandomMapBuilder.RandomRogMap.getPlayernumber(); k++) {
+		    double dist = wippos.get(j).getDistance(buildingList.get(k).getMainPosition()); //Distanz zwischen den 2 Dörfern		    
+		    VektorenStart.add(new FloatingPointPosition(((wippos.get(j).getX() - buildingList.get(k).getMainPosition().getX()) / Math.pow(dist, 5)), (wippos.get(j).getY() - buildingList.get(k).getMainPosition().getY()) / Math.pow(dist, 5)));
+		}
+
+		// Endvektor aus Vektoren zu allen Dörfern berechen
+		double vecX = 0.0;
+		double vecY = 0.0;
+
+		for (int k = 0; k < VektorenNeutral.size(); k++) {
+		    vecX += VektorenNeutral.get(k).getfX();
+		    vecY += VektorenNeutral.get(k).getfY();
+		}
+		for (int k = 0; k < VektorenStart.size(); k++) {
+		    vecX += VektorenStart.get(k).getfX();
+		    vecY += VektorenStart.get(k).getfY();
+		}
+
+		Position newvec = new Position(0, 0);
+		if (vecX == 0) {
+		    if (vecY > 0) {
+			newvec.setY(2); //unten
+		    } else {
+			newvec.setY(-2); //oben
+		    }
+		} else {
+		    // Winkel berechnen:
+		    double deg = (double) Math.atan(-(vecY) / (vecX)); // Gk durch Ak
+		    // In 360Grad System umrechnen (falls negativ)
+		    if (deg < 0) {
+			deg += 2 * Math.PI;
+		    }
+		    // Winkel sind kleinstmöglich, wir brauchen aber einen vollen 360°-Umlauf
+		    if (vecX < 0 && vecY < 0) { //links oben
+			deg -= Math.PI;
+		    } else if (vecX < 0 && vecY > 0) { //links unten
+			deg += Math.PI;
+		    }
+		    if (deg == 0 || deg == -0) {
+			if (vecX < 0) {
+			    deg = Math.PI;
+			}
+		    }
+		    if (deg < 0) {
+			deg += 2 * Math.PI;
+		    }
+
+		    if (deg < Math.PI / 8) {
+			// rechts
+			newvec.setX(2);
+		    } else if (deg < Math.PI * 3 / 8) {
+			// rechts oben
+			newvec.setX(1);
+			newvec.setY(-1);
+		    } else if (deg < Math.PI * 5 / 8) {
+			// oben
+			newvec.setY(-2);
+		    } else if (deg < Math.PI * 7 / 8) {
+			// oben links
+			newvec.setX(-1);
+			newvec.setY(-1);
+		    } else if (deg < Math.PI * 9 / 8) {
+			// links
+			newvec.setX(-2);
+		    } else if (deg < Math.PI * 11 / 8) {
+			// links unten
+			newvec.setX(-1);
+			newvec.setY(1);
+		    } else if (deg < Math.PI * 13 / 8) {
+			// unten
+			newvec.setY(2);
+		    } else if (deg < Math.PI * 15 / 8) {
+			// unten rechts
+			newvec.setX(1);
+			newvec.setY(1);
+		    } else {
+			// rechts
+			newvec.setX(2);
 		    }
 		}
-		// entfernen von nächstem Dorf
-		Position vector = new Position(wippos.get(j).getX() - nextdorf.getX(), wippos.get(j).getY() - nextdorf.getY());
-		Position newvec = new Position(0, 0);
 
-		if (vector.getX() > 0) {
-		    newvec.setX(1);
-		} else if (vector.getX() < 0) {
-		    newvec.setX(-1);
-		} else {
-		    newvec.setX(0);
-		}
-		if (vector.getY() > 0) {
-		    newvec.setY(1);
-		} else if (vector.getY() < 0) {
-		    newvec.setY(-1);
-		} else {
-		    newvec.setY(0);
-		}
-
-		if (newvec.getX() == 0 || newvec.getY() == 0) {
-		    newvec.setX(newvec.getX() * 2);
-		    newvec.setY(newvec.getY() * 2);
-		}
-		
 		wippos.get(j).setX(wippos.get(j).getX() + newvec.getX());
 		wippos.get(j).setY(wippos.get(j).getY() + newvec.getY());
 
-		// überprüfen ob gültig
+		// Rückgängig machen wenn ungültig
 		if (wippos.get(j).getX() < minX || wippos.get(j).getX() > maxX || wippos.get(j).getY() < minY || wippos.get(j).getY() > maxY) {
 		    wippos.get(j).setX(wippos.get(j).getX() - newvec.getX());
 		    wippos.get(j).setY(wippos.get(j).getY() - newvec.getY());
@@ -125,7 +176,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    int x = wippos.get(i).getX();
 	    int y = wippos.get(i).getY();
 
-	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
+	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y));
 
 	    buildingList.add(Haus);
 
