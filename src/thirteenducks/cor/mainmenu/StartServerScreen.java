@@ -60,7 +60,7 @@ public class StartServerScreen extends Container {
         super(m, 15, 15, 80, 80);
 
         // Hintergrund:
-        super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 30, 30, "/img/mainmenu/rost.png"));
+        super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 40, 30, "/img/mainmenu/rost.png"));
 
         // Die Debug-Checkbox:
         myCheckBox = new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png") {
@@ -72,8 +72,9 @@ public class StartServerScreen extends Container {
         super.addComponent(myCheckBox);
 
         // MapWahl-Textbox (provisorisch)
-        myTextBox = new TextBox(super.getMainMenu(), 40, 60);
+        myTextBox = new TextBox(super.getMainMenu(), 32, 32);
         myTextBox.setText("Randommap.map");
+        super.addComponent(myTextBox);
 
         // Der Start-Button
         super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "/img/mainmenu/buttonnew.png", "Start Server") {
