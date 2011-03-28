@@ -63,7 +63,7 @@ public class Component {
     /**
      * Alpha-Wert der Komponente, steuert Transparenz
      */
-    private float alpha;
+    private double alpha;
 
     /**
      * Konstruktor
@@ -226,7 +226,7 @@ public class Component {
      * Setzt den Alpha-Wert
      * @param alpha     der neue Alpha-Wert
      */
-    public void setAlpha(float alpha) {
+    public void setAlpha(double alpha) {
         this.alpha = alpha;
     }
 
@@ -234,7 +234,7 @@ public class Component {
      * getter für Alpha
      * @return - Der Alpha-Wert dieser Komponente
      */
-    public float getAlpha() {
+    public double getAlpha() {
         return this.alpha;
     }
 
