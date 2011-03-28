@@ -64,11 +64,72 @@ public class LobbyScreen extends Container {
 
 
         // Die Spielerplätze:
-        super.addComponent(new Player(m, 11,11));
-        super.addComponent(new Player(m, 11,18));
-        super.addComponent(new Player(m, 11,25));
-        super.addComponent(new Player(m, 11,32));
-        super.addComponent(new Player(m, 11,39));
+        super.addComponent(new Player(m, 11, 11));
+        super.addComponent(new Player(m, 11, 18));
+        super.addComponent(new Player(m, 11, 25));
+        super.addComponent(new Player(m, 11, 32));
+        super.addComponent(new Player(m, 11, 39));
 
+    }
+
+    /**
+     * Fügt einne neuen Spieler hinzu
+     * @param name - der Name des neuen Spielers
+     */
+    public void addPlayer(String name) {
+    }
+
+    /**
+     * Entfernt einen Spieler aus der Lobby (z.B. kick, leave oder timeout)
+     * @param name_t - der Name der zu entfernenden Spielers
+     */
+    public void removePlayer(String name_t) {
+    }
+
+    /**
+     * Ändert die Farbe eines Spielers
+     * @param name_t - der Name des Spielers
+     * @param color - Die neue Farbe
+     */
+    public void changePlayerColor(String name_t, String color) {
+    }
+
+    /**
+     * Ändert das Team eines Spielers
+     * @param name_t - der Name des Spielers
+     * @param team - das neue Team des Spielers
+     */
+    public void changePlayerTeam(String name_t, int team) {
+    }
+
+    /**
+     * Ändert die Rasse eines Spielers
+     * @deprecated
+     * @param name_t - der Naem des Spielers
+     * @param race - die neue Rasse
+     */
+    public void changePlayerRace(String name_t, int race) {
+    }
+
+    /**
+     * Ändert den Status des Spielers (Bereit oder nicht bereit)
+     * @param name_t - der NAme des Spielers
+     * @param ready - der neue Status
+     */
+    public void changePlayerStatus(String name_t, boolean ready) {
+    }
+
+    /**
+     * empfängt eine neue Chat-Nachricht
+     * @param message - die chatnachricht
+     */
+    public void chatMessage(String message) {
+    }
+
+    /**
+     * Macht einen Spieler zum Host
+     * @param name_t - der Name des Spielers
+     */
+    public void setHostPlayer(String name_t) {
     }
 }
