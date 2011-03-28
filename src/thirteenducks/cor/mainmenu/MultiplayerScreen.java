@@ -82,8 +82,8 @@ public class MultiplayerScreen extends Container {
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
                 // @TODO: Server Starten, Lobby anzeigen
-                super.getMainMenu().startServer(true, "map/main/Randommap.map");
-                super.getMainMenu().joinServer("localhost");
+                this.getMainMenu().getMenu("startserverscreen").fadeIn();
+                fadeOut();
             }
         });
 
