@@ -67,7 +67,7 @@ public abstract class CheckBox extends Component {
      * @param imagepath             Pfad des Bildes im Normalzustand
      * @param activeimagepath       Pfad des Bildes für den aktivierten Zustand
      */
-    public CheckBox(MainMenu mainMenuReference, int x, int y, String imagepath, String activeimagepath) {
+    public CheckBox(MainMenu mainMenuReference, double x, double y, String imagepath, String activeimagepath) {
         super(mainMenuReference, x, y, 1, 1);
         normalImagePath = imagepath;
         activeImagePath = activeimagepath;

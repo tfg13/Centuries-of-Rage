@@ -62,7 +62,7 @@ public class Label extends Component {
      * @param y                     Y-Position der Labels
      * @param text                  Text des Labels
      */
-    public Label(MainMenu mainMenuReference, float x, float y, float width, float height, String text, Color color_t) {
+    public Label(MainMenu mainMenuReference, double x, double y, double width, double height, String text, Color color_t) {
         super(mainMenuReference, x, y, width, height);
 
         labelText = text;

@@ -58,7 +58,7 @@ public class TiledImage extends Component {
      * @param height
      * @param imagepath         - Pfad des Bildes
      */
-    public TiledImage(MainMenu mainMenuReference, int x, int y, double width, double height, String imagepath) {
+    public TiledImage(MainMenu mainMenuReference, double x, double y, double width, double height, String imagepath) {
         super(mainMenuReference, x, y, width, height);
 
         imagePath = imagepath;

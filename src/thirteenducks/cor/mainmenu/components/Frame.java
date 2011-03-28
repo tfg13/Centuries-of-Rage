@@ -40,7 +40,7 @@ public class Frame extends Component {
      * Konstruktor
      * @param m     Hauptmenü-Referenz
      */
-    public Frame(MainMenu m, float x, float y, float width, float height) {
+    public Frame(MainMenu m, double x, double y, double width, double height) {
         super(m, x, y, width, height);
     }
 

@@ -64,7 +64,7 @@ public abstract class ImageButton extends Component {
      * @param label                 Der Pfad des Bildes
      * @param text                  Der Text, der auf dem Button stehen soll
      */
-    public ImageButton(MainMenu mainMenuReference, int x, int y, int width, int height, String imagepath, String text) {
+    public ImageButton(MainMenu mainMenuReference, double x, double y, double width, double height, String imagepath, String text) {
         super(mainMenuReference, x, y, width, height);
         imagePath = imagepath;
 
