@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.mainmenu.components;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.mainmenu.MainMenu;
 
@@ -43,7 +44,6 @@ public class Player extends Container {
      * Der Name des Spielers
      */
     private String name;
-
     /**
      * Das Label mit dem Spielernamen
      */
@@ -58,10 +58,32 @@ public class Player extends Container {
         ready = false;
         name = "";
 
+
+        nameLabel = new Label(m, (float) x + 1, (float) y + 1, 10, 8, name, Color.black);
+        super.addComponent(nameLabel);
     }
 
+    /**
+     * Setter für name
+     * @param name
+     */
+    public void setPlayerName(String name) {
+        this.name = name;
+        nameLabel.setName(name);
+    }
 
+    /**
+     * Getter für name
+     */
+    public String getPlayerName() {
+        return name;
+    }
 
-
-
+    /**
+     * Getter für ready
+     * @return - true wenn der Spieler bereit ist
+     */
+    public boolean isReady() {
+        return this.ready;
+    }
 }
