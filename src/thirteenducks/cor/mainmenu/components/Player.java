@@ -53,15 +53,18 @@ public class Player extends Container {
      * erzeugt einen "leeren" Spieler
      */
     public Player(MainMenu m, double x, double y) {
-        super(m, x, y, 35, 10);
+        super(m, x, y, 35, 6);
         ready = false;
         name = "";
+        super.fadeIn();
 
+
+        super.addComponent(new Frame(m, (float) x, (float) y, 43.5f, 6.0f));
 
         nameLabel = new Label(m, (float) x + 1, (float) y + 1, 10, 8, name, Color.black);
         super.addComponent(nameLabel);
 
-        super.addComponent(new CheckBox(m, (int) x + 35, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
+        super.addComponent(new CheckBox(m, (int) x + 30, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
 
             @Override
             public void checkboxChanged() {
