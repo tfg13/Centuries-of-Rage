@@ -104,6 +104,7 @@ public interface InteractableGameElement {
      * @param doubleKlick ist dies der wiederholte klick eines Doppelklicks
      */
     public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi);
+
     /**
      * Aufrufen, um einem selektierten IGE mitzuteilen, dass ein Befehl für es eingegangen ist.
      * Ein Befehl ist ein Klick mit der rechten oder mittleren Maustaste, während das IGE selektiert ist.
@@ -113,8 +114,10 @@ public interface InteractableGameElement {
      * @param button Mittlere oder Linke Maustaste. (2 oder 3) (Reihenfolge?)
      * @param target Das Feld auf der Map, dass der Benutzer angeklickt hatte.
      * @param doubleKlick ist dies der wiederholte Klick eines Doppelklicks?
+     * @param repeaters Alle IGE's die zur selben Zeit diesen Befehl erhalten haben. Nur von einem wird command aufgerufen, das muss die anderen mitmanagen!
      */
-    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi);
+    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, ClientCore.InnerClient rgi);
+
 
     /**
      * Es wurde eine für diese Einheit bestimmte Taste gedrückt.

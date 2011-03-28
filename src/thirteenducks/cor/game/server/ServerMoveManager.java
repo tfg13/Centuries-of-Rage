@@ -227,18 +227,10 @@ public class ServerMoveManager {
      * @param movers - alle Einheiten, die dort hin sollen
      */
     public void humanGroupMove(Position target, final ArrayList<Unit> movers) {
-        // Die Positionen aller Einheiten freigeben:
-       /* for (Unit unit : movers) {
-            inner.netmap.setCollision(unit.getMainPosition(), collision.free);
-        } */
-        System.out.println("CheckMe: Free position for GROUP_MOVE?");
-
+        Position vector = movers.get(0).getMainPosition().subtract(target).transformToVector();
         // Jetzt alle Einheiten laufen lassen:
         for (int i = 0; i < movers.size(); i++) {
-            Position individualTarget = target;
-            if (i > 0) {
-                individualTarget = target.aroundMe(1, inner, movers.get(i));
-            }
+            Position individualTarget = target.aroundMePlus(vector, movers.get(0), true, 0, Position.AROUNDME_CIRCMODE_HALF_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, inner);
             this.humanSingleMove(movers.get(i), individualTarget, true);
         }
     }

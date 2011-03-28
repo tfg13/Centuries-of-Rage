@@ -846,9 +846,8 @@ public class CoRInput implements Pauseable {
                     elem.command(button, targets, false, rgi);
                 }
             } else {
-                for (InteractableGameElement elem : selected) {
-                    elem.command(button, selField, false, rgi);
-                }
+                // Default = Move
+                selected.get(0).command(button, selField, selected, false, rgi);
             }
         }
     }
@@ -1246,7 +1245,7 @@ public class CoRInput implements Pauseable {
             InteractableGameElement elem = finalList.get(i);
             if (elem.isMultiSelectable()) {
                 if (singleIndex != -1) {
-                    
+
                     // Single entfernen
                     finalList.remove(singleIndex);
                     singleIndex = -1; // Nicht mehrfach löschen

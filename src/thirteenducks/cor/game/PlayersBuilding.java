@@ -30,6 +30,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.graphics.GraphicsContent;
 import thirteenducks.cor.graphics.GraphicsImage;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -154,11 +155,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -202,5 +198,10 @@ public class PlayersBuilding extends Building {
     @Override
     public int getColorId() {
         return getPlayerId();
+    }
+
+    @Override
+    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

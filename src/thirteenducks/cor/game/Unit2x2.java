@@ -23,7 +23,6 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package thirteenducks.cor.game;
 
 import java.util.Arrays;
@@ -32,6 +31,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsContent;
 import thirteenducks.cor.graphics.GraphicsImage;
@@ -180,11 +180,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void command(int button, Position target, boolean doubleKlick, ClientCore.InnerClient rgi) {
-        this.sendToPosition(target, rgi, doubleKlick);
-    }
-
-    @Override
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -195,9 +190,9 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         //Einheit gehört zu / Selektiert
-        float[] xy = path.calcExcactPosition(x,y, this);
+        float[] xy = path.calcExcactPosition(x, y, this);
         if (isSelected()) {
             // Weiße Bodenmarkierung
             imgMap.get("img/game/sel_s2.png0").getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
@@ -208,13 +203,50 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
-        float[] xy = path.calcExcactPosition(x,y, this);
+        float[] xy = path.calcExcactPosition(x, y, this);
         if (img != null) {
             img.getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
+        }
+    }
+
+    @Override
+    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        // Befehl abschicken:
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : null));
+        // Hier sind unter umständen mehrere Packete nötig:
+        if (repeaters.size() == 2) {
+            // Nein, abbrechen
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, 0, 0, 0, 0));
+        } else {
+            // Jetzt den Rest abhandeln
+            int[] ids = new int[4];
+            for (int i = 0; i < 4; i++) {
+                ids[i] = 0;
+            }
+            int nextselindex = 2;
+            int nextidindex = 0;
+            // Solange noch was da ist:
+            while (nextselindex < repeaters.size()) {
+                // Auffüllen
+                ids[nextidindex] = repeaters.get(nextselindex).getAbilityCaster().netID;
+                nextidindex++;
+                nextselindex++;
+                // Zu weit?
+                if (nextidindex == 4) {
+                    // Einmal rausschicken & löschen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
+                    for (int i = 0; i < 4; i++) {
+                        ids[i] = 0;
+                    }
+                    nextidindex = 0;
+                }
+            }
+            // Fertig, den Rest noch senden
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
         }
     }
 }
