@@ -63,7 +63,12 @@ public class StartServerScreen extends Container {
         super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 30, 30, "/img/mainmenu/rost.png"));
 
         // Die Debug-Checkbox:
-        myCheckBox = new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png");
+        myCheckBox = new CheckBox(super.getMainMenu(), 40, 40, "/img/mainmenu/checkbox-normal.png", "/img/mainmenu/checkbox-active.png") {
+
+            @Override
+            public void checkboxChanged() {
+            }
+        };
         super.addComponent(myCheckBox);
 
         // MapWahl-Textbox (provisorisch)

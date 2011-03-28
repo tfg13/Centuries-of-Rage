@@ -26,7 +26,6 @@
 package thirteenducks.cor.mainmenu.components;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
@@ -61,6 +60,18 @@ public class Player extends Container {
 
         nameLabel = new Label(m, (float) x + 1, (float) y + 1, 10, 8, name, Color.black);
         super.addComponent(nameLabel);
+
+        super.addComponent(new CheckBox(m, (int) x + 35, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
+
+            @Override
+            public void checkboxChanged() {
+                if (this.isChecked()) {
+                    ready = true;
+                } else {
+                    ready = false;
+                }
+            }
+        });
     }
 
     /**
