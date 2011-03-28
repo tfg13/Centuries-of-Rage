@@ -216,12 +216,12 @@ public class Unit2x2 extends Unit {
     @Override
     public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         // Befehl abschicken:
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : null));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
         // Hier sind unter umständen mehrere Packete nötig:
         if (repeaters.size() == 2) {
             // Nein, abbrechen
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, 0, 0, 0, 0));
-        } else {
+        } else if (repeaters.size() != 1) {
             // Jetzt den Rest abhandeln
             int[] ids = new int[4];
             for (int i = 0; i < 4; i++) {

@@ -34,6 +34,7 @@ import thirteenducks.cor.game.GameObject;
 import thirteenducks.cor.game.Unit;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -847,7 +848,7 @@ public class CoRInput implements Pauseable {
                 }
             } else {
                 // Default = Move
-                selected.get(0).command(button, selField, selected, false, rgi);
+                selected.get(0).command(button, selField, Collections.unmodifiableList(selected), false, rgi);
             }
         }
     }
