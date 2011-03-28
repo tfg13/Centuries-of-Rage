@@ -36,7 +36,7 @@ import thirteenducks.cor.mainmenu.MainMenu;
  * 
  * @author michael
  */
-public class CheckBox extends Component {
+public abstract class CheckBox extends Component {
 
     /**
      * Der Pfad des "normal"-Bildes
@@ -102,6 +102,7 @@ public class CheckBox extends Component {
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         checked = !checked;
+        checkboxChanged();
     }
 
     /**
@@ -119,4 +120,9 @@ public class CheckBox extends Component {
     public boolean isChecked() {
         return checked;
     }
+
+    /**
+     * Wird aufgerufen wenn die CheckBox angeklickt wird
+     */
+    public abstract void checkboxChanged();
 }
