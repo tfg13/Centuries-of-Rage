@@ -32,13 +32,16 @@ package thirteenducks.cor.game;
 
 //import elementcorp.rog.RogMapElement.collision;
 import thirteenducks.cor.game.server.ServerCore;
-import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.map.AbstractMapElement.collision;
 import java.util.ArrayList;
 import java.io.*;
 
 public class Position implements Comparable<Position>, Serializable, Cloneable {
 
+    public static final int AROUNDME_CIRCMODE_FULL_CIRCLE = 1;
+    public static final int AROUNDME_CIRCMODE_HALF_CIRCLE = 2;
+    public static final int AROUNDME_COLMODE_GROUNDTARGET = 10;
+    public static final int AROUNDME_COLMODE_GROUNDPATH = 11;
+    public static final int AROUNDME_COLMODE_GROUNDPATHPLANNING = 12;
     private int X;                                    //X-Koodrinate
     private int Y;                                    //Y-Koordinate
     private int cost;
@@ -355,7 +358,198 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
             }
         }
         return kreismember;
+    }
 
+    /**
+     * Die ultimative aroundMe-Inkarnation ist da!
+     * Sucht freie Flächen kreisförmig um eine bestimmte Position.
+     * Arbeitet mit Zuordungspositionen.
+     * Bietet 2 Modi: ganze und halbe Kreise.
+     * Bei ganzen Kreisen wird ringsherum gesucht,
+     * bei halben nur im halbkreis vom Mittelpunkt in die Richtung, in die der Vektor zeigt.
+     * Bei ganzen Kreisen darf der Vektor null sein.
+     * Wirft IllegalArgumentExceptions bei falscher Benutzung.
+     * Muss auf einer gültigen Position aufgerufen werden.
+     * @param vector Die Richtung, in der zuerst gesucht werden soll (zwingend bei Halbkreisen, sonst optional)
+     * @param requiredSpace Ein GameObject, für das Platz gesucht wird
+     * @param selfCheck Die eigene Position auch überprüfen?
+     * @param limit Die maximale Iterations-Zahl. 0 angeben für Hardcode-default (normalerweise ausreichend)
+     * @param aroundMode Der Kreismodus: Ganze oder halbe Kreise
+     * @param colMode Der Kollisionsmodus: GroundTarget, GroundPath, GroundPathPlanning
+     * @param reservation Reservierungen überprüfen?
+     * @param rgi Der inner Server für Kollisionsabfragen
+     * @return Zuordnungsposition, fall gefunden, sonst null
+     */
+    public Position aroundMePlus(Position vector, GameObject requiredSpace, boolean selfCheck, int limit, int aroundMode, int colMode, boolean reservation, ServerCore.InnerServer rgi) {
+        if (requiredSpace == null) {
+            throw new IllegalArgumentException("GameObject must not be null!");
+        }
+        if (aroundMode != AROUNDME_CIRCMODE_FULL_CIRCLE && aroundMode != AROUNDME_CIRCMODE_HALF_CIRCLE) {
+            throw new IllegalArgumentException("Illegal Circle-mode selected!");
+        }
+        if (colMode != AROUNDME_COLMODE_GROUNDPATH && colMode != AROUNDME_COLMODE_GROUNDPATHPLANNING && colMode != AROUNDME_COLMODE_GROUNDTARGET) {
+            throw new IllegalArgumentException("Illegal Collision-mode selected!");
+        }
+        if (rgi == null) {
+            throw new IllegalArgumentException("InnerServer must not be null!");
+        }
+        if (vector == null && aroundMode == AROUNDME_CIRCMODE_HALF_CIRCLE) {
+            throw new IllegalArgumentException("Vector must no be null if half-circle-mode is selected!");
+        }
+        if (!this.valid()) {
+            throw new IllegalArgumentException("aroundMePlus must be called on a valid position!");
+        }
+        // Werte checken
+        if (vector.X < -1 || vector.X > 1 || vector.Y < -1 || vector.Y > 1) {
+            throw new IllegalArgumentException("Invalid vector!");
+        }
+
+        // Compute arguments
+        if (limit <= 0) {
+            limit = 10000; // Defaulting
+        }
+        if (vector == null) {
+            vector = new Position(0, -1);
+        }
+
+        // Self-Check if requested
+        if (selfCheck) {
+            if (!checkCol(X, Y, requiredSpace, rgi, colMode, reservation)) {
+                return this;
+            }
+        }
+        int i = 1;
+        int kreis = 1;
+        // Startfeld des Kreises:
+        Position kreismember = new Position(this.X, this.Y);
+        // Jetzt im Kreis herum gehen
+        for (int k = 0; k < i; k++) {
+            limit--;
+            if (limit == 0) {
+                System.out.println("Warning: FixMe: AroundMe reached its limit for " + this + " vector " + vector);
+                return null;
+            }
+            // Es gibt vier Schritte, welcher ist als nächster dran?
+            int nxt = transVec(vector, k, kreis);
+            if (k == 0) {
+                // Zum allerersten Feld springen - hängt vom Vector ab
+                if (vector.X == 0) {
+                    if (vector.Y == -1) {
+                        kreismember.Y -= 2;
+                    } else {
+                        kreismember.Y += 2;
+                    }
+                } else if (vector.X == 1) {
+                    if (vector.Y == -1) {
+                        kreismember.X++;
+                        kreismember.Y--;
+                    } else if (vector.Y == 0) {
+                        kreismember.X += 2;
+                    } else {
+                        kreismember.X++;
+                        kreismember.Y++;
+                    }
+                } else if (vector.X == -1) {
+                    if (vector.Y == -1) {
+                        kreismember.X--;
+                        kreismember.Y--;
+                    } else if (vector.Y == 0) {
+                        kreismember.X -= 2;
+                    } else {
+                        kreismember.X--;
+                        kreismember.Y++;
+                    }
+                }
+            } else if (nxt != 0 && nxt <= (kreis * 2)) {
+                // Der nach links unten
+                kreismember.X--;
+                kreismember.Y++;
+            } else if (nxt != 0 && nxt <= (kreis * 4)) {
+                // rechts unten
+                kreismember.X++;
+                kreismember.Y++;
+            } else if (nxt != 0 && nxt <= (kreis * 6)) {
+                // rechts oben
+                kreismember.X++;
+                kreismember.Y--;
+            } else if (nxt != 0 && nxt <= ((kreis * 7) + kreis - 1)) {
+                // links oben
+                kreismember.X--;
+                kreismember.Y--;
+            }
+            if (k > ((kreis * 7) + kreis - 1)) {
+                // Sprung in den nächsten Kreis - Richtung hängt vom Vector ab
+                if (vector.X == 0) {
+                    if (vector.Y == -1) {
+                        kreismember.X--;
+                        kreismember.Y -= 3;
+                    } else {
+                        kreismember.X++;
+                        kreismember.Y += 3;
+                    }
+                } else if (vector.X == 1) {
+                    if (vector.Y == -1) {
+                        kreismember.Y -= 2;
+                    } else if (vector.Y == 0) {
+                        kreismember.X += 3;
+                        kreismember.Y--;
+                    } else {
+                        kreismember.X += 2;
+                    }
+                } else if (vector.X == -1) {
+                    if (vector.Y == -1) {
+                        kreismember.X -= 2;
+                    } else if (vector.Y == 0) {
+                        kreismember.X -= 3;
+                        kreismember.Y++;
+                    } else {
+                        kreismember.Y += 2;
+                    }
+                }
+                k = 0;
+                i = i - (kreis * 8);
+                kreis++;
+            }
+            if (checkCol(kreismember.getX(), kreismember.getY(), requiredSpace, rgi, colMode, reservation)) {
+                i++;
+            }
+        }
+        return kreismember;
+    }
+
+    /**
+     * Checkt die Kollision auf dem gegebenen Feld &
+     * auf allen Feldern, die sich auf Grund der Fläche des Objekts übergeben
+     * (Gegebenes Feld wird als Zuordnungsposition verwendet)
+     * @param x x-koordinate
+     * @param y y-koordinate
+     * @param forObject das objekt, für das geprüft wird
+     * @param rgi servercore
+     * @param mode der collisions-check-modus
+     * @param checkReserved ob die reservierung überprüft wird
+     * @return true, wenn NICHT FREI (=Hinderniss)
+     */
+    private boolean checkCol(int x, int y, GameObject forObject, ServerCore.InnerServer rgi, int mode, boolean checkReserved) {
+        boolean result = false;
+        Position diff = forObject.getMainPosition().subtract(new Position(x,y));
+        for (Position pos : forObject.getPositions()) {
+            pos = pos.subtract(diff);
+            switch (mode) {
+                case AROUNDME_COLMODE_GROUNDPATH:
+                    result |= rgi.netmap.isGroundCollidingForMove(pos.getX(), pos.getY(), forObject);
+                    break;
+                case AROUNDME_COLMODE_GROUNDPATHPLANNING:
+                    result |= rgi.netmap.isGroundCollidingForMovePlanning(pos, forObject);
+                    break;
+                case AROUNDME_COLMODE_GROUNDTARGET:
+                    result |= rgi.netmap.isGroundColliding(pos, forObject);
+                    break;
+            }
+            if (checkReserved) {
+                result |= rgi.netmap.checkFieldReservation(pos);
+            }
+        }
+        return result;
     }
 
     private int transVec(Position vector, int k, int kreis) {
