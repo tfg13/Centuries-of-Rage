@@ -27,6 +27,7 @@ package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.Frame;
+import thirteenducks.cor.mainmenu.components.Player;
 import thirteenducks.cor.mainmenu.components.ScaledImage;
 import thirteenducks.cor.mainmenu.components.TiledImage;
 
@@ -59,6 +60,15 @@ public class LobbyScreen extends Container {
 
         // Chat:
         super.addComponent(new Frame(m, 10, 75, 45, 15));
+
+
+
+        // Die Spielerplätze:
+        super.addComponent(new Player(m, 11,11));
+        super.addComponent(new Player(m, 11,18));
+        super.addComponent(new Player(m, 11,25));
+        super.addComponent(new Player(m, 11,32));
+        super.addComponent(new Player(m, 11,39));
 
     }
 }

@@ -102,5 +102,15 @@ public class StartScreen extends Container {
                 System.exit(0);
             }
         });
+
+        // TEST Lobby Button
+        super.addComponent(new ImageButton(mainMenu, 90, 86, 13, 6, "img/mainmenu/buttonnew.png", "LOBBY") {
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                mainMenu.getMenu("lobbyscreen").fadeIn();
+                fadeOut();
+            }
+        });
     }
 }
