@@ -32,6 +32,7 @@ import java.util.HashMap;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
+import thirteenducks.cor.game.server.ServerCore;
 
 /**
  * Grafisches Hauptmenü
@@ -198,8 +199,19 @@ public class MainMenu extends AppGameContainer {
      * @param debug - soll der Server im Debug-Modus gestartet werden?
      * @param map   - der Name der Map, z.B. "/map/main/Randommap.map"
      */
-    public void startServer(boolean debug, String map) {
+    public void startServer(final boolean debug, final String map) {
         System.out.println("Starting Server with debug=" + debug + " and map=" + map);
+
+        Thread serverThread = new Thread(new Runnable() {
+
+            public void run() {
+                new ServerCore(debug, map);
+            }
+        });
+
+        serverThread.setName("serverThread");
+
+        serverThread.start();
     }
 
     /**
@@ -208,6 +220,7 @@ public class MainMenu extends AppGameContainer {
     public void joinServer(String server) {
         {
             System.out.println("Joining Server...");
+            // @TODO: ClientCore.joinServer() rufen, bei erfolg lobby anzeigen
         }
     }
 }

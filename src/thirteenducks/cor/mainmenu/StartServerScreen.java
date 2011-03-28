@@ -91,8 +91,6 @@ public class StartServerScreen extends Container {
                 super.getMainMenu().startServer(debug, map);
                 super.getMainMenu().joinServer("localhost");
 
-
-
                 fadeOut();
 
             }
