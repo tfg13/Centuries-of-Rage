@@ -76,9 +76,9 @@ public class ServerPathfinder {
 	containopen.add(start);
 	ziel.setParent(null);    //"Vorgängerfeld" vom Zielfeld noch nicht bekannt
 
-        if (rgi.netmap.isGroundCollidingForMove(ziel.getX(), ziel.getY(), unit) || rgi.netmap.checkFieldReservation(ziel)) {
+        if (rgi.netmap.isGroundColliding(ziel.getX(), ziel.getY(), unit) || rgi.netmap.checkFieldReservation(ziel)) {
 	    if (allowDifferentTarget) {
-		ziel = ziel.aroundMe(1, rgi, unit);
+		ziel = ziel.aroundMePlus(start.subtract(ziel).transformToVector(), unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi);
 	    } else {
 		return null;
 	    }
