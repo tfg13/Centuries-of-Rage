@@ -39,8 +39,8 @@ import java.io.*;
 
 public class Position implements Comparable<Position>, Serializable, Cloneable {
 
-    private int X;                                    //X-Koodrinate
-    private int Y;                                    //Y-Koordinate
+    protected int X;                                    //X-Koodrinate
+    protected int Y;                                    //Y-Koordinate
     private int cost;
     private int heuristic;
     private int valF;
