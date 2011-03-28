@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.mainmenu;
 
+import java.util.ArrayList;
 import thirteenducks.cor.mainmenu.components.Container;
 import thirteenducks.cor.mainmenu.components.Frame;
 import thirteenducks.cor.mainmenu.components.Player;
@@ -39,11 +40,18 @@ import thirteenducks.cor.mainmenu.components.TiledImage;
 public class LobbyScreen extends Container {
 
     /**
+     * Die Spielerliste
+     */
+    ArrayList<Player> players;
+
+    /**
      * Konstruktor
      * @param m - Hauptmenü-Referenz
      */
     public LobbyScreen(MainMenu m) {
         super(m, 1, 1, 100, 100);
+
+        players = new ArrayList<Player>();
 
         // Map-Preview
         // @TODO: Die startposition in diesem Preview auswählen
