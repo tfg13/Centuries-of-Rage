@@ -464,6 +464,15 @@ public class Path implements Pauseable, Serializable {
     }
 
     /**
+     * Liefert die exakte Länge des derzeitigen Weges.
+     * Wichtig fürs Reservierungssystem
+     * @return die exakte Länge des derzeitigen Weges.
+     */
+    public double getLength() {
+        return length;
+    }
+
+    /**
      * Mini-Klasse, um mehrere Werte zu Speichern.
      * Speichert den Wegpunkt, die Strecke bis dort hin und die Richtung bis dort hin.
      */

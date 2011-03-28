@@ -1461,4 +1461,19 @@ public class ServerMapModule {
             }
         }
     }
+
+    /**
+     * Reserviert das angegebene Ziel (und alle dazugehörigen Felder großer Einheiten)
+     * Für die angegebene Zeit.
+     * @param unit die Unti für die reserviert wird
+     * @param until, Zeitpunkt, bis zu dem die Reservierung gültig ist.
+     * @param target das Ziel (Zuordnungsposition)
+     */
+    public void reserveMoveTarget(Unit unit, long until, Position target) {
+        Position diff = unit.getMainPosition().subtract(target);
+        for (Position pos : unit.getPositions()) {
+            pos = pos.subtract(diff);
+            theMap.getVisMap()[pos.getX()][pos.getY()].setReserved(until, unit);
+        }
+    }
 }
