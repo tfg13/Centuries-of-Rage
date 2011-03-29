@@ -208,11 +208,6 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

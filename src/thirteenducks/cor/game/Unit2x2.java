@@ -182,8 +182,6 @@ public class Unit2x2 extends Unit {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         //Einheit gehört zu / Selektiert
