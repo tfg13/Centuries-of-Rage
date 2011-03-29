@@ -230,7 +230,7 @@ public class ServerMoveManager {
         Position vector = movers.get(0).getMainPosition().subtract(target).transformToVector();
         // Jetzt alle Einheiten laufen lassen:
         for (int i = 0; i < movers.size(); i++) {
-            Position individualTarget = target.aroundMePlus(vector, movers.get(0), true, 0, Position.AROUNDME_CIRCMODE_HALF_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, inner);
+            Position individualTarget = target.aroundMePlus(vector, movers.get(i), true, 0, Position.AROUNDME_CIRCMODE_HALF_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, inner);
             this.humanSingleMove(movers.get(i), individualTarget, true);
         }
     }
