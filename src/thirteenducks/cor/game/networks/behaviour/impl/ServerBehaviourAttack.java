@@ -63,7 +63,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     @Override
     public void execute() {
         // Reimplement
-        System.out.println("Reimplement fighting!");
+        //System.out.println("Reimplement fighting!");
     }
 
     /**
