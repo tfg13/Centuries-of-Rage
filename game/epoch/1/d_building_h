@@ -21,6 +21,7 @@ offsetY=60
 z1=12
 z2=12
 ability=401 #Recruit scout
+ability=402 #Recruit warrior
 ability=410 #Catapult (testing)
 }
 
