@@ -27,11 +27,9 @@ package thirteenducks.cor.tools;
 
 import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
-import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.NeutralBuilding;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.FloatingPointPosition;
-import thirteenducks.cor.map.CoRMapElement.collision;
 
 /**
  * Platziert neutrale Dörfer
