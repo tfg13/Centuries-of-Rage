@@ -114,8 +114,9 @@ public class ServerPathfinder {
 			boolean allesfrei = true; //Alle Felder, die die Einheit belegen würde, frei?
 
 			Position unitpos[] = unit.getPositions();
+
 			for (int i = 0; i < unitpos.length; i++) {
-			    if (rgi.netmap.isGroundCollidingForMovePlanning(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getX() + unitpos[i].getX(), unit)) {
+			    if (rgi.netmap.isGroundCollidingForMovePlanning(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getY() + unitpos[i].getY(), unit)) {
 				allesfrei = false; //Nicht alle Felder frei
 			    }
 			}
