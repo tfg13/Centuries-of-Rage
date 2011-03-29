@@ -43,6 +43,11 @@ public class DescParamsUnit extends DescParamsGO {
      * Die Geschwindigkeit der Einheit in Feldern pro Sekunde.
      */
     private double speed;
+    /**
+     * Die Größe. 2 bedeutet 2x2, 3 bedeutet 3x3 etc.
+     * 2x2 ist default.
+     */
+    private int size = 2;
 
     /**
      * Die Geschwindigkeit der Einheit in Feldern pro Sekunde.
@@ -62,6 +67,24 @@ public class DescParamsUnit extends DescParamsGO {
 
     public DescParamsUnit() {
         super();
+    }
+
+    /**
+     * Die Größe. 2 bedeutet 2x2, 3 bedeutet 3x3 etc.
+     * 2x2 ist default.
+     * @return the size
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * Die Größe. 2 bedeutet 2x2, 3 bedeutet 3x3 etc.
+     * 2x2 ist default.
+     * @param size the size to set
+     */
+    public void setSize(int size) {
+        this.size = size;
     }
 
 }

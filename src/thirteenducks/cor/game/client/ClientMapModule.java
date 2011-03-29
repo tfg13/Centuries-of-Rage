@@ -52,6 +52,7 @@ import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.game.Unit2x2;
+import thirteenducks.cor.game.Unit3x3;
 import thirteenducks.cor.game.ability.AbilityStop;
 import thirteenducks.cor.graphics.Sprite;
 import thirteenducks.cor.graphics.input.InteractableGameElement;
@@ -752,6 +753,10 @@ public class ClientMapModule {
                                     rU.setDescDescription(v2);
                                 } else if (v1.equals("Gpro")) {
                                     rU.setDescPro(v2);
+                                } else if (v1.equals("size")) {
+                                    if ("3x3".equals(v2)) {
+                                        rU.setSize(3);
+                                    }
                                 } else if (v1.equals("Gcon")) {
                                     rU.setDescCon(v2);
                                 } else if (v1.equals("speed")) {
@@ -837,7 +842,7 @@ public class ClientMapModule {
                         // Fertig, in HashMap speichern
                         if (mode.equals("U")) {
                             rU.setDescTypeId(id);
-                            descUnit.put(id, new Unit2x2(rU));
+                            descUnit.put(id, rU.getSize() == 3 ? new Unit3x3(rU) : new Unit2x2(rU));
                             inDesc = false;
                         } else if (mode.equals("B")) {
                             rB.setDescTypeId(id);

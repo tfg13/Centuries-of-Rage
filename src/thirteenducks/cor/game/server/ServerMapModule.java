@@ -45,6 +45,7 @@ import thirteenducks.cor.map.CoRMap;
 import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit2x2;
+import thirteenducks.cor.game.Unit3x3;
 import thirteenducks.cor.game.ability.ServerAbilityUpgrade;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import thirteenducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
@@ -547,6 +548,10 @@ public class ServerMapModule {
                                         rU.setDescDescription(v2);
                                     } else if (v1.equals("Gpro")) {
                                         rU.setDescPro(v2);
+                                    } else if (v1.equals("size")) {
+                                        if ("3x3".equals(v2)) {
+                                            rU.setSize(3);
+                                        }
                                     } else if (v1.equals("Gcon")) {
                                         rU.setDescCon(v2);
                                     } else if (v1.equals("speed")) {
@@ -627,7 +632,7 @@ public class ServerMapModule {
                             // Fertig, in HashMap speichern
                             if (mode.equals("U")) {
                                 rU.setDescTypeId(id);
-                                descTypeUnit.put(id, new Unit2x2(rU));
+                                descTypeUnit.put(id, rU.getSize() == 3 ? new Unit3x3(rU) : new Unit2x2(rU));
                                 inDesc = false;
                             } else if (mode.equals("B")) {
                                 rB.setDescTypeId(id);
@@ -822,7 +827,7 @@ public class ServerMapModule {
         }
     }
 
-        /**
+    /**
      * Findet heraus, ob die angegebene Position für Boden-GO's als Wegposition
      * bei der Wegeplanung als Hinderniss betrachtet werden soll.
      * Wenn nicht, dort aber was ist (groundcollidingformove), dann wird die Einheit normalerweise anhalten und kämpfen.
