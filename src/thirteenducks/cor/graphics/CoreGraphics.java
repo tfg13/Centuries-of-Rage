@@ -513,6 +513,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             GraphicsImage ti4 = new GraphicsImage(new Image("img/game/sel_s2.png"));
             ti4.setImageName("img/game/sel_s2.png");
             content.coloredImgMap.put("img/game/sel_s2.png", ti4);
+            GraphicsImage ti5 = new GraphicsImage(new Image("img/game/sel_s3.png"));
+            ti5.setImageName("img/game/sel_s3.png");
+            content.coloredImgMap.put("img/game/sel_s3.png", ti5);
         } catch (SlickException ex) {
             rgi.logger("[Graphics][Critical]: Error importing selection markers.");
             System.out.println("[Graphics][Critical]: Error importing selection markers.");
