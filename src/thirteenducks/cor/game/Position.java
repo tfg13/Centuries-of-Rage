@@ -44,7 +44,6 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
     public static final int AROUNDME_COLMODE_GROUNDPATHPLANNING = 12;
     protected int X;                                    //X-Koodrinate
     protected int Y;
-
     private int cost;
     private int heuristic;
     private int valF;
@@ -511,8 +510,12 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
                 i = i - (kreis * 8);
                 kreis++;
             }
-            if (checkCol(kreismember.getX(), kreismember.getY(), requiredSpace, rgi, colMode, reservation)) {
+            if (aroundMode == AROUNDME_CIRCMODE_HALF_CIRCLE && k >= kreis * 2 + 1 && k < (kreis * 6)) {
                 i++;
+            } else {
+                if (checkCol(kreismember.getX(), kreismember.getY(), requiredSpace, rgi, colMode, reservation)) {
+                    i++;
+                }
             }
         }
         return kreismember;
@@ -532,7 +535,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      */
     private boolean checkCol(int x, int y, GameObject forObject, ServerCore.InnerServer rgi, int mode, boolean checkReserved) {
         boolean result = false;
-        Position diff = forObject.getMainPosition().subtract(new Position(x,y));
+        Position diff = forObject.getMainPosition().subtract(new Position(x, y));
         for (Position pos : forObject.getPositions()) {
             pos = pos.subtract(diff);
             switch (mode) {
