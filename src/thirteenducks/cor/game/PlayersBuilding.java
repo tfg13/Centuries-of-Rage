@@ -176,11 +176,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public Position getSortPosition() {
-        return this.getMainPosition();
-    }
-
-    @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
             x += GraphicsContent.BASIC_FIELD_OFFSET_X;
             y += GraphicsContent.BASIC_FIELD_OFFSET_Y + GraphicsContent.FIELD_HALF_Y;

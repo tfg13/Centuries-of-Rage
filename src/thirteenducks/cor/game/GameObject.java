@@ -1288,4 +1288,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public GameObject getAbilityCaster() {
         return this;
     }
+
+    @Override
+    public Position getSortPosition() {
+        return this.getMainPosition();
+    }
 }

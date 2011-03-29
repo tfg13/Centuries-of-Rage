@@ -153,11 +153,6 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public Position getSortPosition() {
-        return this.getMainPosition();
-    }
-
-    @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
     }
 

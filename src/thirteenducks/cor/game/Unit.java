@@ -30,6 +30,7 @@ import java.util.*;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.client.ClientCore.InnerClient;
 import thirteenducks.cor.game.server.ServerCore;
+import thirteenducks.cor.graphics.input.InteractableGameElement;
 
 /**
  * Superklasse für Einheiten
@@ -515,5 +516,42 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public boolean moveStoppable() {
         return path.moveStoppable();
+    }
+
+    @Override
+    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        // Befehl abschicken:
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
+        // Hier sind unter umständen mehrere Packete nötig:
+        if (repeaters.size() == 2) {
+            // Nein, abbrechen
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, 0, 0, 0, 0));
+        } else if (repeaters.size() != 1) {
+            // Jetzt den Rest abhandeln
+            int[] ids = new int[4];
+            for (int i = 0; i < 4; i++) {
+                ids[i] = 0;
+            }
+            int nextselindex = 2;
+            int nextidindex = 0;
+            // Solange noch was da ist:
+            while (nextselindex < repeaters.size()) {
+                // Auffüllen
+                ids[nextidindex] = repeaters.get(nextselindex).getAbilityCaster().netID;
+                nextidindex++;
+                nextselindex++;
+                // Zu weit?
+                if (nextidindex == 4) {
+                    // Einmal rausschicken & löschen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
+                    for (int i = 0; i < 4; i++) {
+                        ids[i] = 0;
+                    }
+                    nextidindex = 0;
+                }
+            }
+            // Fertig, den Rest noch senden
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
+        }
     }
 }
