@@ -3,7 +3,7 @@ type=recruit
 shownname=Recruit Scout
 reference=U401
 cooldown=0.0
-duration=7000
+duration=100
 e0tex=img/creeps/testhuman2.png
 cost1=75
 }
@@ -13,7 +13,20 @@ type=recruit
 shownname=Recruit Warrior
 reference=U402
 cooldown=0.0
-duration=10000
+duration=100
 e0tex=img/creeps/testhuman1.png
 cost1=120
+}
+
+410 {
+type=recruit
+shownname=Recruit Catapult
+reference=U410
+cooldown=0.0
+duration=100
+depends=B8
+e0tex=img/creeps/testcatapult.png
+cost2=100
+cost3=200
+cost4=100
 }

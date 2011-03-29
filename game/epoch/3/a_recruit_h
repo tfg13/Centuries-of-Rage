@@ -50,16 +50,3 @@ cost3=120
 cost4=120
 locked=true
 }
-
-410 {
-type=recruit
-shownname=Recruit Catapult
-reference=U410
-cooldown=0.0
-duration=25000
-depends=B8
-e0tex=img/creeps/testcatapult.png
-cost2=100
-cost3=200
-cost4=100
-}
