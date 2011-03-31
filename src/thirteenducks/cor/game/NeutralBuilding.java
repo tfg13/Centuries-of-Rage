@@ -67,11 +67,6 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public Position getSpawnPosition(GameObject obj) {
-        return this.getMainPosition().subtract(new Position(-4, -4));
-    }
-
-    @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (int) (y - getGraphicsData().offsetY));
     }

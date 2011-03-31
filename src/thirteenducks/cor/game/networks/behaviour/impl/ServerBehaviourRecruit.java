@@ -90,7 +90,7 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                     unit.setPlayerId(caster.getPlayerId());
 		    rgi.serverstats.trackUnitrecruit(unit.getPlayerId());
                     // Auf der Richtigen Seite vom Gebäude spawnen
-                    unit.setMainPosition(caster.getSpawnPosition(unit));
+                    unit.setMainPosition(caster.getSpawnPosition(unit, rgi));
                 /*    if (caster.waypoint != null) {
                         try {
                             Building b = (Building) caster;

@@ -127,11 +127,6 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public Position getSpawnPosition(GameObject obj) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
         float[] xy = path.calcExcactPosition(x, y, this);

@@ -126,11 +126,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public Position getSpawnPosition(GameObject obj) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Position[] getVisisbilityPositions() {
         return positions;
     }
