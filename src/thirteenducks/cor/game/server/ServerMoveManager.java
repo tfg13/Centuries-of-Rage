@@ -29,6 +29,8 @@ import thirteenducks.cor.game.client.ClientIALGroup;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.GameObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Timer;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -228,6 +230,14 @@ public class ServerMoveManager {
      */
     public void humanGroupMove(Position target, final ArrayList<Unit> movers) {
         Position vector = movers.get(0).getMainPosition().subtract(target).transformToVector();
+        // Reichweitensortierung - aufsteigend
+        Collections.sort(movers, new Comparator<Unit>() {
+
+            public int compare(Unit o1, Unit o2) {
+                return (int) (o1.getRange() - o2.getRange());
+            }
+
+        });
         // Jetzt alle Einheiten laufen lassen:
         for (int i = 0; i < movers.size(); i++) {
             Position individualTarget = target.aroundMePlus(vector, movers.get(i), true, 0, Position.AROUNDME_CIRCMODE_HALF_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, inner);
