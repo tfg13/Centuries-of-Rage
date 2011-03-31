@@ -700,7 +700,7 @@ public class ServerMapModule {
                 rgi.logger(ex2);
             }
             // Jetzt Map öffnen
-            theMap = MapIO.readMap(tempMap.getPath(), MapIO.MODE_SERVER);
+            theMap = MapIO.readMap(tempMap.getPath(), MapIO.MODE_SERVER, null, rgi);
             unitList = Collections.synchronizedList((ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST"));
             buildingList = Collections.synchronizedList((ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST"));
             refreshUnits();

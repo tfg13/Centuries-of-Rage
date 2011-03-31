@@ -1581,7 +1581,7 @@ public final class MapEditor {
 
     public void openMap(String openMapPath) {
         // Öffnet eine Map anhand des Dateinamens
-        theMap = MapIO.readMap(openMapPath, MapIO.MODE_CLIENT);
+        theMap = MapIO.readMap(openMapPath, MapIO.MODE_CLIENT, null, null);
         unitList = (ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST");
         buildingList = (ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST");
         nextNetID = (Integer) theMap.getMapPoperty("NEXTNETID");

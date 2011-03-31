@@ -129,6 +129,7 @@ public class ClientMapModule {
         rgi.logger("[MapModule]: Loading Abilities...");
         HashMap<Integer, Ability> descAbilities = new HashMap<Integer, Ability>();
         // Read abilitys
+
         BufferedReader bdescReader = null;
         try {
             bdescReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(abilitySettings)));
@@ -935,7 +936,7 @@ public class ClientMapModule {
     public void gotMap() {
         rgi.rogGraphics.setLoadStatus(8);
 
-        theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT);
+        theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT, rgi, null);
 
         if (rgi.isInDebugMode()) {
             serverCollision = new int[theMap.getMapSizeX()][theMap.getMapSizeY()];

@@ -58,6 +58,8 @@ import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
 import thirteenducks.cor.game.Unit2x2;
 import thirteenducks.cor.game.Unit3x3;
+import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.server.ServerCore;
 
 /**
  * Stellt Methoden zum Lesen und Schreiben von CoRMaps zur Verfügung
@@ -83,7 +85,7 @@ public class MapIO {
      * Liest die RMAP-Daten ein.
      * @return Die geladene CoRMap - Einsatzbereit
      */
-    public static CoRMap readMap(String path, int mapMode) {
+    public static CoRMap readMap(String path, int mapMode, ClientCore.InnerClient rgi, ServerCore.InnerServer serverrgi) {
         // Jetzt Map öffnen
         CoRMap theMap = null;
         ZipFile zipfile = null;
@@ -105,258 +107,9 @@ public class MapIO {
             // DESC-Settings lesen:
             // Einglesen, normal weitermachen.
 
-            ArrayList<File> olist = new ArrayList<File>();
-            ArrayList<File> flist = new ArrayList<File>();
-            ArrayList<File> dlist = new ArrayList<File>();
+	    GameDescReaderParameter descParameters = GameDescReader.readMap(path, mapMode, rgi, serverrgi);
 
-            File OrdnerSuchen = new File("game/epoch"); //Unterordner in "game" suchen
-            File[] Ordner = OrdnerSuchen.listFiles();
-            for (File ord : Ordner) {
-                if (ord.isDirectory() && !ord.getName().startsWith(".") && !ord.getName().startsWith(".")) {
-                    olist.add(ord);
-                }
-            }
 
-            for (int i = 0; i < olist.size(); i++) { //Dateien in den Unterordnern suchen
-                String Unterordner = olist.get(i).toString();
-                File gameOrdner = new File(Unterordner);
-                File[] files = gameOrdner.listFiles();
-                flist.addAll(Arrays.asList(files));
-            }
-
-            for (int i = 0; i < flist.size(); i++) {
-                File file = flist.get(i);
-                if (file.getName().endsWith("~") || file.getName().startsWith(".")) { // Sicherungsdateien und unsichtbares Aussortieren
-                    flist.remove(i);
-                    i--;
-                } else {
-                    if (file.getName().startsWith("d") || file.getName().startsWith("D")) {
-                        dlist.add(file);
-                    }
-                }
-            }
-
-            HashMap<Integer, Unit> descTypeUnit = new HashMap<Integer, Unit>();
-            HashMap<Integer, Building> descTypeBuilding = new HashMap<Integer, Building>();
-
-            for (File descFile : dlist) {
-                // Read game/descTypes
-                FileReader descReader = null;
-                try {
-                    descReader = new FileReader(descFile);
-                    BufferedReader bdescReader = new BufferedReader(descReader);
-                    String zeile = null;
-                    // Einlesen
-                    boolean inDesc = false;
-                    String mode = null;
-                    DescParamsBuilding rB = null;
-                    DescParamsUnit rU = null;
-                    int id = 0;
-                    int line = 0;
-                    while ((zeile = bdescReader.readLine()) != null) {
-                        line++;
-                        // Zeile interpretieren
-                        if (!zeile.isEmpty()) {
-                            char first = zeile.charAt(0);
-                            if (first == '#') {
-                                // Kommentar, ignorieren
-                                continue;
-                            }
-
-                            // Sind wir grad in der Klammer ?
-                            if (inDesc) {
-                                // Beim = trennen
-                                int indexgleich = zeile.indexOf('='); // Istgleich suchen
-                                if (indexgleich != -1) {
-                                    String v1 = zeile.substring(0, indexgleich);
-                                    String v2 = zeile.substring(indexgleich + 1);
-                                    int indexraute = v2.indexOf('#'); //Kommentar am Ende der Zeile?
-                                    if (indexraute != -1) {
-                                        v2 = v2.substring(0, indexraute - 1);
-                                    }
-                                    if (mode.equals("B")) {
-                                        // Gebäude
-                                        if (v1.equals("name")) {
-                                            rB.setDescName(v2);
-                                        } else if (v1.equals("defaultTexture")) {
-                                            rB.getGraphicsData().defaultTexture = v2;
-                                        } else if (v1.equals("hitpoints")) {
-                                            rB.setHitpoints(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("maxhitpoints")) {
-                                            rB.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("Gdesc")) {
-                                            rB.setDescDescription(v2);
-                                        } else if (v1.equals("offsetX")) {
-                                            rB.getGraphicsData().offsetX = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("offsetY")) {
-                                            rB.getGraphicsData().offsetY = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("z1")) {
-                                            rB.setZ1(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("z2")) {
-                                            rB.setZ2(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("maxIntra")) {
-                                            rB.setMaxIntra(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("harvests")) {
-                                            rB.setHarvests(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("harvRate")) {
-                                            rB.setHarvRate(saveStrtoDouble(v2, zeile, line));
-                                        } else if (v1.equals("range")) {
-                                            rB.setRange(saveStrtoDouble(v2, zeile, line));
-                                        } else if (v1.equals("damage")) {
-                                            rB.setDamage(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("cooldownmax")) {
-                                            rB.setFireDelay(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("bulletspeed")) {
-                                            rB.setBulletspeed(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("bullettexture")) {
-                                            rB.setBullettexture(v2);
-                                        } else if (v1.equals("atkdelay")) {
-                                            rB.setAtkdelay(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("antiair")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antibuilding")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antiheavyinf")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antikav")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antilightinf")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antitank")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antivehicle")) {
-                                            int[] damageFactors = rB.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("accepts")) {
-                                            if ("all".equals(v2)) {
-                                                rB.setAccepts(Building.ACCEPTS_ALL);
-                                            }
-                                        } else if (v1.equals("visrange")) {
-                                            rB.setVisrange(saveStrtoInt(v2, zeile, line));
-                                        }
-                                    } else if (mode.equals("U")) {
-                                        // Einheiten
-                                        if (v1.equals("name")) {
-                                            rU.setDescName(v2);
-                                        } else if (v1.equals("defaultTexture")) {
-                                            rU.getGraphicsData().defaultTexture = v2;
-                                        } else if (v1.equals("hitpoints")) {
-                                            rU.setHitpoints(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("maxhitpoints")) {
-                                            rU.setMaxhitpoints(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("Gdesc")) {
-                                            rU.setDescDescription(v2);
-                                        } else if (v1.equals("Gpro")) {
-                                            rU.setDescPro(v2);
-                                        } else if (v1.equals("size")) {
-                                            if ("3x3".equals(v2)) {
-                                                rU.setSize(3);
-                                            }
-                                        } else if (v1.equals("Gcon")) {
-                                            rU.setDescCon(v2);
-                                        } else if (v1.equals("speed")) {
-                                            rU.setSpeed(saveStrtoDouble(v2, zeile, line));
-                                        } else if (v1.equals("range")) {
-                                            rU.setRange(saveStrtoDouble(v2, zeile, line));
-                                        } else if (v1.equals("damage")) {
-                                            rU.setDamage(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("cooldownmax")) {
-                                            rU.setFireDelay(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("bulletspeed")) {
-                                            rU.setBulletspeed(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("bullettexture")) {
-                                            rU.setBullettexture(v2);
-                                        } else if (v1.equals("atkdelay")) {
-                                            rU.setAtkdelay(saveStrtoInt(v2, zeile, line));
-                                        } else if (v1.equals("armortype")) {
-                                            if ("lightinf".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_LIGHTINF);
-                                            } else if ("heavyinf".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_HEAVYINF);
-                                            } else if ("air".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_AIR);
-                                            } else if ("kav".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_KAV);
-                                            } else if ("tank".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_TANK);
-                                            } else if ("vehicle".equals(v2)) {
-                                                rU.setArmorType(GameObject.ARMORTYPE_VEHICLE);
-                                            }
-                                        } else if (v1.equals("antiair")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antibuilding")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_BUILDING] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antiheavyinf")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_HEAVYINF] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antikav")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_KAV] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antilightinf")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_LIGHTINF] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antitank")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_TANK] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("antivehicle")) {
-                                            int[] damageFactors = rU.getDamageFactors();
-                                            damageFactors[GameObject.ARMORTYPE_VEHICLE] = saveStrtoInt(v2, zeile, line);
-                                        } else if (v1.equals("visrange")) {
-                                            rU.setVisrange(saveStrtoInt(v2, zeile, line));
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (first == 'U') {
-                                // Neue Einheit
-                                rU = new DescParamsUnit();
-                                inDesc = true;
-                                int indexL1 = zeile.indexOf(" ");
-                                int indexL2 = zeile.lastIndexOf(" ");
-                                String v3 = zeile.substring(indexL1 + 1, indexL2);
-                                id = Integer.parseInt(v3);
-                                mode = "U";
-                            } else if (first == 'B') {
-                                // Neues Gebäude
-                                rB = new DescParamsBuilding();
-                                inDesc = true;
-                                int indexL1 = zeile.indexOf(" ");
-                                int indexL2 = zeile.lastIndexOf(" ");
-                                String v3 = zeile.substring(indexL1 + 1, indexL2);
-                                id = Integer.parseInt(v3);
-                                mode = "B";
-                            } else if (first == '}') {
-                                // Fertig, in HashMap speichern
-                                if (mode.equals("U")) {
-                                    rU.setDescTypeId(id);
-                                    descTypeUnit.put(id, rU.getSize() == 3 ? new Unit3x3(rU) : new Unit2x2(rU));
-                                    inDesc = false;
-                                } else if (mode.equals("B")) {
-                                    rB.setDescTypeId(id);
-                                    descTypeBuilding.put(id, new PlayersBuilding(rB));
-                                    inDesc = false;
-                                }
-                            }
-                        }
-                    }
-                } catch (FileNotFoundException fnfe) {
-                } catch (IOException ioe) {
-                } finally {
-                    try {
-                        descReader.close();
-                    } catch (IOException ioe2) {
-                    }
-                }
-            }
             // Leere Map im Speicher anlegen
 
             AbstractMapElement[][] newMapArray = new AbstractMapElement[newMapX][newMapY];
@@ -431,7 +184,7 @@ public class MapIO {
                 int playerId = Integer.parseInt(unitData[2]);
                 int netId = Integer.parseInt(unitData[3]);
                 Unit unit = null;
-                unit = (Unit) descTypeUnit.get(desc).getCopy(netId);
+                unit = (Unit) descParameters.getUnits().get(desc).getCopy(netId);
                 unit.setPlayerId(playerId);
                 unit.setMainPosition(new Position(x, y));
                 unitList.add(unit);
@@ -456,7 +209,7 @@ public class MapIO {
                 if (s == null || s.equals("p")) {
                     // Players Building
                     Building b = null;
-                    b = (Building) descTypeBuilding.get(desc).getCopy(netId);
+                    b = (Building) descParameters.getBuildings().get(desc).getCopy(netId);
                     b.setPlayerId(playerId);
                     b.setMainPosition(new Position(x, y));
                     buildingList.add(b);

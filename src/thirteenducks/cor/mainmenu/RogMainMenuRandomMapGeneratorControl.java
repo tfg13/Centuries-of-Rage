@@ -32,7 +32,7 @@
 
 package thirteenducks.cor.mainmenu;
 
-import thirteenducks.cor.tools.RandomMapBuilder;
+import thirteenducks.cor.tools.randommapbuilder.RandomMapBuilder;
 
 /**
  *

@@ -23,31 +23,17 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.tools;
+package thirteenducks.cor.tools.randommapbuilder;
+
+import thirteenducks.cor.map.CoRMap;
 
 /**
- * MapElement-Hilfsklasse
+ * Überdings für die Unterdings
+ * Superklasse für alle RandomMapBuilder-Jobs
  *
- * @deprecated
+ * @author Johannes
  */
-public class RandomMapBuilderMapElement {
+public abstract class RandomMapBuilderJob {
 
-    private int tex;
-    private boolean collision;
-
-    public int getTex() {
-        return tex;
-    }
-
-    public void setTex(int i) {
-        tex = i;
-    }
-
-    public boolean isBlocked() {
-        return collision;
-    }
-
-    public void setBlocked(boolean collision) {
-        this.collision = collision;
-    }
+    public abstract void performJob();
 }
