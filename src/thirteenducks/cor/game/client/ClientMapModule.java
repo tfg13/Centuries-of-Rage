@@ -936,7 +936,7 @@ public class ClientMapModule {
     public void gotMap() {
         rgi.rogGraphics.setLoadStatus(8);
 
-        theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT);
+        theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT, rgi, null);
 
         if (rgi.isInDebugMode()) {
             serverCollision = new int[theMap.getMapSizeX()][theMap.getMapSizeY()];
