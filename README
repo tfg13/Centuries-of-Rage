@@ -59,10 +59,10 @@ There may be a "CoR.exe" located within the game-directory. Just doubleklick it.
 
 ALL SYSTEMS:
 
-- Depending on the way java is installed, it may work to double-click RoG.jar
+- Depending on the way java is installed, it may work to double-click CoR.jar
 - If not, try run it direct from the command-line:
 
-java -Xmx512m -Xms512m -jar RoG.jar
+java -Xmx512m -Xms512m -jar CoR.jar
 
 
 4. FAQ
