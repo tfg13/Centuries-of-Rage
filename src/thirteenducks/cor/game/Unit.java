@@ -554,4 +554,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
         }
     }
+
+    /**
+     * Stoppt die Einheit so schnell wie möglich anhalten
+     * Server only!
+     * @param stopPos die Position, auf der die Einheit angehalten werden soll.
+     * @param rgi InnerServer für Kollisions/Reservierungsaufgaben
+     */
+    public void stopMovement(ServerCore.InnerServer rgi) {
+        path.stopMovement(rgi, this);
+    }
 }

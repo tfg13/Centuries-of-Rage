@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
+import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsContent;
 
@@ -262,7 +263,7 @@ public class Path implements Pauseable, Serializable {
      * @param rgi
      * @param caster2
      */
-    public void serverManagePath(InnerServer rgi, Unit caster2) {
+    public synchronized void serverManagePath(InnerServer rgi, Unit caster2) {
         if (isMoving()) {
             boolean gotError = false;
             int trys = 0;
@@ -470,6 +471,58 @@ public class Path implements Pauseable, Serializable {
      */
     public double getLength() {
         return length;
+    }
+
+    /**
+     * Biegt den Streckenverlauf so um, dass die Einheit so schnell wie möglich hält.
+     * 1. Sofern das Wunschfeld erreichbar ist gibt es zwei Möglichkeiten:
+     * 1.1. Die Einheit befindet sich direkt vor einem Feld: Sie läuft grad noch schnell weiter.
+     * 1.2. Die Einheit befindet sich direkt nach einem Feld: Sie kehrt um.
+     * 2. Wenn das Wunschfeld nicht erreichbar ist, wird ein anderes Feld in der Nähe gesucht und die Einheit dorthin umgeleitet,
+     *    falls der Weg dort hin kürzer ist als bis zu dem ursprünglichen Ziel
+     * @param rgi
+     * @param unit
+     */
+    public synchronized void stopMovement(InnerServer rgi, Unit unit) {
+        if (isMoving()) {
+            // Optimalen Stop-Punkt berechnen:
+            double passedTime = System.currentTimeMillis() - moveStartTime;
+            double passedWay = passedTime * unit.getSpeed() / 1000 - path.get(lastWayPoint).getDistance();
+            double wayDist = nextWayPointDist - path.get(lastWayPoint).getDistance();
+            boolean manualMod = false;
+            if (passedWay > wayDist / 2) {
+                // Nach dem Feld: Zurück
+                Position target = path.get(lastWayPoint).getPos();
+                if (rgi.netmap.isGroundColliding(target, unit)) {
+                    // Leider nix, andere suchen
+                    rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
+                } else {
+                    // Frei, also die nehmen!
+                    path = path.subList(0, lastWayPoint);
+                    path.add(path.get(path.size() - 1));
+                    manualMod = true;
+                }
+            } else {
+                // Vor dem Feld, auf dem nächsten halten
+                Position target = path.get(lastWayPoint + 1).getPos();
+                if (rgi.netmap.isGroundColliding(target, unit)) {
+                    // Leider nix, andere suchen
+                    rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
+                } else {
+                    path = path.subList(0, lastWayPoint + 1);
+                    manualMod = true;
+                }
+            }
+            if (manualMod) {
+                // Alte Zielreservierung löschen
+                rgi.netmap.deleteMoveTargetReservation(unit, targetPos);
+                // Neues Ziel einstellen
+                length = path.get(path.size() - 1).getDistance();
+                targetPos = path.get(path.size() - 1).getPos();
+                // Neues Ziel reservieren
+                rgi.netmap.reserveMoveTarget(unit, (long) (1000.0 * length / speed), targetPos);
+            }
+        }
     }
 
     /**

@@ -240,6 +240,8 @@ public class AbilityHud extends Overlay {
                     if (ab.isVisible()) {
                         if (counter++ == index) {
                             for (InteractableGameElement ige : iges) {
+                                // Die zu dem Behaviour gehörende
+                                ab = ige.getAbilitys().get(ige.getAbilitys().indexOf(ab));
                                 // Diese hier!
                                 if (i == 0) {
                                     ab.perform(ige.getAbilityCaster());

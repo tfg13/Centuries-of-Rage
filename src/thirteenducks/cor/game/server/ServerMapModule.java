@@ -1481,4 +1481,17 @@ public class ServerMapModule {
             theMap.getVisMap()[pos.getX()][pos.getY()].setReserved(until, unit);
         }
     }
+
+    /**
+     * Löscht die Reservierung des aktuellen Bewegungsziels dieser Einheit
+     * @param unit die Einheit
+     * @param oldTarget das alte Ziel der Einheit
+     */
+    public void deleteMoveTargetReservation(Unit unit, Position oldTarget) {
+       Position diff = unit.getMainPosition().subtract(oldTarget);
+        for (Position pos : unit.getPositions()) {
+            pos = pos.subtract(diff);
+            theMap.getVisMap()[pos.getX()][pos.getY()].deleteReservation();
+        }
+    }
 }

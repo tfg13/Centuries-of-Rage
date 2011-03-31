@@ -220,7 +220,8 @@ public class ServerMoveManager {
      * @param unit
      */
     public void stopMovement(Unit unit) {
-        System.out.println("AddMe: aroundMe() required!");
+        // Stopposition suchen:
+        unit.stopMovement(inner);
     }
 
     /**
