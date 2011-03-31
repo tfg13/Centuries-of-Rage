@@ -38,7 +38,6 @@ public class ServerPathfinder {
     protected PriorityBuffer open = new PriorityBuffer();      // Liste für entdeckte Felder
     protected LinkedHashSet<Position> containopen = new LinkedHashSet<Position>();             // Auch für entdeckte Felder, hiermit kann viel schneller festgestellt werden, ob ein bestimmtes Feld schon enthalten ist.
     protected LinkedHashSet<Position> closed = new LinkedHashSet<Position>();    // Liste für fertig bearbeitete Felder
-    private Position[][] RogP;
 
     public ServerPathfinder(ServerCore.InnerServer inner) {
 	rgi = inner;
@@ -60,17 +59,6 @@ public class ServerPathfinder {
 	containopen.clear();
 	closed.clear();
 
-	RogP = new Position[sizeofmapX][sizeofmapY];
-	for (int x = 0; x < sizeofmapX; x = x + 2) {  //alle vorhandenen Felder der Karte
-	    for (int y = 0; y < sizeofmapY; y = y + 2) {
-		RogP[x][y] = new Position(x, y);
-	    }
-	}
-	for (int x = 1; x < sizeofmapX; x = x + 2) {
-	    for (int y = 1; y < sizeofmapY; y = y + 2) {
-		RogP[x][y] = new Position(x, y);
-	    }
-	}
 	start.setCost(0);   //Kosten für das Startfeld (von dem aus berechnet wird) sind natürlich 0
 	open.add(start);  //Startfeld in die openlist
 	containopen.add(start);
@@ -123,7 +111,7 @@ public class ServerPathfinder {
 
 			if (allesfrei) {		//überprüfen, ob Feld begehbar ist und innerhalb der Map ist
 
-			    Position neighbour = RogP[nx][ny];
+			    Position neighbour = new Position(nx, ny);
 
 			    if (closed.contains(neighbour)) {		//Felder in ClosedList müssen nicht überprüft werden
 				continue;
@@ -188,7 +176,7 @@ public class ServerPathfinder {
 	ArrayList<Position> pathrev = new ArrayList();   //Pfad aus parents erstellen, von Ziel nach Start
 	Position target = ziel;
 	while (!target.equals(start)) {
-	    pathrev.add(RogP[target.getX()][target.getY()]);
+	    pathrev.add(target);
 	    target = target.getParent();
 	}
 	pathrev.add(start);
