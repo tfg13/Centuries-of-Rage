@@ -533,7 +533,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
      * @param checkReserved ob die reservierung überprüft wird
      * @return true, wenn NICHT FREI (=Hinderniss)
      */
-    private boolean checkCol(int x, int y, GameObject forObject, ServerCore.InnerServer rgi, int mode, boolean checkReserved) {
+    public static boolean checkCol(int x, int y, GameObject forObject, ServerCore.InnerServer rgi, int mode, boolean checkReserved) {
         boolean result = false;
         Position diff = forObject.getMainPosition().subtract(new Position(x, y));
         for (Position pos : forObject.getPositions()) {

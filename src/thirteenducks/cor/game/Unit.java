@@ -197,7 +197,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         //rgi.mapModule.setUnitRef(newPath.get(0), null, playerId);
         path.overwritePath(newPath);
         // Reservieren
-        rgi.netmap.reserveMoveTarget(this, (long) (1000.0 * path.getLength() / this.speed), newPath.get(newPath.size() - 1));
+        rgi.netmap.reserveMoveTarget(this, System.currentTimeMillis() + (long) (1000.0 * path.getLength() / this.speed), newPath.get(newPath.size() - 1));
     }
 
     /**

@@ -493,7 +493,7 @@ public class Path implements Pauseable, Serializable {
             if (passedWay > wayDist / 2) {
                 // Nach dem Feld: Zurück
                 Position target = path.get(lastWayPoint).getPos();
-                if (rgi.netmap.isGroundColliding(target, unit)) {
+                if (Position.checkCol(target.getX(), target.getY(), unit, rgi, Position.AROUNDME_COLMODE_GROUNDTARGET, true)) {
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
@@ -505,7 +505,7 @@ public class Path implements Pauseable, Serializable {
             } else {
                 // Vor dem Feld, auf dem nächsten halten
                 Position target = path.get(lastWayPoint + 1).getPos();
-                if (rgi.netmap.isGroundColliding(target, unit)) {
+                if (Position.checkCol(target.getX(), target.getY(), unit, rgi, Position.AROUNDME_COLMODE_GROUNDTARGET, true)) {
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
@@ -520,7 +520,7 @@ public class Path implements Pauseable, Serializable {
                 length = path.get(path.size() - 1).getDistance();
                 targetPos = path.get(path.size() - 1).getPos();
                 // Neues Ziel reservieren
-                rgi.netmap.reserveMoveTarget(unit, (long) (1000.0 * length / speed), targetPos);
+                rgi.netmap.reserveMoveTarget(unit, System.currentTimeMillis() + (long) (1000.0 * length / speed), targetPos);
             }
         }
     }
