@@ -564,4 +564,8 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public void stopMovement(ServerCore.InnerServer rgi) {
         path.stopMovement(rgi, this);
     }
+
+    public void quickStop(int readInt, Position readPosition) {
+        path.quickStop(readInt, readPosition);
+    }
 }

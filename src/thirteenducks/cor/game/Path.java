@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import thirteenducks.cor.game.client.ClientCore;
-import thirteenducks.cor.game.server.ServerCore;
 import thirteenducks.cor.game.server.ServerCore.InnerServer;
 import thirteenducks.cor.graphics.GraphicsContent;
 
@@ -501,6 +500,8 @@ public class Path implements Pauseable, Serializable {
                     path = path.subList(0, lastWayPoint);
                     path.add(path.get(path.size() - 1));
                     manualMod = true;
+                    // Client mitteilen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
                 }
             } else {
                 // Vor dem Feld, auf dem nächsten halten
@@ -511,6 +512,8 @@ public class Path implements Pauseable, Serializable {
                 } else {
                     path = path.subList(0, lastWayPoint + 1);
                     manualMod = true;
+                    // Client mitteilen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint + 1, target.getX(), target.getY()));
                 }
             }
             if (manualMod) {
@@ -523,6 +526,16 @@ public class Path implements Pauseable, Serializable {
                 rgi.netmap.reserveMoveTarget(unit, System.currentTimeMillis() + (long) (1000.0 * length / speed), targetPos);
             }
         }
+    }
+
+    /**
+     * Versucht die Position am angegebenen Index sehr schnell zu erreichen.
+     * Geht nur, wenn die Einheit gerade stark in der Nähe ist.
+     * @param readInt
+     * @param readPosition
+     */
+    public void quickStop(int readInt, Position readPosition) {
+
     }
 
     /**
