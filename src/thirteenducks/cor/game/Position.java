@@ -400,7 +400,7 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
             throw new IllegalArgumentException("aroundMePlus must be called on a valid position!");
         }
         // Werte checken
-        if (vector.X < -1 || vector.X > 1 || vector.Y < -1 || vector.Y > 1) {
+        if (vector != null && (vector.X < -1 || vector.X > 1 || vector.Y < -1 || vector.Y > 1)) {
             throw new IllegalArgumentException("Invalid vector!");
         }
 
