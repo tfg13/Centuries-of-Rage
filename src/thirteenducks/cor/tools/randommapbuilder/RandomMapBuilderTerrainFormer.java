@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.tools;
+package thirteenducks.cor.tools.randommapbuilder;
 
 import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
@@ -37,8 +37,7 @@ import thirteenducks.cor.game.Unit;
  */
 public class RandomMapBuilderTerrainFormer extends RandomMapBuilderJob {
 
-    ArrayList<Building> buildingList;
-    ArrayList<Unit> unitList;
+
 
     @Override
     public void performJob() {
@@ -58,11 +57,6 @@ public class RandomMapBuilderTerrainFormer extends RandomMapBuilderJob {
 		}
 	    }
 	}
-
-	unitList = new ArrayList<Unit>();	// Leere UnitList einfügen
-	RandomMapBuilder.RandomRogMap.setMapProperty("UNIT_LIST", unitList);
-	buildingList = new ArrayList<Building>();	// Leere BuildingList einfügen
-	RandomMapBuilder.RandomRogMap.setMapProperty("BUILDING_LIST", buildingList);
 
 	zAlles("img/ground/testwater1.png");
 	ArrayList<Position> Land = sLand();

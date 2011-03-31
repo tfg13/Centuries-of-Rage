@@ -23,13 +23,14 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package thirteenducks.cor.tools;
+package thirteenducks.cor.tools.randommapbuilder;
 
 import java.util.ArrayList;
 import thirteenducks.cor.game.Building;
 import thirteenducks.cor.game.DescParamsBuilding;
 import thirteenducks.cor.game.PlayersBuilding;
 import thirteenducks.cor.game.Position;
+import thirteenducks.cor.game.Unit;
 
 /**
  * Setzt für jeden Spieler ein Startdorf
@@ -37,8 +38,16 @@ import thirteenducks.cor.game.Position;
  */
 public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
+    ArrayList<Building> buildingList;
+    ArrayList<Unit> unitList;
+
     @Override
     public void performJob() {
+
+	unitList = new ArrayList<Unit>();	// Leere UnitList einfügen
+	RandomMapBuilder.RandomRogMap.setMapProperty("UNIT_LIST", unitList);
+	buildingList = new ArrayList<Building>();	// Leere BuildingList einfügen
+	RandomMapBuilder.RandomRogMap.setMapProperty("BUILDING_LIST", buildingList);
 
 	//Start-Gebäude am Maprand in gleichen Abständen platzieren!
 
@@ -93,11 +102,11 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 
 	    //Kollision nichtmehr nötig.
-            for (int z1c = 0; z1c < 12; z1c++) {
+	    for (int z1c = 0; z1c < 12; z1c++) {
 		for (int z2c = 0; z2c < 12; z2c++) {
 		    RandomMapBuilder.RandomRogMap.getVisMap()[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setGround_tex("img/ground/testground4.png");
 		}
-	    } 
+	    }
 
 	    StartG.add(Haus); //Startgebäude in Arraylist eintragen
 	}

@@ -129,6 +129,7 @@ public class ClientMapModule {
         rgi.logger("[MapModule]: Loading Abilities...");
         HashMap<Integer, Ability> descAbilities = new HashMap<Integer, Ability>();
         // Read abilitys
+
         BufferedReader bdescReader = null;
         try {
             bdescReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(abilitySettings)));
