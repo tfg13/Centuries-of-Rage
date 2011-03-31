@@ -313,6 +313,14 @@ public class GraphicsContent extends BasicGame {
      * @param g
      */
     private void renderSprites(Graphics g) {
+        // Sprites sortieren
+        Collections.sort(allList, new Comparator<Sprite>() {
+
+            public int compare(Sprite o1, Sprite o2) {
+                return o1.getSortPosition().getY() - o2.getSortPosition().getY();
+            }
+
+        });
         for (int i = 0; i < allList.size(); i++) {
             Sprite sprite = allList.get(i);
             if (spriteInSight(sprite)) {
