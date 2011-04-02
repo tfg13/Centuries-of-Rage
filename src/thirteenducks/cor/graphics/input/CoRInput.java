@@ -399,7 +399,7 @@ public class CoRInput implements Pauseable {
                                     }
                                     }
                                     } else { */
-                                    mouseKlickedRight(button, x, y);
+                                    mouseKlickedRight(button, x, y, false);
                                     //  }
                                 }
                             }
@@ -835,9 +835,14 @@ public class CoRInput implements Pauseable {
      * Wird bei Rechtsklick aufgerufen. Behandelt Befehle an die Einheiten (Angreifen, bewegen, Gebäude weiterbauen, ...)
      * @param e: MouseEvent, enthält Position, welcher Button, wie oft, etc..
      */
-    public void mouseKlickedRight(final int button, final int x, final int y) {
+    public void mouseKlickedRight(final int button, final int x, final int y, final boolean notranslation) {
         System.out.println("AddMe: Check for double-klicks");
-        Position selField = graphics.content.translateCoordinatesToField(x, y);
+	Position selField = null;
+	if (!notranslation) { // Umrechnen ins Feldsystem notwendig?
+	    selField = graphics.content.translateCoordinatesToField(x, y);
+	} else {
+	    selField = new Position(x, y);
+	}
         // Überhaupt was selektiert?
         if (!selected.isEmpty()) {
             // Ziele finden:
