@@ -1571,6 +1571,7 @@ public class GraphicsContent extends BasicGame {
             // FinalPrepare
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
+	    minimap.setAllList(allList);
             overlays.add(minimap);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();

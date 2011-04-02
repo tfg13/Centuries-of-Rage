@@ -206,4 +206,10 @@ public class Unit3x3 extends Unit {
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+	g.setColor(spriteColor);
+	g.fillRect(x, y, 3, 3);
+    }
 }

@@ -37,8 +37,6 @@ import thirteenducks.cor.game.Unit;
  */
 public class RandomMapBuilderTerrainFormer extends RandomMapBuilderJob {
 
-
-
     @Override
     public void performJob() {
 

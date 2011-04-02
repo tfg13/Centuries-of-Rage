@@ -199,4 +199,10 @@ public class PlayersBuilding extends Building {
     public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+	g.setColor(spriteColor);
+	g.fillRect(x, y, 8, 8);
+    }
 }

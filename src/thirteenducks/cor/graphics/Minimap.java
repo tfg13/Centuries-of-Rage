@@ -25,10 +25,12 @@
  */
 package thirteenducks.cor.graphics;
 
+import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import thirteenducks.cor.game.client.AIClientCore.InnerClient;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.input.OverlayMouseListener;
 import thirteenducks.cor.map.AbstractMapElement;
@@ -91,6 +93,10 @@ public class Minimap extends Overlay {
      */
     private int[] pos;
 
+    private List<Sprite> allList;
+
+    private ClientCore.InnerClient rgi;
+
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
         int dx = pos[0];
@@ -99,16 +105,21 @@ public class Minimap extends Overlay {
         g.setColor(Color.black);
         g.fillRect(dx - 4, dy - 4, sizeX + 8, sizeY + 8);
         map.draw(dx, dy, sizeX, sizeY);
+	for (int i = 0; i < allList.size(); i++) {
+	    Sprite sprite = allList.get(i);
+	    sprite.renderMinimapMarker(g, dx + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getX() / (map.getWidth() / 2) * sizeX), dy + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getY() / (map.getHeight() / 2) * sizeY), rgi.game.getPlayer(sprite.getColorId()).color);
+	}
         g.setColor(Color.lightGray);
         g.setLineWidth(1);
         g.drawRect(dx + view[0] * sizeX, dy + view[1] * sizeY, view[2] * sizeX, view[3] * sizeY);
     }
 
-    private Minimap(int resX, int resY) { // Konstruktor private, kann sonst niemand aufrufen
+    private Minimap(int resX, int resY, ClientCore.InnerClient newinner) { // Konstruktor private, kann sonst niemand aufrufen
         sizeX = (int) (resX * DEFAULT_SIZEFACTOR_X);
         sizeY = (int) (resY * DEFAULT_SIZEFACTOR_Y);
         view = new float[4];
         pos = new int[4];
+	rgi = newinner;
         switch (edge) {
             case EDGE_TOP_LEFT:
                 pos[0] = 0;
@@ -145,7 +156,7 @@ public class Minimap extends Overlay {
     }
 
     public static Minimap createMinimap(AbstractMapElement[][] visMap, Map<String, GraphicsImage> imgMap, final int fullResX, final int fullResY, ClientCore.InnerClient rgi) {
-        Minimap minimap = new Minimap(fullResX, fullResY);
+        Minimap minimap = new Minimap(fullResX, fullResY, rgi);
         try {
             // Erstellt einen neue Basis-Minimap
             minimap.map = new Image(visMap.length * 2, visMap[0].length * 2);
@@ -226,5 +237,19 @@ public class Minimap extends Overlay {
                 return pos[3];
             }
         });
+    }
+
+    /**
+     * @param allList the allList to set
+     */
+    public void setAllList(List<Sprite> allList) {
+	this.allList = allList;
+    }
+
+    /**
+     * @return the allList
+     */
+    public List<Sprite> getAllList() {
+	return allList;
     }
 }

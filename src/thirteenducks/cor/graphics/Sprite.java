@@ -94,4 +94,13 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @return
      */
     public int getColorId();
+
+    /**
+     *
+     * @param g
+     * @param x
+     * @param y
+     * @param spriteColor
+     */
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor);
 }

@@ -200,4 +200,10 @@ public class Unit2x2 extends Unit {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
     }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+	g.setColor(spriteColor);
+	g.fillRect(x, y, 2, 2);
+    }
 }
