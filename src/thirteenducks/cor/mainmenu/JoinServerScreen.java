@@ -101,7 +101,7 @@ public class JoinServerScreen extends Container {
                     boolean fullScreen = mainMenu.getFullScreen();
                     HashMap cfg = readCfg();
 
-                    ClientCore clientCore = new ClientCore(debug, address, port, playerName, displayMode, fullScreen, cfg);
+                    //ClientCore clientCore = new ClientCore(debug, address, port, playerName, displayMode, fullScreen, cfg);
 
                 } catch (Exception ex) {
                     ex.printStackTrace();

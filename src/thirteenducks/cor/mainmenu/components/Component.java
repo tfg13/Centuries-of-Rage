@@ -269,4 +269,12 @@ public class Component {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Setter für MainMenu
+     * @param m - MainMenu-Referenz
+     */
+    void setMainMenu(MainMenu m) {
+        this.mainMenu = m;
+    }
 }

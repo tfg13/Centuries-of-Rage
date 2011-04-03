@@ -65,6 +65,14 @@ public class Container extends Component {
     }
 
     /**
+     * Setzt die MainMenu.Referenz nachträglich, wenn sie nicht im Konstruktor übergeben wurde
+     * @param m - MainMenu-Referenz
+     */
+    public void setMainMenuReference(MainMenu m) {
+        super.setMainMenu(m);
+    }
+
+    /**
      * Fügt dem Container eine neue Komponente hinzu
      * @param component     die neue Komponente
      */
@@ -72,6 +80,14 @@ public class Container extends Component {
         this.components.add(component);
     }
 
+
+    /**
+     * Gibt die Komponentenliste dieses Containers zurück
+     */
+    public ArrayList<Component> getComponents()
+    {
+        return this.components;
+    }
     /**
      * Gibt die Komponente mit dem entsprechenden Namen zurück, WENN es eine gibt
      * @param name - der Name der gesuchten Komponente

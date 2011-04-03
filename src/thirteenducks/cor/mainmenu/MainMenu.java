@@ -26,11 +26,13 @@
 package thirteenducks.cor.mainmenu;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import thirteenducks.cor.mainmenu.components.*;
 import thirteenducks.cor.mainmenu.components.AnimatedImage;
 import java.util.HashMap;
 import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import thirteenducks.cor.game.server.ServerCore;
 
@@ -39,7 +41,7 @@ import thirteenducks.cor.game.server.ServerCore;
  *
  * @author michael
  */
-public class MainMenu extends AppGameContainer {
+public class MainMenu extends Container {
 
     /**
      * Grafikdingens
@@ -65,29 +67,22 @@ public class MainMenu extends AppGameContainer {
     /**
      * Konstruktor
      */
-    public MainMenu(MainMenuGraphics g, int resX, int resY, boolean fullScreen) throws SlickException {
-        super(g, resX, resY, fullScreen);
+    public MainMenu(int resX, int resY, boolean fullScreen) {
+        super(null, 0, 0, (double) resX, (double) resY);
+
+        super.setMainMenuReference(this);
 
         this.resX = resX;
         this.resY = resY;
 
         this.fullScreen = fullScreen;
 
-        this.setTargetFrameRate(65);
-
         menus = new HashMap<String, Container>();
-
-        graphics = g;
-        graphics.setMainMenuReference(this);
 
         /**
          * Komponenten initialisieren:
          */
-        initComponents(g);
-
-        // mit rendern beginnen:
-        this.setShowFPS(false);
-        super.start();
+        initComponents();
     }
 
     /**
@@ -101,27 +96,66 @@ public class MainMenu extends AppGameContainer {
 
     }
 
+    @Override
+    /**
+     * Render-Funktion
+     * rendert alle SubKomponenten
+     */
+    public void render(Graphics g) {
+        for (Component c : super.getComponents()) {
+            c.render(g);
+        }
+    }
+
+    @Override
+    public void init(GameContainer c) {
+        for (Component comp : super.getComponents()) {
+            comp.init(c);
+        }
+    }
+
+    @Override
+    /**
+     * Wird bei Mausklicks aufgerufen
+     */
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+        for (Component c : super.getComponents()) {
+            c.mouseClickedAnywhere(button, x, y, clickCount);
+        }
+    }
+
+    @Override
+    /**
+     * Wird bei Tastendruck aufgerufen
+     */
+    public void keyPressed(int key, char c) {
+        for (Component comp : super.getComponents()) {
+            comp.keyPressed(key, c);
+        }
+
+    }
+
     /**
      * Initialisiert die Komponenten des Hauptmenüs
      */
-    private void initComponents(MainMenuGraphics g) {
+    private void initComponents() {
 
 
         /**********************************************************************
          * Hintergrund:
          *********************************************************************/
         // Animierter Hintergrund:
-        g.components.add(new AnimatedImage(this, "/img/mainmenu/test.png"));
+        super.addComponent(new AnimatedImage(this, "/img/mainmenu/test.png"));
 
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
-        g.components.add(new Frame(this, 0, 0, 99.9999f, 99.9999f));
+        super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
 
         // Mauskoordiaten anzeigen:
-        g.components.add(new CoordinateView(this));
+        super.addComponent(new CoordinateView(this));
 
         // Koordinatenanzeige:
-        g.addComponent(new CoordinateView(this));
+        super.addComponent(new CoordinateView(this));
 
 
         /**********************************************************************
@@ -130,32 +164,32 @@ public class MainMenu extends AppGameContainer {
         // Hauptmenü:
         Container startScreen = new StartScreen(this);
         menus.put("startscreen", startScreen);
-        g.addComponent(startScreen);
+        super.addComponent(startScreen);
         startScreen.fadeIn();
 
         // StartServerscreen
         Container startServerScreen = new StartServerScreen(this);
         menus.put("startserverscreen", startServerScreen);
-        g.addComponent(startServerScreen);
+        super.addComponent(startServerScreen);
         startServerScreen.fadeOut();
 
         // RandomMapBuilder
         Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
         menus.put("randommapbuilderscreen", randomMapBuilderScreen);
-        g.addComponent(randomMapBuilderScreen);
+        super.addComponent(randomMapBuilderScreen);
         randomMapBuilderScreen.fadeOut();
 
         // Mehrspieler:
         Container MultiplayerScreen = new MultiplayerScreen(this);
         menus.put("multiplayerscreen", MultiplayerScreen);
-        g.addComponent(MultiplayerScreen);
+        super.addComponent(MultiplayerScreen);
         MultiplayerScreen.fadeOut();
 
         // Lobby
         LobbyScreen lobbyScreen;
         lobbyScreen = new LobbyScreen(this);
         menus.put("lobbyscreen", lobbyScreen);
-        g.addComponent(lobbyScreen);
+        super.addComponent(lobbyScreen);
         lobbyScreen.fadeOut();
     }
 
