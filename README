@@ -5,10 +5,10 @@ Content:
 1. Requirements
 2. How to install everything
 3. How to run CoR
-2. FAQ
-3. Licensing information
-4. How to get involved
-5. How to contact us
+4. FAQ
+5. Licensing information
+6. How to get involved
+7. How to contact us
 
 ---------------------------------------------------------
 
@@ -64,6 +64,7 @@ ALL SYSTEMS:
 
 java -Xmx512m -Xms512m -jar CoR.jar
 
+---------------------------------------------------------
 
 4. FAQ
 
@@ -89,7 +90,7 @@ Fork the Repository at GitHub & email us!
 
 ---------------------------------------------------------
 
-5. How to contact us
+7. How to contact us
 
 Email us!
 
