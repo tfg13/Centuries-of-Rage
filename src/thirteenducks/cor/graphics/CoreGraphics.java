@@ -25,6 +25,8 @@
  */
 package thirteenducks.cor.graphics;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
@@ -244,12 +246,50 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         }
     }
 
-
     /**
      * Läd alle Bilder, die laut der preload-Datei vor dem Hauptmenu geladen werden müssen
      */
     public void loadPreMain() {
-
+        BufferedReader reader = null;
+        try {
+            imgMap = new HashMap();
+            reader = new BufferedReader(new FileReader(new File("img/preload")));
+            String read = null;
+            while ((read = reader.readLine()) != null) {
+                if (!read.startsWith("#")) {
+                    // Dieses Bild einlesen
+                    File imgFile = new File(read);
+                    if (imgFile.canRead() && read.endsWith(".png")) {
+                        try {
+                            Image img = new org.newdawn.slick.Image(imgFile.getPath());
+                            GraphicsImage tempImage = new GraphicsImage(img);
+                            tempImage.setImageName(imgFile.getPath());
+                            // Auf jeden Fall für das Grafikmodul behalten
+                            imgMap.put(imgFile.getPath(), tempImage); // Dazu machen
+                            if (tempImage.getImageName().contains("/")) {
+                                tempImage = new GraphicsImage(img);
+                                tempImage.setImageName(imgFile.getPath().replace('/', '\\'));
+                                imgMap.put(tempImage.getImageName(), tempImage);
+                            } else {
+                                tempImage = new GraphicsImage(img);
+                                tempImage.setImageName(imgFile.getPath().replace('\\', '/'));
+                                imgMap.put(tempImage.getImageName(), tempImage);
+                            }
+                        } catch (SlickException sl) {
+                            sl.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void initModule() {
@@ -324,7 +364,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             int counter = 0;
             int gcCounter = 0;
 
-            imgMap = new HashMap();
 
             for (File[] list : folders) {
                 for (File image : list) {
