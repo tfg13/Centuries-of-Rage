@@ -1530,6 +1530,13 @@ public class GraphicsContent extends BasicGame {
             // Komponenten fürs Hauptmenu laden
             System.out.println("Preloading some components...");
             parent.loadPreMain();
+            System.out.println("Initialising menu...");
+            parent.initMainMenu();
+            System.out.println("Initialisation done.");
+            initState = 13;
+        } else if (initState == 13) {
+            // Hauptmenu
+            parent.renderMainMenu(container, g);
         } else if (initState == 1) {
             // Logo setzen
             String[] ab = {"img/game/logo_128x128.png", "img/game/logo_32x32.png", "img/game/logo_16x16.png"};

@@ -98,7 +98,6 @@ public class JoinServerScreen extends Container {
                     // port wird am Anfang dieser Datei deklariert
                     String playerName = "testname";
                     DisplayMode displayMode = new DisplayMode(mainMenu.getResX(), mainMenu.getResY());
-                    boolean fullScreen = mainMenu.getFullScreen();
                     HashMap cfg = readCfg();
 
                     //ClientCore clientCore = new ClientCore(debug, address, port, playerName, displayMode, fullScreen, cfg);

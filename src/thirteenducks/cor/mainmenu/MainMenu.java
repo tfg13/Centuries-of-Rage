@@ -25,15 +25,11 @@
  */
 package thirteenducks.cor.mainmenu;
 
-import java.net.InetAddress;
-import java.util.ArrayList;
 import thirteenducks.cor.mainmenu.components.*;
 import thirteenducks.cor.mainmenu.components.AnimatedImage;
 import java.util.HashMap;
-import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 import thirteenducks.cor.game.server.ServerCore;
 
 /**
@@ -52,10 +48,6 @@ public class MainMenu extends Container {
      */
     HashMap<String, Container> menus;
     /**
-     * Gibt an, ob das Hauptmenü (und Später das Spiel) im Fenster- oder FullscreenModus läuft
-     */
-    private boolean fullScreen;
-    /**
      * X-Bildschirmauflösung
      */
     private int resX;
@@ -67,15 +59,13 @@ public class MainMenu extends Container {
     /**
      * Konstruktor
      */
-    public MainMenu(int resX, int resY, boolean fullScreen) {
+    public MainMenu(int resX, int resY) {
         super(null, 0, 0, (double) resX, (double) resY);
 
         super.setMainMenuReference(this);
 
         this.resX = resX;
         this.resY = resY;
-
-        this.fullScreen = fullScreen;
 
         menus = new HashMap<String, Container>();
 
@@ -201,14 +191,6 @@ public class MainMenu extends Container {
      */
     public Container getMenu(String name) {
         return menus.get(name);
-    }
-
-    /**
-     * Getter für fullScreen
-     * @return true, wenn fullScreen true ist
-     */
-    boolean getFullScreen() {
-        return fullScreen;
     }
 
     /**

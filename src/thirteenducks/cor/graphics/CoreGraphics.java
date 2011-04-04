@@ -46,6 +46,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.graphics.input.CoRInput;
+import thirteenducks.cor.mainmenu.MainMenu;
 import thirteenducks.cor.map.AbstractMapElement;
 
 /**
@@ -99,6 +100,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     private DisplayMode[] modi;
     private DisplayMode[] sorted;
     private DisplayMode[] fullfilter;
+    private MainMenu mainmenu;
 
     private CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
         super(new GraphicsContent(), size.width, size.height, fullScreen);
@@ -290,6 +292,14 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 ex.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Initialisiert das Hauptmenu
+     */
+    void initMainMenu() {
+        mainmenu = new MainMenu(content.realPixX, content.realPixY);
+        mainmenu.init(this);
     }
 
     public void initModule() {
@@ -1807,6 +1817,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     public boolean getAlwaysShowEnergyBars() {
         return content.alwaysshowenergybars;
+    }
+
+    public void renderMainMenu(GameContainer c, Graphics g) {
+        mainmenu.render(g);
     }
 
     public void renderAndCalc(GameContainer c, Graphics g) {
