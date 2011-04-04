@@ -25,8 +25,6 @@
  */
 package thirteenducks.cor.graphics;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;

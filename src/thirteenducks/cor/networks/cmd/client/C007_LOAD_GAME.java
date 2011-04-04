@@ -37,7 +37,7 @@ public class C007_LOAD_GAME extends ClientCommand {
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
         // Ladebildschirm einblenden
-        rgi.rogGraphics.preStart();
+        //rgi.rogGraphics.preStart();
 
         // Lobby verbergen
         rgi.netctrl.lobby.hideLobby();

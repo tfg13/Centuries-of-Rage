@@ -27,7 +27,6 @@
 
 package thirteenducks.cor.graphics;
 
-import java.awt.image.BufferedImage;
 import org.newdawn.slick.Image;
 
 
