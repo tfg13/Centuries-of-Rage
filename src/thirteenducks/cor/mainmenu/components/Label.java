@@ -32,6 +32,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
+import thirteenducks.cor.graphics.FontManager;
 import thirteenducks.cor.mainmenu.MainMenu;
 
 /**
@@ -50,10 +51,6 @@ public class Label extends Component {
      * Die Farbe, in der der Text geschrieben wird
      */
     private Color color;
-    /**
-     * Die Schrift, mit der der Text gerendert wird
-     */
-    private UnicodeFont font;
 
     /**
      * Konstruktor
@@ -73,32 +70,13 @@ public class Label extends Component {
 
     @Override
     public void init(GameContainer c) {
-
-        // X-Faktor
-        float x = 0.016f;
-
-
-
-        int fontsize = (int) ((float) this.getMainMenu().getWidth() * x);
-
-        font = new org.newdawn.slick.UnicodeFont(java.awt.Font.decode("Sans-" + fontsize));
-        try {
-            font.getEffects().add(new org.newdawn.slick.font.effects.ShadowEffect(java.awt.Color.BLACK, 1, 1, 1.0f));
-            font.getEffects().add(new org.newdawn.slick.font.effects.ColorEffect(new java.awt.Color(255, 255, 200)));
-            font.addAsciiGlyphs();
-            font.loadGlyphs();
-        } catch (SlickException ex) {
-            Logger.getLogger(Label.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
     }
 
     @Override
     public void render(Graphics g) {
 
         g.setColor(color);
-        g.setFont(font);
+        g.setFont(FontManager.getFont0());
 
         // Der Text soll zentriert gerendert werden, also Textlänge berechnen:
         int textWidth = g.getFont().getWidth(labelText);

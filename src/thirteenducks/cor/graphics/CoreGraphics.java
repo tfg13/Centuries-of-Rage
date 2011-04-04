@@ -248,6 +248,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     /**
      * Läd alle Bilder, die laut der preload-Datei vor dem Hauptmenu geladen werden müssen
+     * Läd außerdem den Font-Manager
      */
     public void loadPreMain() {
         BufferedReader reader = null;
@@ -290,6 +291,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 ex.printStackTrace();
             }
         }
+
+        FontManager.initFonts(content.realPixX, content.realPixY);
     }
 
     /**
