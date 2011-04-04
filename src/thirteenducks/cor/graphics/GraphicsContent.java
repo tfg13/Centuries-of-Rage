@@ -35,7 +35,6 @@ import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.svg.SimpleDiagramRenderer;
 import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
@@ -155,7 +154,7 @@ public class GraphicsContent extends BasicGame {
     public Image loading_backnoblur_s;
     public Image loading_frontnoblur_s;
     public Image loading_frontblur_s;
-    public SimpleDiagramRenderer svgimg; // 13Ducks logo
+    public Image duckslogo;
     long loadZoom1StartTime = 0;
     long loadZoom2StartTime = 0;
     boolean zoomInGame = false;
@@ -163,7 +162,7 @@ public class GraphicsContent extends BasicGame {
     public int imgLoadCount = 0;
     public int imgLoadTotal = 0;
     CoreGraphics parent;
-    public int initState = 0;                          // Damit alles Slick laden kann, sonst weigert es sich zu arbeiten :(
+    public int initState = -1;                          // Damit alles Slick laden kann, sonst weigert es sich zu arbeiten :(
     // Slick ist monoTreaded...
     // Die Grafik muss also auch manche Input-Events berechnen:
     public int lastInputEvent = 0;
@@ -183,7 +182,16 @@ public class GraphicsContent extends BasicGame {
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
-        if (modi == -1) {
+        if (modi == 0) {
+            // 13Ducks-Logo
+            //g.setColor(Color.green);
+            //g.fillRect(10, 10, 10, 10);
+            g.setBackground(Color.white);
+            g.clear();
+            duckslogo.drawCentered(realPixX / 2, realPixY / 2);
+            // Sobald es einmal gezeichnet wurde können wir weiter laden
+            initState = 12;
+        } else if(modi == -1) {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
         } else if (modi == 3) {
@@ -1497,18 +1505,11 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-
         parent = (CoreGraphics) container;
-        parent.preStart2();
+        parent.loadSplash();
         parent.slickReady = true;
-        parent.setClearEachFrame(false);
         parent.setAlwaysRender(true);
-        parent.setVerbose(false);
-
-        // Fenster ungefähr in die Mitte des Bildschirms
-        int mx = Display.getDisplayMode().getWidth();
-        int my = Display.getDisplayMode().getHeight();
-        //Display.setLocation(parent.getScreenWidth() / 2 - mx / 2, parent.getScreenHeight() / 2 - my / 2);
+        parent.setVerbose(true);
     }
 
     @Override
@@ -1521,7 +1522,15 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
-        if (initState == 1) {
+        if (initState == -1) {
+            System.out.println("Displaying Splash...");
+            this.paintComponent(g);
+            return;
+        } else if (initState == 12) {
+            // Komponenten fürs Hauptmenu laden
+            System.out.println("Preloading some components...");
+            parent.loadPreMain();
+        } else if (initState == 1) {
             // Logo setzen
             String[] ab = {"img/game/logo_128x128.png", "img/game/logo_32x32.png", "img/game/logo_16x16.png"};
             try {

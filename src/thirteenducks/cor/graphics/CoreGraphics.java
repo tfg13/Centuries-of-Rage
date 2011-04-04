@@ -25,7 +25,6 @@
  */
 package thirteenducks.cor.graphics;
 
-
 import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
@@ -43,8 +42,6 @@ import org.lwjgl.opengl.DisplayMode;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
-import org.newdawn.slick.svg.InkscapeLoader;
-import org.newdawn.slick.svg.SimpleDiagramRenderer;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.graphics.input.CoRInput;
 import thirteenducks.cor.map.AbstractMapElement;
@@ -119,12 +116,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         fullfilter = filterFullscreen(sorted);
         DisplayMode myMode = findInitialDisplayMode(cfgvalues);
         super.setDisplayMode(myMode.getWidth(), myMode.getHeight(), myMode.isFullscreenCapable());
-        super.setup();
+        content.realPixX = myMode.getWidth();
+        content.realPixY = myMode.getHeight();
         super.start();
-        try {
-            Thread.sleep(100000);
-        } catch (InterruptedException ex) {
-        }
     }
 
     private DisplayMode[] filterFullscreen(DisplayMode[] list) {
@@ -238,47 +232,24 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     /**
-     * Blendet den Ladebildschirm ein.
-     * Muss VOR initModule aufgerufen werden.
+     * Läd alle für die Darstellung des Splashscreens notwenigen Komponenten
      */
-    public void preStart() {
-        rgi.logger("[Graphics]: Preparing window...");
-        slickGraphics = new Thread(new Runnable() {
+    public void loadSplash() {
+        try {
+            // Ladegrafik lesen
+            content.duckslogo = new Image("img/game/13ducks.png");
 
-            @Override
-            public void run() {
-                try {
-                    CoreGraphics.this.start();
-                } catch (SlickException ex) {
-                    rgi.logger(ex);
-                    JOptionPane.showMessageDialog(new JFrame(), "Impossible resolution", "CoR: ERROR", JOptionPane.ERROR_MESSAGE);
-                    System.exit(10);
-                }
-            }
-        });
-        // SaveMode übernehmen
-        if ("true".equals(rgi.configs.get("safegraphics").toString())) {
-            content.saveMode = true;
+        } catch (org.newdawn.slick.SlickException ex) {
+            ex.printStackTrace();
         }
-        slickGraphics.setName("Graphics-2");
-        slickGraphics.start();
-
     }
 
-    public void preStart2() {
-        if (!content.saveMode) {
-            try {
-                // Ladegrafik lesen
-                content.svgimg = new SimpleDiagramRenderer(InkscapeLoader.load("img/game/13ducks.svg"));
 
-            } catch (org.newdawn.slick.SlickException ex) {
-                rgi.logger("[Graphics][ERROR]: Can't load loadingscreen!");
-            }
-        }
-        content.realPixX = displaySize.width;
-        content.realPixY = displaySize.height;
-        content.setVisibleArea((displaySize.width / 10), (int) (displaySize.height / 7.5));
-        content.modi = -1;
+    /**
+     * Läd alle Bilder, die laut der preload-Datei vor dem Hauptmenu geladen werden müssen
+     */
+    public void loadPreMain() {
+
     }
 
     public void initModule() {
@@ -676,7 +647,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Kehrt erst zurück, nachdem der Frame auf den Bildschrim gezeichnet wurde.
      * Benötigt z.B. um während dem Animationen-Laden die Grafik flüssig arbeiten zu lassen.
      */
-    private void forceFrame() {
+    public void forceFrame() {
         content.paintComponent(this.getGraphics());
         Renderer.get().flush();
         Display.update();
