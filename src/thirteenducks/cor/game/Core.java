@@ -34,7 +34,7 @@ import java.util.*;
 public abstract class Core {
 
     public boolean debugmode;
-    public HashMap cfgvalues;
+    public HashMap<String, String> cfgvalues;
 
     /* public static void main(String args[]) {
     // Es geht los!

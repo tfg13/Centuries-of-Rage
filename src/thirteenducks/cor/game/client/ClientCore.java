@@ -27,14 +27,10 @@ package thirteenducks.cor.game.client;
 
 import thirteenducks.cor.networks.client.ClientNetController;
 import thirteenducks.cor.graphics.impl.TeamSelector;
-import java.awt.Dimension;
 import java.io.*;
-import java.net.*;
 import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.SlickException;
 import thirteenducks.cor.graphics.ClientChat;
 import thirteenducks.cor.game.Core;
 import thirteenducks.cor.graphics.CoreGraphics;
@@ -67,114 +63,124 @@ public class ClientCore extends Core {
     String playername;
     Lobby lobby;
     ClientStatistics cs;
-    boolean isAIClient;
 
-
-    public ClientCore(){}
-
-    public ClientCore(boolean debug, InetAddress connectTo, int port, String playername_t, DisplayMode mode, boolean fullScreen, HashMap newcfg, boolean ai) throws SlickException {
-
-        isAIClient = ai;
-        playername = playername_t;
-        lobby = new Lobby();
-        cfgvalues = newcfg;
-
-
-        // Hier beginnt der Code richtig zu laufen
-        // Einstellungen aus Startoptionen übernehmen
-        debugmode = debug;
-
-        rgi = new ClientCore.InnerClient(playername, isAIClient);
-
-        gamectrl = new ClientGameController(rgi);
-
-
-        //gamectrl = new ClientGameController(rgi);
-
-
-        // Neues Logfile anlegen (altes Löschen)
-        initLogger();
-        rgi.logger("[Core] Init RoG-Core");
-        if (debugmode) {
-            rgi.logger("[Core] Debug-Mode active");
-        } else {
-            rgi.logger("[Core] Debug-Mode off");
+    public ClientCore(HashMap<String, String> cfg) {
+        cfgvalues = cfg;
+        // Debug?
+        debugmode = "true".equals(cfgvalues.get("debug"));
+        System.out.println("Debug is: " + (debugmode ? "ON" : "OFF"));
+        System.out.println("Loading graphics...");
+        try {
+            rGraphics = new CoreGraphics(cfgvalues);
+        } catch (Exception ex) {
+            System.out.println("ERROR! Details:");
+            ex.printStackTrace();
         }
-
-        //Module Laden
-
-        rgi.logger("[CoreInit] Loading Modules & SubModules");
-
-        rgi.logger("[CoreInit] Loading clientgamecontroller...");
-
-
-        // gamecrtl wird weiter oben initialisiert
-        //gamectrl = new ClientGameController(rgi);
-
-        rgi.logger("[CoreInit] Loading graphicsengine");
-
-        // Grafik initialisieren(und KI):
-            rGraphics = new thirteenducks.cor.graphics.CoreGraphics(rgi, new Dimension(mode.getWidth(), mode.getHeight()), fullScreen);
-        
-
-
-        rgi.logger("[CoreInit]: Loading lobby...");
-        // Lobby initialisieren und anzeigen:
-
-        lobby.setVisible(true);
-
-        rgi.logger("[CoreInit]: Loading client-netcontroller");
-
-        netController = new ClientNetController(rgi, lobby);
-
-
-        mapMod = new ClientMapModule(rgi);
-
-        cchat = new ClientChat(rgi);
-        rGraphics.content.overlays.add(cchat);
-
-	cs = new ClientStatistics(rgi);
-
-        
-
-
-        rgi.initInner();
-
-        /*
-        
-        mapMod.initModule();
-
-        rGraphics.initModule();
-        rGraphics.initSubs();
-
-         */
-
-        rgi.logger("[Core]: Connecting to server...");
-
-        if (netController.connectTo(connectTo, port)) {
-            lobby.initlobby(netController, rgi);
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    soundM = new SoundModule();
-                    rgi.rogSound = soundM;
-                    //soundM.loopSound("wolfe.ogg");
-                    lobby.jButton2.setEnabled(true);
-                }
-            });
-            t.start();
-            
-        } else {
-            // Das geht so nicht, das ging nicht
-            // Alles wieder abschalten
-            lobby.dispose();
-            rGraphics.destroy();
-            throw new java.lang.RuntimeException("IP invalid/unreachable or server not running");
-        }
-
 
     }
 
+    /*public ClientCore(boolean debug, InetAddress connectTo, int port, String playername_t, DisplayMode mode, boolean fullScreen, HashMap newcfg) throws SlickException {
+
+    playername = playername_t;
+    lobby = new Lobby();
+    cfgvalues = newcfg;
+
+
+    // Hier beginnt der Code richtig zu laufen
+    // Einstellungen aus Startoptionen übernehmen
+    debugmode = debug;
+
+    rgi = new ClientCore.InnerClient(playername, isAIClient);
+
+    gamectrl = new ClientGameController(rgi);
+
+
+    //gamectrl = new ClientGameController(rgi);
+
+
+    // Neues Logfile anlegen (altes Löschen)
+    initLogger();
+    rgi.logger("[Core] Init RoG-Core");
+    if (debugmode) {
+    rgi.logger("[Core] Debug-Mode active");
+    } else {
+    rgi.logger("[Core] Debug-Mode off");
+    }
+
+    //Module Laden
+
+    rgi.logger("[CoreInit] Loading Modules & SubModules");
+
+    rgi.logger("[CoreInit] Loading clientgamecontroller...");
+
+
+    // gamecrtl wird weiter oben initialisiert
+    //gamectrl = new ClientGameController(rgi);
+
+    rgi.logger("[CoreInit] Loading graphicsengine");
+
+    // Grafik initialisieren(und KI):
+    rGraphics = new thirteenducks.cor.graphics.CoreGraphics(rgi, new Dimension(mode.getWidth(), mode.getHeight()), fullScreen);
+
+
+
+    rgi.logger("[CoreInit]: Loading lobby...");
+    // Lobby initialisieren und anzeigen:
+
+    lobby.setVisible(true);
+
+    rgi.logger("[CoreInit]: Loading client-netcontroller");
+
+    netController = new ClientNetController(rgi, lobby);
+
+
+    mapMod = new ClientMapModule(rgi);
+
+    cchat = new ClientChat(rgi);
+    rGraphics.content.overlays.add(cchat);
+
+    cs = new ClientStatistics(rgi);
+
+
+
+
+    rgi.initInner();
+
+    /*
+
+    mapMod.initModule();
+
+    rGraphics.initModule();
+    rGraphics.initSubs();
+
+     */
+
+    /*   rgi.logger("[Core]: Connecting to server...");
+
+    if (netController.connectTo(connectTo, port)) {
+    lobby.initlobby(netController, rgi);
+    Thread t = new Thread(new Runnable() {
+
+    @Override
+    public void run() {
+    soundM = new SoundModule();
+    rgi.rogSound = soundM;
+    //soundM.loopSound("wolfe.ogg");
+    lobby.jButton2.setEnabled(true);
+    }
+    });
+    t.start();
+
+    } else {
+    // Das geht so nicht, das ging nicht
+    // Alles wieder abschalten
+    lobby.dispose();
+    rGraphics.destroy();
+    throw new java.lang.RuntimeException("IP invalid/unreachable or server not running");
+    }
+
+
+    } */
     @Override
     public void initLogger() {
         // Erstellt ein neues Logfile
@@ -190,6 +196,61 @@ public class ClientCore extends Core {
 
     }
 
+    public static void main(String[] args) {
+        System.out.println("Starting up...");
+        // Settings einlesen
+        System.out.println("Reading settings...");
+        HashMap<String, String> cfg = readCfg();
+        new ClientCore(cfg);
+    }
+
+    private static HashMap readCfg() {
+        HashMap<String, String> cfg = new HashMap<String, String>();
+        File cfgFile = null;
+        try {
+            cfgFile = new File("client_cfg.txt");
+            FileReader cfgReader = new FileReader(cfgFile);
+            BufferedReader reader = new BufferedReader(cfgReader);
+            String zeile = null;
+            int i = 0; // Anzahl der Durchläufe zählen
+            while ((zeile = reader.readLine()) != null) {
+                if (i == 0) {
+                    // Die erste Zeile überspringen
+                    //   continue;
+                }
+                // Liest Zeile fuer Zeile, jetzt auswerten und in Variablen
+                // schreiben
+                int indexgleich = zeile.indexOf('='); // Istgleich suchen
+                if (indexgleich == -1) {
+                } else {
+                    String v1 = zeile.substring(0, indexgleich); // Vor dem =
+                    // rauschneiden
+                    String v2 = zeile.substring(indexgleich + 1); // Nach dem
+                    // =
+                    // rausschneiden
+                    System.out.println(v1 + " = " + v2);
+                    cfg.put(v1, v2);
+
+                }
+            }
+            reader.close();
+        } catch (FileNotFoundException e1) {
+            // cfg-Datei nicht gefunden -  egal, wird automatisch neu angelegt
+            System.out.println("client_cfg.txt not found, creating new one...");
+            try {
+                cfgFile.createNewFile();
+            } catch (IOException ex) {
+                System.out.println("[ERROR] Failed to create client_cfg.txt .");
+            }
+        } catch (IOException e2) {
+            // Inakzeptabel
+            e2.printStackTrace();
+            System.out.println("[ERROR] Critical I/O ERROR!");
+            System.exit(1);
+        }
+        return cfg;
+    }
+
     public class InnerClient extends Core.CoreInner {
 
         public CoreGraphics rogGraphics;
@@ -197,7 +258,7 @@ public class ClientCore extends Core {
         public ClientNetController netctrl;
         public ClientGameController game;
         public ClientChat chat;
-	public ClientStatistics clientstats;
+        public ClientStatistics clientstats;
         public String playername;
         //RogPathfinder rogPathfinder;
         //RogGameLogic rogGameLogic;
@@ -206,7 +267,8 @@ public class ClientCore extends Core {
         public boolean isAIClient;
         public TeamSelector teamSel;
 
-        public InnerClient(){}
+        public InnerClient() {
+        }
 
         private InnerClient(String playername_t, boolean ai) {
             playername = playername_t;
@@ -221,7 +283,7 @@ public class ClientCore extends Core {
             netctrl = netController;
             game = gamectrl;
             chat = cchat;
-	    clientstats = cs;
+            clientstats = cs;
             teamSel = new TeamSelector(this);
             //rogGameLogic = rGameLogic;
             //rogSound = rSound; */

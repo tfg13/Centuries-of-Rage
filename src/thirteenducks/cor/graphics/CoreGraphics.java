@@ -25,6 +25,7 @@
  */
 package thirteenducks.cor.graphics;
 
+
 import thirteenducks.cor.game.Bullet;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.game.Building;
@@ -36,10 +37,14 @@ import java.io.*;
 import java.util.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.svg.InkscapeLoader;
+import org.newdawn.slick.svg.SimpleDiagramRenderer;
 import thirteenducks.cor.game.Pauseable;
 import thirteenducks.cor.graphics.input.CoRInput;
 import thirteenducks.cor.map.AbstractMapElement;
@@ -92,15 +97,144 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     double rightScrollSpeed = 0.5;
     Robot robot;
     int imgLoadCounter = 0;
+    private DisplayMode[] modi;
+    private DisplayMode[] sorted;
+    private DisplayMode[] fullfilter;
 
-    
-
-    public CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
+    private CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
         super(new GraphicsContent(), size.width, size.height, fullScreen);
         content = (GraphicsContent) super.game;
         rgi = inner; // Die Innere Klasse übernehmen
         displaySize = size;
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
+    }
+
+    public CoreGraphics(HashMap<String, String> cfgvalues) throws SlickException, LWJGLException {
+        super(new GraphicsContent());
+        content = (GraphicsContent) super.game;
+        newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
+        // Bildgröße konfigurieren
+        modi = Display.getAvailableDisplayModes();
+        sorted = sortDisplayModes(filterList(sortDisplayModes(modi).toArray(new DisplayMode[1]))).toArray(new DisplayMode[1]);
+        fullfilter = filterFullscreen(sorted);
+        DisplayMode myMode = findInitialDisplayMode(cfgvalues);
+        super.setDisplayMode(myMode.getWidth(), myMode.getHeight(), myMode.isFullscreenCapable());
+        super.setup();
+        super.start();
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException ex) {
+        }
+    }
+
+    private DisplayMode[] filterFullscreen(DisplayMode[] list) {
+        ArrayList<DisplayMode> bla = new ArrayList<DisplayMode>(list.length);
+        bla.addAll(Arrays.asList(list));
+        for (int i = 0; i < bla.size(); i++) {
+            if (!bla.get(i).isFullscreenCapable()) {
+                bla.remove(i--);
+            }
+        }
+        return bla.toArray(new DisplayMode[1]);
+    }
+
+    private DisplayMode[] filterList(DisplayMode[] list) {
+        ArrayList<DisplayMode> bla = new ArrayList<DisplayMode>(list.length);
+        bla.addAll(Arrays.asList(list));
+        for (int i = 0; i < (bla.size() - 1); i++) {
+            if (bla.get(i).getWidth() == bla.get(i + 1).getWidth() && bla.get(i).getHeight() == bla.get(i + 1).getHeight()) {
+                bla.remove(i--);
+            }
+        }
+        // Möglicherweise ist die Liste ziemlich leer - ein paar Standardauflösungen sollten angeboten werden (wenn auch nur für windowed)
+        boolean add = true;
+        int sx = 1024;
+        int sy = 768;
+        for (int r = 0; r < 8; r++) {
+            for (DisplayMode mode : bla) {
+                if (mode.getWidth() == sx && mode.getHeight() == sy) {
+                    // Ist da, nicht adden
+                    add = false;
+                }
+            }
+            if (add) {
+                bla.add(new DisplayMode(sx, sy));
+            }
+            switch (r) {
+                case 0:
+                    sx = 1280;
+                    sy = 1024;
+                    break;
+                case 1:
+                    sx = 1680;
+                    sy = 1050;
+                    break;
+                case 2:
+                    sx = 800;
+                    sy = 600;
+                    break;
+                case 3:
+                    sx = 1024;
+                    sy = 600;
+                    break;
+                case 4:
+                    sx = 1280;
+                    sy = 800;
+                    break;
+                case 5:
+                    sx = 1024;
+                    sy = 640;
+                    break;
+                case 6:
+                    sx = 940;
+                    sy = 520;
+                    break;
+            }
+            add = true;
+        }
+        return bla.toArray(new DisplayMode[1]);
+    }
+
+    private ArrayList<DisplayMode> sortDisplayModes(DisplayMode[] blub) {
+        ArrayList<DisplayMode> bla = new ArrayList<DisplayMode>(blub.length);
+        bla.addAll(Arrays.asList(blub));
+        Collections.sort(bla, new Comparator<DisplayMode>() {
+
+            @Override
+            public int compare(DisplayMode o1, DisplayMode o2) {
+                // Sortieren (in dieser Reihenfolge (groß zuerst)) nach X Y depth frequenz
+                if (o1.getWidth() < o2.getWidth()) {
+                    return 1;
+                } else if (o1.getWidth() > o2.getWidth()) {
+                    return -1;
+                } else {
+                    // X gleich, Y testen
+                    if (o1.getHeight() < o2.getHeight()) {
+                        return 1;
+                    } else if (o1.getHeight() > o2.getHeight()) {
+                        return -1;
+                    } else {
+                        // Y gleich, depth testen
+                        if (o1.getBitsPerPixel() < o2.getBitsPerPixel()) {
+                            return 1;
+                        } else if (o1.getBitsPerPixel() > o2.getBitsPerPixel()) {
+                            return -1;
+                        } else {
+                            // depth gleich, frequenz testen
+                            if (o1.getFrequency() < o2.getFrequency()) {
+                                return 1;
+                            } else if (o1.getFrequency() > o2.getFrequency()) {
+                                return -1;
+                            } else {
+                                // alles gleich
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        return bla;
     }
 
     /**
@@ -135,11 +269,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         if (!content.saveMode) {
             try {
                 // Ladegrafik lesen
-                content.loading_backblur = new Image("img/game/loading_back_blur.png");
-                content.loading_backnoblur = new Image("img/game/loading_back_noblur.png");
-                content.loading_frontnoblur = new Image("img/game/loading_front_noblur.png");
-                content.loading_frontblur = new Image("img/game/loading_front_blur.png");
-                content.loading_sun_blur = new Image("img/game/loading_sun_blur.png");
+                content.svgimg = new SimpleDiagramRenderer(InkscapeLoader.load("img/game/13ducks.svg"));
 
             } catch (org.newdawn.slick.SlickException ex) {
                 rgi.logger("[Graphics][ERROR]: Can't load loadingscreen!");
@@ -539,7 +669,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 //            rgi.logger("[Graphics][Init][ERROR]: Can't load Huds!");
 //            rgi.logger(ex);
 //        }
-
     }
 
     /**
@@ -1595,13 +1724,13 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 //                }
 //            }, unit.anim.getDieingDuration());
 //        } else {
-            try {
-                content.allListLock.lock();
-                content.allList.remove(unit);
-            } finally {
-                content.allListLock.unlock();
-            }
-       // }
+        try {
+            content.allListLock.lock();
+            content.allList.remove(unit);
+        } finally {
+            content.allListLock.unlock();
+        }
+        // }
     }
 
     public void notifyBuildingDieing(final Building building) {
@@ -1635,14 +1764,14 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 //                }
 //            }, building.anim.getDieingDuration());
 //        } else {
-            try {
-                content.allListLock.lock();
-                content.allList.remove(building);
-            } finally {
-                content.allListLock.unlock();
-            }
-            this.builingsChanged();
-       // }
+        try {
+            content.allListLock.lock();
+            content.allList.remove(building);
+        } finally {
+            content.allListLock.unlock();
+        }
+        this.builingsChanged();
+        // }
 
     }
 
@@ -1763,5 +1892,49 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         //statisticsMod = true;
         content.gameDone = 0;
         System.out.println("AddMe: Start statistic!");
+    }
+
+    /**
+     * Sucht einen Displaymode heraus, mit dem das Hauptmenu startet.
+     * 2 Möglichkeiten:
+     * Wenn in config angegebene und verfügbar, wird dieser verwendet.
+     * Ansonsten wird die bestmögliche Vollbildauflösung genommen.
+     * @param cfgvalues die Settings, hier wird die alte Einstellung rausglesen
+     * @return der DisplayMode, mit dem gestartet werden soll.
+     */
+    private DisplayMode findInitialDisplayMode(HashMap<String, String> cfgvalues) {
+        if (cfgvalues.containsKey("fullscreen")) {
+            boolean fullscreen = "true".equals(cfgvalues.get("fullscreen"));
+            if (cfgvalues.containsKey("DisplayResolutionX") && cfgvalues.containsKey("DisplayResolutionY")) {
+                int tx = Integer.parseInt(cfgvalues.get("DisplayResolutionX").toString());
+                int ty = Integer.parseInt(cfgvalues.get("DisplayResolutionY").toString());
+                if (fullscreen) {
+                    // Vollbild
+                    for (int i = 0; i < fullfilter.length; i++) {
+                        DisplayMode bbb = fullfilter[i];
+                        if (bbb.getWidth() == tx && bbb.getHeight() == ty) {
+                            // Gefunden
+                            return bbb;
+                        }
+                    }
+                } else {
+                    // Fenster
+                    for (int i = 0; i < sorted.length; i++) {
+                        DisplayMode bbb = sorted[i];
+                        if (bbb.getWidth() == tx && bbb.getHeight() == ty) {
+                            // Gefunden
+                            return bbb;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Wenn wir hier hinkommen konnte keine alte Einstellung geladen werden. Dann die erste Fullscreen nehmen (falls vorhanden):
+        if (fullfilter.length > 0) {
+            return fullfilter[0];
+        } else {
+            return new DisplayMode(800, 600);
+        }
     }
 }

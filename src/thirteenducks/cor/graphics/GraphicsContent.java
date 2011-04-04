@@ -35,6 +35,7 @@ import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.opengl.renderer.Renderer;
+import org.newdawn.slick.svg.SimpleDiagramRenderer;
 import thirteenducks.cor.map.AbstractMapElement;
 import thirteenducks.cor.game.Position;
 import thirteenducks.cor.game.Unit;
@@ -154,6 +155,7 @@ public class GraphicsContent extends BasicGame {
     public Image loading_backnoblur_s;
     public Image loading_frontnoblur_s;
     public Image loading_frontblur_s;
+    public SimpleDiagramRenderer svgimg; // 13Ducks logo
     long loadZoom1StartTime = 0;
     long loadZoom2StartTime = 0;
     boolean zoomInGame = false;
@@ -1495,15 +1497,6 @@ public class GraphicsContent extends BasicGame {
 
     @Override
     public void init(GameContainer container) throws SlickException {
-
-        // Fonts initialisieren
-        fonts = new org.newdawn.slick.TrueTypeFont[6];
-        fonts[0] = new TrueTypeFont(java.awt.Font.decode("Mono-10"), false);
-        fonts[1] = new TrueTypeFont(java.awt.Font.decode("Mono-Bold-12"), false);
-        fonts[2] = new TrueTypeFont(java.awt.Font.decode("Mono-Bold-10"), false);
-        fonts[3] = new TrueTypeFont(java.awt.Font.decode("Mono-Italic-10"), false);
-        fonts[4] = new TrueTypeFont(java.awt.Font.decode("Mono-8"), false);
-        fonts[5] = new TrueTypeFont(java.awt.Font.decode("Mono-Bold-30"), false);
 
         parent = (CoreGraphics) container;
         parent.preStart2();
