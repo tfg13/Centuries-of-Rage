@@ -88,6 +88,11 @@ public class Component {
             x2 = x1 + (int) (0.01 * relWidth * m.getWidth());
             y2 = y1 + (int) (0.01 * relHeigth * m.getHeight());
 
+        } else {
+            x1 = 0;
+            y1 = 0;
+            x2 = (int) relWidth;
+            y2 = (int) relHeigth;
         }
         mouseHover = false;
     }

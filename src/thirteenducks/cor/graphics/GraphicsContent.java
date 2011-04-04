@@ -94,7 +94,7 @@ public class GraphicsContent extends BasicGame {
     public static final int OFFSET_3x3_Y = -35;
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
     public GraphicsImage colModeImage;
-    public int modi = 0; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
+    public int modi = -2; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
     AbstractMapElement[][] visMap; // Die angezeigte Map
     public boolean renderCursor = false;
     public boolean renderPicCursor = false; // Cursor, der ein Bild anzeigt, z.B. ein Haus, das gebaut werden soll
@@ -182,7 +182,7 @@ public class GraphicsContent extends BasicGame {
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
-        if (modi == 0) {
+        if (modi == -2) {
             // 13Ducks-Logo
             //g.setColor(Color.green);
             //g.fillRect(10, 10, 10, 10);
@@ -191,6 +191,7 @@ public class GraphicsContent extends BasicGame {
             duckslogo.drawCentered(realPixX / 2, realPixY / 2);
             // Sobald es einmal gezeichnet wurde können wir weiter laden
             initState = 12;
+            modi = 0;
         } else if(modi == -1) {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
@@ -1510,6 +1511,7 @@ public class GraphicsContent extends BasicGame {
         parent.slickReady = true;
         parent.setAlwaysRender(true);
         parent.setVerbose(true);
+        parent.setVSync(true);
     }
 
     @Override

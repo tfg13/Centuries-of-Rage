@@ -26,7 +26,6 @@
 package thirteenducks.cor.mainmenu;
 
 import thirteenducks.cor.mainmenu.components.*;
-import thirteenducks.cor.mainmenu.components.AnimatedImage;
 import java.util.HashMap;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -39,10 +38,6 @@ import thirteenducks.cor.game.server.ServerCore;
  */
 public class MainMenu extends Container {
 
-    /**
-     * Grafikdingens
-     */
-    MainMenuGraphics graphics;
     /**
      * Die einzelnen Menüs
      */
@@ -73,17 +68,6 @@ public class MainMenu extends Container {
          * Komponenten initialisieren:
          */
         initComponents();
-    }
-
-    /**
-     * Setzt die Referenz auf die Grafikkomponente
-     * Wird vom Konstruktor von MainMenuGraphics aufgerufen
-     *
-     * @param g - Referenz auf MAinMenuGraphics
-     */
-    public void setMainMenuGraphics(MainMenuGraphics g) {
-        graphics = g;
-
     }
 
     @Override
@@ -134,15 +118,10 @@ public class MainMenu extends Container {
         /**********************************************************************
          * Hintergrund:
          *********************************************************************/
-        // Animierter Hintergrund:
-        super.addComponent(new AnimatedImage(this, "img/mainmenu/test.png"));
 
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
         super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
-
-        // Mauskoordiaten anzeigen:
-        super.addComponent(new CoordinateView(this));
 
         // Koordinatenanzeige:
         super.addComponent(new CoordinateView(this));
