@@ -135,7 +135,7 @@ public class MainMenu extends Container {
          * Hintergrund:
          *********************************************************************/
         // Animierter Hintergrund:
-        super.addComponent(new AnimatedImage(this, "/img/mainmenu/test.png"));
+        super.addComponent(new AnimatedImage(this, "img/mainmenu/test.png"));
 
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....

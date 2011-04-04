@@ -79,15 +79,16 @@ public class Component {
      * @param relHeigth relative Höhe in %
      */
     public Component(MainMenu m, double relX, double relY, double relWidth, double relHeigth) {
-        mainMenu = m;
+        if (m != null) { // Pfusch-Workaround, das MainMenu selber ist auch ein Container
+            mainMenu = m;
 
-        x1 = (int) (0.01 * relX * m.getWidth());
-        y1 = (int) (0.01 * relY * m.getHeight());
+            x1 = (int) (0.01 * relX * m.getWidth());
+            y1 = (int) (0.01 * relY * m.getHeight());
 
-        x2 = x1 + (int) (0.01 * relWidth * m.getWidth());
-        y2 = y1 + (int) (0.01 * relHeigth * m.getHeight());
+            x2 = x1 + (int) (0.01 * relWidth * m.getWidth());
+            y2 = y1 + (int) (0.01 * relHeigth * m.getHeight());
 
-
+        }
         mouseHover = false;
     }
 
