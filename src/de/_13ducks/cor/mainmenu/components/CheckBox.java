@@ -74,6 +74,13 @@ public abstract class CheckBox extends Component {
         checked = false;
     }
 
+    public CheckBox(MainMenu mainMenuReference, double x, double y) {
+        super(mainMenuReference, x, y, 1, 1);
+        normalImagePath = "/img/mainmenu/nrdy.png";
+        activeImagePath = "/img/mainmenu/rdy.png";
+        checked = false;
+    }
+
     @Override
     public void init(GameContainer c) {
 
