@@ -80,7 +80,7 @@ public class Label extends Component {
 
         // Der Text soll zentriert gerendert werden, also Textlänge berechnen:
         int textWidth = g.getFont().getWidth(labelText);
-        int textHeight = g.getFont().getHeight(labelText);
+        int textHeight = g.getFont().getLineHeight();
 
         int xspace = ((this.getWidth() - textWidth) / 2);
         int yspace = ((this.getHeight() - textHeight) / 2);
