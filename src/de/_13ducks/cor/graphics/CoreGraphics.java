@@ -35,6 +35,8 @@ import java.awt.Dimension;
 import java.awt.Robot;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.lwjgl.LWJGLException;
@@ -123,7 +125,18 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         super.setDisplayMode(myMode.getWidth(), myMode.getHeight(), myMode.isFullscreenCapable());
         content.realPixX = myMode.getWidth();
         content.realPixY = myMode.getHeight();
-        super.start();
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    CoreGraphics.super.start();
+                } catch (SlickException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        t.setName("Graphics");
+        t.start();
     }
 
     private DisplayMode[] filterFullscreen(DisplayMode[] list) {
@@ -310,7 +323,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Das Hauptmenu ist fertig, wir sind mit einem Server verbunden, jetzt durchstarten und das spiel normal weiter laden.
      */
     public void initGame() {
+        content.initState = 1;
     }
+
 
     /**
      * Initialisiert das Inputsystem für das Hauptmenue
