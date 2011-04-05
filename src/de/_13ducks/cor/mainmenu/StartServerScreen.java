@@ -86,7 +86,7 @@ public class StartServerScreen extends Container {
                 // @TODO: Server Starten und selber joinen
 
                 boolean debug = myCheckBox.isChecked();
-                String map = "/map/main/" + myTextBox.getText();
+                String map = "/map/" + myTextBox.getText();
 
                 super.getMainMenu().startServer(debug, map);
                 super.getMainMenu().joinServer("localhost");
