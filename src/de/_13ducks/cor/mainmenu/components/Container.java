@@ -80,14 +80,29 @@ public class Container extends Component {
         this.components.add(component);
     }
 
+    /**
+     * entfernt eine Komponente zur Laufzeit
+     * @param component - die zu entfernende Komponente
+     */
+    public void removeComponent(Component component) {
+        active = false;
+
+        try {
+            components.remove(component);
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to remove Component! Errormessage: " + ex.getMessage());
+        }
+
+        active = true;
+    }
 
     /**
      * Gibt die Komponentenliste dieses Containers zurück
      */
-    public ArrayList<Component> getComponents()
-    {
+    public ArrayList<Component> getComponents() {
         return this.components;
     }
+
     /**
      * Gibt die Komponente mit dem entsprechenden Namen zurück, WENN es eine gibt
      * @param name - der Name der gesuchten Komponente
