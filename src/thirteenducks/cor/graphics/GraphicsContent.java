@@ -1534,6 +1534,8 @@ public class GraphicsContent extends BasicGame {
             parent.loadPreMain();
             System.out.println("Initialising menu...");
             parent.initMainMenu();
+            System.out.println("Initialising input...");
+            parent.initInput();
             System.out.println("Initialisation done.");
             initState = 13;
         } else if (initState == 13) {

@@ -303,6 +303,69 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         mainmenu.init(this);
     }
 
+    /**
+     * Initialisiert das Inputsystem für das Hauptmenue
+     */
+    void initInput() {
+        input.addMouseListener(new MouseListener() {
+
+            public void mouseWheelMoved(int i) {
+            }
+
+            public void mouseClicked(int i, int i1, int i2, int i3) {
+                mainmenu.mouseClicked(i, i1, i2, i3);
+            }
+
+            public void mousePressed(int i, int i1, int i2) {
+            }
+
+            public void mouseReleased(int i, int i1, int i2) {
+            }
+
+            public void mouseMoved(int i, int i1, int i2, int i3) {
+            }
+
+            public void mouseDragged(int i, int i1, int i2, int i3) {
+            }
+
+            public void setInput(Input input) {
+            }
+
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            public void inputEnded() {
+            }
+
+            public void inputStarted() {
+            }
+        });
+
+        input.addKeyListener(new KeyListener() {
+
+            public void keyPressed(int i, char c) {
+                mainmenu.keyPressed(i, c);
+            }
+
+            public void keyReleased(int i, char c) {
+            }
+
+            public void setInput(Input input) {
+            }
+
+            public boolean isAcceptingInput() {
+                return true;
+            }
+
+            public void inputEnded() {
+            }
+
+            public void inputStarted() {
+            }
+        });
+    }
+
     public void initModule() {
         this.setLoadStatus(4);
         // Init-Code
