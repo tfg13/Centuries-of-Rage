@@ -129,7 +129,6 @@ public class GraphicsContent extends BasicGame {
     public int mouseY;                                         // Die Position der Maus, muss geupdatet werden
     int lastHovMouseX;
     int lastHovMouseY;
-    TrueTypeFont[] fonts;                                       // Die Fonts, die häufig benötigt werden
     public boolean pauseMode = false;                          // Pause-Modus
     Color fowGray = new Color(0.0f, 0.0f, 0.0f, 0.4f);
     long pause;                                         // Zeitpunkt der letzen Pause
@@ -259,7 +258,7 @@ public class GraphicsContent extends BasicGame {
                     renderPause(g);
                 }
                 g.setColor(Color.darkGray);
-                g.setFont(fonts[0]);
+                g.setFont(FontManager.getFont0());
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
                 g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, 2);
                 if (serverColMode) {
@@ -279,7 +278,7 @@ public class GraphicsContent extends BasicGame {
                             g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_spec.png").getImage() : imgMap.get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                         } else {
                             g.setColor(Color.black);
-                            g.setFont(fonts[5]);
+                            g.setFont(FontManager.getFont0());
                             g.drawString("DEFEAT", 10, realPixY - 40);
                         }
                     } else if (gameDone == 2) {
@@ -608,7 +607,7 @@ public class GraphicsContent extends BasicGame {
                     break;
             }
         }
-        g2.setFont(fonts[0]);
+        g2.setFont(FontManager.getFont0());
         g2.drawString(status, lx, (int) (ly + (dy * 1.5)));
         // Error - Status
 
@@ -625,37 +624,11 @@ public class GraphicsContent extends BasicGame {
             g2.drawRect(ex, ey, edx, edy);
             g2.drawRect(ex + 2, ey + 2, edx - 4, edy - 4);
             // Allgemeine Überschrift:
-            g2.setFont(fonts[5]);
+            g2.setFont(FontManager.getFont0());
             g2.setAntiAlias(false);
-            g2.drawString("ERROR! - SORRY!", ex + (edx / 2) - (fonts[5].getWidth("ERROR! - SORRY!") / 2), (float) (ey * 1.05));
-            // Trennlinie drunter:
-            g2.setColor(Color.black);
-            g2.drawLine(ex + 2, (float) (ey * 1.3), ex + edx - 2, (float) (ey * 1.3));
-            g2.setFont(fonts[2]);
-            g2.drawString("An error occured:", ex + 5, (float) (ey * 1.3) + 2);
-            g2.setFont(fonts[1]);
-            switch (lEtype) {
-                case 1:
-                    g2.drawString("Can't load the map!", ex + (edx / 2) - (fonts[1].getWidth("Can't load the map!") / 2), (float) (ey * 1.3) + 14);
-                    g2.setFont(fonts[3]);
-                    g2.drawString("Possible reason:", ex + 5, (float) (ey * 1.5));
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Server tries to load a file that does not exist", ex + 20, (float) (ey * 1.5) + 15);
-                    g2.drawString("Server tries to load a file that is not a valid CoR-Map and/or corrupted", ex + 20, (float) (ey * 1.5) + 27);
-                    g2.drawString("Server tries to load a map that was created with an older version of CoR", ex + 20, (float) (ey * 1.5) + 39);
-                    g2.drawString("Server can't transfer the map to this client (very unlikely)", ex + 20, (float) (ey * 1.5) + 51);
-                    g2.drawString("Version mismatch - Server and Client aren't at the same version", ex + 20, (float) (ey * 1.5) + 63);
-                    g2.setFont(fonts[3]);
-                    g2.drawString("What you could do:", ex + 5, (float) (ey * 2.4));
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Create a new Map on the Server-PC (use the RandomMapBuilder)", ex + 20, (float) (ey * 2.4) + 15);
-                    g2.drawString("Make sure everyone uses the same version - redownload the newest", ex + 20, (float) (ey * 2.4) + 27);
-                    g2.drawString("Enter the correct path when starting the Server (or use last random-map)", ex + 20, (float) (ey * 2.4) + 39);
-                    break;
-            }
+            g2.drawString("ERROR! - SORRY!", ex + (edx / 2) - (FontManager.getFont0().getWidth("ERROR! - SORRY!") / 2), (float) (ey * 1.05));
             g2.drawLine(ex + 2, (float) (ey + (edy * 0.9)), ex + edx - 2, (float) (ey + (edy * 0.9)));
-            g2.setFont(fonts[2]);
-            g2.drawString("Click here or press ENTER to quit", ex + (edx / 2) - (fonts[2].getWidth("Click here or press ENTER to quit") / 2), (float) (ey + (edy * 0.95) - 6));
+            g2.drawString("Click here or press ENTER to quit", ex + (edx / 2) - (FontManager.getFont0().getWidth("Click here or press ENTER to quit") / 2), (float) (ey + (edy * 0.95) - 6));
         }
     }
 
@@ -731,7 +704,7 @@ public class GraphicsContent extends BasicGame {
         g2.setColor(Color.lightGray);
         g2.fillRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
         g2.setColor(Color.black);
-        g2.setFont(fonts[5]);
+        g2.setFont(FontManager.getFont0());
         g2.drawString("P A U S E", realPixX / 2 - 80, realPixY / 2 - 60);
         g2.drawRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
     }
@@ -1445,6 +1418,7 @@ public class GraphicsContent extends BasicGame {
             // Hauptmenu
             parent.renderMainMenu(container, g);
         } else if (initState == 1) {
+            modi = -1;
             // Logo setzen
             String[] ab = {"img/game/logo_128x128.png", "img/game/logo_32x32.png", "img/game/logo_16x16.png"};
             try {
