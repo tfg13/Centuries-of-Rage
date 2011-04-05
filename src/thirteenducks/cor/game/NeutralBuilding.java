@@ -160,5 +160,12 @@ public class NeutralBuilding extends Building {
     public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+	g.setLineWidth(2);
+	g.setColor(Color.gray);
+	g.drawRect(x, y, 5, 5);
+    }
 }
 

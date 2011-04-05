@@ -302,5 +302,10 @@ public class Bullet implements Pauseable, Sprite {
         return 0;
     }
 
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+	// Bullets werden nicht auf Minimapp gezeichnet
+    }
+
 
 }
