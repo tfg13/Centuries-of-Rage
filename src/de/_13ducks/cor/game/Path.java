@@ -534,7 +534,7 @@ public class Path implements Pauseable, Serializable {
      * @param readInt
      * @param readPosition
      */
-    public void quickStop(int readInt, Position readPosition, Unit unit) {
+    public synchronized void quickStop(int readInt, Position readPosition, Unit unit) {
         //  if (isMoving()) {
         // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
         // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
@@ -543,13 +543,10 @@ public class Path implements Pauseable, Serializable {
         // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
         // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
         System.out.println("WARN: Pfusch in moveSTOP!");
-        if (!unit.getMainPosition().equals(readPosition)) {
-            unit.setMainPosition(readPosition);
-            targetPos = null;
-            path = null;
-            moving = false;
-            return;
-        }
+        unit.setMainPosition(readPosition);
+        targetPos = null;
+        path = null;
+        moving = false;
         //}
     }
 
