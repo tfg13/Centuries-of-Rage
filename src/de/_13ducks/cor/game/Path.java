@@ -501,6 +501,7 @@ public class Path implements Pauseable, Serializable {
                     path.add(path.get(path.size() - 1));
                     manualMod = true;
                     // Client mitteilen
+                    System.out.println("Setting " + unit + " to " + target + " (bkw)");
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
                 }
             } else {
@@ -513,6 +514,7 @@ public class Path implements Pauseable, Serializable {
                     path = path.subList(0, lastWayPoint + 1);
                     manualMod = true;
                     // Client mitteilen
+                    System.out.println("Setting " + unit + " to " + target + " (fwd)");
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint + 1, target.getX(), target.getY()));
                 }
             }

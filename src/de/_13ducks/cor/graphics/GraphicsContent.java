@@ -861,6 +861,9 @@ public class GraphicsContent extends BasicGame {
                             imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                     }
+                    if (rgi.mapModule.serverRes[x + positionX][y + positionY] > System.currentTimeMillis()) {
+                        imgMap.get("img/game/highlight_bluecross.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                    }
                 } catch (Exception ex) {
                 }
             }

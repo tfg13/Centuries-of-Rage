@@ -116,6 +116,24 @@ public abstract class Core {
             System.exit(errorlevel);
         }
 
+        public byte[] packetFactory(byte cmdid, int data, int data2, long long3) {
+            byte[] r = new byte[17];
+            r[0] = cmdid;
+            for (int i = 0; i < 4; i++) {
+                int shift = i << 3; // i * 8
+                r[4 - i] = (byte) ((data & (0xff << shift)) >>> shift);
+            }
+            for (int i = 0; i < 4; i++) {
+                int shift = i << 3; // i * 8
+                r[8 - i] = (byte) ((data2 & (0xff << shift)) >>> shift);
+            }
+            for (int i = 0; i < 8; i++) {
+                int shift = i << 3; // i * 8
+                r[16 - i] = (byte) ((long3 & (0xff << shift)) >>> shift);
+            }
+            return r;
+        }
+
         public byte[] packetFactory(byte cmdid, int data, int data2, int data3, int data4) {
             byte[] r = new byte[17];
             r[0] = cmdid;
@@ -162,12 +180,24 @@ public abstract class Core {
 
         public int readInt(byte[] b, int number) {
             if (b.length != 17 || b[0] == 0) {
-                System.out.println("ERROR: Packetsyntax mismatch! (int1)");
+                System.out.println("ERROR: Packetsyntax mismatch! (int)");
                 return 0;
             }
             int retval = 0;
             for (int i = 0; i < 4; ++i) {
                 retval |= (b[(number * 4) - i] & 0xff) << (i << 3);
+            }
+            return retval;
+        }
+
+        public long readLong(byte[] b, int number) {
+            if (b.length != 17 || b[0] == 0) {
+                System.out.println("ERROR: Packetsyntax mismatch! (long)");
+                return 0;
+            }
+            int retval = 0;
+            for (int i = 0; i < 8; ++i) {
+                retval |= (b[(number * 8) - i] & 0xff) << (i << 3);
             }
             return retval;
         }
