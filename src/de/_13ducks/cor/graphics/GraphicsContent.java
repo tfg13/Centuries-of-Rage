@@ -178,7 +178,7 @@ public class GraphicsContent extends BasicGame {
             // Sobald es einmal gezeichnet wurde können wir weiter laden
             initState = 12;
             modi = 0;
-        } else if(modi == -1) {
+        } else if (modi == -1) {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
         } else if (modi == 3) {
@@ -311,7 +311,6 @@ public class GraphicsContent extends BasicGame {
             public int compare(Sprite o1, Sprite o2) {
                 return o1.getSortPosition().getY() - o2.getSortPosition().getY();
             }
-
         });
         for (int i = 0; i < allList.size(); i++) {
             Sprite sprite = allList.get(i);
@@ -853,13 +852,13 @@ public class GraphicsContent extends BasicGame {
                     int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
                     switch (val) {
                         case 1:
-                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 2:
-                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 3:
-                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                     }
                 } catch (Exception ex) {
@@ -879,9 +878,9 @@ public class GraphicsContent extends BasicGame {
             g2.drawLine((int) i * FIELD_HALF_X + 28, 0, 0, (int) (i * FIELD_HALF_Y + 21));
         }
 
-        for (int i = 0; i < viewY; i+= 2) {
+        for (int i = 0; i < viewY; i += 2) {
             // Linie von der Linken Kante nach Rechts Unten
-             g2.drawLine(0,(int) (i * FIELD_HALF_Y) - 1, (viewY - 1 - i) * FIELD_HALF_X + 42, (int) ((viewY * FIELD_HALF_Y) + 22.5));
+            g2.drawLine(0, (int) (i * FIELD_HALF_Y) - 1, (viewY - 1 - i) * FIELD_HALF_X + 42, (int) ((viewY * FIELD_HALF_Y) + 22.5));
         }
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
@@ -1418,6 +1417,7 @@ public class GraphicsContent extends BasicGame {
             // Hauptmenu
             parent.renderMainMenu(container, g);
         } else if (initState == 1) {
+            setVisibleArea((realPixX / FIELD_HALF_X), (int) (realPixY / FIELD_HALF_Y));
             modi = -1;
             // Logo setzen
             String[] ab = {"img/game/logo_128x128.png", "img/game/logo_32x32.png", "img/game/logo_16x16.png"};
@@ -1454,6 +1454,8 @@ public class GraphicsContent extends BasicGame {
                 parent.setTargetFrameRate(framerate);
             }
             initState = 0;
+            // LOAD abgeschlossen, dem Server mitteilen
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 7, 0, 0, 0, 0));
         } else if (initState == 3) {
             parent.startRendering();
             initState = 0;
@@ -1461,7 +1463,7 @@ public class GraphicsContent extends BasicGame {
             // FinalPrepare
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
-	    minimap.setAllList(allList);
+            minimap.setAllList(allList);
             overlays.add(minimap);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();

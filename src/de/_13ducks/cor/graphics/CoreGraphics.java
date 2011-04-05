@@ -323,7 +323,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Das Hauptmenu ist fertig, wir sind mit einem Server verbunden, jetzt durchstarten und das spiel normal weiter laden.
      */
     public void initGame() {
-        content.initState = 1;
+
     }
 
 
@@ -551,8 +551,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         //readAnimations();
         rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
         this.triggerStatusWaiting();
-        // LOAD abgeschlossen, dem Server mitteilen
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 7, 0, 0, 0, 0));
 
     }
 

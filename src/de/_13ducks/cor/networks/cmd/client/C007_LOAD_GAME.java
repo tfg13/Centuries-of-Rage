@@ -36,6 +36,8 @@ public class C007_LOAD_GAME extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
+        rgi.setDebug(rgi.readInt(data, 1) == 1);
+
         // Lobby verbergen
         rgi.netctrl.lobby.hideLobby();
 
