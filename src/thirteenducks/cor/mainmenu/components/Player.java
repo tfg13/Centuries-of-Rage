@@ -61,7 +61,7 @@ public class Player extends Container {
 
         super.addComponent(new Frame(m, (float) x, (float) y, 43.5f, 6.0f));
 
-        nameLabel = new Label(m, (float) x + 1, (float) y + 1, 10, 8, name, Color.black);
+        nameLabel = new Label(m, (float) x, (float) y, 10, 8, name, Color.black);
         super.addComponent(nameLabel);
 
         super.addComponent(new CheckBox(m, (int) x + 30, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
