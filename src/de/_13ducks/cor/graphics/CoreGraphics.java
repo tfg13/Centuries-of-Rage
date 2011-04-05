@@ -29,6 +29,7 @@ import de._13ducks.cor.game.Bullet;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Robot;
@@ -303,6 +304,12 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     void initMainMenu() {
         mainmenu = new MainMenu(content.realPixX, content.realPixY, core);
         mainmenu.init(this);
+    }
+
+    /**
+     * Das Hauptmenu ist fertig, wir sind mit einem Server verbunden, jetzt durchstarten und das spiel normal weiter laden.
+     */
+    public void initGame() {
     }
 
     /**
@@ -2027,5 +2034,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         } else {
             return new DisplayMode(800, 600);
         }
+    }
+
+    public void setInner(InnerClient rgi) {
+        this.rgi = rgi;
     }
 }

@@ -198,6 +198,7 @@ public class ClientCore extends Core {
         cchat = new ClientChat(rgi);
         cs = new ClientStatistics(rgi);
         rgi.initInner();
+        rGraphics.setInner(rgi);
         System.out.println("Pre-setup complete, connecting...");
         if (netController.connectTo(adr, port)) {
             lobby.initlobby(netController, rgi);
