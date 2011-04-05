@@ -73,7 +73,7 @@ public class StartServerScreen extends Container {
 
         // MapWahl-Textbox (provisorisch)
         myTextBox = new TextBox(super.getMainMenu(), 32, 32);
-        myTextBox.setText("Randommap.map");
+        myTextBox.setText("Random Map.map");
         super.addComponent(myTextBox);
 
         // Der Start-Button
