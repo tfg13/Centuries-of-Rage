@@ -89,6 +89,13 @@ public class MainMenu extends Container {
     }
 
     @Override
+    public void mouseMoved(int x, int y) {
+        for (Component c : super.getComponents()) {
+            c.mouseMoved(x, y);
+        }
+    }
+
+    @Override
     /**
      * Wird bei Mausklicks aufgerufen
      */
@@ -118,7 +125,6 @@ public class MainMenu extends Container {
         /**********************************************************************
          * Hintergrund:
          *********************************************************************/
-
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
         super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
