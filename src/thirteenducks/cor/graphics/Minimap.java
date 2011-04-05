@@ -30,7 +30,6 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import thirteenducks.cor.game.client.AIClientCore.InnerClient;
 import thirteenducks.cor.game.client.ClientCore;
 import thirteenducks.cor.graphics.input.OverlayMouseListener;
 import thirteenducks.cor.map.AbstractMapElement;
