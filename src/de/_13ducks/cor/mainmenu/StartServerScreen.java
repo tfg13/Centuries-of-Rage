@@ -77,7 +77,7 @@ public class StartServerScreen extends Container {
         super.addComponent(myTextBox);
 
         // Der Start-Button
-        super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "/img/mainmenu/buttonnew.png", "Start Server") {
+        super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "img/mainmenu/buttonnew.png", "Start Server") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -86,7 +86,7 @@ public class StartServerScreen extends Container {
                 // @TODO: Server Starten und selber joinen
 
                 boolean debug = myCheckBox.isChecked();
-                String map = "/map/" + myTextBox.getText();
+                String map = "map/" + myTextBox.getText();
 
                 super.getMainMenu().startServer(debug, map);
                 super.getMainMenu().joinServer("localhost");
