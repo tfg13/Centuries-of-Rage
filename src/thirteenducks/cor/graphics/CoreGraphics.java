@@ -323,6 +323,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             }
 
             public void mouseMoved(int i, int i1, int i2, int i3) {
+                mainmenu.mouseMoved(i2, i3);
             }
 
             public void mouseDragged(int i, int i1, int i2, int i3) {
