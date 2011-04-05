@@ -182,14 +182,30 @@ public class ClientCore extends Core {
 
 
     } */
-
     /**
      * Wird vom Hauptmenu aufgerufen, wenn zu einem Server connected werden soll.
      */
-    public void joinServer(String playername, InetAddress adr, int port) {
+    public boolean joinServer(String playername, InetAddress adr, int port) {
+        System.out.println("Try joining server: " + adr + " port " + port);
         this.playername = playername;
         lobby = new Lobby();
         rgi = new InnerClient(playername);
+        gamectrl = new ClientGameController(rgi);
+        initLogger();
+        lobby.setVisible(true);
+        netController = new ClientNetController(rgi, lobby);
+        mapMod = new ClientMapModule(rgi);
+        cchat = new ClientChat(rgi);
+        cs = new ClientStatistics(rgi);
+        rgi.initInner();
+        System.out.println("Pre-setup complete, connecting...");
+        if (netController.connectTo(adr, port)) {
+            lobby.initlobby(netController, rgi);
+            return true;
+        } else {
+            lobby.dispose();
+            return false;
+        }
     }
 
     @Override
