@@ -544,9 +544,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public void setLoadStatus(int status) {
         content.loadStatus = status;
         content.loadWait = false;
-        if (status == 5) {
-            content.loadZoom1StartTime = System.currentTimeMillis();
-        }
         if (status > 2 && Thread.currentThread().equals(slickGraphics)) {
             content.paintComponent(this.getGraphics());
             Renderer.get().flush();
@@ -1656,8 +1653,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
         starttime = new Date().getTime();
         seenPause = false;
-        content.loadZoom2StartTime = System.currentTimeMillis();
-        content.zoomInGame = true; // Ein epischer - live-ins-Spiel-spring-Effekt
     }
 
     public void jumpTo(int scrollX, int scrollY) {

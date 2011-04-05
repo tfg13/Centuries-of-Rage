@@ -145,20 +145,7 @@ public class GraphicsContent extends BasicGame {
     public boolean fowDisabled = false;
     public int loadStatus = 0;
     public boolean loadWait = false;
-    public Image loading_backblur;                          // Ladebild
-    public Image loading_backnoblur;
-    public Image loading_frontnoblur;
-    public Image loading_frontblur;
-    public Image loading_sun_blur;
-    public Image loading_backblur_s;                          // Ladebild
-    public Image loading_backnoblur_s;
-    public Image loading_frontnoblur_s;
-    public Image loading_frontblur_s;
     public Image duckslogo;
-    long loadZoom1StartTime = 0;
-    long loadZoom2StartTime = 0;
-    boolean zoomInGame = false;
-    boolean loadScaled = false;
     public int imgLoadCount = 0;
     public int imgLoadTotal = 0;
     CoreGraphics parent;
@@ -302,11 +289,6 @@ public class GraphicsContent extends BasicGame {
                         // VICTORY
                         g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_victory_gameover.png").getImage() : imgMap.get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     }
-                }
-
-                // Epischer ZoomEffekt?
-                if (zoomInGame) {
-                    renderLoadScreen(g);
                 }
 
             } catch (Exception ex) {
@@ -559,91 +541,12 @@ public class GraphicsContent extends BasicGame {
             parent.setTargetFrameRate(25);
             launchScreenGrayed = true;
         }
-        // Ladebild
-        if (loading_backblur != null) {
-            // Auf Höhe skalieren
-            float scale = 1.0f * realPixY / loading_backblur.getHeight();
-            // Seitenverhältnis beibehalten
-            int xSize = (int) (1.0 * loading_backblur.getWidth() * scale);
-            int ySize = (int) (1.0 * loading_backblur.getHeight() * scale);
-            // Mittig anzeigen
-            int xOffset = (xSize - realPixX) / 2;
-            // Bereits skaliert?
-            if (!loadScaled) {
-                loadScaled = true;
-                loading_backblur_s = loading_backblur.getScaledCopy(scale);
-                loading_backnoblur_s = loading_backnoblur.getScaledCopy(scale);
-                loading_frontblur_s = loading_frontblur.getScaledCopy(scale);
-                loading_frontnoblur_s = loading_frontnoblur.getScaledCopy(scale);
-                loading_sun_blur = loading_sun_blur.getScaledCopy(scale);
-            }
-            // Sonne immer:
-            if (loadStatus < 10) {
-                g2.drawImage(loading_sun_blur, 0 - xOffset, 0);
-                if (loadStatus < 5) { // Voll vorne
-                    g2.drawImage(loading_backblur_s, 0 - xOffset, 0);
-                    g2.drawImage(loading_frontnoblur_s, 0 - xOffset, 0);
-                } else if (loadZoom1StartTime == 0 || (System.currentTimeMillis() - loadZoom1StartTime) > 1000) { // Ganz hinten
-                    loading_backnoblur.getSubImage(180, 216, 1700, 893).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                    loading_frontblur.getSubImage(180, 216, 1700, 893).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                } else {
-                    // Jetzt wird spannend! Hier ist der epische Zoom-Effekt Nr1
-                    int time = (int) (System.currentTimeMillis() - loadZoom1StartTime);
-                    // Logistisches Wachstum über 1 Sekunde (0-1000), Werte von 0 bis 1. k = 0.0049
-                    float perc = (float) (1.0f * (2 / (1 + Math.pow(Math.E, -0.0049 * 2 * (time - 500)))) / 2);
-
-                    // Blende-Farben
-                    Color fadeOut = new Color(1f, 1f, 1f, 1 - perc);
-                    Color fadeIn = new Color(1f, 1f, 1f, perc);
-                    // Zoom-Koordinaten:
-                    int px = (int) (180 * perc);
-                    int py = (int) (216 * perc);
-                    int sx = (int) (loading_backnoblur.getWidth() - ((loading_backnoblur.getWidth() - 1700) * perc));
-                    int sy = (int) (loading_backnoblur.getHeight() - ((loading_backnoblur.getHeight() - 893) * perc));
-                    // Reienfolge: HS-HB-VS-VB
-
-                    loading_backnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                    loading_backblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                    loading_frontnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                    loading_frontblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeIn);
-                }
-            } else {
-                // Episches - Ins-Game zoomen
-                // Geschwindigkeit fürs Ausblenden
-                float perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-                if (perc > 1) {
-                    // Fertig!
-                    zoomInGame = false;
-                }
-                Color fadeOut = new Color(1f, 1f, 1f, 1 - perc);
-
-                // Schneller zoomen
-                perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-                if (perc > 1) {
-                    perc = 1;
-                }
-                int px = (int) (180 + 870 * perc);
-                int py = (int) (216 + 388 * perc);
-                int sx = (int) (1700 - ((1700 - 1) * perc));
-                int sy = (int) (893 - ((893 - 1) * perc));
-                // Blende-Farben
-
-                g2.drawImage(loading_sun_blur, 0 - xOffset, 0, fadeOut);
-                loading_backnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                loading_frontblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-            }
-        }
 
         // Ladebalken zeigen
         int lx = realPixX / 4;      // Startposition des Balkens
         int ly = realPixY / 50;
         int dx = realPixX / 2;      // Länge des Balkens
         int dy = realPixY / 32;
-        if (loadStatus == 10) {
-            // Rausziehen
-            float perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-            ly = (int) ((realPixY / 50) - (ly * 60 * perc));
-        }
         g2.setColor(new Color(0, 0, 0, 0.8f));
         // Rahmen ziehen
         g2.drawRect(lx - 2, ly - 2, dx + 3, dy + 3);
