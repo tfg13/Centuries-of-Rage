@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.Frame;
 import de._13ducks.cor.mainmenu.components.Player;
-import de._13ducks.cor.mainmenu.components.ScaledImage;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 
 /**
@@ -70,21 +69,14 @@ public class LobbyScreen extends Container {
         super.addComponent(new Frame(m, 10, 75, 45, 15));
 
 
-
-        // Die Spielerplätze:
-        super.addComponent(new Player(m, 11, 11));
-        super.addComponent(new Player(m, 11, 18));
-        super.addComponent(new Player(m, 11, 25));
-        super.addComponent(new Player(m, 11, 32));
-        super.addComponent(new Player(m, 11, 39));
-
+       
     }
 
     /**
      * Fügt einne neuen Spieler hinzu
      * @param name - der Name des neuen Spielers
      */
-    public void addPlayer(String name) {
+    public void addPlayer() {
     }
 
     /**
