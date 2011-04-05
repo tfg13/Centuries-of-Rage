@@ -28,6 +28,7 @@ package de._13ducks.cor.mainmenu;
 import java.util.ArrayList;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.Frame;
+import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.Player;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 
@@ -68,22 +69,51 @@ public class LobbyScreen extends Container {
         // Chat:
         super.addComponent(new Frame(m, 10, 75, 45, 15));
 
+        super.addComponent(new ImageButton(m, 40, 40, 13, 6, "img/mainmenu/buttonnew.png", "REMOVE") {
 
-       
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                removePlayer("John");
+            }
+        });
+
+
+        addPlayer("John");
+    }
+
+    /**
+     * Gibt den Spieler mit dem angegebenen Namen zurück, wenn es einen gibt.
+     * @param name - der Name des gesuchten Spielers
+     * @return - das Player-Objekt
+     */
+    private Player getPlayer(String name) {
+        for (Player p : players) {
+            if (p.getPlayerName().equals(name)) {
+                return p;
+            }
+        }
+        System.out.print("Player" + name + " not found!");
+        return null;
     }
 
     /**
      * Fügt einne neuen Spieler hinzu
      * @param name - der Name des neuen Spielers
      */
-    public void addPlayer() {
+    public void addPlayer(String name) {
+        Player p = new Player(this.getMainMenu(), 11, 11 + ((Player.playerSlotHeight + 2) * players.size()), name);
+
+        players.add(p);
+
+        super.addComponent(p);
     }
 
     /**
      * Entfernt einen Spieler aus der Lobby (z.B. kick, leave oder timeout)
      * @param name_t - der Name der zu entfernenden Spielers
      */
-    public void removePlayer(String name_t) {
+    public void removePlayer(String name) {
+        super.removeComponent(getPlayer(name));
     }
 
     /**
@@ -113,10 +143,11 @@ public class LobbyScreen extends Container {
 
     /**
      * Ändert den Status des Spielers (Bereit oder nicht bereit)
-     * @param name_t - der NAme des Spielers
+     * @param name  - der Name des Spielers
      * @param ready - der neue Status
      */
-    public void changePlayerStatus(String name_t, boolean ready) {
+    public void changePlayerStatus(String name, boolean ready) {
+        getPlayer(name).setReady(ready);
     }
 
     /**
