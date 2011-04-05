@@ -36,6 +36,10 @@ import de._13ducks.cor.mainmenu.MainMenu;
 public class Player extends Container {
 
     /**
+     * Die Höhe eines Spielerplatzes
+     */
+    public static int playerSlotHeight = 6;
+    /**
      * Ist der Spieler bereit?
      */
     private boolean ready;
@@ -52,16 +56,16 @@ public class Player extends Container {
      * Konstruktor
      * erzeugt einen "leeren" Spieler
      */
-    public Player(MainMenu m, double x, double y) {
-        super(m, x, y, 35, 6);
+    public Player(MainMenu m, double x, double y, String name) {
+        super(m, x, y, 35, playerSlotHeight);
         ready = false;
-        name = "";
+        this.name = name;
         super.fadeIn();
 
 
         super.addComponent(new Frame(m, (float) x, (float) y, 43.5f, 6.0f));
 
-        nameLabel = new Label(m, (float) x, (float) y, 10, 8, name, Color.black);
+        nameLabel = new Label(m, (float) x, (float) y, 10, 6, name, Color.black);
         super.addComponent(nameLabel);
 
         super.addComponent(new CheckBox(m, (int) x + 30, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
@@ -101,5 +105,13 @@ public class Player extends Container {
      */
     public boolean isReady() {
         return this.ready;
+    }
+
+    /**
+     * Setter für ready
+     * @param ready - true, wenn der spieler bereit sein soll, false wen nnicht
+     */
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }
