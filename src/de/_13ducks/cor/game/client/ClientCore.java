@@ -36,6 +36,7 @@ import de._13ducks.cor.game.Core;
 import de._13ducks.cor.graphics.CoreGraphics;
 import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.sound.SoundModule;
+import java.net.InetAddress;
 
 /**
  * Der Client-Core
@@ -71,7 +72,7 @@ public class ClientCore extends Core {
         System.out.println("Debug is: " + (debugmode ? "ON" : "OFF"));
         System.out.println("Loading graphics...");
         try {
-            rGraphics = new CoreGraphics(cfgvalues);
+            rGraphics = new CoreGraphics(cfgvalues, this);
         } catch (Exception ex) {
             System.out.println("ERROR! Details:");
             ex.printStackTrace();
@@ -181,6 +182,16 @@ public class ClientCore extends Core {
 
 
     } */
+
+    /**
+     * Wird vom Hauptmenu aufgerufen, wenn zu einem Server connected werden soll.
+     */
+    public void joinServer(String playername, InetAddress adr, int port) {
+        this.playername = playername;
+        lobby = new Lobby();
+        rgi = new InnerClient(playername);
+    }
+
     @Override
     public void initLogger() {
         // Erstellt ein neues Logfile
@@ -264,15 +275,13 @@ public class ClientCore extends Core {
         //RogGameLogic rogGameLogic;
         public SoundModule rogSound;
         public String lastlog = "";
-        public boolean isAIClient;
         public TeamSelector teamSel;
 
         public InnerClient() {
         }
 
-        private InnerClient(String playername_t, boolean ai) {
+        private InnerClient(String playername_t) {
             playername = playername_t;
-            isAIClient = ai;
         }
 
         @Override

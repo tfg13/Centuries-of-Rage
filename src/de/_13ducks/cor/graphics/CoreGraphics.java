@@ -53,6 +53,7 @@ import de._13ducks.cor.map.AbstractMapElement;
  */
 public class CoreGraphics extends AppGameContainer implements Pauseable {
 
+    private ClientCore core;
     ClientCore.InnerClient rgi;
     public GraphicsContent content;
     Dimension displaySize;
@@ -108,9 +109,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
     }
 
-    public CoreGraphics(HashMap<String, String> cfgvalues) throws SlickException, LWJGLException {
+    public CoreGraphics(HashMap<String, String> cfgvalues, ClientCore core) throws SlickException, LWJGLException {
         super(new GraphicsContent());
         content = (GraphicsContent) super.game;
+        this.core = core;
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
         // Bildgröße konfigurieren
         modi = Display.getAvailableDisplayModes();
@@ -299,7 +301,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Initialisiert das Hauptmenu
      */
     void initMainMenu() {
-        mainmenu = new MainMenu(content.realPixX, content.realPixY);
+        mainmenu = new MainMenu(content.realPixX, content.realPixY, core);
         mainmenu.init(this);
     }
 
