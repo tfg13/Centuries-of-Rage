@@ -535,17 +535,22 @@ public class Path implements Pauseable, Serializable {
      * @param readPosition
      */
     public void quickStop(int readInt, Position readPosition, Unit unit) {
-        if (isMoving()) {
-            // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
-            // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
-            // Wenn wir schon danach sind zurück gehen 
-        } else {
-            // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
-            // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
-            if (!unit.getMainPosition().equals(readPosition)) {
-                unit.setMainPosition(readPosition);
-            }
+        //  if (isMoving()) {
+        // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
+        // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
+        // Wenn wir schon danach sind zurück gehen
+        //} else {
+        // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
+        // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
+        System.out.println("WARN: Pfusch in moveSTOP!");
+        if (!unit.getMainPosition().equals(readPosition)) {
+            unit.setMainPosition(readPosition);
+            targetPos = null;
+            path = null;
+            moving = false;
+            return;
         }
+        //}
     }
 
     /**
