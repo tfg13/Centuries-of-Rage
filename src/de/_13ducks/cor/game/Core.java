@@ -25,6 +25,8 @@
  */
 package de._13ducks.cor.game;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.*;
 
 /**
@@ -127,10 +129,14 @@ public abstract class Core {
                 int shift = i << 3; // i * 8
                 r[8 - i] = (byte) ((data2 & (0xff << shift)) >>> shift);
             }
-            for (int i = 0; i < 8; i++) {
-                int shift = i << 3; // i * 8
-                r[16 - i] = (byte) ((long3 & (0xff << shift)) >>> shift);
-            }
+            r[9] = (byte) (long3 >>> 56);
+            r[10] = (byte) (long3 >>> 48);
+            r[11] = (byte) (long3 >>> 40);
+            r[12] = (byte) (long3 >>> 32);
+            r[13] = (byte) (long3 >>> 24);
+            r[14] = (byte) (long3 >>> 16);
+            r[15] = (byte) (long3 >>> 8);
+            r[16] = (byte) (long3 >>> 0);
             return r;
         }
 
@@ -190,16 +196,19 @@ public abstract class Core {
             return retval;
         }
 
-        public long readLong(byte[] b, int number) {
+        public long readLong2(byte[] b) {
             if (b.length != 17 || b[0] == 0) {
                 System.out.println("ERROR: Packetsyntax mismatch! (long)");
                 return 0;
             }
-            int retval = 0;
-            for (int i = 0; i < 8; ++i) {
-                retval |= (b[(number * 8) - i] & 0xff) << (i << 3);
-            }
-            return retval;
+            return (((long)b[9] << 56) +
+                ((long)(b[10] & 255) << 48) +
+		((long)(b[11] & 255) << 40) +
+                ((long)(b[12] & 255) << 32) +
+                ((long)(b[13] & 255) << 24) +
+                ((b[14] & 255) << 16) +
+                ((b[15] & 255) <<  8) +
+                ((b[16] & 255) <<  0));
         }
 
         public char readChar(byte[] b, int number) {

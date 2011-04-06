@@ -41,7 +41,7 @@ public class C056_DEBUG_SERVER_RES extends ClientCommand {
         Position pos = rgi.readPosition(data, 1);
         if (pos != null) {
             try {
-                long read = rgi.readLong(data, 2);
+                long read = rgi.readLong2(data);
                 System.out.println("Got " + read);
                 rgi.mapModule.serverRes[pos.getX()][pos.getY()] = read;
             } catch (Exception ex) {
