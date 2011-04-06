@@ -275,7 +275,7 @@ public class GraphicsContent extends BasicGame {
                     if (gameDone == 3) {
                         // DEFEATED einblenden - ne Weile groß in der Mitte, dann kleiner - man kann nämlich noch spec sein
                         if (System.currentTimeMillis() - endTime < 5000) {
-                            g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_spec.png").getImage() : imgMap.get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
+                            g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_defeat_spec.png").getImage() : getImgMap().get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                         } else {
                             g.setColor(Color.black);
                             g.setFont(FontManager.getFont0());
@@ -283,10 +283,10 @@ public class GraphicsContent extends BasicGame {
                         }
                     } else if (gameDone == 2) {
                         // DEFEATED einblenden - bis der Spieler das Spiel beendet
-                        g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_gameover.png").getImage() : imgMap.get("img/game/finish_defeat_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
+                        g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_defeat_gameover.png").getImage() : getImgMap().get("img/game/finish_defeat_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     } else if (gameDone == 1) {
                         // VICTORY
-                        g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_victory_gameover.png").getImage() : imgMap.get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
+                        g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_victory_gameover.png").getImage() : getImgMap().get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     }
                 }
 
@@ -318,7 +318,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -336,7 +336,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), imgMap, rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -406,7 +406,7 @@ public class GraphicsContent extends BasicGame {
         // Zeichnet alle Overlays.
         for (int i = 0; i < overlays.size(); i++) {
             try {
-                overlays.get(i).renderOverlay(g2, realPixX, realPixY, imgMap);
+                overlays.get(i).renderOverlay(g2, realPixX, realPixY, getImgMap());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -786,7 +786,7 @@ public class GraphicsContent extends BasicGame {
                         // Was da?
                         if (ground != null) {
                             // Bild suchen und einfügen
-                            GraphicsImage tempImage = imgMap.get(ground);
+                            GraphicsImage tempImage = getImgMap().get(ground);
 
                             if (tempImage != null) {
                                 g3.drawImage(tempImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
@@ -810,7 +810,7 @@ public class GraphicsContent extends BasicGame {
                         }
                         if (fix != null) {
                             // Bild suchen und einfügen
-                            GraphicsImage fixImage = imgMap.get(fix);
+                            GraphicsImage fixImage = getImgMap().get(fix);
 
                             if (fixImage != null) {
                                 g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
@@ -852,13 +852,13 @@ public class GraphicsContent extends BasicGame {
                     int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
                     switch (val) {
                         case 1:
-                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                            getImgMap().get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 2:
-                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                            getImgMap().get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 3:
-                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+                            getImgMap().get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                     }
                 } catch (Exception ex) {
@@ -885,7 +885,7 @@ public class GraphicsContent extends BasicGame {
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
         // Position markieren:
-        imgMap.get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
+        getImgMap().get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();
@@ -1198,7 +1198,7 @@ public class GraphicsContent extends BasicGame {
                 // Bild berechnet, einfügen
                 GraphicsImage newImg = new GraphicsImage(preImg.getImage());
                 newImg.setImageName(tList.get(i).getImageName());
-                imgMap.put(newImg.getImageName() + playerId, newImg);
+                getImgMap().put(newImg.getImageName() + playerId, newImg);
             }
 
         }
@@ -1462,7 +1462,7 @@ public class GraphicsContent extends BasicGame {
         } else if (initState == 4) {
             // FinalPrepare
             parent.finalPrepare();
-            minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
+            minimap = Minimap.createMinimap(visMap, getImgMap(), realPixX, realPixY, rgi);
             minimap.setAllList(allList);
             overlays.add(minimap);
             // Fertig - dem Server schicken
@@ -1495,5 +1495,13 @@ public class GraphicsContent extends BasicGame {
     //@Override
     @Override
     public void inputStarted() {
+    }
+
+    /**
+     * Stellt die ImageMap anderen Modulen zur Verfügung
+     * @return - die ImageMap
+     */
+    public HashMap<String, GraphicsImage> getImgMap() {
+        return imgMap;
     }
 }
