@@ -36,6 +36,7 @@ import de._13ducks.cor.game.Core;
 import de._13ducks.cor.graphics.CoreGraphics;
 import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.sound.SoundModule;
+import java.net.InetAddress;
 
 /**
  * Der Client-Core
@@ -71,7 +72,7 @@ public class ClientCore extends Core {
         System.out.println("Debug is: " + (debugmode ? "ON" : "OFF"));
         System.out.println("Loading graphics...");
         try {
-            rGraphics = new CoreGraphics(cfgvalues);
+            rGraphics = new CoreGraphics(cfgvalues, this);
         } catch (Exception ex) {
             System.out.println("ERROR! Details:");
             ex.printStackTrace();
@@ -181,6 +182,33 @@ public class ClientCore extends Core {
 
 
     } */
+    /**
+     * Wird vom Hauptmenu aufgerufen, wenn zu einem Server connected werden soll.
+     */
+    public boolean joinServer(String playername, InetAddress adr, int port) {
+        System.out.println("Try joining server: " + adr + " port " + port);
+        this.playername = playername;
+        lobby = new Lobby();
+        rgi = new InnerClient(playername);
+        gamectrl = new ClientGameController(rgi);
+        initLogger();
+        lobby.setVisible(true);
+        netController = new ClientNetController(rgi, lobby);
+        mapMod = new ClientMapModule(rgi);
+        cchat = new ClientChat(rgi);
+        cs = new ClientStatistics(rgi);
+        rgi.initInner();
+        rGraphics.setInner(rgi);
+        System.out.println("Pre-setup complete, connecting...");
+        if (netController.connectTo(adr, port)) {
+            lobby.initlobby(netController, rgi);
+            return true;
+        } else {
+            lobby.dispose();
+            return false;
+        }
+    }
+
     @Override
     public void initLogger() {
         // Erstellt ein neues Logfile
@@ -264,15 +292,13 @@ public class ClientCore extends Core {
         //RogGameLogic rogGameLogic;
         public SoundModule rogSound;
         public String lastlog = "";
-        public boolean isAIClient;
         public TeamSelector teamSel;
 
         public InnerClient() {
         }
 
-        private InnerClient(String playername_t, boolean ai) {
+        private InnerClient(String playername_t) {
             playername = playername_t;
-            isAIClient = ai;
         }
 
         @Override

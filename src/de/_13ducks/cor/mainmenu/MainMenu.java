@@ -25,11 +25,14 @@
  */
 package de._13ducks.cor.mainmenu;
 
+import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.mainmenu.components.*;
 import java.util.HashMap;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.server.ServerCore;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Grafisches Hauptmenü
@@ -50,17 +53,22 @@ public class MainMenu extends Container {
      * Y-Bildschirmauflösung
      */
     private int resY;
+    /**
+     * ClientCore, zum Spiel starten etc.
+     */
+    private ClientCore core;
 
     /**
      * Konstruktor
      */
-    public MainMenu(int resX, int resY) {
+    public MainMenu(int resX, int resY, ClientCore clientcore) {
         super(null, 0, 0, (double) resX, (double) resY);
 
         super.setMainMenuReference(this);
 
         this.resX = resX;
         this.resY = resY;
+        this.core = clientcore;
 
         menus = new HashMap<String, Container>();
 
@@ -217,11 +225,20 @@ public class MainMenu extends Container {
 
     /**
      * Tritt einer Partie bei
+     * @return true, wenns geklappt hat
      */
-    public void joinServer(String server) {
-        {
-            System.out.println("Joining Server...");
-            // @TODO: ClientCore.joinServer() rufen, bei erfolg lobby anzeigen
+    public boolean joinServer(String server) {
+        System.out.println("Joining Server...");
+        // @TODO: ClientCore.joinServer() rufen, bei erfolg lobby anzeigen
+        final InetAddress adress;
+        try {
+            adress = InetAddress.getByName(server);
+        } catch (UnknownHostException ex) {
+            return false;
         }
+        final int port = 39264;// default port
+
+        core.joinServer("unknownP", adress, port);
+        return true;
     }
 }

@@ -29,11 +29,14 @@ import de._13ducks.cor.game.Bullet;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Robot;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.lwjgl.LWJGLException;
@@ -53,6 +56,7 @@ import de._13ducks.cor.map.AbstractMapElement;
  */
 public class CoreGraphics extends AppGameContainer implements Pauseable {
 
+    private ClientCore core;
     ClientCore.InnerClient rgi;
     public GraphicsContent content;
     Dimension displaySize;
@@ -108,9 +112,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
     }
 
-    public CoreGraphics(HashMap<String, String> cfgvalues) throws SlickException, LWJGLException {
+    public CoreGraphics(HashMap<String, String> cfgvalues, ClientCore core) throws SlickException, LWJGLException {
         super(new GraphicsContent());
         content = (GraphicsContent) super.game;
+        this.core = core;
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
         // Bildgröße konfigurieren
         modi = Display.getAvailableDisplayModes();
@@ -120,7 +125,18 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         super.setDisplayMode(myMode.getWidth(), myMode.getHeight(), myMode.isFullscreenCapable());
         content.realPixX = myMode.getWidth();
         content.realPixY = myMode.getHeight();
-        super.start();
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    CoreGraphics.super.start();
+                } catch (SlickException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        t.setName("Graphics");
+        t.start();
     }
 
     private DisplayMode[] filterFullscreen(DisplayMode[] list) {
@@ -299,9 +315,17 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Initialisiert das Hauptmenu
      */
     void initMainMenu() {
-        mainmenu = new MainMenu(content.realPixX, content.realPixY);
+        mainmenu = new MainMenu(content.realPixX, content.realPixY, core);
         mainmenu.init(this);
     }
+
+    /**
+     * Das Hauptmenu ist fertig, wir sind mit einem Server verbunden, jetzt durchstarten und das spiel normal weiter laden.
+     */
+    public void initGame() {
+
+    }
+
 
     /**
      * Initialisiert das Inputsystem für das Hauptmenue
@@ -527,17 +551,12 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         //readAnimations();
         rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
         this.triggerStatusWaiting();
-        // LOAD abgeschlossen, dem Server mitteilen
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 7, 0, 0, 0, 0));
 
     }
 
     public void setLoadStatus(int status) {
         content.loadStatus = status;
         content.loadWait = false;
-        if (status == 5) {
-            content.loadZoom1StartTime = System.currentTimeMillis();
-        }
         if (status > 2 && Thread.currentThread().equals(slickGraphics)) {
             content.paintComponent(this.getGraphics());
             Renderer.get().flush();
@@ -1647,8 +1666,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
         starttime = new Date().getTime();
         seenPause = false;
-        content.loadZoom2StartTime = System.currentTimeMillis();
-        content.zoomInGame = true; // Ein epischer - live-ins-Spiel-spring-Effekt
     }
 
     public void jumpTo(int scrollX, int scrollY) {
@@ -2025,5 +2042,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         } else {
             return new DisplayMode(800, 600);
         }
+    }
+
+    public void setInner(InnerClient rgi) {
+        this.rgi = rgi;
     }
 }

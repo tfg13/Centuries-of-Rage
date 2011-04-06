@@ -129,7 +129,6 @@ public class GraphicsContent extends BasicGame {
     public int mouseY;                                         // Die Position der Maus, muss geupdatet werden
     int lastHovMouseX;
     int lastHovMouseY;
-    TrueTypeFont[] fonts;                                       // Die Fonts, die häufig benötigt werden
     public boolean pauseMode = false;                          // Pause-Modus
     Color fowGray = new Color(0.0f, 0.0f, 0.0f, 0.4f);
     long pause;                                         // Zeitpunkt der letzen Pause
@@ -145,20 +144,7 @@ public class GraphicsContent extends BasicGame {
     public boolean fowDisabled = false;
     public int loadStatus = 0;
     public boolean loadWait = false;
-    public Image loading_backblur;                          // Ladebild
-    public Image loading_backnoblur;
-    public Image loading_frontnoblur;
-    public Image loading_frontblur;
-    public Image loading_sun_blur;
-    public Image loading_backblur_s;                          // Ladebild
-    public Image loading_backnoblur_s;
-    public Image loading_frontnoblur_s;
-    public Image loading_frontblur_s;
     public Image duckslogo;
-    long loadZoom1StartTime = 0;
-    long loadZoom2StartTime = 0;
-    boolean zoomInGame = false;
-    boolean loadScaled = false;
     public int imgLoadCount = 0;
     public int imgLoadTotal = 0;
     CoreGraphics parent;
@@ -192,7 +178,7 @@ public class GraphicsContent extends BasicGame {
             // Sobald es einmal gezeichnet wurde können wir weiter laden
             initState = 12;
             modi = 0;
-        } else if(modi == -1) {
+        } else if (modi == -1) {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
         } else if (modi == 3) {
@@ -272,7 +258,7 @@ public class GraphicsContent extends BasicGame {
                     renderPause(g);
                 }
                 g.setColor(Color.darkGray);
-                g.setFont(fonts[0]);
+                g.setFont(FontManager.getFont0());
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
                 g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, 2);
                 if (serverColMode) {
@@ -292,7 +278,7 @@ public class GraphicsContent extends BasicGame {
                             g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_defeat_spec.png").getImage() : imgMap.get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                         } else {
                             g.setColor(Color.black);
-                            g.setFont(fonts[5]);
+                            g.setFont(FontManager.getFont0());
                             g.drawString("DEFEAT", 10, realPixY - 40);
                         }
                     } else if (gameDone == 2) {
@@ -302,11 +288,6 @@ public class GraphicsContent extends BasicGame {
                         // VICTORY
                         g.drawImage(realPixX >= 800 ? imgMap.get("img/game/finish_victory_gameover.png").getImage() : imgMap.get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
                     }
-                }
-
-                // Epischer ZoomEffekt?
-                if (zoomInGame) {
-                    renderLoadScreen(g);
                 }
 
             } catch (Exception ex) {
@@ -330,7 +311,6 @@ public class GraphicsContent extends BasicGame {
             public int compare(Sprite o1, Sprite o2) {
                 return o1.getSortPosition().getY() - o2.getSortPosition().getY();
             }
-
         });
         for (int i = 0; i < allList.size(); i++) {
             Sprite sprite = allList.get(i);
@@ -559,91 +539,12 @@ public class GraphicsContent extends BasicGame {
             parent.setTargetFrameRate(25);
             launchScreenGrayed = true;
         }
-        // Ladebild
-        if (loading_backblur != null) {
-            // Auf Höhe skalieren
-            float scale = 1.0f * realPixY / loading_backblur.getHeight();
-            // Seitenverhältnis beibehalten
-            int xSize = (int) (1.0 * loading_backblur.getWidth() * scale);
-            int ySize = (int) (1.0 * loading_backblur.getHeight() * scale);
-            // Mittig anzeigen
-            int xOffset = (xSize - realPixX) / 2;
-            // Bereits skaliert?
-            if (!loadScaled) {
-                loadScaled = true;
-                loading_backblur_s = loading_backblur.getScaledCopy(scale);
-                loading_backnoblur_s = loading_backnoblur.getScaledCopy(scale);
-                loading_frontblur_s = loading_frontblur.getScaledCopy(scale);
-                loading_frontnoblur_s = loading_frontnoblur.getScaledCopy(scale);
-                loading_sun_blur = loading_sun_blur.getScaledCopy(scale);
-            }
-            // Sonne immer:
-            if (loadStatus < 10) {
-                g2.drawImage(loading_sun_blur, 0 - xOffset, 0);
-                if (loadStatus < 5) { // Voll vorne
-                    g2.drawImage(loading_backblur_s, 0 - xOffset, 0);
-                    g2.drawImage(loading_frontnoblur_s, 0 - xOffset, 0);
-                } else if (loadZoom1StartTime == 0 || (System.currentTimeMillis() - loadZoom1StartTime) > 1000) { // Ganz hinten
-                    loading_backnoblur.getSubImage(180, 216, 1700, 893).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                    loading_frontblur.getSubImage(180, 216, 1700, 893).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                } else {
-                    // Jetzt wird spannend! Hier ist der epische Zoom-Effekt Nr1
-                    int time = (int) (System.currentTimeMillis() - loadZoom1StartTime);
-                    // Logistisches Wachstum über 1 Sekunde (0-1000), Werte von 0 bis 1. k = 0.0049
-                    float perc = (float) (1.0f * (2 / (1 + Math.pow(Math.E, -0.0049 * 2 * (time - 500)))) / 2);
-
-                    // Blende-Farben
-                    Color fadeOut = new Color(1f, 1f, 1f, 1 - perc);
-                    Color fadeIn = new Color(1f, 1f, 1f, perc);
-                    // Zoom-Koordinaten:
-                    int px = (int) (180 * perc);
-                    int py = (int) (216 * perc);
-                    int sx = (int) (loading_backnoblur.getWidth() - ((loading_backnoblur.getWidth() - 1700) * perc));
-                    int sy = (int) (loading_backnoblur.getHeight() - ((loading_backnoblur.getHeight() - 893) * perc));
-                    // Reienfolge: HS-HB-VS-VB
-
-                    loading_backnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0);
-                    loading_backblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                    loading_frontnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                    loading_frontblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeIn);
-                }
-            } else {
-                // Episches - Ins-Game zoomen
-                // Geschwindigkeit fürs Ausblenden
-                float perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-                if (perc > 1) {
-                    // Fertig!
-                    zoomInGame = false;
-                }
-                Color fadeOut = new Color(1f, 1f, 1f, 1 - perc);
-
-                // Schneller zoomen
-                perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-                if (perc > 1) {
-                    perc = 1;
-                }
-                int px = (int) (180 + 870 * perc);
-                int py = (int) (216 + 388 * perc);
-                int sx = (int) (1700 - ((1700 - 1) * perc));
-                int sy = (int) (893 - ((893 - 1) * perc));
-                // Blende-Farben
-
-                g2.drawImage(loading_sun_blur, 0 - xOffset, 0, fadeOut);
-                loading_backnoblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-                loading_frontblur.getSubImage(px, py, sx, sy).getScaledCopy(xSize, ySize).draw(0 - xOffset, 0, fadeOut);
-            }
-        }
 
         // Ladebalken zeigen
         int lx = realPixX / 4;      // Startposition des Balkens
         int ly = realPixY / 50;
         int dx = realPixX / 2;      // Länge des Balkens
         int dy = realPixY / 32;
-        if (loadStatus == 10) {
-            // Rausziehen
-            float perc = (float) (Math.pow(100, 1.0f * (System.currentTimeMillis() - loadZoom2StartTime) / 500) / 100);
-            ly = (int) ((realPixY / 50) - (ly * 60 * perc));
-        }
         g2.setColor(new Color(0, 0, 0, 0.8f));
         // Rahmen ziehen
         g2.drawRect(lx - 2, ly - 2, dx + 3, dy + 3);
@@ -705,7 +606,7 @@ public class GraphicsContent extends BasicGame {
                     break;
             }
         }
-        g2.setFont(fonts[0]);
+        g2.setFont(FontManager.getFont0());
         g2.drawString(status, lx, (int) (ly + (dy * 1.5)));
         // Error - Status
 
@@ -722,37 +623,11 @@ public class GraphicsContent extends BasicGame {
             g2.drawRect(ex, ey, edx, edy);
             g2.drawRect(ex + 2, ey + 2, edx - 4, edy - 4);
             // Allgemeine Überschrift:
-            g2.setFont(fonts[5]);
+            g2.setFont(FontManager.getFont0());
             g2.setAntiAlias(false);
-            g2.drawString("ERROR! - SORRY!", ex + (edx / 2) - (fonts[5].getWidth("ERROR! - SORRY!") / 2), (float) (ey * 1.05));
-            // Trennlinie drunter:
-            g2.setColor(Color.black);
-            g2.drawLine(ex + 2, (float) (ey * 1.3), ex + edx - 2, (float) (ey * 1.3));
-            g2.setFont(fonts[2]);
-            g2.drawString("An error occured:", ex + 5, (float) (ey * 1.3) + 2);
-            g2.setFont(fonts[1]);
-            switch (lEtype) {
-                case 1:
-                    g2.drawString("Can't load the map!", ex + (edx / 2) - (fonts[1].getWidth("Can't load the map!") / 2), (float) (ey * 1.3) + 14);
-                    g2.setFont(fonts[3]);
-                    g2.drawString("Possible reason:", ex + 5, (float) (ey * 1.5));
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Server tries to load a file that does not exist", ex + 20, (float) (ey * 1.5) + 15);
-                    g2.drawString("Server tries to load a file that is not a valid CoR-Map and/or corrupted", ex + 20, (float) (ey * 1.5) + 27);
-                    g2.drawString("Server tries to load a map that was created with an older version of CoR", ex + 20, (float) (ey * 1.5) + 39);
-                    g2.drawString("Server can't transfer the map to this client (very unlikely)", ex + 20, (float) (ey * 1.5) + 51);
-                    g2.drawString("Version mismatch - Server and Client aren't at the same version", ex + 20, (float) (ey * 1.5) + 63);
-                    g2.setFont(fonts[3]);
-                    g2.drawString("What you could do:", ex + 5, (float) (ey * 2.4));
-                    g2.setFont(fonts[0]);
-                    g2.drawString("Create a new Map on the Server-PC (use the RandomMapBuilder)", ex + 20, (float) (ey * 2.4) + 15);
-                    g2.drawString("Make sure everyone uses the same version - redownload the newest", ex + 20, (float) (ey * 2.4) + 27);
-                    g2.drawString("Enter the correct path when starting the Server (or use last random-map)", ex + 20, (float) (ey * 2.4) + 39);
-                    break;
-            }
+            g2.drawString("ERROR! - SORRY!", ex + (edx / 2) - (FontManager.getFont0().getWidth("ERROR! - SORRY!") / 2), (float) (ey * 1.05));
             g2.drawLine(ex + 2, (float) (ey + (edy * 0.9)), ex + edx - 2, (float) (ey + (edy * 0.9)));
-            g2.setFont(fonts[2]);
-            g2.drawString("Click here or press ENTER to quit", ex + (edx / 2) - (fonts[2].getWidth("Click here or press ENTER to quit") / 2), (float) (ey + (edy * 0.95) - 6));
+            g2.drawString("Click here or press ENTER to quit", ex + (edx / 2) - (FontManager.getFont0().getWidth("Click here or press ENTER to quit") / 2), (float) (ey + (edy * 0.95) - 6));
         }
     }
 
@@ -828,7 +703,7 @@ public class GraphicsContent extends BasicGame {
         g2.setColor(Color.lightGray);
         g2.fillRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
         g2.setColor(Color.black);
-        g2.setFont(fonts[5]);
+        g2.setFont(FontManager.getFont0());
         g2.drawString("P A U S E", realPixX / 2 - 80, realPixY / 2 - 60);
         g2.drawRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
     }
@@ -977,13 +852,13 @@ public class GraphicsContent extends BasicGame {
                     int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
                     switch (val) {
                         case 1:
-                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 2:
-                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                         case 3:
-                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y ));
+                            imgMap.get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
                             break;
                     }
                 } catch (Exception ex) {
@@ -1003,9 +878,9 @@ public class GraphicsContent extends BasicGame {
             g2.drawLine((int) i * FIELD_HALF_X + 28, 0, 0, (int) (i * FIELD_HALF_Y + 21));
         }
 
-        for (int i = 0; i < viewY; i+= 2) {
+        for (int i = 0; i < viewY; i += 2) {
             // Linie von der Linken Kante nach Rechts Unten
-             g2.drawLine(0,(int) (i * FIELD_HALF_Y) - 1, (viewY - 1 - i) * FIELD_HALF_X + 42, (int) ((viewY * FIELD_HALF_Y) + 22.5));
+            g2.drawLine(0, (int) (i * FIELD_HALF_Y) - 1, (viewY - 1 - i) * FIELD_HALF_X + 42, (int) ((viewY * FIELD_HALF_Y) + 22.5));
         }
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
@@ -1542,6 +1417,8 @@ public class GraphicsContent extends BasicGame {
             // Hauptmenu
             parent.renderMainMenu(container, g);
         } else if (initState == 1) {
+            setVisibleArea((realPixX / FIELD_HALF_X), (int) (realPixY / FIELD_HALF_Y));
+            modi = -1;
             // Logo setzen
             String[] ab = {"img/game/logo_128x128.png", "img/game/logo_32x32.png", "img/game/logo_16x16.png"};
             try {
@@ -1577,6 +1454,8 @@ public class GraphicsContent extends BasicGame {
                 parent.setTargetFrameRate(framerate);
             }
             initState = 0;
+            // LOAD abgeschlossen, dem Server mitteilen
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 7, 0, 0, 0, 0));
         } else if (initState == 3) {
             parent.startRendering();
             initState = 0;
@@ -1584,7 +1463,7 @@ public class GraphicsContent extends BasicGame {
             // FinalPrepare
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
-	    minimap.setAllList(allList);
+            minimap.setAllList(allList);
             overlays.add(minimap);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();

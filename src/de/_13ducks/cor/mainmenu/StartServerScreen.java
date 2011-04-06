@@ -73,11 +73,11 @@ public class StartServerScreen extends Container {
 
         // MapWahl-Textbox (provisorisch)
         myTextBox = new TextBox(super.getMainMenu(), 32, 32);
-        myTextBox.setText("Randommap.map");
+        myTextBox.setText("Random Map.map");
         super.addComponent(myTextBox);
 
         // Der Start-Button
-        super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "/img/mainmenu/buttonnew.png", "Start Server") {
+        super.addComponent(new ImageButton(super.getMainMenu(), 40, 50, 13, 6, "img/mainmenu/buttonnew.png", "Start Server") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -86,7 +86,7 @@ public class StartServerScreen extends Container {
                 // @TODO: Server Starten und selber joinen
 
                 boolean debug = myCheckBox.isChecked();
-                String map = "/map/main/" + myTextBox.getText();
+                String map = "map/" + myTextBox.getText();
 
                 super.getMainMenu().startServer(debug, map);
                 super.getMainMenu().joinServer("localhost");
