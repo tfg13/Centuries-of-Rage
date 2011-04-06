@@ -1,2 +1,5 @@
 # Images named here will be loaded before rendering the mainmenu
 img/mainmenu/intro.png
+img/mainmenu/checkbox-normal.png
+img/mainmenu/checkbox-active.png
+
