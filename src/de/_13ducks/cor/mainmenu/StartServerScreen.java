@@ -89,7 +89,7 @@ public class StartServerScreen extends Container {
                 String map = "map/" + myTextBox.getText();
 
                 super.getMainMenu().startServer(debug, map);
-                super.getMainMenu().joinServer("localhost");
+                //super.getMainMenu().joinServer("localhost");
 
                 fadeOut();
 
