@@ -57,6 +57,10 @@ public class MainMenu extends Container {
      * ClientCore, zum Spiel starten etc.
      */
     private ClientCore core;
+    /**
+     * Lobby-Referenz
+     */
+    private LobbyScreen lobbyScreen;
 
     /**
      * Konstruktor
@@ -169,7 +173,6 @@ public class MainMenu extends Container {
         MultiplayerScreen.fadeOut();
 
         // Lobby
-        LobbyScreen lobbyScreen;
         lobbyScreen = new LobbyScreen(this);
         menus.put("lobbyscreen", lobbyScreen);
         super.addComponent(lobbyScreen);
@@ -249,5 +252,13 @@ public class MainMenu extends Container {
      */
     public ClientCore getClientCore() {
         return core;
+    }
+
+    /**
+     * Gibt die Lobby zurück
+     * @return - die Lobby
+     */
+    public LobbyScreen getLobby() {
+        return lobbyScreen;
     }
 }
