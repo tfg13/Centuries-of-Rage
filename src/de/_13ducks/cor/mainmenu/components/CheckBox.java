@@ -76,20 +76,21 @@ public abstract class CheckBox extends Component {
 
     public CheckBox(MainMenu mainMenuReference, double x, double y) {
         super(mainMenuReference, x, y, 1, 1);
-        normalImagePath = "/img/mainmenu/nrdy.png";
-        activeImagePath = "/img/mainmenu/rdy.png";
+        normalImagePath = "img/mainmenu/nrdy.png";
+        activeImagePath = "img/mainmenu/rdy.png";
         checked = false;
     }
 
     @Override
     public void init(GameContainer c) {
 
-        try {
-            normalImage = new Image(normalImagePath);
-            activeImage = new Image(activeImagePath);
-        } catch (SlickException ex) {
-            ex.printStackTrace();
-        }
+        
+            //normalImage = new Image(normalImagePath);
+            //activeImage = new Image(activeImagePath);
+
+            normalImage = getMainMenu().getClientCore().rGraphics.content.getImgMap().get(normalImagePath).getImage();
+            activeImage = getMainMenu().getClientCore().rGraphics.content.getImgMap().get(activeImagePath).getImage();
+        
 
         // Die Maße an das Bild anpassen:
         this.setX2(getX1() + normalImage.getWidth());

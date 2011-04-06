@@ -83,7 +83,7 @@ public class Player extends Container {
         /**
          * Der "Bereit"-Button
          */
-        readyBox = new CheckBox(m, (int) x + 34, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
+        readyBox = new CheckBox(m, (int) x + 34, (int) y + 1, "img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
 
             @Override
             public void checkboxChanged() {
