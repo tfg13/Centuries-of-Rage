@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.GraphicsImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -72,6 +73,14 @@ public abstract class CheckBox extends Component {
         normalImagePath = imagepath;
         activeImagePath = activeimagepath;
         checked = false;
+
+        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
+        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
+
+
+        // Die Maße an das Bild anpassen:
+        this.setX2(getX1() + normalImage.getWidth());
+        this.setY2(getY1() + normalImage.getHeight());
     }
 
     public CheckBox(MainMenu mainMenuReference, double x, double y) {
@@ -79,22 +88,31 @@ public abstract class CheckBox extends Component {
         normalImagePath = "img/mainmenu/nrdy.png";
         activeImagePath = "img/mainmenu/rdy.png";
         checked = false;
+
+        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
+        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
+
+
+        // Die Maße an das Bild anpassen:
+        this.setX2(getX1() + normalImage.getWidth());
+        this.setY2(getY1() + normalImage.getHeight());
     }
 
     @Override
     public void init(GameContainer c) {
 
-        
-            //normalImage = new Image(normalImagePath);
-            //activeImage = new Image(activeImagePath);
 
-            normalImage = getMainMenu().getClientCore().rGraphics.content.getImgMap().get(normalImagePath).getImage();
-            activeImage = getMainMenu().getClientCore().rGraphics.content.getImgMap().get(activeImagePath).getImage();
-        
+        //normalImage = new Image(normalImagePath);
+        //activeImage = new Image(activeImagePath);
 
-        // Die Maße an das Bild anpassen:
-        this.setX2(getX1() + normalImage.getWidth());
-        this.setY2(getY1() + normalImage.getHeight());
+//
+//        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
+//        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
+//
+//
+//        // Die Maße an das Bild anpassen:
+//        this.setX2(getX1() + normalImage.getWidth());
+//        this.setY2(getY1() + normalImage.getHeight());
     }
 
     @Override

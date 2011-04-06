@@ -31,8 +31,10 @@ import java.util.HashMap;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.graphics.GraphicsImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.newdawn.slick.Image;
 
 /**
  * Grafisches Hauptmenü
@@ -61,13 +63,18 @@ public class MainMenu extends Container {
      * Lobby-Referenz
      */
     private LobbyScreen lobbyScreen;
+    /**
+     * Referenz auf die ImageMap
+     */
+    private HashMap<String, GraphicsImage> imgMap;
 
     /**
      * Konstruktor
      */
-    public MainMenu(int resX, int resY, ClientCore clientcore) {
+    public MainMenu(int resX, int resY, ClientCore clientcore, HashMap<String, GraphicsImage> imgMap) {
         super(null, 0, 0, (double) resX, (double) resY);
 
+        this.imgMap = imgMap;
         super.setMainMenuReference(this);
 
         this.resX = resX;
@@ -270,5 +277,13 @@ public class MainMenu extends Container {
             c.fadeOut();
         }
         lobbyScreen.fadeIn();
+    }
+
+    /**
+     * Getter für ImageMAp
+     * @return die imgMap
+     */
+    public HashMap<String, GraphicsImage> getImgMap() {
+        return imgMap;
     }
 }
