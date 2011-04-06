@@ -77,16 +77,7 @@ public class LobbyScreen extends Container {
         // Chat:
         super.addComponent(new Frame(m, 10, 75, 45, 15));
 
-        super.addComponent(new ImageButton(m, 40, 40, 13, 6, "img/mainmenu/buttonnew.png", "REMOVE") {
-
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                removePlayer("John");
-            }
-        });
-
-
-        addPlayer("John");
+        
     }
 
     /**
