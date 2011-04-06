@@ -261,4 +261,14 @@ public class MainMenu extends Container {
     public LobbyScreen getLobby() {
         return lobbyScreen;
     }
+
+    /**
+     * zeigt die Lobby an
+     */
+    public void showlobby() {
+        for (Container c : menus.values()) {
+            c.fadeOut();
+        }
+        lobbyScreen.fadeIn();
+    }
 }
