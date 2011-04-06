@@ -47,6 +47,10 @@ public class LobbyScreen extends Container {
      * Die Spielerliste
      */
     ArrayList<Player> players;
+    /**
+     * Der Name des lokalen Spielers
+     */
+    String playerName;
 
     /**
      * Konstruktor
@@ -174,5 +178,21 @@ public class LobbyScreen extends Container {
      * @param name_t - der Name des Spielers
      */
     public void setHostPlayer(String name_t) {
+    }
+
+    /**
+     * getter für Playername
+     * @return - der Name des lokalen Spielers
+     */
+    public String getPlayername() {
+        return playerName;
+    }
+
+    /**
+     * Setter für playerName
+     * @param name - der neue Spielername
+     */
+    public void setPlayerName(String name) {
+        playerName = name;
     }
 }
