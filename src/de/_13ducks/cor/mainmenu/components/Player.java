@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.mainmenu.LobbyScreen;
 import org.newdawn.slick.Color;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -51,36 +52,52 @@ public class Player extends Container {
      * Das Label mit dem Spielernamen
      */
     private Label nameLabel;
+    /**
+     * Die CheckBox für den Spielerstatus(Bereit/nicht Bereit)
+     */
+    private CheckBox readyBox;
+    /**
+     * Referenz auf die Lobby
+     */
+    private LobbyScreen lobbyScreen;
 
     /**
      * Konstruktor
      * erzeugt einen "leeren" Spieler
      */
-    public Player(MainMenu m, double x, double y, String name) {
+    public Player(MainMenu m, LobbyScreen lobby, double x, double y, String name) {
         super(m, x, y, 35, playerSlotHeight);
         ready = false;
         this.name = name;
         super.fadeIn();
+        this.lobbyScreen = lobby;
 
-
+        // Rahmen:
         super.addComponent(new Frame(m, (float) x, (float) y, 43.5f, 6.0f));
 
+        // Der Spielername:
         nameLabel = new Label(m, (float) x, (float) y, 10, 6, name, Color.black);
         super.addComponent(nameLabel);
 
-        super.addComponent(new CheckBox(m, (int) x + 30, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
+
+        /**
+         * Der "Bereit"-Button
+         */
+        readyBox = new CheckBox(m, (int) x + 34, (int) y + 1, "/img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
 
             @Override
             public void checkboxChanged() {
                 if (this.isChecked()) {
-                    ready = true;
-                    nameLabel.setColor(Color.green);
+                    // "Breit"-Status an den Server übermitteln
+                    lobbyScreen.send('3' + this.getName());
                 } else {
-                    ready = false;
-                    nameLabel.setColor(Color.black);
+                    // "Nichr Breit"-Status an den Server übermitteln
+                    lobbyScreen.send('4' + this.getName());
                 }
             }
-        });
+        };
+        super.addComponent(readyBox);
+
     }
 
     /**
@@ -112,6 +129,14 @@ public class Player extends Container {
      * @param ready - true, wenn der spieler bereit sein soll, false wen nnicht
      */
     public void setReady(boolean ready) {
-        this.ready = ready;
+        if (ready == true) {
+            nameLabel.setColor(Color.green);
+            ready = true;
+            readyBox.setChecked(true);
+        } else {
+            nameLabel.setColor(Color.black);
+            ready = false;
+            readyBox.setChecked(false);
+        }
     }
 }
