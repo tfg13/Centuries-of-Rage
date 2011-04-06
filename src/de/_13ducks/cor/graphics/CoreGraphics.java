@@ -316,16 +316,14 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     void initMainMenu() {
         mainmenu = new MainMenu(content.realPixX, content.realPixY, core);
-        mainmenu.init(this);
+        getMainmenu().init(this);
     }
 
     /**
      * Das Hauptmenu ist fertig, wir sind mit einem Server verbunden, jetzt durchstarten und das spiel normal weiter laden.
      */
     public void initGame() {
-
     }
-
 
     /**
      * Initialisiert das Inputsystem für das Hauptmenue
@@ -337,7 +335,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             }
 
             public void mouseClicked(int i, int i1, int i2, int i3) {
-                mainmenu.mouseClicked(i, i1, i2, i3);
+                getMainmenu().mouseClicked(i, i1, i2, i3);
             }
 
             public void mousePressed(int i, int i1, int i2) {
@@ -347,7 +345,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
             }
 
             public void mouseMoved(int i, int i1, int i2, int i3) {
-                mainmenu.mouseMoved(i2, i3);
+                getMainmenu().mouseMoved(i2, i3);
             }
 
             public void mouseDragged(int i, int i1, int i2, int i3) {
@@ -370,7 +368,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         input.addKeyListener(new KeyListener() {
 
             public void keyPressed(int i, char c) {
-                mainmenu.keyPressed(i, c);
+                getMainmenu().keyPressed(i, c);
             }
 
             public void keyReleased(int i, char c) {
@@ -1902,7 +1900,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     }
 
     public void renderMainMenu(GameContainer c, Graphics g) {
-        mainmenu.render(g);
+        getMainmenu().render(g);
     }
 
     public void renderAndCalc(GameContainer c, Graphics g) {
@@ -2046,5 +2044,13 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
     public void setInner(InnerClient rgi) {
         this.rgi = rgi;
+    }
+
+    /**
+     * Getter für Mainmeu
+     * @return - das Hauptmenü
+     */
+    public MainMenu getMainmenu() {
+        return mainmenu;
     }
 }
