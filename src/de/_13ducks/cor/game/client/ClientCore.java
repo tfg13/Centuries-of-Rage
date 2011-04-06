@@ -197,6 +197,7 @@ public class ClientCore extends Core {
         gamectrl = new ClientGameController(rgi);
         initLogger();
         //lobby.setVisible(true);
+        this.rGraphics.getMainmenu().showlobby();
         netController = new ClientNetController(rgi, lobby);
         mapMod = new ClientMapModule(rgi);
         cchat = new ClientChat(rgi);
@@ -205,7 +206,8 @@ public class ClientCore extends Core {
         rGraphics.setInner(rgi);
         System.out.println("Pre-setup complete, connecting...");
         if (netController.connectTo(adr, port)) {
-            //lobby.initlobby(netController, rgi);
+            // Namenswunsch an den Serve senden:
+            lobby.send('N' + this.playername);
             return true;
         } else {
             //lobby.dispose();
