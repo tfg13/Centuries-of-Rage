@@ -40,6 +40,10 @@ import de._13ducks.cor.mainmenu.components.TiledImage;
 public class LobbyScreen extends Container {
 
     /**
+     * die cmd-id für lobby-kommunikation
+     */
+    static byte lobbycomid = 14;
+    /**
      * Die Spielerliste
      */
     ArrayList<Player> players;
@@ -82,6 +86,14 @@ public class LobbyScreen extends Container {
     }
 
     /**
+     * Sendet eine Nachricht an den Server
+     * @param s - Die zu sendende Nachricht
+     */
+    public void send(String s) {
+        getMainMenu().getClientCore().rgi.netctrl.broadcastString((s + '\0'), lobbycomid);
+    }
+
+    /**
      * Gibt den Spieler mit dem angegebenen Namen zurück, wenn es einen gibt.
      * @param name - der Name des gesuchten Spielers
      * @return - das Player-Objekt
@@ -101,7 +113,7 @@ public class LobbyScreen extends Container {
      * @param name - der Name des neuen Spielers
      */
     public void addPlayer(String name) {
-        Player p = new Player(this.getMainMenu(), 11, 11 + ((Player.playerSlotHeight + 2) * players.size()), name);
+        Player p = new Player(this.getMainMenu(), this, 11, 11 + ((Player.playerSlotHeight + 2) * players.size()), name);
 
         players.add(p);
 

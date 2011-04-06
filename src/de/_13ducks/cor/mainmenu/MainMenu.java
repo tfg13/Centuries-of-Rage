@@ -241,4 +241,13 @@ public class MainMenu extends Container {
         core.joinServer("unknownP", adress, port);
         return true;
     }
+
+    /**
+     * Getter für ClientCore
+     * primär für die Lobby
+     * @return - ClientCore-Referenz
+     */
+    public ClientCore getClientCore() {
+        return core;
+    }
 }
