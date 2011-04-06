@@ -35,6 +35,7 @@ import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.mainmenu.LobbyScreen;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**
@@ -49,11 +50,11 @@ public class ClientNetController {
     public ClientCore.InnerClient rgi;
     Socket gamedatasock;
     ClientHandler cdh;
-    public Lobby lobby;                 // Die Lobby
+    public LobbyScreen lobby;                 // Die Lobby
     String receivebuffer = "";      // Empfangspuffer für receiveString()
     public InetAddress connectionTarget;    // Die Adresse des Servers (für Host-Erkennung)
 
-    public ClientNetController(ClientCore.InnerClient newinner, Lobby lobby_t) {
+    public ClientNetController(ClientCore.InnerClient newinner, LobbyScreen lobby_t) {
         rgi = newinner;
         lobby = lobby_t;
     }

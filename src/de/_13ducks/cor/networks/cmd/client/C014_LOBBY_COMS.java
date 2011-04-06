@@ -48,11 +48,11 @@ public class C014_LOBBY_COMS extends ClientCommand {
 
             // Name-Request
             if (signaltype.equals("N")) {
-                rgi.netctrl.lobby.playername = args;                       // den vom Server vorgeschlagenen Namen verwenden
+                rgi.netctrl.lobby.setPlayerName(args);                       // den vom Server vorgeschlagenen Namen verwenden
                 rgi.playername = args;
                 rgi.game.getOwnPlayer().nickName = args;                // "    "   "   "   "   "   "   "   "   "   "   "
 
-                rgi.netctrl.lobby.send("1" + rgi.netctrl.lobby.playername);   // join
+                rgi.netctrl.lobby.send("1" + rgi.netctrl.lobby.getPlayername());   // join
             }
 
             // Spielerbeitritt:
@@ -83,7 +83,7 @@ public class C014_LOBBY_COMS extends ClientCommand {
                 NetPlayer player = rgi.netctrl.getPlayer(args);
                 if (player != null) {
                     // Beenden, wenn dieser Client oder der Host das Spiel verlasen hat:
-                    if (args.equals(rgi.netctrl.lobby.playername) || player.isHost) {
+                    if (args.equals(rgi.netctrl.lobby.getPlayername()) || player.isHost) {
                         rgi.netctrl.disconnectDetected(handler);
                         System.exit(0);
                     } else {

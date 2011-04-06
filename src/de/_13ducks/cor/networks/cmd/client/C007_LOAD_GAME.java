@@ -39,7 +39,7 @@ public class C007_LOAD_GAME extends ClientCommand {
         rgi.setDebug(rgi.readInt(data, 1) == 1);
 
         // Lobby verbergen
-        rgi.netctrl.lobby.hideLobby();
+        //rgi.netctrl.lobby.hideLobby();
 
         // Ladebildschirm einblenden
         rgi.rogGraphics.initGame();

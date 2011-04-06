@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import de._13ducks.cor.graphics.ClientChat;
 import de._13ducks.cor.game.Core;
 import de._13ducks.cor.graphics.CoreGraphics;
+import de._13ducks.cor.mainmenu.LobbyScreen;
 import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.sound.SoundModule;
 import java.net.InetAddress;
@@ -62,7 +63,10 @@ public class ClientCore extends Core {
     ClientMapModule mapMod;
     ClientChat cchat;
     String playername;
-    Lobby lobby;
+    /**
+     * Referenz auf die Lobby
+     */
+    LobbyScreen lobby;
     ClientStatistics cs;
 
     public ClientCore(HashMap<String, String> cfg) {
@@ -188,11 +192,11 @@ public class ClientCore extends Core {
     public boolean joinServer(String playername, InetAddress adr, int port) {
         System.out.println("Try joining server: " + adr + " port " + port);
         this.playername = playername;
-        lobby = new Lobby();
+        lobby = this.rGraphics.getMainmenu().getLobby();
         rgi = new InnerClient(playername);
         gamectrl = new ClientGameController(rgi);
         initLogger();
-        lobby.setVisible(true);
+        //lobby.setVisible(true);
         netController = new ClientNetController(rgi, lobby);
         mapMod = new ClientMapModule(rgi);
         cchat = new ClientChat(rgi);
@@ -201,10 +205,10 @@ public class ClientCore extends Core {
         rGraphics.setInner(rgi);
         System.out.println("Pre-setup complete, connecting...");
         if (netController.connectTo(adr, port)) {
-            lobby.initlobby(netController, rgi);
+            //lobby.initlobby(netController, rgi);
             return true;
         } else {
-            lobby.dispose();
+            //lobby.dispose();
             return false;
         }
     }

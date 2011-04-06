@@ -42,7 +42,8 @@ public class C004_START_GAME extends ClientCommand {
         rgi.rogGraphics.content.initState = 3;
         //rgi.rogGraphics.startRendering();
 
+        
         // Lobby verbergen:
-        rgi.netctrl.lobby.setVisible(false);
+        //rgi.netctrl.lobby.setVisible(false);
     }
 }
