@@ -295,7 +295,6 @@ public class Path implements Pauseable, Serializable {
                         path = null;
                         //caster2.attackManager.moveStopped();
                         moving = false;
-                        System.out.println("Stop for " + caster2 + " at " + System.currentTimeMillis());
                         return;
                     }
                     // Zuletzt erreichten Wegpunkt finden
@@ -513,7 +512,6 @@ public class Path implements Pauseable, Serializable {
                     path.add(new PathElement(target, last.getDistance() + (passedWay * 2), Position.flipIntVector(last.getDirection())));
                     manualMod = true;
                     // Client mitteilen
-                    System.out.println("Setting " + unit + " to " + target + " (bkw)");
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
                 }
             } else {
@@ -526,7 +524,6 @@ public class Path implements Pauseable, Serializable {
                     path = path.subList(0, lastWayPoint + 2);
                     manualMod = true;
                     // Client mitteilen
-                    System.out.println("Setting " + unit + " to " + target + " (fwd)");
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint + 1, target.getX(), target.getY()));
                 }
             }
@@ -538,7 +535,6 @@ public class Path implements Pauseable, Serializable {
                 targetPos = path.get(path.size() - 1).getPos();
                 // Neues Ziel reservieren
                 long until = (long) ((1000 * length / speed) + moveStartTime);
-                System.out.println("DTT: " + until);
                 rgi.netmap.reserveMoveTarget(unit, until, targetPos);
             }
         }
