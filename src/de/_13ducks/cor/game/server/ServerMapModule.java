@@ -1447,7 +1447,6 @@ public class ServerMapModule {
             pos = pos.subtract(diff);
             theMap.getVisMap()[pos.getX()][pos.getY()].setReserved(until, unit);
             if (rgi.isInDebugMode()) {
-                System.out.println("send long " + until);
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), until));
             }
         }
