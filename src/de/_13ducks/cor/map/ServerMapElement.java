@@ -56,9 +56,7 @@ public class ServerMapElement extends AbstractMapElement {
 
     @Override
     public boolean isReserved() {
-        long l = System.currentTimeMillis();
         if (System.currentTimeMillis() < reservedUntil) {
-
             return true;
         } else {
             return false;
@@ -75,8 +73,8 @@ public class ServerMapElement extends AbstractMapElement {
     }
 
     @Override
-    public void setReserved(long reserveFor, GameObject go) {
-        reservedUntil = System.currentTimeMillis() + reserveFor;
+    public void setReserved(long reserveUntil, GameObject go) {
+        reservedUntil = reserveUntil;
         reserver = go;
     }
 
