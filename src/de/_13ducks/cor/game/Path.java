@@ -407,12 +407,12 @@ public class Path implements Pauseable, Serializable {
                 }
                 double passedWay = passedTime * speed / 1000;
                 // Noch am laufen?
-                if (passedWay < length) {
+                if (passedWay <= length) {
                     // Zuletzt erreichten Wegpunkt finden
-                    if (passedWay >= this.gNextPointDist) {
+                    if (passedWay > this.gNextPointDist) {
                         // Sind wir einen weiter oder mehrere
                         int weiter = 1;
-                        while (passedWay > path.get(gLastPointIdx + 1 + weiter).getDistance()) {
+                        while (passedWay > gPath.get(gLastPointIdx + 1 + weiter).getDistance()) {
                             weiter++;
                         }
                         gLastPointIdx += weiter;
