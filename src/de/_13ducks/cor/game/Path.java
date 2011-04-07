@@ -507,7 +507,7 @@ public class Path implements Pauseable, Serializable {
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
                     // Frei, also die nehmen!
-                    path = path.subList(0, lastWayPoint);
+                    path = path.subList(0, lastWayPoint + 1);
                     PathElement last = path.get(path.size() - 1);
                     // Verbessertes Einfügen, die Distanz stimmt für ein sofortiges umkehren exakt
                     path.add(new PathElement(target, last.getDistance() + (passedWay * 2), Position.flipIntVector(last.getDirection())));
@@ -523,7 +523,7 @@ public class Path implements Pauseable, Serializable {
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
-                    path = path.subList(0, lastWayPoint + 1);
+                    path = path.subList(0, lastWayPoint + 2);
                     manualMod = true;
                     // Client mitteilen
                     System.out.println("Setting " + unit + " to " + target + " (fwd)");
