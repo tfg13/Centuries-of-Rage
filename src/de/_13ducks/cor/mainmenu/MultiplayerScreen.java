@@ -54,7 +54,7 @@ public class MultiplayerScreen extends Container {
         super(m, 0, 0, 100, 100);
 
         // Hintergrund:
-        super.addComponent(new TiledImage(m, 10, 10, 80, 70, "/img/mainmenu/rost.png"));
+        super.addComponent(new TiledImage(m, 10, 10, 80, 70, "img/mainmenu/rost.png"));
 
         // Rahmen:
         super.addComponent(new Frame(m,10,10,80,70));

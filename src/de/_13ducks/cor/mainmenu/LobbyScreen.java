@@ -63,7 +63,7 @@ public class LobbyScreen extends Container {
 
         // Map-Preview
         // @TODO: Die startposition in diesem Preview auswählen
-        super.addComponent(new TiledImage(m, 5, 5, 90, 90, "/img/mainmenu/rost.png"));
+        super.addComponent(new TiledImage(m, 5, 5, 90, 90, "img/mainmenu/rost.png"));
 
         // Spielerliste:
         super.addComponent(new Frame(m, 10, 10, 45, 60));

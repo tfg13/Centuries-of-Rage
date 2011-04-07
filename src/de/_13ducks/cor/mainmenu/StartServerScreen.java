@@ -60,7 +60,7 @@ public class StartServerScreen extends Container {
         super(m, 15, 15, 80, 80);
 
         // Hintergrund:
-        super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 40, 30, "/img/mainmenu/rost.png"));
+        super.addComponent(new TiledImage(super.getMainMenu(), 30, 30, 40, 30, "img/mainmenu/rost.png"));
 
         // Die Debug-Checkbox:
         myCheckBox = new CheckBox(super.getMainMenu(), 40, 40, "img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
