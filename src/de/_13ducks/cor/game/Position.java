@@ -762,6 +762,19 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
         return 0;
     }
 
+    /**
+     * Dreht den Vector um, lääst ihn also in die Gegenrichtung zeigen
+     * @param oldVec der Vektor der umgedreht werden soll
+     * @return der umgedrehte Vector
+     */
+    public static int flipIntVector(int oldVec) {
+        oldVec += 4;
+        if (oldVec > 8) {
+            oldVec -= 8;
+        }
+        return oldVec;
+    }
+
     @Override
     public String toString() {
         return this.X + "|" + this.Y;
