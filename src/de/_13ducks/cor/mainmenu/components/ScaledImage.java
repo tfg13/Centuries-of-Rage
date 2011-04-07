@@ -57,20 +57,23 @@ public class ScaledImage extends Component {
         super(mainMenuReference, x, y, width, height);
 
         imagePath = imagepath;
+        
+        image = getMainMenu().getImgMap().get(imagePath).getImage();
+        image = image.getScaledCopy(getWidth(), getHeight());
     }
 
     @Override
     public void init(GameContainer c) {
-        try {
-            image = new Image(imagePath);
-
-            // Das Bild auf die Größe dieser Komponente skalieren:
-            image = image.getScaledCopy(getWidth(), getHeight());
-
-        } catch (SlickException ex) {
-            ex.printStackTrace();
-            System.out.print("MainMenu: Error loading image " + imagePath + " !");
-        }
+//        try {
+//            //image = new Image(imagePath);
+//
+//            // Das Bild auf die Größe dieser Komponente skalieren:
+//
+//
+//        } catch (SlickException ex) {
+//            ex.printStackTrace();
+//            System.out.print("MainMenu: Error loading image " + imagePath + " !");
+//        }
     }
 
     @Override
