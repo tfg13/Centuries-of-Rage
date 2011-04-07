@@ -72,6 +72,10 @@ public class ServerPathfinder {
 	    }
 	}
 
+        // Zwischenspeichern für Performance:
+        int unitMainX = unit.getMainPosition().getX();
+        int unitMainY = unit.getMainPosition().getY();
+
 	for (int j = 0; j < 40000; j++) {		//Anzahl der maximalen Durchläufe, bis Wegfindung aufgibt
 
 	    if (open.isEmpty()) {   //Abbruch, wenn openlist leer ist => es gibt keinen Weg
@@ -104,7 +108,7 @@ public class ServerPathfinder {
 			Position unitpos[] = unit.getPositions();
 
 			for (int i = 0; i < unitpos.length; i++) {
-			    if (rgi.netmap.isGroundCollidingForMovePlanning(nx - unit.getMainPosition().getX() + unitpos[i].getX(), ny  - unit.getMainPosition().getY() + unitpos[i].getY(), unit)) {
+			    if (rgi.netmap.isGroundCollidingForMovePlanning(nx - unitMainX + unitpos[i].getX(), ny  - unitMainY + unitpos[i].getY(), unit)) {
 				allesfrei = false; //Nicht alle Felder frei
 			    }
 			}
