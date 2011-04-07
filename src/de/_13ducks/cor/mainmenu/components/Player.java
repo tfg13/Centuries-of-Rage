@@ -66,7 +66,7 @@ public class Player extends Container {
      * erzeugt einen "leeren" Spieler
      */
     public Player(MainMenu m, LobbyScreen lobby, double x, double y, String name) {
-        super(m, x, y, 35, playerSlotHeight);
+        super(m, x, y, 43.5, playerSlotHeight);
         ready = false;
         this.name = name;
         super.fadeIn();
@@ -87,7 +87,7 @@ public class Player extends Container {
 
             @Override
             public void checkboxChanged() {
-                if (this.isChecked()) {
+                if (!ready) {
                     // "Breit"-Status an den Server übermitteln
                     lobbyScreen.send('3' + this.getName());
                 } else {
