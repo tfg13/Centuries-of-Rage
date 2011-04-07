@@ -73,13 +73,13 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 			continue;
 		    }
 		    double dist = wippos.get(j).getDistance(wippos.get(k)); //Distanz zwischen den 2 Dörfern
-		    VektorenNeutral.add(new FloatingPointPosition(((wippos.get(j).getX() - wippos.get(k).getX()) / Math.pow(dist, 5)), ((wippos.get(j).getY() - wippos.get(k).getY()) / Math.pow(dist, 5))));
+		    VektorenNeutral.add(new FloatingPointPosition(((wippos.get(j).getX() - wippos.get(k).getX()) / Math.pow(dist, 6)), ((wippos.get(j).getY() - wippos.get(k).getY()) / Math.pow(dist, 6))));
 		}
 
 		// Distanz zu Startdörfern
 		for (int k = 0; k < RandomMapBuilder.RandomRogMap.getPlayernumber(); k++) {
 		    double dist = wippos.get(j).getDistance(buildingList.get(k).getMainPosition()); //Distanz zwischen den 2 Dörfern		    
-		    VektorenStart.add(new FloatingPointPosition(((wippos.get(j).getX() - buildingList.get(k).getMainPosition().getX()) / Math.pow(dist, 5)), (wippos.get(j).getY() - buildingList.get(k).getMainPosition().getY()) / Math.pow(dist, 5)));
+		    VektorenStart.add(new FloatingPointPosition(((wippos.get(j).getX() - buildingList.get(k).getMainPosition().getX()) / Math.pow(dist, 6)), (wippos.get(j).getY() - buildingList.get(k).getMainPosition().getY()) / Math.pow(dist, 6)));
 		}
 
 		// Endvektor aus Vektoren zu allen Dörfern berechen
