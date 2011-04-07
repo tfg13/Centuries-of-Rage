@@ -1442,6 +1442,7 @@ public class ServerMapModule {
      * @param target das Ziel (Zuordnungsposition)
      */
     public void reserveMoveTarget(Unit unit, long until, Position target) {
+        until += 100;
         Position diff = unit.getMainPosition().subtract(target);
         for (Position pos : unit.getPositions()) {
             pos = pos.subtract(diff);
