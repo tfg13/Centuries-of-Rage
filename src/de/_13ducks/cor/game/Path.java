@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import de._13ducks.cor.game.client.ClientCore;
+import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.ServerCore.InnerServer;
 import de._13ducks.cor.graphics.GraphicsContent;
 
@@ -165,9 +166,14 @@ public class Path implements Pauseable, Serializable {
 
     /**
      * Überschreibt den Pfad und lässt die Einheit vom Beginn loslaufen
+     * Unit und rgi müssen für Server gesetzt sein, für Client sind die null.
      * @param newPath der neue Weg
      */
-    public synchronized void overwritePath(List<Position> newPath) {
+    public synchronized void overwritePath(List<Position> newPath, Unit unit, ServerCore.InnerServer rgi) {
+        // Eventuell alte Reservierung löschen
+        if (isMoving() && rgi != null) {
+            rgi.netmap.deleteMoveTargetReservation(unit, targetPos);
+        }
         startPos = newPath.get(0);
         targetPos = newPath.get(newPath.size() - 1);
         lastWayPoint = 0;
@@ -176,6 +182,9 @@ public class Path implements Pauseable, Serializable {
         this.nextWayPointDist = path.get(1).getDistance();
         this.gNextPointDist = gPath.get(1).getDistance();
         moveStartTime = System.currentTimeMillis();
+        if (rgi != null) {
+            rgi.netmap.reserveMoveTarget(unit, System.currentTimeMillis() + (long) (1000.0 * length / this.speed), newPath.get(newPath.size() - 1));
+        }
     }
 
     /**
