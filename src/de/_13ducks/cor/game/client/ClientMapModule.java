@@ -89,6 +89,7 @@ public class ClientMapModule {
      * 3 = Besetzt (drüberlaufen)
      */
     public int[][] serverCollision;
+    public long[][] serverRes;
 
     public ClientMapModule(ClientCore.InnerClient in) {
         rgi = in;
@@ -938,9 +939,10 @@ public class ClientMapModule {
 
         theMap = MapIO.readMap(mapFile.getPath(), MapIO.MODE_CLIENT, rgi, null);
 
-     //   if (rgi.isInDebugMode()) {
+        if (rgi.isInDebugMode()) {
             serverCollision = new int[theMap.getMapSizeX()][theMap.getMapSizeY()];
-       // }
+            serverRes = new long[theMap.getMapSizeX()][theMap.getMapSizeY()];
+        }
 
         unitList = Collections.synchronizedList((ArrayList<Unit>) theMap.getMapPoperty("UNIT_LIST"));
         buildingList = Collections.synchronizedList((ArrayList<Building>) theMap.getMapPoperty("BUILDING_LIST"));

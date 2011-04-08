@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.networks.client;
 
+import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ public class ClientNetController {
             //ackmanager = new ServerACKManager(rgi);
 
             temp06 = new ArrayList<Position>();
-            cmdMap = new ClientCommand[55];
+            cmdMap = new ClientCommand[57];
 
             initCmdArr();
         }
@@ -241,6 +242,8 @@ public class ClientNetController {
             cmdMap[50] = new de._13ducks.cor.networks.cmd.client.C050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.client.C051_SET_TEAMS();
             cmdMap[53] = new de._13ducks.cor.networks.cmd.client.C053_DEBUG_SERVER_COLLISION();
+            cmdMap[55] = new de._13ducks.cor.networks.cmd.client.C055_QUICKSTOP();
+            cmdMap[56] = new de._13ducks.cor.networks.cmd.client.C056_DEBUG_SERVER_RES();
         }
 
         void sendDATA(byte[] b) {

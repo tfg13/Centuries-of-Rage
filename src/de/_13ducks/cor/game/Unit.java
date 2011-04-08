@@ -143,7 +143,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
         //rgi.mapModule.setCollision(newPath.get(0), collision.free);
         //rgi.mapModule.setUnitRef(newPath.get(0), null, playerId);
-        path.overwritePath(newPath);
+        path.overwritePath(newPath, null, null);
     }
 
     /**
@@ -192,12 +192,8 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
         // Bauen anhalten
         System.out.println("AddMe: Notify Behaviours about MOVE_START");
-
-        //rgi.mapModule.setCollision(newPath.get(0), collision.free);
-        //rgi.mapModule.setUnitRef(newPath.get(0), null, playerId);
-        path.overwritePath(newPath);
-        // Reservieren
-        rgi.netmap.reserveMoveTarget(this, System.currentTimeMillis() + (long) (1000.0 * path.getLength() / this.speed), newPath.get(newPath.size() - 1));
+        
+        path.overwritePath(newPath, this, rgi);
     }
 
     /**

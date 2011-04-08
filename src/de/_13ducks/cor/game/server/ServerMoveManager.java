@@ -426,19 +426,7 @@ public class ServerMoveManager {
                 return unit;
             }
         }
-        return null;
-    } */
-
-    /**
-     * Reserviert das Ziel für die Anstehende Bewegung. Überschreibt vorhandene
-     * ohne Check, benachrichtigt aber das "Opfer"
-     * @param mover Die Einheit, für die Reserviert wird
-     * @param target Das zu reservierende Ziel-Feld
-     * @param time Der Zeitpunkt, zu dem die Einheit ankommen wird (und daher die Reservierung abläuft)
-     */
-    private void reserveTarget(Unit mover, long time, Position target) {
-        inner.netmap.setFieldReserved(target, time + 200, mover); // 200 müssen dazugerechnet werden, da erst dann das Behaviour die Collision setzen kann
-    }
+        return
 
     /**
      * Sendet eine Einheit zu einer bestimmten Position.

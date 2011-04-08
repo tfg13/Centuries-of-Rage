@@ -1206,39 +1206,6 @@ public class ServerMapModule {
     }
 
     /**
-     * Setzt die Feldreservierung.
-     *
-     * Überschreibt Reservierungen, benachrichtigt aber das "Opfer"
-     *
-     * @param field
-     * @param unitspeed
-     */
-    public void setFieldReserved(Position field, long reserveFor, Unit reserver) {
-        try {
-            AbstractMapElement ele = theMap.getVisMap()[field.getX()][field.getY()];
-            if (ele.isReserved()) {
-                rgi.moveMan.cancelledReservationFor((Unit) ele.getReserver());
-            }
-            ele.setReserved(reserveFor, reserver);
-        } catch (Exception ex) {
-            // Hier können aus Timing Gründen schlimme Dinge passiern, das ist egal.
-        }
-    }
-
-    /**
-     * Löscht eine Reservierung wieder. Die Einheit, die Reserviert hat wird NICHT
-     * benachrichtigt!!!
-     * @param field
-     */
-    public void deleteFieldReservation(Position field) {
-        try {
-            theMap.getVisMap()[field.getX()][field.getY()].deleteReservation();
-        } catch (Exception ex) {
-        }
-        return;
-    }
-
-    /**
      * Überprüft, ob ein Feld gerade reserviert ist.
      *
      * @param field
@@ -1475,10 +1442,14 @@ public class ServerMapModule {
      * @param target das Ziel (Zuordnungsposition)
      */
     public void reserveMoveTarget(Unit unit, long until, Position target) {
+        until += 100;
         Position diff = unit.getMainPosition().subtract(target);
         for (Position pos : unit.getPositions()) {
             pos = pos.subtract(diff);
             theMap.getVisMap()[pos.getX()][pos.getY()].setReserved(until, unit);
+            if (rgi.isInDebugMode()) {
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), until));
+            }
         }
     }
 
@@ -1492,6 +1463,9 @@ public class ServerMapModule {
         for (Position pos : unit.getPositions()) {
             pos = pos.subtract(diff);
             theMap.getVisMap()[pos.getX()][pos.getY()].deleteReservation();
+            if (rgi.isInDebugMode()) {
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), 0));
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import de._13ducks.cor.game.client.ClientCore;
+import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.ServerCore.InnerServer;
 import de._13ducks.cor.graphics.GraphicsContent;
 
@@ -165,9 +166,14 @@ public class Path implements Pauseable, Serializable {
 
     /**
      * Überschreibt den Pfad und lässt die Einheit vom Beginn loslaufen
+     * Unit und rgi müssen für Server gesetzt sein, für Client sind die null.
      * @param newPath der neue Weg
      */
-    public synchronized void overwritePath(List<Position> newPath) {
+    public synchronized void overwritePath(List<Position> newPath, Unit unit, ServerCore.InnerServer rgi) {
+        // Eventuell alte Reservierung löschen
+        if (isMoving() && rgi != null) {
+            rgi.netmap.deleteMoveTargetReservation(unit, targetPos);
+        }
         startPos = newPath.get(0);
         targetPos = newPath.get(newPath.size() - 1);
         lastWayPoint = 0;
@@ -176,6 +182,9 @@ public class Path implements Pauseable, Serializable {
         this.nextWayPointDist = path.get(1).getDistance();
         this.gNextPointDist = gPath.get(1).getDistance();
         moveStartTime = System.currentTimeMillis();
+        if (rgi != null) {
+            rgi.netmap.reserveMoveTarget(unit, System.currentTimeMillis() + (long) (1000.0 * length / this.speed), newPath.get(newPath.size() - 1));
+        }
     }
 
     /**
@@ -398,12 +407,12 @@ public class Path implements Pauseable, Serializable {
                 }
                 double passedWay = passedTime * speed / 1000;
                 // Noch am laufen?
-                if (passedWay < length) {
+                if (passedWay <= length) {
                     // Zuletzt erreichten Wegpunkt finden
-                    if (passedWay >= this.gNextPointDist) {
+                    if (passedWay > this.gNextPointDist) {
                         // Sind wir einen weiter oder mehrere
                         int weiter = 1;
-                        while (passedWay > path.get(gLastPointIdx + 1 + weiter).getDistance()) {
+                        while (passedWay > gPath.get(gLastPointIdx + 1 + weiter).getDistance()) {
                             weiter++;
                         }
                         gLastPointIdx += weiter;
@@ -497,8 +506,10 @@ public class Path implements Pauseable, Serializable {
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
                     // Frei, also die nehmen!
-                    path = path.subList(0, lastWayPoint);
-                    path.add(path.get(path.size() - 1));
+                    path = path.subList(0, lastWayPoint + 1);
+                    PathElement last = path.get(path.size() - 1);
+                    // Verbessertes Einfügen, die Distanz stimmt für ein sofortiges umkehren exakt
+                    path.add(new PathElement(target, last.getDistance() + (passedWay * 2), Position.flipIntVector(last.getDirection())));
                     manualMod = true;
                     // Client mitteilen
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
@@ -510,7 +521,7 @@ public class Path implements Pauseable, Serializable {
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
-                    path = path.subList(0, lastWayPoint + 1);
+                    path = path.subList(0, lastWayPoint + 2);
                     manualMod = true;
                     // Client mitteilen
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint + 1, target.getX(), target.getY()));
@@ -523,7 +534,8 @@ public class Path implements Pauseable, Serializable {
                 length = path.get(path.size() - 1).getDistance();
                 targetPos = path.get(path.size() - 1).getPos();
                 // Neues Ziel reservieren
-                rgi.netmap.reserveMoveTarget(unit, System.currentTimeMillis() + (long) (1000.0 * length / speed), targetPos);
+                long until = (long) ((1000 * length / speed) + moveStartTime);
+                rgi.netmap.reserveMoveTarget(unit, until, targetPos);
             }
         }
     }
@@ -534,18 +546,20 @@ public class Path implements Pauseable, Serializable {
      * @param readInt
      * @param readPosition
      */
-    public void quickStop(int readInt, Position readPosition, Unit unit) {
-        if (isMoving()) {
-            // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
-            // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
-            // Wenn wir schon danach sind zurück gehen 
-        } else {
-            // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
-            // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
-            if (!unit.getMainPosition().equals(readPosition)) {
-                unit.setMainPosition(readPosition);
-            }
-        }
+    public synchronized void quickStop(int readInt, Position readPosition, Unit unit) {
+        //  if (isMoving()) {
+        // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
+        // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
+        // Wenn wir schon danach sind zurück gehen
+        //} else {
+        // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
+        // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
+        System.out.println("WARN: Pfusch in moveSTOP!");
+        unit.setMainPosition(readPosition);
+        targetPos = null;
+        path = null;
+        moving = false;
+        //}
     }
 
     /**

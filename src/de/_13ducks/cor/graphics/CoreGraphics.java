@@ -121,10 +121,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         modi = Display.getAvailableDisplayModes();
         sorted = sortDisplayModes(filterList(sortDisplayModes(modi).toArray(new DisplayMode[1]))).toArray(new DisplayMode[1]);
         fullfilter = filterFullscreen(sorted);
-        DisplayMode myMode = findInitialDisplayMode(cfgvalues);
-        super.setDisplayMode(myMode.getWidth(), myMode.getHeight(), myMode.isFullscreenCapable());
-        content.realPixX = myMode.getWidth();
-        content.realPixY = myMode.getHeight();
+        CoRDisplayMode myMode = findInitialDisplayMode(cfgvalues);
+        super.setDisplayMode(myMode.getdMode().getWidth(), myMode.getdMode().getHeight(), myMode.isFullscreen());
+        content.realPixX = myMode.getdMode().getWidth();
+        content.realPixY = myMode.getdMode().getHeight();
         Thread t = new Thread(new Runnable() {
 
             public void run() {
@@ -2006,7 +2006,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * @param cfgvalues die Settings, hier wird die alte Einstellung rausglesen
      * @return der DisplayMode, mit dem gestartet werden soll.
      */
-    private DisplayMode findInitialDisplayMode(HashMap<String, String> cfgvalues) {
+    private CoRDisplayMode findInitialDisplayMode(HashMap<String, String> cfgvalues) {
         if (cfgvalues.containsKey("fullscreen")) {
             boolean fullscreen = "true".equals(cfgvalues.get("fullscreen"));
             if (cfgvalues.containsKey("DisplayResolutionX") && cfgvalues.containsKey("DisplayResolutionY")) {
@@ -2015,8 +2015,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 if (fullscreen) {
                     // Vollbild
                     for (int i = 0; i < fullfilter.length; i++) {
-                        DisplayMode bbb = fullfilter[i];
-                        if (bbb.getWidth() == tx && bbb.getHeight() == ty) {
+                        CoRDisplayMode bbb = new CoRDisplayMode();
+			bbb.setdMode(fullfilter[i]);
+			bbb.setFullscreen(true);
+                        if (bbb.getdMode().getWidth() == tx && bbb.getdMode().getHeight() == ty) {
                             // Gefunden
                             return bbb;
                         }
@@ -2024,8 +2026,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                 } else {
                     // Fenster
                     for (int i = 0; i < sorted.length; i++) {
-                        DisplayMode bbb = sorted[i];
-                        if (bbb.getWidth() == tx && bbb.getHeight() == ty) {
+                        CoRDisplayMode bbb = new CoRDisplayMode();
+			bbb.setdMode(sorted[i]);
+			bbb.setFullscreen(false);
+                        if (bbb.getdMode().getWidth() == tx && bbb.getdMode().getHeight() == ty) {
                             // Gefunden
                             return bbb;
                         }
@@ -2036,9 +2040,13 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
         // Wenn wir hier hinkommen konnte keine alte Einstellung geladen werden. Dann die erste Fullscreen nehmen (falls vorhanden):
         if (fullfilter.length > 0) {
-            return fullfilter[0];
+	    CoRDisplayMode bbb = new CoRDisplayMode();
+	    bbb.setdMode(fullfilter[0]);
+            return bbb;
         } else {
-            return new DisplayMode(800, 600);
+	    CoRDisplayMode bbb = new CoRDisplayMode();
+	    bbb.setdMode(new DisplayMode(800, 600));
+            return bbb;
         }
     }
 
