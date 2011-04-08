@@ -1048,7 +1048,7 @@ public class ServerMapModule {
             // Kollision aufheben
             System.out.println("Achtung: Kollisions-Problem!");
             for (Position pos : u.getPositions()) {
-                removePerm(pos);
+                removePerm(pos, u);
             }
             System.out.println("AddMe: Check for reserved fields.");
             /*   if (!u.isMoving()) {
@@ -1092,7 +1092,7 @@ public class ServerMapModule {
             // Kollision aufheben
             // Kollsion entfernen
             for (Position pos : u.getPositions()) {
-                removePerm(pos);
+                removePerm(pos, u);
             }
 
             // Allen mitteilen
@@ -1349,7 +1349,7 @@ public class ServerMapModule {
     public void releasePosition(Unit obj) {
         Position[] oldpos = obj.getPositions();
         for (Position pos : oldpos) {
-            removePerm(pos);
+            removePerm(pos, obj);
             addTemp(pos, obj);
         }
     }
@@ -1385,8 +1385,8 @@ public class ServerMapModule {
      * @param pos die Position
      * @see ServerMapElement
      */
-    private void removePerm(Position pos) {
-        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject();
+    private void removePerm(Position pos, GameObject obj) {
+        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject(obj);
         if (rgi.isInDebugMode()) {
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
         }

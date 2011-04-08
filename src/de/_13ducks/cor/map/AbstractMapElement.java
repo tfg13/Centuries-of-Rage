@@ -162,7 +162,7 @@ public abstract class AbstractMapElement {
      * Entfernt den langfristigen Besetzer dieses Feldes wieder.
      * Sollte keiner Existieren, passiert gar nix.
      */
-    public abstract int removePermanentObject();
+    public abstract int removePermanentObject(GameObject obj);
 
     /**
      * Registriert das angegebene Object als kurzfristigen Besetzter dieses Feldes.

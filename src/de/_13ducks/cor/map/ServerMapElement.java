@@ -175,15 +175,28 @@ public class ServerMapElement extends AbstractMapElement {
      * Sollte keiner Existieren, passiert gar nix.
      */
     @Override
-    public int removePermanentObject() {
+    public int removePermanentObject(GameObject obj) {
         if (collision != collision.unreachable) {
-            permRef = null;
-            if (moveRefs.isEmpty()) {
-                collision = collision.free;
-                return 0;
+            if (permRef != null && permRef.equals(obj)) {
+                permRef = null;
+                if (moveRefs.isEmpty()) {
+                    collision = collision.free;
+                    return 0;
+                } else {
+                    collision = collision.occupied;
+                    return 3;
+                }
             } else {
-                collision = collision.occupied;
-                return 3;
+                if (permRef == null) {
+                    if (moveRefs.isEmpty()) {
+                        collision = collision.free;
+                        return 0;
+                    } else {
+                        collision = collision.occupied;
+                        return 3;
+                    }
+                }
+                return 2;
             }
         }
         return 1;
