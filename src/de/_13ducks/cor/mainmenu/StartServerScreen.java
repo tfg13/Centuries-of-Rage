@@ -32,6 +32,8 @@ import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.TextBox;
 import de._13ducks.cor.mainmenu.components.TiledImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Hier kann man einen Server starten
@@ -88,8 +90,16 @@ public class StartServerScreen extends Container {
                 boolean debug = myCheckBox.isChecked();
                 String map = "map/" + myTextBox.getText();
 
+                // Kurz warten, bis der Server läuft:
                 super.getMainMenu().startServer(debug, map);
-                //super.getMainMenu().joinServer("localhost");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StartServerScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+
+                super.getMainMenu().joinServer("localhost");
 
                 fadeOut();
 
