@@ -28,6 +28,7 @@ package de._13ducks.cor.mainmenu;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.ScaledImage;
+import de._13ducks.cor.tools.randommapbuilder.RandomMapBuilder;
 
 /**
  * Der Startbildschirm, der als erstes angezeigt wird
@@ -89,8 +90,7 @@ public class StartScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                mainMenu.getMenu("randommapbuilderscreen").fadeIn();
-                fadeOut();
+                RandomMapBuilder.newMap((byte) 4, (byte) 0, (byte) 0, (byte) 4);
             }
         });
 
