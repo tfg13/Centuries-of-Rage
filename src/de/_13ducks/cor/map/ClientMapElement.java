@@ -89,11 +89,6 @@ public class ClientMapElement extends AbstractMapElement {
     }
 
     @Override
-    public int removePermanentObject() {
-        throw new UnsupportedOperationException("Not supported for Client!");
-    }
-
-    @Override
     public int addTempObject(GameObject obj) {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
@@ -105,6 +100,11 @@ public class ClientMapElement extends AbstractMapElement {
 
     @Override
     public boolean validGroundPathWhilePlanning(GameObject obj) {
+        throw new UnsupportedOperationException("Not supported for Client!");
+    }
+
+    @Override
+    public int removePermanentObject(GameObject obj) {
         throw new UnsupportedOperationException("Not supported for Client!");
     }
 
