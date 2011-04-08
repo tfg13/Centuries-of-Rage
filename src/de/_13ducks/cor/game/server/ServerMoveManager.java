@@ -190,7 +190,10 @@ public class ServerMoveManager {
         if (newpath == null || newpath.size() == 1) {
             // Es gibt keinen Weg, wir können da also nicht hingehen
             // Kollision wieder setzen - falls wir stehen
-            return;
+            //System.out.println("WARNING: Cannot move " + unit + " to " + target);
+            System.out.println("EXCEPTION IN THREAD " + Thread.currentThread().getName());
+            throw new RuntimeException("WARNING: Cannot move " + unit + " to " + target);
+            //return;
         }
         // Wenn wir uns nicht bewegen, dann einfach Pfad nehmen und losrennen
         this.directMoveUnit(newpath, unit, false);

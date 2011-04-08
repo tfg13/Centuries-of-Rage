@@ -492,7 +492,9 @@ public class Path implements Pauseable, Serializable {
      * @param unit
      */
     public synchronized void stopMovement(InnerServer rgi, Unit unit) {
+        System.out.println("THR" + Thread.currentThread().getName());
         if (isMoving()) {
+            System.out.println("Stop for " + unit);
             // Optimalen Stop-Punkt berechnen:
             double passedTime = System.currentTimeMillis() - moveStartTime;
             double passedWay = passedTime * unit.getSpeed() / 1000 - path.get(lastWayPoint).getDistance();
