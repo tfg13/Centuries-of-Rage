@@ -76,7 +76,7 @@ public class ServerPathfinder {
         int unitMainX = unit.getMainPosition().getX();
         int unitMainY = unit.getMainPosition().getY();
 
-	for (int j = 0; j < 40000; j++) {		//Anzahl der maximalen Durchläufe, bis Wegfindung aufgibt
+	for (int j = 0; j < 400000; j++) {		//Anzahl der maximalen Durchläufe, bis Wegfindung aufgibt
 
 	    if (open.isEmpty()) {   //Abbruch, wenn openlist leer ist => es gibt keinen Weg
 		return null;
