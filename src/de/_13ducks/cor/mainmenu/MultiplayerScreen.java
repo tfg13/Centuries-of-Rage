@@ -39,12 +39,10 @@ import de._13ducks.cor.mainmenu.components.TiledImage;
  */
 public class MultiplayerScreen extends Container {
 
-    
     /**
      * Die Textbox für Join to IP
      */
     private TextBox serverBox;
-
 
     /**
      * Konstruktor
@@ -57,13 +55,13 @@ public class MultiplayerScreen extends Container {
         super.addComponent(new TiledImage(m, 10, 10, 80, 70, "img/mainmenu/rost.png"));
 
         // Rahmen:
-        super.addComponent(new Frame(m,10,10,80,70));
-        
+        super.addComponent(new Frame(m, 10, 10, 80, 70));
+
         // Rahmen für serverauswahl
-        super.addComponent(new Frame(m,15,14,71,54));
+        super.addComponent(new Frame(m, 15, 14, 71, 54));
 
         // Ip-Eingabefeld:
-        serverBox = new TextBox(m,14,71);
+        serverBox = new TextBox(m, 14, 71);
         super.addComponent(serverBox);
 
         // Join-Button:
@@ -71,8 +69,15 @@ public class MultiplayerScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                // @TODO: Mainmenu.joinServer() aufrufen, bei Erfolg Lobby anzeigen
                 super.getMainMenu().joinServer(serverBox.getText());
+            }
+
+            @Override
+            public void keyPressed(int key, char c) {
+                if (key == 28) {
+                    super.getMainMenu().joinServer(serverBox.getText());
+                }
+                System.out.println(key);
             }
         });
 
