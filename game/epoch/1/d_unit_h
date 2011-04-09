@@ -1,5 +1,5 @@
 U 401 {
-speed=6
+speed=100
 name=Scout
 armortype=lightinf
 defaultTexture=img/creeps/testhuman2.png
