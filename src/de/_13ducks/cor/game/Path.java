@@ -518,15 +518,15 @@ public class Path implements Pauseable, Serializable {
                 }
             } else {
                 // Vor dem Feld, auf dem nächsten halten
-                Position target = path.get(lastWayPoint + 1).getPos();
+                Position target = path.get(lastWayPoint).getPos();
                 if (Position.checkCol(target.getX(), target.getY(), unit, rgi, Position.AROUNDME_COLMODE_GROUNDTARGET, true)) {
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
-                    path = path.subList(0, lastWayPoint + 2);
+                    path = path.subList(0, lastWayPoint + 1);
                     manualMod = true;
                     // Client mitteilen
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint + 1, target.getX(), target.getY()));
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
                 }
             }
             if (manualMod) {
