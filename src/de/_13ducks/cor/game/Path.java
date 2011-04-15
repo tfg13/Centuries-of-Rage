@@ -236,7 +236,6 @@ public class Path implements Pauseable, Serializable {
                 passedTime = System.currentTimeMillis() - moveStartTime;
             }
             double passedWay = passedTime * caster2.speed / 1000;
-            System.out.println(caster2 + " passed " + passedWay + " of " + length);
             // Schon fertig?
             if (passedWay >= length) {
                 // Fertig, Bewegung stoppen
@@ -407,7 +406,6 @@ public class Path implements Pauseable, Serializable {
                     passedTime = System.currentTimeMillis() - moveStartTime;
                 }
                 double passedWay = passedTime * speed / 1000;
-                System.out.println(caster2 + " (g) passed " + passedWay + " of " + length);
                 // Noch am laufen?
                 if (passedWay <= length) {
                     // Zuletzt erreichten Wegpunkt finden
@@ -556,7 +554,6 @@ public class Path implements Pauseable, Serializable {
             // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
             // Wenn wir schon danach sind zurück gehen
             if (gPath.get(gLastPointIdx).getPos().equals(readPosition)) {
-                System.out.println("ClientSTOP: back." + readPosition);
                 // Zurück
                 // Das ist kompliziert. Die letzten zwei Felder werden getauscht, damit die Einheit zurück geht.
                 // Außerdem wird die Wegstrecke manipuliert, damit es keine Sprünge gibt
@@ -565,7 +562,6 @@ public class Path implements Pauseable, Serializable {
                 PathElement last = gPath.remove(gPath.size() - 1);
                 PathElement prelast = gPath.remove(gPath.size() - 1);
                 gPath.add(new PathElement(last.getPos(), prelast.getDistance(), 0)); // Vector egal
-                
                 // Die derzeitige Weglänge kann nicht verändert werden, deshalb muss die Startzeit verschoben werden.
                 long time = System.currentTimeMillis();
                 // Bisherige Strecke berechnen und Startzeit umgekehrt verändern
@@ -580,7 +576,6 @@ public class Path implements Pauseable, Serializable {
                 targetPos = gPath.get(gPath.size() -1).getPos();
                 length = gPath.get(gPath.size() - 1).getDistance();
             } else if (gPath.get(gLastPointIdx + 1).getPos().equals(readPosition)) {
-                System.out.println("ClientSTOP: fwd. " + readPosition);
                 // Weiter zum nächsten.
                 // Hier geschieht nicht viel, es muss nur der Weg nach dem nächsten gelöscht werden.
                 gPath = gPath.subList(0, gLastPointIdx + 2);
@@ -595,8 +590,6 @@ public class Path implements Pauseable, Serializable {
                 moving = false;
                 return;
             }
-
-
         } else {
             // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
             // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
