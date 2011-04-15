@@ -35,8 +35,6 @@ import java.awt.Dimension;
 import java.awt.Robot;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.lwjgl.LWJGLException;
