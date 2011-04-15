@@ -549,19 +549,55 @@ public class Path implements Pauseable, Serializable {
      * @param readPosition
      */
     public synchronized void quickStop(int readInt, Position readPosition, Unit unit) {
-        //  if (isMoving()) {
-        // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
-        // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
-        // Wenn wir schon danach sind zurück gehen
-        //} else {
-        // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
-        // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
-        System.out.println("WARN: Pfusch in moveSTOP!");
-        unit.setMainPosition(readPosition);
-        targetPos = null;
-        path = null;
-        moving = false;
-        //}
+        if (isMoving()) {
+            // Die Zielposition ist ein Teil des Pfades und nicht mit dem Server verhandelbar.
+            // 2 Mögliche Fälle: Wir sind noch davor, dann einfach Weg umbiegen.
+            // Wenn wir schon danach sind zurück gehen
+            if (gPath.get(gLastPointIdx).getPos().equals(readPosition)) {
+                System.out.println("ClientSTOP: back." + readPosition);
+                // Zurück
+                // Das ist kompliziert. Die letzten zwei Felder werden getauscht, damit die Einheit zurück geht.
+                // Außerdem wird die Wegstrecke manipuliert, damit es keine Sprünge gibt
+                // Aber erstmal alles nach dem nächsten löschen
+                gPath = gPath.subList(0, gLastPointIdx + 2);
+                PathElement last = gPath.remove(gPath.size() - 1);
+                PathElement prelast = gPath.remove(gPath.size() - 1);
+                gPath.add(new PathElement(last.getPos(), prelast.getDistance(), 0)); // Vector egal
+                gPath.add(new PathElement(prelast.getPos(), last.getDistance(), Position.flipIntVector(last.getDirection())));
+                // Die derzeitige Weglänge kann nicht verändert werden, deshalb muss die Startzeit verschoben werden.
+                long time = System.currentTimeMillis();
+                // Bisherige Strecke berechnen und Startzeit umgekehrt verändern
+                double passedWay = ((System.currentTimeMillis() - moveStartTime) * speed / 1000) - prelast.getDistance();
+                double moveWay = gPath.get(gPath.size() - 1).getDistance() - gPath.get(gPath.size() - 2).getDistance() - passedWay;
+                moveStartTime = (long) (-1000 * moveWay / speed + time);
+                unit.setMainPosition(gPath.get(gPath.size() - 2).getPos());
+                gNextPointDist = gPath.get(gPath.size() - 2).getDistance();
+            } else if (gPath.get(gLastPointIdx + 1).getPos().equals(readPosition)) {
+                System.out.println("ClientSTOP: fwd. " + readPosition);
+                // Weiter zum nächsten.
+                // Hier geschieht nicht viel, es muss nur der Weg nach dem nächsten gelöscht werden.
+                gPath = gPath.subList(0, gLastPointIdx + 2);
+            } else {
+                System.out.println("Cannot stop movement smooth, hard-resetting to prevent async");
+                unit.setMainPosition(readPosition);
+                targetPos = null;
+                gPath = null;
+                moving = false;
+                return;
+            }
+            // Neues Ziel einstellen
+            targetPos = gPath.get(gPath.size() - 1).getPos();
+            length = gPath.get(gPath.size() - 1).getDistance();
+
+        } else {
+            // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
+            // Damit es zu keinen async-Problemen kommt, wird hier die Position der Einheit einfach gesetzt
+            System.out.println("WARN: Pfusch in moveSTOP!");
+            unit.setMainPosition(readPosition);
+            targetPos = null;
+            path = null;
+            moving = false;
+        }
     }
 
     /**
