@@ -407,6 +407,7 @@ public class Path implements Pauseable, Serializable {
                     passedTime = System.currentTimeMillis() - moveStartTime;
                 }
                 double passedWay = passedTime * speed / 1000;
+                System.out.println(caster2 + " (g) passed " + passedWay + " of " + length);
                 // Noch am laufen?
                 if (passedWay <= length) {
                     // Zuletzt erreichten Wegpunkt finden
@@ -564,15 +565,18 @@ public class Path implements Pauseable, Serializable {
                 PathElement last = gPath.remove(gPath.size() - 1);
                 PathElement prelast = gPath.remove(gPath.size() - 1);
                 gPath.add(new PathElement(last.getPos(), prelast.getDistance(), 0)); // Vector egal
-                gPath.add(new PathElement(prelast.getPos(), last.getDistance(), Position.flipIntVector(last.getDirection())));
+                
                 // Die derzeitige Weglänge kann nicht verändert werden, deshalb muss die Startzeit verschoben werden.
                 long time = System.currentTimeMillis();
                 // Bisherige Strecke berechnen und Startzeit umgekehrt verändern
                 double passedWay = ((time - moveStartTime) * speed / 1000) - prelast.getDistance();
+                gPath.add(new PathElement(prelast.getPos(), prelast.getDistance() + (2 * passedWay), Position.flipIntVector(last.getDirection())));
                 double moveWay = gPath.get(gPath.size() - 1).getDistance() - gPath.get(gPath.size() - 2).getDistance() - passedWay;
-                moveStartTime = (long) (-1000 * moveWay / speed + time);
+                //moveStartTime = (long) (-1000 * (passedWay + prelast.getDistance()) / speed + time);
+                moveStartTime = (long) (time - ((passedWay + prelast.getDistance()) * 1000 / speed));
                 unit.setMainPosition(gPath.get(gPath.size() - 2).getPos());
-                gNextPointDist = gPath.get(gPath.size() - 2).getDistance();
+                gNextPointDist = gPath.get(gPath.size() - 1).getDistance();
+                nextWayPointDist = gNextPointDist;
                 targetPos = gPath.get(gPath.size() -1).getPos();
                 length = gPath.get(gPath.size() - 1).getDistance();
             } else if (gPath.get(gLastPointIdx + 1).getPos().equals(readPosition)) {
