@@ -567,7 +567,7 @@ public class Path implements Pauseable, Serializable {
                 // Die derzeitige Weglänge kann nicht verändert werden, deshalb muss die Startzeit verschoben werden.
                 long time = System.currentTimeMillis();
                 // Bisherige Strecke berechnen und Startzeit umgekehrt verändern
-                double passedWay = ((System.currentTimeMillis() - moveStartTime) * speed / 1000) - prelast.getDistance();
+                double passedWay = ((time - moveStartTime) * speed / 1000) - prelast.getDistance();
                 double moveWay = gPath.get(gPath.size() - 1).getDistance() - gPath.get(gPath.size() - 2).getDistance() - passedWay;
                 moveStartTime = (long) (-1000 * moveWay / speed + time);
                 unit.setMainPosition(gPath.get(gPath.size() - 2).getPos());
