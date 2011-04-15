@@ -141,7 +141,7 @@ public class SelectionMap {
         // Alle holen
         LinkedList<InteractableGameElement> list = map[cx][cy];
         if (list != null) {
-            return list;
+            return (List<InteractableGameElement>) list.clone();
         } else {
             return new LinkedList<InteractableGameElement>();
         }
