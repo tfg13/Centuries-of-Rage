@@ -494,7 +494,7 @@ public class Path implements Pauseable, Serializable {
     public synchronized void stopMovement(InnerServer rgi, Unit unit) {
         System.out.println("THR" + Thread.currentThread().getName());
         if (isMoving()) {
-            System.out.println("Stop for " + unit);
+            System.out.print("Stop for " + unit + " with... ");
             // Optimalen Stop-Punkt berechnen:
             double passedTime = System.currentTimeMillis() - moveStartTime;
             double passedWay = passedTime * unit.getSpeed() / 1000 - path.get(lastWayPoint).getDistance();
@@ -505,8 +505,10 @@ public class Path implements Pauseable, Serializable {
                 Position target = path.get(lastWayPoint).getPos();
                 if (Position.checkCol(target.getX(), target.getY(), unit, rgi, Position.AROUNDME_COLMODE_GROUNDTARGET, true)) {
                     // Leider nix, andere suchen
+                    System.out.println("back-switch");
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
+                    System.out.println("back-direct");
                     // Frei, also die nehmen!
                     path = path.subList(0, lastWayPoint + 1);
                     PathElement last = path.get(path.size() - 1);
@@ -520,10 +522,12 @@ public class Path implements Pauseable, Serializable {
                 // Vor dem Feld, auf dem nächsten halten
                 Position target = path.get(lastWayPoint).getPos();
                 if (Position.checkCol(target.getX(), target.getY(), unit, rgi, Position.AROUNDME_COLMODE_GROUNDTARGET, true)) {
+                    System.out.println("fwd-switch");
                     // Leider nix, andere suchen
                     rgi.moveMan.humanSingleMove(unit, target.aroundMePlus(null, unit, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, true, rgi), false);
                 } else {
-                    path = path.subList(0, lastWayPoint + 1);
+                    System.out.println("fwd-direct");
+                    path = path.subList(0, lastWayPoint + 2);
                     manualMod = true;
                     // Client mitteilen
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, unit.netID, lastWayPoint, target.getX(), target.getY()));
