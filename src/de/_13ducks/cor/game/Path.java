@@ -236,6 +236,7 @@ public class Path implements Pauseable, Serializable {
                 passedTime = System.currentTimeMillis() - moveStartTime;
             }
             double passedWay = passedTime * caster2.speed / 1000;
+            System.out.println(caster2 + " passed " + passedWay + " of " + length);
             // Schon fertig?
             if (passedWay >= length) {
                 // Fertig, Bewegung stoppen
@@ -572,11 +573,16 @@ public class Path implements Pauseable, Serializable {
                 moveStartTime = (long) (-1000 * moveWay / speed + time);
                 unit.setMainPosition(gPath.get(gPath.size() - 2).getPos());
                 gNextPointDist = gPath.get(gPath.size() - 2).getDistance();
+                targetPos = gPath.get(gPath.size() -1).getPos();
+                length = gPath.get(gPath.size() - 1).getDistance();
             } else if (gPath.get(gLastPointIdx + 1).getPos().equals(readPosition)) {
                 System.out.println("ClientSTOP: fwd. " + readPosition);
                 // Weiter zum nächsten.
                 // Hier geschieht nicht viel, es muss nur der Weg nach dem nächsten gelöscht werden.
                 gPath = gPath.subList(0, gLastPointIdx + 2);
+                // Neues Ziel einstellen
+                targetPos = gPath.get(gPath.size() - 1).getPos();
+                length = gPath.get(gPath.size() - 1).getDistance();
             } else {
                 System.out.println("Cannot stop movement smooth, hard-resetting to prevent async");
                 unit.setMainPosition(readPosition);
@@ -585,9 +591,7 @@ public class Path implements Pauseable, Serializable {
                 moving = false;
                 return;
             }
-            // Neues Ziel einstellen
-            targetPos = gPath.get(gPath.size() - 1).getPos();
-            length = gPath.get(gPath.size() - 1).getDistance();
+
 
         } else {
             // Die Einheit bewegt sich gerade nicht, soll aber trotzdem angehalten werden...
