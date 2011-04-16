@@ -143,7 +143,12 @@ public class MainMenu extends Container {
 
         /**********************************************************************
          * Hintergrund:
+	 *
          *********************************************************************/
+
+	MenueBackground background = new MenueBackground(this, 0, 0, 100, 100, imgMap);
+	super.addComponent(background);
+
         // Rahmen:
         // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
         super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
