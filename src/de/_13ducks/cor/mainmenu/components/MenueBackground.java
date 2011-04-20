@@ -27,6 +27,7 @@ package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.mainmenu.MainMenu;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.newdawn.slick.Graphics;
 
@@ -41,7 +42,9 @@ public class MenueBackground extends Component {
     int resx; // Auflösung X
     int resy; // Auflösung Y
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
-    int tiley;// Anzahl notwendiger Bodentexturkacheln Y
+    int tiley; // Anzahl notwendiger Bodentexturkacheln Y
+    final static double speed = 0.04; // Geschwindikeit des Hintergrunds
+    ArrayList<MenueBackgroundObject> BackgroundObj = new ArrayList<MenueBackgroundObject>();
 
     public MenueBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
 	super(m, relX, relY, relWidth, relHeigth);
@@ -51,19 +54,38 @@ public class MenueBackground extends Component {
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 100) + 2;
 	tiley = (int) Math.ceil(resy / 100);
+	BackgroundObj.add(new MenueBackgroundObject(resx, 100, "img/buildings/human_baracks_e1.png", (long) 0));
     }
 
     @Override
     public void render(Graphics g) {
-	double speed = 0.04;
+	
 	long time = System.currentTimeMillis() - starttime; // Berechnet Zeit seit Start in Millisekunden
 
+	// Bodentexturen zeichnen
 	for (int i = 0; i <= tilex; i++) {
 	    for (int j = 0; j <= tiley; j++) {
 		imgMap.get("img/ground/menueground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed),(float) j * 100);
 	    }
 	}
-	imgMap.get("img/buildings/human_baracks_e1.png").getImage().draw((float) (resx - (speed * (time % (resx * 2 / speed)))), 100.0f);
 
+	// Background-Objekte zeichnen / entfernen
+	for (int i = 0; i < BackgroundObj.size(); i++) {
+	    if ((time - BackgroundObj.get(i).getStarttime()) * speed > resx + 300) {
+		// Entfernen, wenn es am linken Bildschirmrand ist
+		System.out.println("remove");
+		BackgroundObj.remove(i);
+		i--;
+	    } else {
+		// Zeichnen
+		imgMap.get(BackgroundObj.get(i).getPic()).getImage().draw((float) (resx - (speed * (time - BackgroundObj.get(i).getStarttime()))), BackgroundObj.get(i).getY());
+	    }
+	}
+
+	// Neue Background-Objekte zufällig erstellen
+	double bla = Math.random();
+	if (bla < 0.01) {
+	    BackgroundObj.add(new MenueBackgroundObject(resx, (int) (Math.random() * resy), "img/buildings/human_baracks_e1.png", time));
+	}
     }
 }
