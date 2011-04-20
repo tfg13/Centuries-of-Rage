@@ -131,13 +131,7 @@ public class Container extends Component {
         }
     }
 
-    @Override
-    public void init(GameContainer c) {
-        for (Component m : components) {
-            m.init(c);
-            m.setAlpha(1.0f);
-        }
-    }
+   
 
     /**
      * Wird aufgerufen, wenn diese Komponente angeklickt wurde

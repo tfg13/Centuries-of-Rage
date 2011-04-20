@@ -66,15 +66,7 @@ public class TiledImage extends Component {
         image = getMainMenu().getImgMap().get(imagepath).getImage();
     }
 
-    @Override
-    public void init(GameContainer c) {
-//        try {
-//            image = new Image(imagePath);
-//        } catch (SlickException ex) {
-//            ex.printStackTrace();
-//            System.out.print("MainMenu: Error loading image " + imagePath + " !");
-//        }
-    }
+   
 
     @Override
     public void render(Graphics g) {

@@ -97,14 +97,7 @@ public class Component {
         mouseHover = false;
     }
 
-    /**
-     * Init-Funktion
-     * Wird beim Initialisieren der Grafik gerufen
-     * Hier können Ressourcen für die Grafik geladen werden, z.B. Bilder
-     * @param c     Container der Grafik
-     */
-    public void init(GameContainer c) {
-    }
+   
 
     /**
      * Renderfunktion

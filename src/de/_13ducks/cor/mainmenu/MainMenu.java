@@ -100,13 +100,7 @@ public class MainMenu extends Container {
         }
     }
 
-    @Override
-    public void init(GameContainer c) {
-        for (Component comp : super.getComponents()) {
-            comp.init(c);
-        }
-    }
-
+  
     @Override
     public void mouseMoved(int x, int y) {
         for (Component c : super.getComponents()) {

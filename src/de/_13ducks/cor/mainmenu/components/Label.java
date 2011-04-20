@@ -68,10 +68,7 @@ public class Label extends Component {
 
     }
 
-    @Override
-    public void init(GameContainer c) {
-    }
-
+   
     @Override
     public void render(Graphics g) {
 

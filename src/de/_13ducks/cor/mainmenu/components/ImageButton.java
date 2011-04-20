@@ -74,11 +74,6 @@ public abstract class ImageButton extends Component {
 
     }
 
-    @Override
-    public void init(GameContainer c) {
-        image.init(c);
-        label.init(c);
-    }
 
     @Override
     public void render(Graphics g) {

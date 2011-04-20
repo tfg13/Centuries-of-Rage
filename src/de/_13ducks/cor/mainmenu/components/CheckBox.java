@@ -98,22 +98,7 @@ public abstract class CheckBox extends Component {
         this.setY2(getY1() + normalImage.getHeight());
     }
 
-    @Override
-    public void init(GameContainer c) {
-
-
-        //normalImage = new Image(normalImagePath);
-        //activeImage = new Image(activeImagePath);
-
-//
-//        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
-//        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
-//
-//
-//        // Die Maße an das Bild anpassen:
-//        this.setX2(getX1() + normalImage.getWidth());
-//        this.setY2(getY1() + normalImage.getHeight());
-    }
+   
 
     @Override
     public void render(Graphics g) {
