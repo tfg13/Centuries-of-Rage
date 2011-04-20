@@ -95,4 +95,12 @@ public class Label extends Component {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    /**
+     * Ändert den Text
+     * @param text - der neue Text
+     */
+    void setText(String text) {
+        labelText = text;
+    }
 }

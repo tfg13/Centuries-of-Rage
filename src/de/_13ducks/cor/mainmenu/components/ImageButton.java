@@ -104,6 +104,6 @@ public abstract class ImageButton extends Component {
      * @param text - der neue Text
      */
     public void setText(String text) {
-        this.text = text;
+        label.setText(text);
     }
 }
