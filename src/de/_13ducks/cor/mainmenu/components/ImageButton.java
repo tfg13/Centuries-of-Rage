@@ -54,7 +54,7 @@ public abstract class ImageButton extends Component {
     /**
      * Der Text, der auf dem Button stehen soll
      */
-    String text;
+    private String text;
 
     /**
      * Konstruktor
@@ -98,4 +98,12 @@ public abstract class ImageButton extends Component {
 
     @Override
     public abstract void mouseClicked(int button, int x, int y, int clickCount);
+
+    /**
+     * Setter für text
+     * @param text - der neue Text
+     */
+    public void setText(String text) {
+        this.text = text;
+    }
 }
