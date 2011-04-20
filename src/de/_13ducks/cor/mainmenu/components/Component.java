@@ -60,10 +60,7 @@ public class Component {
      * gibt an, ob der Cursor über der Komponente schwebt
      */
     private boolean mouseHover;
-    /**
-     * Alpha-Wert der Komponente, steuert Transparenz
-     */
-    private float alpha;
+    
 
     /**
      * Konstruktor
@@ -221,22 +218,7 @@ public class Component {
         return mainMenu;
     }
 
-    /**
-     * Setzt den Alpha-Wert
-     * @param alpha     der neue Alpha-Wert
-     */
-    public void setAlpha(float alpha) {
-        this.alpha = alpha;
-    }
-
-    /**
-     * getter für Alpha
-     * @return - Der Alpha-Wert dieser Komponente
-     */
-    public double getAlpha() {
-        return this.alpha;
-    }
-
+  
     /**
      * Setter für X2
      * @param - X-Koordinate der rechten unteren Ecke

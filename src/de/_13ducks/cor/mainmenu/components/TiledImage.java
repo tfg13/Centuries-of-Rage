@@ -73,12 +73,5 @@ public class TiledImage extends Component {
         g.fillRect(this.getX1(), this.getY1(), this.getWidth(), this.getHeight(), image, 0, 0);
     }
 
-    /**
-     * Stellt die Transparenz dieses Bildes ein
-     * @param alpha - die neue Transparenz
-     */
-    @Override
-    public void setAlpha(float alpha) {
-        image.setAlpha(alpha);
-    }
+  
 }

@@ -73,14 +73,7 @@ public class ScaledImage extends Component {
         }
     }
 
-    /**
-     * Setzt de nAlpha-Wert und steuert damit die Transparenz des Bildes
-     * @param alpha - der neue Transparenz-Wert
-     */
-    @Override
-    public void setAlpha(float alpha) {
-        image.setAlpha(alpha);
-    }
+  
 
     /**
      * Setzt die Farbe, die als Filter zum Zeichnen verwendet wird
