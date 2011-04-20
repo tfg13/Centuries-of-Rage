@@ -53,10 +53,6 @@ public class Player extends Container {
      */
     private Label nameLabel;
     /**
-     * Die CheckBox für den Spielerstatus(Bereit/nicht Bereit)
-     */
-    private CheckBox readyBox;
-    /**
      * Referenz auf die Lobby
      */
     private LobbyScreen lobbyScreen;
@@ -80,23 +76,6 @@ public class Player extends Container {
         super.addComponent(nameLabel);
 
 
-        /**
-         * Der "Bereit"-Button
-         */
-        readyBox = new CheckBox(m, (int) x + 34, (int) y + 1, "img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
-
-            @Override
-            public void checkboxChanged() {
-                if (!ready) {
-                    // "Breit"-Status an den Server übermitteln
-                    lobbyScreen.send('3' + this.getName());
-                } else {
-                    // "Nichr Breit"-Status an den Server übermitteln
-                    lobbyScreen.send('4' + this.getName());
-                }
-            }
-        };
-        super.addComponent(readyBox);
 
     }
 
@@ -132,11 +111,9 @@ public class Player extends Container {
         if (ready == true) {
             nameLabel.setColor(Color.green);
             ready = true;
-            readyBox.setChecked(true);
         } else {
             nameLabel.setColor(Color.black);
             ready = false;
-            readyBox.setChecked(false);
         }
     }
 }
