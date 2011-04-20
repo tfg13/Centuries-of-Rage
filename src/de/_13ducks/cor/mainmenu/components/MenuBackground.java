@@ -35,7 +35,7 @@ import org.newdawn.slick.Graphics;
  * Zeichnet den Hintergrund für das Hauptmenü
  * @author Johannes
  */
-public class MenueBackground extends Component {
+public class MenuBackground extends Component {
 
     HashMap<String, GraphicsImage> imgMap;
     long starttime;
@@ -45,9 +45,9 @@ public class MenueBackground extends Component {
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
     int tiley; // Anzahl notwendiger Bodentexturkacheln Y
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
-    ArrayList<MenueBackgroundObject> BackgroundObj = new ArrayList<MenueBackgroundObject>();
+    ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
 
-    public MenueBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
+    public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
 	super(m, relX, relY, relWidth, relHeigth);
 	this.imgMap = imgMap;
 	starttime = System.currentTimeMillis();
@@ -56,7 +56,6 @@ public class MenueBackground extends Component {
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 100) + 2;
 	tiley = (int) Math.ceil(resy / 100);
-	//BackgroundObj.add(new MenueBackgroundObject(resx, 100, "img/buildings/human_baracks_e1.png", (long) 0));
     }
 
     @Override
@@ -67,7 +66,7 @@ public class MenueBackground extends Component {
 	// Bodentexturen zeichnen
 	for (int i = 0; i <= tilex; i++) {
 	    for (int j = 0; j <= tiley; j++) {
-		imgMap.get("img/ground/menueground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed), (float) j * 100);
+		imgMap.get("img/ground/menuground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed), (float) j * 100);
 	    }
 	}
 
@@ -87,7 +86,7 @@ public class MenueBackground extends Component {
 	if (time > nextspawntime) {
 	    nextspawntime = (long) (time + Math.random() * 15000);
 	    double bla = Math.random();
-	    BackgroundObj.add(new MenueBackgroundObject(resx, (int) (Math.random() * resy), "img/buildings/human_baracks_e1.png", time));
+	    BackgroundObj.add(new MenuBackgroundObject(resx, (int) (Math.random() * resy), "img/buildings/human_baracks_e1.png", time));
 	}
     }
 }

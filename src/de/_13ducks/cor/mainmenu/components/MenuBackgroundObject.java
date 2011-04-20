@@ -30,14 +30,14 @@ package de._13ducks.cor.mainmenu.components;
  * Ein Bild für den Hauptmenü-Hintergrund
  * @author Johannes
  */
-public class MenueBackgroundObject {
+public class MenuBackgroundObject {
     private float x;
     private float y;
     private String pic;
     private long starttime;
 
     //Konstruktor
-    public MenueBackgroundObject(float x1, float y1, String pic1, long starttime1) {
+    public MenuBackgroundObject(float x1, float y1, String pic1, long starttime1) {
         x = x1;
         y = y1;
 	pic = pic1;

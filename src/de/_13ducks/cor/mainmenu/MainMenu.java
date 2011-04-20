@@ -146,7 +146,7 @@ public class MainMenu extends Container {
 	 *
          *********************************************************************/
 
-	MenueBackground background = new MenueBackground(this, 0, 0, 100, 100, imgMap);
+	MenuBackground background = new MenuBackground(this, 0, 0, 100, 100, imgMap);
 	super.addComponent(background);
 
         // Rahmen:
