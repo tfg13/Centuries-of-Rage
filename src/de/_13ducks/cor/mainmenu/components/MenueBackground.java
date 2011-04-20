@@ -39,6 +39,7 @@ public class MenueBackground extends Component {
 
     HashMap<String, GraphicsImage> imgMap;
     long starttime;
+    long nextspawntime; // Wann wird ein neues BackgroundObj gespawnt?
     int resx; // Auflösung X
     int resy; // Auflösung Y
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
@@ -50,22 +51,23 @@ public class MenueBackground extends Component {
 	super(m, relX, relY, relWidth, relHeigth);
 	this.imgMap = imgMap;
 	starttime = System.currentTimeMillis();
+	nextspawntime = 0;
 	resx = m.getResX();
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 100) + 2;
 	tiley = (int) Math.ceil(resy / 100);
-	BackgroundObj.add(new MenueBackgroundObject(resx, 100, "img/buildings/human_baracks_e1.png", (long) 0));
+	//BackgroundObj.add(new MenueBackgroundObject(resx, 100, "img/buildings/human_baracks_e1.png", (long) 0));
     }
 
     @Override
     public void render(Graphics g) {
-	
+
 	long time = System.currentTimeMillis() - starttime; // Berechnet Zeit seit Start in Millisekunden
 
 	// Bodentexturen zeichnen
 	for (int i = 0; i <= tilex; i++) {
 	    for (int j = 0; j <= tiley; j++) {
-		imgMap.get("img/ground/menueground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed),(float) j * 100);
+		imgMap.get("img/ground/menueground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed), (float) j * 100);
 	    }
 	}
 
@@ -73,7 +75,6 @@ public class MenueBackground extends Component {
 	for (int i = 0; i < BackgroundObj.size(); i++) {
 	    if ((time - BackgroundObj.get(i).getStarttime()) * speed > resx + 300) {
 		// Entfernen, wenn es am linken Bildschirmrand ist
-		System.out.println("remove");
 		BackgroundObj.remove(i);
 		i--;
 	    } else {
@@ -83,8 +84,9 @@ public class MenueBackground extends Component {
 	}
 
 	// Neue Background-Objekte zufällig erstellen
-	double bla = Math.random();
-	if (bla < 0.01) {
+	if (time > nextspawntime) {
+	    nextspawntime = (long) (time + Math.random() * 15000);
+	    double bla = Math.random();
 	    BackgroundObj.add(new MenueBackgroundObject(resx, (int) (Math.random() * resy), "img/buildings/human_baracks_e1.png", time));
 	}
     }
