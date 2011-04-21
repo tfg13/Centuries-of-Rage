@@ -31,15 +31,19 @@ package de._13ducks.cor.mainmenu.components;
  * @author Johannes
  */
 public class MenuBackgroundObject {
-    private float x;
-    private float y;
+    private int x;
+    private int y;
+    private int width; // Breite des Objekts
+    private int height; // Höhe des Objekts
     private String pic;
     private long starttime;
 
     //Konstruktor
-    public MenuBackgroundObject(float x1, float y1, String pic1, long starttime1) {
+    public MenuBackgroundObject(int x1, int y1, int width1, int height1, String pic1, long starttime1) {
         x = x1;
         y = y1;
+	width = width1;
+	height = height1;
 	pic = pic1;
 	starttime = starttime1;
     }
@@ -47,28 +51,28 @@ public class MenuBackgroundObject {
     /**
      * @return the x
      */
-    public float getX() {
+    public int getX() {
 	return x;
     }
 
     /**
      * @param x the x to set
      */
-    public void setX(float x) {
+    public void setX(int x) {
 	this.x = x;
     }
 
     /**
      * @return the y
      */
-    public float getY() {
+    public int getY() {
 	return y;
     }
 
     /**
      * @param y the y to set
      */
-    public void setY(float y) {
+    public void setY(int y) {
 	this.y = y;
     }
 
@@ -98,5 +102,33 @@ public class MenuBackgroundObject {
      */
     public void setStarttime(long starttime) {
 	this.starttime = starttime;
+    }
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+	return width;
+    }
+
+    /**
+     * @param width the width to set
+     */
+    public void setWidth(int width) {
+	this.width = width;
+    }
+
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+	return height;
+    }
+
+    /**
+     * @param height the height to set
+     */
+    public void setHeight(int height) {
+	this.height = height;
     }
 }
