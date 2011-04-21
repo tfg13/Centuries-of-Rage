@@ -62,6 +62,7 @@ public class Container extends Component {
     public Container(MainMenu m, double X, double Y, double width, double heigth) {
         super(m, X, Y, width, heigth);
         components = new ArrayList<Component>();
+        active = true;
     }
 
     /**
