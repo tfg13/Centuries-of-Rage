@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
 import org.lwjgl.opengl.DisplayMode;
-import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.Frame;
 import de._13ducks.cor.mainmenu.components.ImageButton;

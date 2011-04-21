@@ -25,8 +25,6 @@
  */
 package de._13ducks.cor.mainmenu;
 
-import java.net.InetAddress;
-import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.mainmenu.components.CheckBox;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.ImageButton;

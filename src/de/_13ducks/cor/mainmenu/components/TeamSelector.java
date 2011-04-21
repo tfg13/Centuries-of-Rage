@@ -5,7 +5,6 @@
 package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.mainmenu.MainMenu;
-import org.newdawn.slick.Color;
 
 /**
  *

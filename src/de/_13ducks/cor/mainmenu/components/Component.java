@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
 

@@ -25,13 +25,8 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import de._13ducks.cor.graphics.FontManager;
 import de._13ducks.cor.mainmenu.MainMenu;
 

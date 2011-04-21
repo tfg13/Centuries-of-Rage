@@ -28,13 +28,11 @@ package de._13ducks.cor.mainmenu;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.mainmenu.components.*;
 import java.util.HashMap;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.GraphicsImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.newdawn.slick.Image;
 
 /**
  * Grafisches Hauptmenü
@@ -177,7 +175,7 @@ public class MainMenu extends Container {
         lobbyScreen = new LobbyScreen(this);
         menus.put("lobbyscreen", lobbyScreen);
         super.addComponent(lobbyScreen);
-        lobbyScreen.fadeOut();
+        lobbyScreen.fadeOut();       
     }
 
     /**
