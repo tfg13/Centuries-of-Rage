@@ -44,8 +44,8 @@ public class MenuBackground extends Component {
     int resy; // Auflösung Y
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
     int tiley; // Anzahl notwendiger Bodentexturkacheln Y
-    final static double speed = 0.1; // Geschwindikeit des Hintergrunds
-    final static int maxspawndelay = 20;
+    final static double speed = 0.04; // Geschwindikeit des Hintergrunds
+    final static int maxspawndelay = 10000;
     ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
 
     public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
@@ -57,6 +57,7 @@ public class MenuBackground extends Component {
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 100) + 2;
 	tiley = (int) Math.ceil(resy / 100);
+	BackgroundObj.add(new MenuBackgroundObject((int) (resx * 3 / 4), (int) (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
     }
 
     @Override
@@ -101,7 +102,6 @@ public class MenuBackground extends Component {
 	    int y = (int) (Math.random() * resy);
 	    int height = imgMap.get(picturepath).getImage().getHeight(); // Höhe vom Hintergrund-Objekt
 	    int width = imgMap.get(picturepath).getImage().getWidth(); // s.o.
-	    System.out.println(width);
 
 	    // Überschneidet es sich mit anderen Bildern?
 	    boolean everythingfine = true;
@@ -118,7 +118,7 @@ public class MenuBackground extends Component {
 	    }
 
 	    if (everythingfine) {
-		BackgroundObj.add(new MenuBackgroundObject(resx, y, height, width, picturepath, time));
+		BackgroundObj.add(new MenuBackgroundObject(resx, y, width, height, picturepath, time));
 	    }
 	}
     }
