@@ -61,6 +61,10 @@ public class LobbyScreen extends Container {
      * Ist der lokale Spieler bereit?
      */
     private boolean ready;
+    /**
+     * Das Chatfenster
+     */
+    private LobbyChat lobbyChat;
 
     /**
      * Konstruktor
@@ -87,8 +91,8 @@ public class LobbyScreen extends Container {
         super.addComponent(new Frame(m, 60, 50, 20, 15));
 
         // Chat:
-        super.addComponent(new LobbyChat(m,10,75));
-
+        super.addComponent(lobbyChat = new LobbyChat(m,10,75));
+        super.addComponent(lobbyChat);
         // Ready-Button:
         readyButton = new ImageButton(m, 60, 85, 12, 6, "img/mainmenu/buttonnew.png", "READY") {
 
@@ -200,6 +204,7 @@ public class LobbyScreen extends Container {
      * @param message - die chatnachricht
      */
     public void chatMessage(String message) {
+
     }
 
     /**

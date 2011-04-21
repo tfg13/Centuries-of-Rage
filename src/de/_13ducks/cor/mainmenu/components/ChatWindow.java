@@ -32,12 +32,13 @@ public class ChatWindow extends Component {
 
         for(int i=0; i<6; i++)
         {
-            history.add("gg");
+            history.add("");
         }
     }
 
     public void chatMessage(String message) {
         history.add(message);
+        System.out.println("Chat : " + message);
     }
 
     /**
