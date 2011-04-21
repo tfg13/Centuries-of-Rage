@@ -27,7 +27,7 @@
 package de._13ducks.cor.mainmenu.components;
 
 /**
- * Ein Bild für den Hauptmenü-Hintergrund
+ * Ein Objekt, dass im Hauptmenü-Hintergrund gerendert wird
  * @author Johannes
  */
 public class MenuBackgroundObject {

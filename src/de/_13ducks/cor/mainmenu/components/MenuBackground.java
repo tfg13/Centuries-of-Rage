@@ -84,9 +84,19 @@ public class MenuBackground extends Component {
 
 	// Neue Background-Objekte zufällig erstellen
 	if (time > nextspawntime) {
-	    nextspawntime = (long) (time + Math.random() * 15000);
-	    double bla = Math.random();
-	    BackgroundObj.add(new MenuBackgroundObject(resx, (int) (Math.random() * resy), "img/buildings/human_baracks_e1.png", time));
+	    nextspawntime = (long) (time + Math.random() * 14000);
+	    String picturepath;
+	    double randomnumber = Math.random();
+	    if (randomnumber < 0.04 && time > 15000) {
+		picturepath = "img/creeps/testhuman2.png";
+	    } else if (randomnumber < 0.36) {
+		picturepath = "img/buildings/human_house_e1.png";
+	    } else if (randomnumber < 0.68) {
+		picturepath = "img/buildings/human_storage_e1.png";
+	    } else {
+		picturepath = "img/buildings/human_baracks_e1.png";
+	    }
+	    BackgroundObj.add(new MenuBackgroundObject(resx, (int) (Math.random() * resy), picturepath, time));
 	}
     }
 }
