@@ -53,6 +53,10 @@ public class Player extends Container {
      */
     private Label nameLabel;
     /**
+     * Die Teamauswahl
+     */
+    private TeamSelector teamSelector;
+    /**
      * Referenz auf die Lobby
      */
     private LobbyScreen lobbyScreen;
@@ -75,8 +79,15 @@ public class Player extends Container {
         nameLabel = new Label(m, (float) x, (float) y, 10, 6, name, Color.black);
         super.addComponent(nameLabel);
 
+        // Teamauswahl:
+        teamSelector = new TeamSelector(m, x + 35.0f, y) {
 
-
+            @Override
+            public void teamChanged(int newteam) {
+                this.getMainMenu().getLobby().send('5' + String.valueOf(newteam) + getPlayerName());
+            }
+        };
+        super.addComponent(teamSelector);
     }
 
     /**
@@ -115,5 +126,10 @@ public class Player extends Container {
             nameLabel.setColor(Color.black);
             ready = false;
         }
+    }
+
+    public void setTeam(int team)
+    {
+        teamSelector.setTeam(team);
     }
 }
