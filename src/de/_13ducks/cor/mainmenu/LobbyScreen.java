@@ -204,7 +204,7 @@ public class LobbyScreen extends Container {
      * @param message - die chatnachricht
      */
     public void chatMessage(String message) {
-
+        lobbyChat.chatMessage(message);
     }
 
     /**
