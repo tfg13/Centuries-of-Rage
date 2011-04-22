@@ -844,7 +844,7 @@ public class GraphicsContent extends BasicGame {
             Polygon gPoly = new Polygon();
             List<Node> nodes = poly.getNodesForDebug();
             for (Node node : nodes) {
-                gPoly.addPoint((float) node.getX() * FIELD_HALF_X, (float) (node.getY() * FIELD_HALF_Y));
+                gPoly.addPoint((float) (node.getX() - positionX) * FIELD_HALF_X + BASIC_FIELD_OFFSET_X, (float) ((node.getY() - positionY) * FIELD_HALF_Y) + BASIC_FIELD_OFFSET_Y);
             }
             g.fill(gPoly);
         }

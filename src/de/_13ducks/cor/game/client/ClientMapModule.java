@@ -955,7 +955,7 @@ public class ClientMapModule {
         rgi.rogGraphics.activateMap(theMap.getVisMap());
         createAllLists();
         // DEBUG:
-        moveMap = MovementMap.createMovementMap(theMap, null);
+        moveMap = MovementMap.createMovementMap(theMap, buildingList);
         // Fertig, mitteilen
         rgi.rogGraphics.triggerStatusWaiting();
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
