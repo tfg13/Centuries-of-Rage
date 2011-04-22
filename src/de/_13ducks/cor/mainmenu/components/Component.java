@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -60,10 +59,7 @@ public class Component {
      * gibt an, ob der Cursor über der Komponente schwebt
      */
     private boolean mouseHover;
-    /**
-     * Alpha-Wert der Komponente, steuert Transparenz
-     */
-    private float alpha;
+    
 
     /**
      * Konstruktor
@@ -97,14 +93,7 @@ public class Component {
         mouseHover = false;
     }
 
-    /**
-     * Init-Funktion
-     * Wird beim Initialisieren der Grafik gerufen
-     * Hier können Ressourcen für die Grafik geladen werden, z.B. Bilder
-     * @param c     Container der Grafik
-     */
-    public void init(GameContainer c) {
-    }
+   
 
     /**
      * Renderfunktion
@@ -228,22 +217,7 @@ public class Component {
         return mainMenu;
     }
 
-    /**
-     * Setzt den Alpha-Wert
-     * @param alpha     der neue Alpha-Wert
-     */
-    public void setAlpha(float alpha) {
-        this.alpha = alpha;
-    }
-
-    /**
-     * getter für Alpha
-     * @return - Der Alpha-Wert dieser Komponente
-     */
-    public double getAlpha() {
-        return this.alpha;
-    }
-
+  
     /**
      * Setter für X2
      * @param - X-Koordinate der rechten unteren Ecke

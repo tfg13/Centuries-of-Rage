@@ -53,9 +53,9 @@ public class Player extends Container {
      */
     private Label nameLabel;
     /**
-     * Die CheckBox für den Spielerstatus(Bereit/nicht Bereit)
+     * Die Teamauswahl
      */
-    private CheckBox readyBox;
+    private TeamSelector teamSelector;
     /**
      * Referenz auf die Lobby
      */
@@ -79,25 +79,15 @@ public class Player extends Container {
         nameLabel = new Label(m, (float) x, (float) y, 10, 6, name, Color.black);
         super.addComponent(nameLabel);
 
-
-        /**
-         * Der "Bereit"-Button
-         */
-        readyBox = new CheckBox(m, (int) x + 34, (int) y + 1, "img/mainmenu/checkbox-normal.png", "img/mainmenu/checkbox-active.png") {
+        // Teamauswahl:
+        teamSelector = new TeamSelector(m, x + 35.0f, y) {
 
             @Override
-            public void checkboxChanged() {
-                if (!ready) {
-                    // "Breit"-Status an den Server übermitteln
-                    lobbyScreen.send('3' + this.getName());
-                } else {
-                    // "Nichr Breit"-Status an den Server übermitteln
-                    lobbyScreen.send('4' + this.getName());
-                }
+            public void teamChanged(int newteam) {
+                this.getMainMenu().getLobby().send('5' + String.valueOf(newteam) + getPlayerName());
             }
         };
-        super.addComponent(readyBox);
-
+        super.addComponent(teamSelector);
     }
 
     /**
@@ -132,11 +122,14 @@ public class Player extends Container {
         if (ready == true) {
             nameLabel.setColor(Color.green);
             ready = true;
-            readyBox.setChecked(true);
         } else {
             nameLabel.setColor(Color.black);
             ready = false;
-            readyBox.setChecked(false);
         }
+    }
+
+    public void setTeam(int team)
+    {
+        teamSelector.setTeam(team);
     }
 }

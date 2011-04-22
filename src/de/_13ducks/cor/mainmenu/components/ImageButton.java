@@ -26,7 +26,6 @@
 package de._13ducks.cor.mainmenu.components;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -54,7 +53,7 @@ public abstract class ImageButton extends Component {
     /**
      * Der Text, der auf dem Button stehen soll
      */
-    String text;
+    private String text;
 
     /**
      * Konstruktor
@@ -74,11 +73,6 @@ public abstract class ImageButton extends Component {
 
     }
 
-    @Override
-    public void init(GameContainer c) {
-        image.init(c);
-        label.init(c);
-    }
 
     @Override
     public void render(Graphics g) {
@@ -98,4 +92,12 @@ public abstract class ImageButton extends Component {
 
     @Override
     public abstract void mouseClicked(int button, int x, int y, int clickCount);
+
+    /**
+     * Setter für text
+     * @param text - der neue Text
+     */
+    public void setText(String text) {
+        label.setText(text);
+    }
 }

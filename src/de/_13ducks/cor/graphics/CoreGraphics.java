@@ -314,7 +314,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     void initMainMenu() {
         mainmenu = new MainMenu(content.realPixX, content.realPixY, core, this.imgMap);
-        getMainmenu().init(this);
+       
     }
 
     /**

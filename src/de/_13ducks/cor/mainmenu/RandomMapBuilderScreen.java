@@ -26,7 +26,6 @@
 package de._13ducks.cor.mainmenu;
 
 import de._13ducks.cor.mainmenu.components.Container;
-import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.TextBox;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 

@@ -25,10 +25,8 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import de._13ducks.cor.mainmenu.MainMenu;
 
 /**
@@ -66,27 +64,12 @@ public class TiledImage extends Component {
         image = getMainMenu().getImgMap().get(imagepath).getImage();
     }
 
-    @Override
-    public void init(GameContainer c) {
-//        try {
-//            image = new Image(imagePath);
-//        } catch (SlickException ex) {
-//            ex.printStackTrace();
-//            System.out.print("MainMenu: Error loading image " + imagePath + " !");
-//        }
-    }
+   
 
     @Override
     public void render(Graphics g) {
         g.fillRect(this.getX1(), this.getY1(), this.getWidth(), this.getHeight(), image, 0, 0);
     }
 
-    /**
-     * Stellt die Transparenz dieses Bildes ein
-     * @param alpha - die neue Transparenz
-     */
-    @Override
-    public void setAlpha(float alpha) {
-        image.setAlpha(alpha);
-    }
+  
 }

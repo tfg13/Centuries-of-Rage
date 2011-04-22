@@ -26,10 +26,8 @@
 package de._13ducks.cor.mainmenu.components;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 import de._13ducks.cor.mainmenu.MainMenu;
 
 /**
@@ -62,19 +60,7 @@ public class ScaledImage extends Component {
         image = image.getScaledCopy(getWidth(), getHeight());
     }
 
-    @Override
-    public void init(GameContainer c) {
-//        try {
-//            //image = new Image(imagePath);
-//
-//            // Das Bild auf die Größe dieser Komponente skalieren:
-//
-//
-//        } catch (SlickException ex) {
-//            ex.printStackTrace();
-//            System.out.print("MainMenu: Error loading image " + imagePath + " !");
-//        }
-    }
+  
 
     @Override
     public void render(Graphics g) {
@@ -85,14 +71,7 @@ public class ScaledImage extends Component {
         }
     }
 
-    /**
-     * Setzt de nAlpha-Wert und steuert damit die Transparenz des Bildes
-     * @param alpha - der neue Transparenz-Wert
-     */
-    @Override
-    public void setAlpha(float alpha) {
-        image.setAlpha(alpha);
-    }
+  
 
     /**
      * Setzt die Farbe, die als Filter zum Zeichnen verwendet wird

@@ -25,13 +25,8 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import de._13ducks.cor.graphics.FontManager;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -68,10 +63,7 @@ public class Label extends Component {
 
     }
 
-    @Override
-    public void init(GameContainer c) {
-    }
-
+   
     @Override
     public void render(Graphics g) {
 
@@ -94,5 +86,13 @@ public class Label extends Component {
      */
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    /**
+     * Ändert den Text
+     * @param text - der neue Text
+     */
+    void setText(String text) {
+        labelText = text;
     }
 }

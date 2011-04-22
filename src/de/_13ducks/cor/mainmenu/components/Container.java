@@ -26,7 +26,6 @@
 package de._13ducks.cor.mainmenu.components;
 
 import java.util.ArrayList;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -62,6 +61,7 @@ public class Container extends Component {
     public Container(MainMenu m, double X, double Y, double width, double heigth) {
         super(m, X, Y, width, heigth);
         components = new ArrayList<Component>();
+        active = true;
     }
 
     /**
@@ -109,9 +109,9 @@ public class Container extends Component {
      * @return - die Komponente, WENN eine mit dem Namen gefunden wurde
      */
     public Component getComponent(String name) {
-        for (Component c : this.components) {
-            if (c.getName().equals(name)) {
-                return c;
+        for (int i = 0; i < components.size(); i++) {
+            if (components.get(i).getName().equals(name)) {
+                return components.get(i);
             }
         }
         System.out.print("keine Komponente mit Namen <" + name + "> gefunden.");
@@ -125,18 +125,11 @@ public class Container extends Component {
         if (!active) {
             return;
         }
-
-        for (Component c : components) {
-            c.render(g);
+        for (int i = 0; i < components.size(); i++) {
+            components.get(i).render(g);
         }
-    }
 
-    @Override
-    public void init(GameContainer c) {
-        for (Component m : components) {
-            m.init(c);
-            m.setAlpha(1.0f);
-        }
+
     }
 
     /**
@@ -149,11 +142,11 @@ public class Container extends Component {
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (active) {
-            for (Component m : components) {
-                if (m.getX1() < x && x < m.getX2() && m.getY1() < y && y < m.getY2()) {
-                    m.mouseClicked(button, x, y, clickCount);
+            for (int i = 0; i < components.size(); i++) {
+                if (components.get(i).getX1() < x && x < components.get(i).getX2() && components.get(i).getY1() < y && y < components.get(i).getY2()) {
+                    components.get(i).mouseClicked(button, x, y, clickCount);
                 } else {
-                    m.mouseClickedAnywhere(button, x, y, clickCount);
+                    components.get(i).mouseClickedAnywhere(button, x, y, clickCount);
                 }
             }
         }
@@ -162,8 +155,8 @@ public class Container extends Component {
     @Override
     public void mouseMoved(int x, int y) {
         if (active) {
-            for (Component c : components) {
-                c.mouseMoved(x, y);
+            for (int i = 0; i < components.size(); i++) {
+                components.get(i).mouseMoved(x, y);
             }
         }
     }
@@ -176,8 +169,8 @@ public class Container extends Component {
     @Override
     public void keyPressed(int key, char c) {
         if (active) {
-            for (Component m : components) {
-                m.keyPressed(key, c);
+            for (int i = 0; i < components.size(); i++) {
+                components.get(i).keyPressed(key, c);
             }
         }
     }
@@ -195,17 +188,5 @@ public class Container extends Component {
      */
     public void fadeOut() {
         active = false;
-    }
-
-    /**
-     * Setter für Alpha (Transparenz)
-     * setzt den alpha-Wert der SubKomponenten
-     * @param alpha
-     */
-    @Override
-    public void setAlpha(float alpha) {
-        for (Component c : components) {
-            c.setAlpha(alpha);
-        }
     }
 }

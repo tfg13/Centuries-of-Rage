@@ -25,10 +25,12 @@
  */
 package de._13ducks.cor.mainmenu;
 
+import de._13ducks.cor.mainmenu.components.ChatWindow;
 import java.util.ArrayList;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.Frame;
 import de._13ducks.cor.mainmenu.components.ImageButton;
+import de._13ducks.cor.mainmenu.components.LobbyChat;
 import de._13ducks.cor.mainmenu.components.Player;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 
@@ -51,6 +53,14 @@ public class LobbyScreen extends Container {
      * Der Name des lokalen Spielers
      */
     String playerName;
+    /**
+     * Der "Bereit"-Button
+     */
+    private ImageButton readyButton;
+    /**
+     * Ist der lokale Spieler bereit?
+     */
+    private boolean ready;
 
     /**
      * Konstruktor
@@ -58,6 +68,8 @@ public class LobbyScreen extends Container {
      */
     public LobbyScreen(MainMenu m) {
         super(m, 1, 1, 100, 100);
+
+        ready = false;
 
         players = new ArrayList<Player>();
 
@@ -72,12 +84,28 @@ public class LobbyScreen extends Container {
         super.addComponent(new Frame(m, 60, 10, 30, 30));
 
         // Serveroptionen:
-        super.addComponent(new Frame(m, 60, 75, 30, 15));
+        super.addComponent(new Frame(m, 60, 50, 20, 15));
 
         // Chat:
-        super.addComponent(new Frame(m, 10, 75, 45, 15));
+        super.addComponent(new LobbyChat(m,10,75));
 
-        
+        // Ready-Button:
+        readyButton = new ImageButton(m, 60, 85, 12, 6, "img/mainmenu/buttonnew.png", "READY") {
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                if (ready == true) {
+                    send('4' + playerName);
+                    System.out.println("Player is ready: " + ready);
+                } else {
+                    send('3' + playerName);
+                    System.out.println("Player is ready: " + ready);
+                }
+            }
+        };
+        super.addComponent(readyButton);
+
+
     }
 
     /**
@@ -155,6 +183,16 @@ public class LobbyScreen extends Container {
      */
     public void changePlayerStatus(String name, boolean ready) {
         getPlayer(name).setReady(ready);
+        if (name.equals(playerName)) {
+            if (ready == true) {
+                this.ready = true;
+                readyButton.setText("READY");
+            } else {
+                this.ready = false;
+                readyButton.setText("NOT READY");
+            }
+
+        }
     }
 
     /**
