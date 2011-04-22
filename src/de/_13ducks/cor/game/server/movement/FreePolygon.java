@@ -26,9 +26,15 @@
 
 package de._13ducks.cor.game.server.movement;
 
+import java.util.ArrayList;
+
 /**
  * Ein freies Vieleck. Ein Teil des Movement-Map-Graphen
  */
 public class FreePolygon {
 
+    /**
+     * Eine Liste mit allen Nodes, die auf einer Kante dieses Polygons liegen oder die eine Ecke darstellen.
+     */
+    private ArrayList<Node> myNodes;
 }

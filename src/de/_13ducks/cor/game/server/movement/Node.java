@@ -26,11 +26,18 @@
 
 package de._13ducks.cor.game.server.movement;
 
+import java.util.ArrayList;
+
 /**
  * Ein Knoten. Zwischen diesen werden Vielecke aufgespannt (FreePolygon)
  * Ein Knoten gehört dabei zu mehreren Polygonen.
  * Mit Hilfe dieser Knoten sucht ein A* den besten Weg.
  */
 public class Node {
+
+    /**
+     * Diese Listen enthält alle Polygone, auf deren Kanten dieser Polygon liegt oder deren Ecken er markiert.
+     */
+    private ArrayList<FreePolygon> myPolys;
 
 }

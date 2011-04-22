@@ -31,6 +31,11 @@ package de._13ducks.cor.game.server.movement;
  */
 public class MovementMap {
 
+    /**
+     * Privater Konstruktor. CreateMovementMap verwenden!
+     */
+    private MovementMap() {}
+
     
 
 }
