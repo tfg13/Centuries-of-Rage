@@ -141,13 +141,6 @@ public class MainMenu extends Container {
 	MenuBackground background = new MenuBackground(this, 0, 0, 100, 100, imgMap);
 	super.addComponent(background);
 
-        // Rahmen:
-        // aus irgendeinem Grund funktioniert nur 99,999% statt 100%....
-        super.addComponent(new Frame(this, 0, 0, 99.9999f, 99.9999f));
-
-        // Koordinatenanzeige:
-        super.addComponent(new CoordinateView(this));
-
 
         /**********************************************************************
          * Menüs:
@@ -186,6 +179,7 @@ public class MainMenu extends Container {
 
         super.addComponent(new ScaledImage(this, 11.20833333, 28.666666, 26.1458333, 23.58333333, "img/mainmenu/sign1.png"));
         super.addComponent(new ScaledImage(this, 37.34375, 28.666666, 23.54166667, 23.58333333, "img/mainmenu/sign2.png"));
+        super.addComponent(new TiledImage(this, 0, 28.666666, 11.20833333, 4.1666666, "img/mainmenu/balken.png"));
 
         // Blätter
 
@@ -209,6 +203,8 @@ public class MainMenu extends Container {
         super.addComponent(new ScaledImage(this, -3.4, 67.8, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(this, -7.7, 76.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
 
+        // Koordinatenanzeige:
+        super.addComponent(new CoordinateView(this));
     }
 
     /**
