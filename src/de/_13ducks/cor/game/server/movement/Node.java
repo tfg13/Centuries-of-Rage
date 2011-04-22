@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.newdawn.slick.Color;
 
 /**
  * Ein Knoten. Zwischen diesen werden Vielecke aufgespannt (FreePolygon)
@@ -76,5 +77,22 @@ public class Node {
             myPolys.add(poly);
         }
     }
+
+    /**
+     * Die absolute x-Koordinate dieses Polygons
+     * @return the x
+     */
+    public double getX() {
+        return x;
+    }
+
+    /**
+     * Die absolute y-Koordinate dieses Polygons
+     * @return the y
+     */
+    public double getY() {
+        return y;
+    }
+
 
 }

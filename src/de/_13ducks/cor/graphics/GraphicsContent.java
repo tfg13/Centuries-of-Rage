@@ -38,6 +38,9 @@ import org.newdawn.slick.opengl.renderer.Renderer;
 import de._13ducks.cor.map.AbstractMapElement;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.movement.FreePolygon;
+import de._13ducks.cor.game.server.movement.Node;
+import org.newdawn.slick.geom.Polygon;
 
 @SuppressWarnings("CallToThreadDumpStack")
 public class GraphicsContent extends BasicGame {
@@ -262,7 +265,7 @@ public class GraphicsContent extends BasicGame {
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
                 g.drawString("13 Ducks Entertainment's: Centuries of Rage HD (pre-alpha)", 10, 2);
                 if (serverColMode) {
-                    this.renderServerCol();
+                    this.renderServerCol(g);
                 }
                 if (coordMode) {
                     renderCoords(g);
@@ -833,41 +836,53 @@ public class GraphicsContent extends BasicGame {
 
     }
 
-    private void renderServerCol() {
-        // Murks, aber die position müssen gerade sein...
-        if (positionX % 2 == 1) {
-            positionX--;
-        }
-        if (positionY % 2 == 1) {
-            positionY--;
-        }
-        // Rendert die blaueb Kollisionsfarbe
-        for (int x = 0; x < sizeX && x < viewX; x++) {
-            for (int y = 0; y < sizeY && y < viewY; y++) {
-                if (x % 2 != y % 2) {
-                    continue; // Nur echte Felder
-                }
-                // Hat dieses Feld Kollision?
-                try {
-                    int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
-                    switch (val) {
-                        case 1:
-                            getImgMap().get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                            break;
-                        case 2:
-                            getImgMap().get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                            break;
-                        case 3:
-                            getImgMap().get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                            break;
-                    }
-                    if (rgi.mapModule.serverRes[x + positionX][y + positionY] > System.currentTimeMillis()) {
-                        imgMap.get("img/game/highlight_bluecross.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
-                    }
-                } catch (Exception ex) {
-                }
+    private void renderServerCol(Graphics g) {
+        // Neues Bewegungssystem
+        List<FreePolygon> polys = rgi.mapModule.moveMap.getPolysForDebug();
+        for (FreePolygon poly : polys) {
+            g.setColor(poly.getColor());
+            Polygon gPoly = new Polygon();
+            List<Node> nodes = poly.getNodesForDebug();
+            for (Node node : nodes) {
+                gPoly.addPoint((float) node.getX() * FIELD_HALF_X, (float) (node.getY() * FIELD_HALF_Y));
             }
+            g.fill(gPoly);
         }
+
+//        // Murks, aber die position müssen gerade sein...
+//        if (positionX % 2 == 1) {
+//            positionX--;
+//        }
+//        if (positionY % 2 == 1) {
+//            positionY--;
+//        }
+//        // Rendert die blaueb Kollisionsfarbe
+//        for (int x = 0; x < sizeX && x < viewX; x++) {
+//            for (int y = 0; y < sizeY && y < viewY; y++) {
+//                if (x % 2 != y % 2) {
+//                    continue; // Nur echte Felder
+//                }
+//                // Hat dieses Feld Kollision?
+//                try {
+//                    int val = rgi.mapModule.serverCollision[x + positionX][y + positionY];
+//                    switch (val) {
+//                        case 1:
+//                            getImgMap().get("img/game/highlight_red.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+//                            break;
+//                        case 2:
+//                            getImgMap().get("img/game/highlight_yellow_reddot.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+//                            break;
+//                        case 3:
+//                            getImgMap().get("img/game/highlight_blue.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+//                            break;
+//                    }
+//                    if (rgi.mapModule.serverRes[x + positionX][y + positionY] > System.currentTimeMillis()) {
+//                        imgMap.get("img/game/highlight_bluecross.png").getImage().draw(x * FIELD_HALF_X, (int) (y * FIELD_HALF_Y));
+//                    }
+//                } catch (Exception ex) {
+//                }
+//            }
+//        }
     }
 
     private void renderCoords(Graphics g2) {

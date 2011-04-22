@@ -60,7 +60,7 @@ public class MovementMap {
         Node lu = new Node(0, map.getMapSizeY());
         Node ru = new Node(map.getMapSizeX(), map.getMapSizeY());
 
-        FreePolygon bigPoly = new FreePolygon(lo, ro, lu, ru);
+        FreePolygon bigPoly = new FreePolygon(lo, ro, ru, lu);
 
         moveMap.polys.add(bigPoly);
         

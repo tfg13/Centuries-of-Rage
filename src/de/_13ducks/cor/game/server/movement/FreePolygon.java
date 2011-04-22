@@ -23,12 +23,13 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import org.newdawn.slick.Color;
 
 /**
  * Ein freies Vieleck. Ein Teil des Movement-Map-Graphen
@@ -39,6 +40,10 @@ public class FreePolygon {
      * Eine Liste mit allen Nodes, die auf einer Kante dieses Polygons liegen oder die eine Ecke darstellen.
      */
     private List<Node> myNodes;
+    /**
+     * Die Farbe dieses Polygons, nur für Debug-Output
+     */
+    private Color color;
 
     /**
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
@@ -56,5 +61,19 @@ public class FreePolygon {
         for (Node node : myNodes) {
             node.addPolygon(this);
         }
+
+        color = new Color((int) (Math.random() * 265.0), (int) (Math.random() * 265.0), (int) (Math.random() * 265.0), 100);
+    }
+
+    public List<Node> getNodesForDebug() {
+        return Collections.unmodifiableList(myNodes);
+    }
+
+    /**
+     * Die Farbe diese Polygons (debug only)
+     * @return the color
+     */
+    public Color getColor() {
+        return color;
     }
 }
