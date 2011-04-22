@@ -45,6 +45,7 @@ public class MenuBackground extends Component {
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
     int tiley; // Anzahl notwendiger Bodentexturkacheln Y
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
+    final static int maxspawndelay = 10000;
     ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
 
     public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
@@ -56,6 +57,7 @@ public class MenuBackground extends Component {
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 100) + 2;
 	tiley = (int) Math.ceil(resy / 100);
+	BackgroundObj.add(new MenuBackgroundObject((int) (resx * 3 / 4), (int) (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
     }
 
     @Override
@@ -78,16 +80,17 @@ public class MenuBackground extends Component {
 		i--;
 	    } else {
 		// Zeichnen
+		//imgMap.get(BackgroundObj.get(i).getPic()).getImage().getHeight()
 		imgMap.get(BackgroundObj.get(i).getPic()).getImage().draw((float) (resx - (speed * (time - BackgroundObj.get(i).getStarttime()))), BackgroundObj.get(i).getY());
 	    }
 	}
 
 	// Neue Background-Objekte zufällig erstellen
 	if (time > nextspawntime) {
-	    nextspawntime = (long) (time + Math.random() * 14000);
+	    nextspawntime = (long) (time + Math.random() * maxspawndelay);
 	    String picturepath;
 	    double randomnumber = Math.random();
-	    if (randomnumber < 0.04 && time > 15000) {
+	    if (randomnumber < 0.04 && time > 30000) {
 		picturepath = "img/creeps/testhuman2.png";
 	    } else if (randomnumber < 0.36) {
 		picturepath = "img/buildings/human_house_e1.png";
@@ -96,7 +99,27 @@ public class MenuBackground extends Component {
 	    } else {
 		picturepath = "img/buildings/human_baracks_e1.png";
 	    }
-	    BackgroundObj.add(new MenuBackgroundObject(resx, (int) (Math.random() * resy), picturepath, time));
+	    int y = (int) (Math.random() * resy);
+	    int height = imgMap.get(picturepath).getImage().getHeight(); // Höhe vom Hintergrund-Objekt
+	    int width = imgMap.get(picturepath).getImage().getWidth(); // s.o.
+
+	    // Überschneidet es sich mit anderen Bildern?
+	    boolean everythingfine = true;
+	    for (int i = 0; i < BackgroundObj.size(); i++) {
+		// Bild noch am rechten Rand?
+		if ((time - BackgroundObj.get(i).getStarttime()) * speed <= BackgroundObj.get(i).getWidth()) {
+		    // Auf gleicher Höhe mit anderem Bild?
+		    if (y <= BackgroundObj.get(i).getY() + BackgroundObj.get(i).getHeight()) {
+			if (y + height >= BackgroundObj.get(i).getY()) {
+			    everythingfine = false;
+			}
+		    }
+		}
+	    }
+
+	    if (everythingfine) {
+		BackgroundObj.add(new MenuBackgroundObject(resx, y, width, height, picturepath, time));
+	    }
 	}
     }
 }
