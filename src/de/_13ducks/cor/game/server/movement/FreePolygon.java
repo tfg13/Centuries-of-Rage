@@ -27,6 +27,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Ein freies Vieleck. Ein Teil des Movement-Map-Graphen
@@ -36,5 +38,23 @@ public class FreePolygon {
     /**
      * Eine Liste mit allen Nodes, die auf einer Kante dieses Polygons liegen oder die eine Ecke darstellen.
      */
-    private ArrayList<Node> myNodes;
+    private List<Node> myNodes;
+
+    /**
+     * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
+     * Testet NICHT, ob das Vieleck auch konvex ist (muss es normalerweise sein)
+     * Wirft eine Exception, wenn Parameter null sind oder weniger als 3 geliefert werden.
+     * Registriert sich automatisch bei den Polygonen als zugehöriger Node
+     * @param nodes beliebig viele Nodes, mindestens 3
+     */
+    public FreePolygon(Node... nodes) {
+        if (nodes == null || nodes.length < 3) {
+            throw new IllegalArgumentException("At least three nodes requried!");
+        }
+        myNodes = new ArrayList<Node>();
+        myNodes.addAll(Arrays.asList(nodes));
+        for (Node node : myNodes) {
+            node.addPolygon(this);
+        }
+    }
 }

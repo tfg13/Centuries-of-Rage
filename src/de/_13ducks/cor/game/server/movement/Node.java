@@ -27,6 +27,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Ein Knoten. Zwischen diesen werden Vielecke aufgespannt (FreePolygon)
@@ -38,6 +39,42 @@ public class Node {
     /**
      * Diese Listen enthält alle Polygone, auf deren Kanten dieser Polygon liegt oder deren Ecken er markiert.
      */
-    private ArrayList<FreePolygon> myPolys;
+    private List<FreePolygon> myPolys;
+    /**
+     * Die absolute x-Koordinate dieses Polygons
+     */
+    private final double x;
+    /**
+     * Die absolute y-Koordinate dieses Polygons
+     */
+    private final double y;
+
+    /**
+     * Erzeugt einen neuen Knoten mit den angegebenen Koordinaten.
+     * Die Koordinaten dürfen nicht negativ sein, sonst gibts ne Exception!
+     * @param x Die X-Koordinate
+     * @param y Die Y-Koordinate
+     */
+    public Node(double x, double y) {
+        this.x = x;
+        this.y = y;
+        myPolys = new ArrayList<FreePolygon>();
+    }
+
+    /**
+     * Registriert einen Polygon bei diesem Knoten.
+     * Der Knoten weiß dann in Zunkunft, dass er auf einer der Kanten dieses Polygons liegt (oder diese als Ecke aufspannt)
+     * Polygon darf nicht null sein. (IllegalArgumentException)
+     * Wenn dieser Node den Polygon bereits kennt passiert nichts.
+     * @param poly der neue Polygon
+     */
+    public void addPolygon(FreePolygon poly) {
+        if (poly == null) {
+            throw new IllegalArgumentException("Poly must not be null!");
+        }
+        if (!myPolys.contains(poly)){
+            myPolys.add(poly);
+        }
+    }
 
 }

@@ -26,6 +26,12 @@
 
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.Position;
+import de._13ducks.cor.map.CoRMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Stellt die Map als (ungerichteten) Graph von konvexen Vielecken (Polygonen) dar.
  */
@@ -34,8 +40,35 @@ public class MovementMap {
     /**
      * Privater Konstruktor. CreateMovementMap verwenden!
      */
-    private MovementMap() {}
+    private MovementMap() {
+        polys = new ArrayList<FreePolygon>();
+    }
+    private List<FreePolygon> polys;
 
-    
+    /**
+     * Erstellt eine neue MovementMap.
+     * Erzeugt die interne Graphenstruktur aus konvexen Polygonen
+     * @param map die CoRMap, um die es geht.
+     * @param blocked alle Positionen, die nicht verwendet werden können
+     * @return die fertige MovementMap
+     */
+    public static MovementMap createMovementMap(CoRMap map, List<Position> blocked) {
+        MovementMap moveMap = new MovementMap();
+        // Test: Ganz billig: einen fetten Kasten erzeugen
+        Node lo = new Node(0, 0);
+        Node ro = new Node(map.getMapSizeX(), 0);
+        Node lu = new Node(0, map.getMapSizeY());
+        Node ru = new Node(map.getMapSizeX(), map.getMapSizeY());
+
+        FreePolygon bigPoly = new FreePolygon(lo, ro, lu, ru);
+
+        moveMap.polys.add(bigPoly);
+        
+        return moveMap;
+    }
+
+    public List<FreePolygon> getPolysForDebug() {
+        return Collections.unmodifiableList(polys);
+    }
 
 }
