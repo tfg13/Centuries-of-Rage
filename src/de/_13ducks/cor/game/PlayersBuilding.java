@@ -178,7 +178,7 @@ public class PlayersBuilding extends Building {
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
             x += GraphicsContent.BASIC_FIELD_OFFSET_X;
-            y += GraphicsContent.BASIC_FIELD_OFFSET_Y + GraphicsContent.FIELD_HALF_Y;
+            y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
             // Linien ziehen
             g.setLineWidth(4);
             //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));

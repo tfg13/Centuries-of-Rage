@@ -86,7 +86,8 @@ public class MovementMap {
 
             for (Building building : blocked) {
                 Position[] vis = building.getVisisbilityPositions();
-                Coordinate[] loch = new Coordinate[]{new Coordinate(vis[0].getX(), vis[0].getY()), new Coordinate(vis[1].getX(), vis[1].getY()), new Coordinate(vis[2].getX(), vis[2].getY()), new Coordinate(vis[3].getX(), vis[3].getY()), new Coordinate(vis[0].getX(), vis[0].getY())};
+                // Achtung: Bei Oben, Unten und Rechts wird was hinzugezählt, weil ja nicht der Anfangspunkt des Feldes (mitte links) gemeint ist, sondern z.B. das Ende
+                Coordinate[] loch = new Coordinate[]{new Coordinate(vis[0].getX(), vis[0].getY()), new Coordinate(vis[1].getX() + 1, vis[1].getY() - 1), new Coordinate(vis[2].getX() + 1, vis[2].getY() + 1), new Coordinate(vis[3].getX() + 2, vis[3].getY()), new Coordinate(vis[0].getX(), vis[0].getY())};
                 CoordinateSequence seq = new CoordinateArraySequence(loch);
                 holes.add(new LinearRing(seq, fact));
             }
