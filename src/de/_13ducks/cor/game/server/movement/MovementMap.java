@@ -106,7 +106,7 @@ public class MovementMap {
                 moveMap.polys.add(myPolygon);
             }
 
-            System.out.println("Took: " + (System.currentTimeMillis() - time));
+            System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
 
         } catch (Exception ex) {
             ex.printStackTrace();
