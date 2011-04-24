@@ -28,6 +28,7 @@ package de._13ducks.cor.mainmenu;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.ScaledImage;
+import de._13ducks.cor.mainmenu.components.TiledImage;
 import de._13ducks.cor.tools.randommapbuilder.RandomMapBuilder;
 
 /**
@@ -102,5 +103,33 @@ public class StartScreen extends Container {
                 System.exit(0);
             }
         });
+
+        // Schild
+
+        super.addComponent(new ScaledImage(mainMenu, 11.20833333, 28.666666, 26.1458333, 23.58333333, "img/mainmenu/sign1.png"));
+        super.addComponent(new ScaledImage(mainMenu, 37.34375, 28.666666, 23.54166667, 23.58333333, "img/mainmenu/sign2.png"));
+        super.addComponent(new TiledImage(mainMenu, 0, 28.666666, 11.20833333, 4.1666666, "img/mainmenu/balken.png"));
+
+        // Blätter
+
+        super.addComponent(new ScaledImage(mainMenu, 19.4, -14.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -3, -5.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 6.9, -4.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 10.3, -0.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 0.3, 2.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -6.9, 6.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 14.9, -8.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 6.6,  9.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -3.3, 18.6, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 4.6, 21.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -4.2, 26.4, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 3.5, 30.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -4.2, 33.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 1.1, 42.5, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -2.6, 52.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -6.1, 55.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 1.3, 60.6, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -3.4, 67.8, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, -7.7, 76.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
     }
 }

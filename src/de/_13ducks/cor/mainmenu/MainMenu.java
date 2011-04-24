@@ -175,33 +175,7 @@ public class MainMenu extends Container {
         super.addComponent(lobbyScreen);
         lobbyScreen.fadeOut();
 
-        // Schild
-
-        super.addComponent(new ScaledImage(this, 11.20833333, 28.666666, 26.1458333, 23.58333333, "img/mainmenu/sign1.png"));
-        super.addComponent(new ScaledImage(this, 37.34375, 28.666666, 23.54166667, 23.58333333, "img/mainmenu/sign2.png"));
-        super.addComponent(new TiledImage(this, 0, 28.666666, 11.20833333, 4.1666666, "img/mainmenu/balken.png"));
-
-        // Blätter
-
-        super.addComponent(new ScaledImage(this, 19.4, -14.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -3, -5.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 6.9, -4.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 10.3, -0.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 0.3, 2.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -6.9, 6.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 14.9, -8.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 6.6,  9.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -3.3, 18.6, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 4.6, 21.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -4.2, 26.4, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 3.5, 30.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -4.2, 33.9, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 1.1, 42.5, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -2.6, 52.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -6.1, 55.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, 1.3, 60.6, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -3.4, 67.8, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(this, -7.7, 76.1, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        
 
         // Koordinatenanzeige:
         super.addComponent(new CoordinateView(this));
