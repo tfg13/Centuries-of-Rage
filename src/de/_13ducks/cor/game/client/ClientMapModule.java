@@ -54,6 +54,7 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.Unit2x2;
 import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.AbilityStop;
+import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.MapIO;
@@ -81,6 +82,7 @@ public class ClientMapModule {
     public byte[] mapData;             // Die Map, falls ein Senden vom Server nötig war.
     File mapFile;
     String mapFileName;
+    public MovementMap moveMap;
     /**
      * Server-Kollision (nur für Debug)
      * 0 = Frei
@@ -952,6 +954,8 @@ public class ClientMapModule {
         createIDList();
         rgi.rogGraphics.activateMap(theMap.getVisMap());
         createAllLists();
+        // DEBUG:
+        moveMap = MovementMap.createMovementMap(theMap, buildingList);
         // Fertig, mitteilen
         rgi.rogGraphics.triggerStatusWaiting();
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 1, 0, 0, 0, 0));
