@@ -33,7 +33,7 @@ public class ChatWindow extends Component {
 
         for(int i=0; i<6; i++)
         {
-            history.add("history" + i);
+            history.add("");
         }
     }
 
@@ -51,7 +51,7 @@ public class ChatWindow extends Component {
         for(int i=1; i<5; i++)
         {
             g.setColor(Color.black);
-            g.drawString(history.get(history.size() - i), getX1(), getY1() + (g.getFont().getLineHeight()*i));
+            g.drawString(history.get(history.size() - i), getX1(), getY1() + (g.getFont().getLineHeight()*(5-i)));
         }
     }
 }
