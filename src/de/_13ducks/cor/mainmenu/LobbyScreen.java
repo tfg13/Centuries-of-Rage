@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.mainmenu;
 
-import de._13ducks.cor.mainmenu.components.ChatWindow;
 import java.util.ArrayList;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.Frame;
@@ -91,7 +90,7 @@ public class LobbyScreen extends Container {
         super.addComponent(new Frame(m, 60, 50, 20, 15));
 
         // Chat:
-        super.addComponent(lobbyChat = new LobbyChat(m,10,75));
+        lobbyChat = new LobbyChat(m,10,75);
         super.addComponent(lobbyChat);
         // Ready-Button:
         readyButton = new ImageButton(m, 60, 85, 12, 6, "img/mainmenu/buttonnew.png", "READY") {
