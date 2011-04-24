@@ -30,26 +30,13 @@ public class LobbyChat extends Container {
     public LobbyChat(MainMenu m, double x, double y) {
         super(m, x, y, 45, 15);
 
-
-        // Die Anzeige für Chat-Nachrichten
-        chatWindow = new ChatWindow(m, x, y);
+        chatWindow = new ChatWindow(m,x,y);
         super.addComponent(chatWindow);
 
-        // Das Texteingabefeld:
-        chatBox = new TextBox(m,x,y+12);
+        chatBox = new TextBox(m,x,y+15);
         super.addComponent(chatBox);
 
-        // "Senden"-Button:
-        super.addComponent(new ImageButton(m,x+32,y+12,12,6,"img/mainmenu/buttonnew.png", "Send") {
-
-            @Override
-            public void mouseClicked(int button, int x, int y, int clickCount) {
-                getMainMenu().getLobby().send('7' + chatBox.getText());
-                chatBox.setText("");
-            }
-        });
-
-
+        
     }
 
     /**
