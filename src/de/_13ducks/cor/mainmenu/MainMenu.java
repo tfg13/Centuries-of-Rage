@@ -87,45 +87,7 @@ public class MainMenu extends Container {
         initComponents();
     }
 
-    @Override
-    /**
-     * Render-Funktion
-     * rendert alle SubKomponenten
-     */
-    public void render(Graphics g) {
-        for (Component c : super.getComponents()) {
-            c.render(g);
-        }
-    }
-
-  
-    @Override
-    public void mouseMoved(int x, int y) {
-        for (Component c : super.getComponents()) {
-            c.mouseMoved(x, y);
-        }
-    }
-
-    @Override
-    /**
-     * Wird bei Mausklicks aufgerufen
-     */
-    public void mouseClicked(int button, int x, int y, int clickCount) {
-        for (Component c : super.getComponents()) {
-            c.mouseClickedAnywhere(button, x, y, clickCount);
-        }
-    }
-
-    @Override
-    /**
-     * Wird bei Tastendruck aufgerufen
-     */
-    public void keyPressed(int key, char c) {
-        for (Component comp : super.getComponents()) {
-            comp.keyPressed(key, c);
-        }
-
-    }
+   
 
     /**
      * Initialisiert die Komponenten des Hauptmenüs
