@@ -28,7 +28,7 @@ public class LobbyChat extends Container {
      * @param y
      */
     public LobbyChat(MainMenu m, double x, double y) {
-        super(m, x, y, 45, 15);
+        super(m, x, y, 45, 25);
 
         chatWindow = new ChatWindow(m,x,y);
         super.addComponent(chatWindow);
