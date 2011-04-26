@@ -23,7 +23,6 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class Node {
         if (poly == null) {
             throw new IllegalArgumentException("Poly must not be null!");
         }
-        if (!myPolys.contains(poly)){
+        if (!myPolys.contains(poly)) {
             myPolys.add(poly);
         }
     }
@@ -93,5 +92,23 @@ public class Node {
         return y;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 53 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Node) {
+            Node n = (Node) o;
+            // Bei Fließkomma-Vergleichen immer eine Toleranz zulassen, wegen den Rundungsfehlern.
+            if (Math.abs(n.x - this.x) < 0.01 && Math.abs(n.y - this.y) < 0.01) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
