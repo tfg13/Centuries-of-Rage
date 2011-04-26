@@ -109,6 +109,12 @@ public class MovementMap {
 
             System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
 
+            //
+
+            time = System.currentTimeMillis();
+
+
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
