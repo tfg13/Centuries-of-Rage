@@ -28,7 +28,6 @@ package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.newdawn.slick.Color;
 
 /**
  * Ein Knoten. Zwischen diesen werden Vielecke aufgespannt (FreePolygon)
