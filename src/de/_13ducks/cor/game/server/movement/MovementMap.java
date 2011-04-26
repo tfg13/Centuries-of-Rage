@@ -85,7 +85,7 @@ public class MovementMap {
                 Coordinate[] coords = cPoly.getCoordinates();
                 // Schauen, ob die Nodes schon exisiteren, sonst neue nehmen
                 FreePolygon myPolygon = new FreePolygon(getKnownOrNew(coords[0].x, coords[0].y), getKnownOrNew(coords[1].x, coords[1].y), getKnownOrNew(coords[2].x, coords[2].y));
-                polys.add(myPolygon);
+                addPoly(myPolygon);
             }
 
             System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
@@ -117,6 +117,24 @@ public class MovementMap {
     }
 
     /**
+     * Checkt, ob ein Polygon zur Liste hinzugefügt werden darf, verwaltet Nachbarschaftsbeziehungen und fügt ihn schließlich hinzu
+     * @param poly ein neuer Polygon
+     */
+    private void addPoly(FreePolygon poly) {
+        //@TODO: Auf Löcher testen
+        // Nachbarn suchen
+        for (FreePolygon freePoly : polys) {
+            // Als Nachbar eintragen?
+            if (freePoly.isNeighbor(poly)) {
+                freePoly.registerNeighbor(poly);
+                poly.registerNeighbor(freePoly);
+            }
+        }
+        // Jetzt adden
+        polys.add(poly);
+    }
+
+    /**
      * Schaut nach, ob der Knoten bereits bekannt ist. Wenn nicht, wird ein neuer angelegt.
      * @param x Die X-Koordinate des zu suchenden Knoten
      * @param y Die Y-Koordinate des zu suchenden Knoten
@@ -126,10 +144,8 @@ public class MovementMap {
         int index = nodes.indexOf(new Node(x, y));
         Node newnode = null;
         if (index != -1) {
-            System.out.println("Reuse: " + x + " " + y);
             newnode = nodes.get(index);
         } else {
-            System.out.println("New: " + x + " " + y);
             newnode = new Node(x, y);
         }
         nodes.add(newnode);

@@ -111,4 +111,9 @@ public class Node {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return x + "/" + y;
+    }
 }
