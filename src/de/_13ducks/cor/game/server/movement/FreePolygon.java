@@ -139,16 +139,32 @@ public class FreePolygon {
         boolean links = false;
         for (int i = 0; i < myNodes.size(); i++) {
             // Die 3 Nodes holen
-            Node n1 = myNodes.get(i > 0 ? i - 1: myNodes.size() - 1);
+            Node n1 = myNodes.get(i > 0 ? i - 1 : myNodes.size() - 1);
             Node n2 = myNodes.get(i);
-            Node n3 = myNodes.get(i < myNodes.size() - 1? i + 1: 0);
+            Node n3 = myNodes.get(i < myNodes.size() - 1 ? i + 1 : 0);
             // Rechts oder Links abbiegen?
             // XY Richtung suchen:
             double vecX = n2.getX() - n1.getX();
             double vecY = n2.getY() - n1.getY();
-            // Wenn N3
-            rechts |= (n3.getY() >= vecY);
-            links |= (n3.getY() <= vecY);
+            // y = mx + c
+            double m = vecY / vecX;
+            double c = n2.getY() - m * n2.getX();
+            double checkY = n3.getX() * m + c;
+            if (checkY > n3.getY()) {
+                // Drüber
+                if (vecX >= 0) {
+                    links |= true;
+                } else {
+                    rechts |= true;
+                }
+            } else {
+                // Drunter
+                if (vecX >= 0) {
+                    rechts |= true;
+                } else {
+                    links |= true;
+                }
+            }
         }
 
         return rechts ^ links;
