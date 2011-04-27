@@ -132,6 +132,7 @@ public class MovementMap {
         }
         // Jetzt adden
         polys.add(poly);
+        System.out.println("Convex: " + poly.isConvex());
     }
 
     /**
