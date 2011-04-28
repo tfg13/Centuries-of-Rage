@@ -6,6 +6,7 @@ package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -32,7 +33,7 @@ public class ChatWindow extends Component {
 
         for(int i=0; i<6; i++)
         {
-            history.add("gg");
+            history.add("");
         }
     }
 
@@ -49,7 +50,8 @@ public class ChatWindow extends Component {
 
         for(int i=1; i<5; i++)
         {
-            g.drawString(history.get(history.size() - i), getX1(), getY1() + (g.getFont().getLineHeight()*i));
+            g.setColor(Color.black);
+            g.drawString(history.get(history.size() - i), getX1(), getY1() + (g.getFont().getLineHeight()*(5-i)));
         }
     }
 }

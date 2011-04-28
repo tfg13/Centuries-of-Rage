@@ -16,6 +16,10 @@ public class LobbyChat extends Container {
      * Das Chatfenster
      */
     private ChatWindow chatWindow;
+    /**
+     * Das TexteingabeFeld
+     */
+    private TextBox chatBox;
 
     /**
      * Konstruktor
@@ -24,15 +28,24 @@ public class LobbyChat extends Container {
      * @param y
      */
     public LobbyChat(MainMenu m, double x, double y) {
-        super(m, x, y, 45, 15);
+        super(m, x, y, 45, 25);
 
-
-        // Die Anzeige für Chat-Nachrichten
         chatWindow = new ChatWindow(m, x, y);
         super.addComponent(chatWindow);
 
-        // Das Texteingabefeld:
-        super.addComponent(new TextBox(m,x,y+10));
+        chatBox = new TextBox(m, x, y + 15);
+        super.addComponent(chatBox);
+
+        super.addComponent(new ImageButton(m, x + 31, y + 14.5, 12, 4.8, "img/mainmenu/buttonnew.png", "send") {
+
+            @Override
+            public void mouseClicked(int button, int x, int y, int clickCount) {
+                if (!chatBox.getText().equals(null)) {
+                    getMainMenu().getLobby().send('7' + getMainMenu().getLobby().getPlayername() + ": " + chatBox.getText());
+                }
+                chatBox.setText("");
+            }
+        });
 
 
     }
