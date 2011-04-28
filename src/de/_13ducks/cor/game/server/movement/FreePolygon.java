@@ -111,6 +111,14 @@ public class FreePolygon {
     }
 
     /**
+     * Returns a List containing all neighbors of this Polygon
+     * @return a List containing all neighbors of this Polygon
+     */
+    public List<FreePolygon> getNeighbors() {
+        return Collections.unmodifiableList(neighbors);
+    }
+
+    /**
      * Registriert einen Polygon als Nachbar, falls noch nicht registriert
      * @param poly der neue Nachbar
      */
