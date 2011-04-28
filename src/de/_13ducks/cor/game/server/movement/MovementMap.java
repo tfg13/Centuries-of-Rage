@@ -90,9 +90,13 @@ public class MovementMap {
 
             System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
 
-            //
+            // Optimize Mesh - Benachbarte Dreiecke kombinieren, solange sie konvex bleiben
 
             time = System.currentTimeMillis();
+
+            combineOptimize();
+
+            System.out.println("Movemap optimization took: " + (System.currentTimeMillis() - time) + " ms");
 
 
 
@@ -114,6 +118,25 @@ public class MovementMap {
     public static MovementMap createMovementMap(CoRMap map, List<Building> blocked) {
         MovementMap moveMap = new MovementMap(map, blocked);
         return moveMap;
+    }
+
+    /**
+     * Verarbeitet die Polygone der aktuellen Movemap und versucht möglichst viele zu verbinden, solange die Verbundenen noch konvex sind.
+     */
+    private void combineOptimize() {
+        List<FreePolygon> wpolys = (List<FreePolygon>) ((ArrayList) polys).clone();
+        for (int i = 0; i < wpolys.size(); i++) {
+            // Für jeden Polygon alle Nachbarn durchgehen
+            FreePolygon wpoly = wpolys.get(i);
+            List<FreePolygon> neighbors = wpoly.getNeighbors();
+            for (int n = 0; i < neighbors.size(); n++) {
+                // Versuche Vereinigung und schaue, ob dann noch konvex
+                FreePolygon newPoly = FreePolygon.getMergedCopy(wpoly, neighbors.get(n));
+                if (newPoly.isConvex()) {
+                    System.out.println("Possible merge: " + wpoly + " " + neighbors.get(n));
+                }
+            }
+        }
     }
 
     /**

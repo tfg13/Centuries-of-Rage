@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.newdawn.slick.Color;
 
@@ -39,7 +40,7 @@ public class FreePolygon {
     /**
      * Eine Liste mit allen Nodes, die auf einer Kante dieses Polygons liegen oder die eine Ecke darstellen.
      */
-    private List<Node> myNodes;
+    private LinkedList<Node> myNodes;
     /**
      * Die Farbe dieses Polygons, nur für Debug-Output
      */
@@ -61,7 +62,7 @@ public class FreePolygon {
         if (nodes == null || nodes.length < 3) {
             throw new IllegalArgumentException("At least three nodes requried!");
         }
-        myNodes = new ArrayList<Node>();
+        myNodes = new LinkedList<Node>();
         neighbors = new ArrayList<FreePolygon>();
         myNodes.addAll(Arrays.asList(nodes));
         if (registerNodes) {
@@ -69,6 +70,75 @@ public class FreePolygon {
         }
 
         color = new Color((int) (Math.random() * 265.0), (int) (Math.random() * 265.0), (int) (Math.random() * 265.0), 100);
+    }
+
+    /**
+     * Liefert einen Temporären Polygon, der die Verbindung dieses mit dem gegebenen Polygon darstellt.
+     * Funktioniert nur, wenn beiden beiden Polygone genau eine gemeinsame Kante (aufgespannt von mindestens 2 gemeinsamen Nodes)
+     * haben. Die Resultate in Fällen von mehreren gemeinsamen , aber nicht direkt zusammenhängenden Kanten sind undefiniert.
+     * @param poly1 Polygon 1
+     * @param poly2 Polygon 2
+     * @return einen tempörären Polygon, der gemerged ist.
+     */
+    public static FreePolygon getMergedCopy(FreePolygon poly1, FreePolygon poly2) {
+        // Hier muss rumgepfuscht werden, kopieren
+        LinkedList<Node> poly1Nodes = (LinkedList<Node>) poly1.myNodes.clone();
+        LinkedList<Node> poly2Nodes = (LinkedList<Node>) poly2.myNodes.clone();
+        // Gemeinsame holen
+        List<Node> intersection = intersectingNodes(poly1, poly2); // In der Reihenfolge des ersten (wichtig!)
+        while (intersection.size() > 2) {
+            // Rauslöschen, wir brauchen nur 2
+            Node removed = intersection.remove(1);// "Mitte"
+            poly1Nodes.remove(removed);
+            poly2Nodes.remove(removed);
+        }
+        Node n1 = intersection.get(0);
+        Node n2 = intersection.get(1);
+        LinkedList<Node> newPoly = new LinkedList<Node>();
+        // Vorbereiten der Listen. Die zweite Liste muss n1 und n2 in umgedrehter Reihenfolge enthalten.
+        // Reihenfolge vom zweiten prüfen:
+        int n1index = poly2Nodes.indexOf(n1);
+        if (n1index + 1 >= poly2Nodes.size()) {
+            n1index = -1;
+        }
+        if (poly2Nodes.get(n1index + 1).equals(n2)) {
+            // Liste muss umgedreht werden!
+            Collections.reverse(poly2Nodes);
+        }
+        // Die Listen müssen noch weiter vorbereitet werden: Die Verbindung von n1 nach n2 darf nicht über der Ende-Erstes grenze liegen
+        // Notfalls rotieren
+        while (poly1Nodes.indexOf(n1) > poly1Nodes.indexOf(n2)) {
+            Collections.rotate(poly1Nodes, 1); // Sollte normalerweise nur ein mal passieren
+        }
+        while (poly2Nodes.indexOf(n1) < poly2Nodes.indexOf(n2)) {
+            Collections.rotate(poly2Nodes, 1); // Sollte normalerweise nur ein mal passieren
+        }
+        // Jetzt zusammenbauen
+        // Zuerst vom ersten bis zur ersten Intersection (exkl)
+        newPoly.addAll(poly1Nodes.subList(0, poly1Nodes.indexOf(n1)));
+        // Jetzt hinzufügen
+        newPoly.addAll(poly2Nodes.subList(poly2Nodes.indexOf(n1), poly2Nodes.indexOf(n2)));
+        // Noch den Rest:
+        newPoly.addAll(poly1Nodes.subList(poly1Nodes.indexOf(n2), poly1Nodes.size()));
+
+        // Fertig, Liste erstellen
+        return new FreePolygon(false, newPoly.toArray(new Node[0]));
+    }
+
+    /**
+     * Liefert eine Liste mit allen gemeinsamen Nodes zweier Polygone
+     * @param poly1 Polygon 1
+     * @param poly2 Polygon 2
+     * @return eine Liste mit allen gemeinsamen Nodes zweier Polygone
+     */
+    private static List<Node> intersectingNodes(FreePolygon poly1, FreePolygon poly2) {
+        LinkedList<Node> returnList = new LinkedList<Node>();
+        for (Node node : poly1.myNodes) {
+            if (poly2.myNodes.contains(node)) {
+                returnList.add(node);
+            }
+        }
+        return returnList;
     }
 
     public List<Node> getNodesForDebug() {
