@@ -54,7 +54,7 @@ public class MovementMap {
     private MovementMap(CoRMap map, List<Building> blocked) {
         polys = new ArrayList<FreePolygon>();
         nodes = new ArrayList<Node>();
-        
+
 
         try {
 
@@ -125,19 +125,69 @@ public class MovementMap {
      * Verarbeitet die Polygone der aktuellen Movemap und versucht möglichst viele zu verbinden, solange die Verbundenen noch konvex sind.
      */
     private void combineOptimize() {
-        List<FreePolygon> wpolys = (List<FreePolygon>) ((ArrayList) polys).clone();
-        for (int i = 0; i < wpolys.size(); i++) {
-            // Für jeden Polygon alle Nachbarn durchgehen
-            FreePolygon wpoly = wpolys.get(i);
-            List<FreePolygon> neighbors = wpoly.getNeighbors();
-            for (int n = 0; n < neighbors.size(); n++) {
-                // Versuche Vereinigung und schaue, ob dann noch konvex
-                FreePolygon newPoly = FreePolygon.getMergedCopy(wpoly, neighbors.get(n));
-                if (newPoly.isConvex()) {
-                    System.out.println("Possible merge: " + wpoly + " " + neighbors.get(n));
+        int counter = 0;
+        do {
+            counter = 0;
+            for (int i = 0; i < polys.size(); i++) {
+                // Für jeden Polygon alle Nachbarn durchgehen
+                FreePolygon wpoly = polys.get(i);
+                List<FreePolygon> neighbors = wpoly.getNeighbors();
+                for (int n = 0; n < neighbors.size(); n++) {
+                    // Versuche Vereinigung und schaue, ob dann noch konvex
+                    FreePolygon newPoly = FreePolygon.getMergedCopy(wpoly, neighbors.get(n));
+                    if (newPoly.isConvex()) {
+                        computeMerge(wpoly, neighbors.get(n), newPoly);
+                        counter++;
+                        break; //Wpoly ist anders
+                    }
                 }
             }
+            System.out.println("Removed " + counter + " polygons");
+        } while (counter != 0);
+    }
+
+    /**
+     * Verrechnet einen Merge.
+     * Sorgt dafür, dass old1 und old2 richtig aus der moveMap rausgeworden werden und dass alle Node und neighbor-
+     * Referenzen jetzt auf den neuen Zeigen
+     * @param old1 Der erste alte Polygon
+     * @param old2 Der zweite alte Polygon
+     * @param newP Der neue Polygon
+     */
+    private void computeMerge(FreePolygon old1, FreePolygon old2, FreePolygon newP) {
+        // Nachbarschaften umbiegen:
+        for (FreePolygon poly : old1.getNeighbors()) {
+            // Alten löschen, neuen Registrieren, aber nicht bei old2!
+            if (poly.equals(old2)) {
+                continue;
+            }
+            // Ansonsten weiter:
+            poly.removeNeighbor(old1);
+            poly.registerNeighbor(newP);
+            newP.registerNeighbor(poly);
         }
+        for (FreePolygon poly : old2.getNeighbors()) {
+            // Alten löschen, neuen Registrieren, aber nicht bei old2!
+            if (poly.equals(old1)) {
+                continue;
+            }
+            // Ansonsten weiter:
+            poly.removeNeighbor(old2);
+            poly.registerNeighbor(newP);
+            newP.registerNeighbor(poly);
+        }
+        // Nodes ändern
+        for (Node node : old1.getNodes()) {
+            node.removePoly(old1);
+            node.addPolygon(newP);
+        }
+        for (Node node : old2.getNodes()) {
+            node.removePoly(old2);
+            node.addPolygon(newP);
+        }
+        polys.remove(old1);
+        polys.remove(old2);
+        polys.add(newP);
     }
 
     /**
@@ -159,7 +209,7 @@ public class MovementMap {
             if (shared >= 3) {
                 return; // Geht nicht, Loch
             }
-            
+
         }
         // Nachbarn suchen
         for (FreePolygon freePoly : polys) {

@@ -192,6 +192,14 @@ public class FreePolygon {
         }
     }
 
+    /**
+     * Deregistriert einen Polygon als Nachbar, fall er registriert war
+     * @param poly der alte Nachbar.
+     */
+    public void removeNeighbor(FreePolygon poly) {
+        neighbors.remove(poly);
+    }
+
     @Override
     public String toString() {
         String ret = "Poly: [";
@@ -199,6 +207,28 @@ public class FreePolygon {
             ret += " " + node;
         }
         return ret + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof FreePolygon) {
+            FreePolygon p = (FreePolygon) o;
+            for (Node node: p.getNodes()) {
+                if (!myNodes.contains(node)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + (this.myNodes != null ? this.myNodes.hashCode() : 0);
+        return hash;
     }
 
     /**

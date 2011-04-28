@@ -77,6 +77,15 @@ public class Node {
     }
 
     /**
+     * Löscht einen registrierten Polygon wieder.
+     * Sollte dieser Knoten den Polygon gar nicht kennen, passiert nichts.
+     * @param poly der alte Polygon
+     */
+    public void removePoly(FreePolygon poly) {
+        myPolys.remove(poly);
+    }
+
+    /**
      * Die absolute x-Koordinate dieses Polygons
      * @return the x
      */
