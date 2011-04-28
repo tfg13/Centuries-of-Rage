@@ -81,64 +81,42 @@ public class FreePolygon {
      * @return einen tempörären Polygon, der gemerged ist.
      */
     public static FreePolygon getMergedCopy(FreePolygon poly1, FreePolygon poly2) {
-        // Hier muss rumgepfuscht werden, kopieren
-        LinkedList<Node> poly1Nodes = (LinkedList<Node>) poly1.myNodes.clone();
-        LinkedList<Node> poly2Nodes = (LinkedList<Node>) poly2.myNodes.clone();
-        // Gemeinsame holen
-        List<Node> intersection = intersectingNodes(poly1, poly2); // In der Reihenfolge des ersten (wichtig!)
-        while (intersection.size() > 2) {
-            // Rauslöschen, wir brauchen nur 2
-            Node removed = intersection.remove(1);// "Mitte"
-            poly1Nodes.remove(removed);
-            poly2Nodes.remove(removed);
-        }
-        Node n1 = intersection.get(0);
-        Node n2 = intersection.get(1);
-        LinkedList<Node> newPoly = new LinkedList<Node>();
-        // Vorbereiten der Listen. Die zweite Liste muss n1 und n2 in umgedrehter Reihenfolge enthalten.
-        // Reihenfolge vom zweiten prüfen:
-        int n1index = poly2Nodes.indexOf(n1);
-        if (n1index + 1 >= poly2Nodes.size()) {
-            n1index = -1;
-        }
-        if (poly2Nodes.get(n1index + 1).equals(n2)) {
-            // Liste muss umgedreht werden!
-            Collections.reverse(poly2Nodes);
-        }
-        // Die Listen müssen noch weiter vorbereitet werden: Die Verbindung von n1 nach n2 darf nicht über der Ende-Erstes grenze liegen
-        // Notfalls rotieren
-        while (poly1Nodes.indexOf(n1) > poly1Nodes.indexOf(n2)) {
-            Collections.rotate(poly1Nodes, 1); // Sollte normalerweise nur ein mal passieren
-        }
-        while (poly2Nodes.indexOf(n1) < poly2Nodes.indexOf(n2)) {
-            Collections.rotate(poly2Nodes, 1); // Sollte normalerweise nur ein mal passieren
-        }
-        // Jetzt zusammenbauen
-        // Zuerst vom ersten bis zur ersten Intersection (exkl)
-        newPoly.addAll(poly1Nodes.subList(0, poly1Nodes.indexOf(n1)));
-        // Jetzt hinzufügen
-        newPoly.addAll(poly2Nodes.subList(poly2Nodes.indexOf(n1), poly2Nodes.indexOf(n2)));
-        // Noch den Rest:
-        newPoly.addAll(poly1Nodes.subList(poly1Nodes.indexOf(n2), poly1Nodes.size()));
+        // Alternativer Algorithmus mit Kanten:
+        // Kanten-Netz bauen
+        ArrayList<Edge> edges = new ArrayList<Edge>();
 
-        // Fertig, Liste erstellen
-        return new FreePolygon(false, newPoly.toArray(new Node[0]));
-    }
+        for (int i = 0; i < poly1.myNodes.size(); i++) {
+            edges.add(new Edge(poly1.myNodes.get(i), poly1.myNodes.get(i + 1 < poly1.myNodes.size() ? i + 1 : 0)));
+        }
 
-    /**
-     * Liefert eine Liste mit allen gemeinsamen Nodes zweier Polygone
-     * @param poly1 Polygon 1
-     * @param poly2 Polygon 2
-     * @return eine Liste mit allen gemeinsamen Nodes zweier Polygone
-     */
-    private static List<Node> intersectingNodes(FreePolygon poly1, FreePolygon poly2) {
-        LinkedList<Node> returnList = new LinkedList<Node>();
-        for (Node node : poly1.myNodes) {
-            if (poly2.myNodes.contains(node)) {
-                returnList.add(node);
+        // Bei Adden alle doppelten Kanten löschen
+        for (int i = 0; i < poly2.myNodes.size(); i++) {
+            Edge edge = (new Edge(poly2.myNodes.get(i), poly2.myNodes.get(i + 1 < poly2.myNodes.size() ? i + 1 : 0)));
+            if (edges.contains(edge)) {
+                edges.remove(edge);
+            } else {
+                edges.add(edge);
             }
         }
-        return returnList;
+
+        // Jetzt nur noch einen neuen "Weg" bauen. Einfach irgendwo anfangen, es ist eindeutig
+        Edge current = edges.get(0);
+        Node start = current.getStart();
+        ArrayList<Node> path = new ArrayList<Node>();
+        path.add(start);
+        while (!start.equals(current.getEnd())) {
+            // Suchen
+            for (Edge edge : edges) {
+                if (edge.getStart().equals(current.getEnd())) {
+                    // Neues Wegsegment
+                    current = edge;
+                    path.add(current.getStart());
+                }
+            }
+        }
+
+        // Fertig, einen neuen Polygon draus machen und returnen
+        return new FreePolygon(false, path.toArray(new Node[0]));
     }
 
     public List<Node> getNodesForDebug() {

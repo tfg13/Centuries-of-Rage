@@ -129,7 +129,7 @@ public class MovementMap {
             // Für jeden Polygon alle Nachbarn durchgehen
             FreePolygon wpoly = wpolys.get(i);
             List<FreePolygon> neighbors = wpoly.getNeighbors();
-            for (int n = 0; i < neighbors.size(); n++) {
+            for (int n = 0; n < neighbors.size(); n++) {
                 // Versuche Vereinigung und schaue, ob dann noch konvex
                 FreePolygon newPoly = FreePolygon.getMergedCopy(wpoly, neighbors.get(n));
                 if (newPoly.isConvex()) {
