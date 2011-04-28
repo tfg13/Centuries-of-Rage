@@ -70,7 +70,7 @@ public class GraphicsContent extends BasicGame {
     /**
      * Wie viele Pixel das tatsächlich gezeichnete Feld von den Zeichenkoordinaten entfernt ist.
      */
-    public static final int BASIC_FIELD_OFFSET_Y = 10;
+    public static final double BASIC_FIELD_OFFSET_Y = 17.5;
     /**
      * Wie viele Pixel der Zeichenursprung für ein 1x1 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
      */
@@ -844,7 +844,7 @@ public class GraphicsContent extends BasicGame {
             Polygon gPoly = new Polygon();
             List<Node> nodes = poly.getNodesForDebug();
             for (Node node : nodes) {
-                gPoly.addPoint((float) (node.getX() - positionX) * FIELD_HALF_X + BASIC_FIELD_OFFSET_X, (float) ((node.getY() - positionY) * FIELD_HALF_Y) + BASIC_FIELD_OFFSET_Y);
+                gPoly.addPoint((float) (node.getX() - positionX) * FIELD_HALF_X + BASIC_FIELD_OFFSET_X, (float) ((float) ((node.getY() - positionY) * FIELD_HALF_Y) + BASIC_FIELD_OFFSET_Y));
             }
             g.fill(gPoly);
         }

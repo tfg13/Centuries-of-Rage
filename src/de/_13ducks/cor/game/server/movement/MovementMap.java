@@ -48,29 +48,9 @@ public class MovementMap {
     /**
      * Privater Konstruktor. CreateMovementMap verwenden!
      */
-    private MovementMap() {
+    private MovementMap(CoRMap map, List<Building> blocked) {
         polys = new ArrayList<FreePolygon>();
-    }
-    private List<FreePolygon> polys;
-
-    /**
-     * Erstellt eine neue MovementMap.
-     * Erzeugt die interne Graphenstruktur aus konvexen Polygonen
-     * @param map die CoRMap, um die es geht.
-     * @param blocked alle Positionen, die nicht verwendet werden können
-     * @return die fertige MovementMap
-     */
-    public static MovementMap createMovementMap(CoRMap map, List<Building> blocked) {
-        MovementMap moveMap = new MovementMap();
-        /*     // Test: Ganz billig: einen fetten Kasten erzeugen
-        Node lo = new Node(0, 0);
-        Node ro = new Node(map.getMapSizeX(), 0);
-        Node lu = new Node(0, map.getMapSizeY());
-        Node ru = new Node(map.getMapSizeX(), map.getMapSizeY());
-
-        FreePolygon bigPoly = new FreePolygon(lo, ro, ru, lu);
-
-        moveMap.polys.add(bigPoly); */
+        nodes = new ArrayList<Node>();
 
         try {
 
@@ -86,7 +66,8 @@ public class MovementMap {
 
             for (Building building : blocked) {
                 Position[] vis = building.getVisisbilityPositions();
-                Coordinate[] loch = new Coordinate[]{new Coordinate(vis[0].getX(), vis[0].getY()), new Coordinate(vis[1].getX(), vis[1].getY()), new Coordinate(vis[2].getX(), vis[2].getY()), new Coordinate(vis[3].getX(), vis[3].getY()), new Coordinate(vis[0].getX(), vis[0].getY())};
+                // Achtung: Bei Oben, Unten und Rechts wird was hinzugezählt, weil ja nicht der Anfangspunkt des Feldes (mitte links) gemeint ist, sondern z.B. das Ende
+                Coordinate[] loch = new Coordinate[]{new Coordinate(vis[0].getX(), vis[0].getY()), new Coordinate(vis[1].getX() + 1, vis[1].getY() - 1), new Coordinate(vis[2].getX() + 1, vis[2].getY() + 1), new Coordinate(vis[3].getX() + 2, vis[3].getY()), new Coordinate(vis[0].getX(), vis[0].getY())};
                 CoordinateSequence seq = new CoordinateArraySequence(loch);
                 holes.add(new LinearRing(seq, fact));
             }
@@ -102,20 +83,73 @@ public class MovementMap {
             for (int i = 0; i < col.getNumGeometries(); i++) {
                 Polygon cPoly = (Polygon) col.getGeometryN(i);
                 Coordinate[] coords = cPoly.getCoordinates();
-                FreePolygon myPolygon = new FreePolygon(new Node(coords[0].x, coords[0].y), new Node(coords[1].x, coords[1].y), new Node(coords[2].x, coords[2].y));
-                moveMap.polys.add(myPolygon);
+                // Schauen, ob die Nodes schon exisiteren, sonst neue nehmen
+                FreePolygon myPolygon = new FreePolygon(getKnownOrNew(coords[0].x, coords[0].y), getKnownOrNew(coords[1].x, coords[1].y), getKnownOrNew(coords[2].x, coords[2].y));
+                addPoly(myPolygon);
             }
 
-            System.out.println("Took: " + (System.currentTimeMillis() - time));
+            System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
+
+            //
+
+            time = System.currentTimeMillis();
+
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+    }
+    private List<FreePolygon> polys;
+    private List<Node> nodes;
 
-
-
+    /**
+     * Erstellt eine neue MovementMap.
+     * Erzeugt die interne Graphenstruktur aus konvexen Polygonen
+     * @param map die CoRMap, um die es geht.
+     * @param blocked alle Positionen, die nicht verwendet werden können
+     * @return die fertige MovementMap
+     */
+    public static MovementMap createMovementMap(CoRMap map, List<Building> blocked) {
+        MovementMap moveMap = new MovementMap(map, blocked);
         return moveMap;
+    }
+
+    /**
+     * Checkt, ob ein Polygon zur Liste hinzugefügt werden darf, verwaltet Nachbarschaftsbeziehungen und fügt ihn schließlich hinzu
+     * @param poly ein neuer Polygon
+     */
+    private void addPoly(FreePolygon poly) {
+        //@TODO: Auf Löcher testen
+        // Nachbarn suchen
+        for (FreePolygon freePoly : polys) {
+            // Als Nachbar eintragen?
+            if (freePoly.isNeighbor(poly)) {
+                freePoly.registerNeighbor(poly);
+                poly.registerNeighbor(freePoly);
+            }
+        }
+        // Jetzt adden
+        polys.add(poly);
+    }
+
+    /**
+     * Schaut nach, ob der Knoten bereits bekannt ist. Wenn nicht, wird ein neuer angelegt.
+     * @param x Die X-Koordinate des zu suchenden Knoten
+     * @param y Die Y-Koordinate des zu suchenden Knoten
+     * @return Der neue Knoten, entweder aus der Datenbank oder ein ganz neuer
+     */
+    private Node getKnownOrNew(double x, double y) {
+        int index = nodes.indexOf(new Node(x, y));
+        Node newnode = null;
+        if (index != -1) {
+            newnode = nodes.get(index);
+        } else {
+            newnode = new Node(x, y);
+        }
+        nodes.add(newnode);
+        return newnode;
     }
 
     public List<FreePolygon> getPolysForDebug() {
