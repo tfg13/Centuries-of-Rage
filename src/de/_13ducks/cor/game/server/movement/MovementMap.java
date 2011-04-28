@@ -84,7 +84,7 @@ public class MovementMap {
                 Polygon cPoly = (Polygon) col.getGeometryN(i);
                 Coordinate[] coords = cPoly.getCoordinates();
                 // Schauen, ob die Nodes schon exisiteren, sonst neue nehmen
-                FreePolygon myPolygon = new FreePolygon(getKnownOrNew(coords[0].x, coords[0].y), getKnownOrNew(coords[1].x, coords[1].y), getKnownOrNew(coords[2].x, coords[2].y));
+                FreePolygon myPolygon = new FreePolygon(true, getKnownOrNew(coords[0].x, coords[0].y), getKnownOrNew(coords[1].x, coords[1].y), getKnownOrNew(coords[2].x, coords[2].y));
                 addPoly(myPolygon);
             }
 

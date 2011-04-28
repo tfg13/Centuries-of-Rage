@@ -53,18 +53,19 @@ public class FreePolygon {
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
      * Testet NICHT, ob das Vieleck auch konvex ist (muss es normalerweise sein)
      * Wirft eine Exception, wenn Parameter null sind oder weniger als 3 geliefert werden.
-     * Registriert sich automatisch bei den Nodes als zugehöriger Polygon. Registriert sich NICHT als Nachbar!
+     * Registriert sich NICHT als Nachbar! (auch nicht, wenn registerNodes true ist!)
+     * @param registerNodes Ob dieses neue Polygon bei seinen Nodes registriert werden soll.
      * @param nodes beliebig viele Nodes, mindestens 3
      */
-    public FreePolygon(Node... nodes) {
+    public FreePolygon(boolean registerNodes, Node... nodes) {
         if (nodes == null || nodes.length < 3) {
             throw new IllegalArgumentException("At least three nodes requried!");
         }
         myNodes = new ArrayList<Node>();
         neighbors = new ArrayList<FreePolygon>();
         myNodes.addAll(Arrays.asList(nodes));
-        for (Node node : myNodes) {
-            node.addPolygon(this);
+        if (registerNodes) {
+            registerNodes();
         }
 
         color = new Color((int) (Math.random() * 265.0), (int) (Math.random() * 265.0), (int) (Math.random() * 265.0), 100);
@@ -72,6 +73,17 @@ public class FreePolygon {
 
     public List<Node> getNodesForDebug() {
         return Collections.unmodifiableList(myNodes);
+    }
+
+    /**
+     * Registriert den Polygon bei seinen Nodes.
+     * Normalerweise macht dies der Konstruktor automatisch (wenn mit true aufgerufen)
+     * Sonst kann man es hier nachholen, z.B. wenn man den temporären Polygon behalten möchte.
+     */
+    public final void registerNodes() {
+        for (Node node : myNodes) {
+            node.addPolygon(this);
+        }
     }
 
     /**
