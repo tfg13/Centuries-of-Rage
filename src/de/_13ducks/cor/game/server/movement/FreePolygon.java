@@ -119,7 +119,11 @@ public class FreePolygon {
         return new FreePolygon(false, path.toArray(new Node[0]));
     }
 
-    public List<Node> getNodesForDebug() {
+    /**
+     * Liefert eine (unveränderbare) Liste mit allen Knoten dieses Polygons
+     * @return eine (unveränderbare) Liste mit allen Knoten dieses Polygons
+     */
+    public List<Node> getNodes() {
         return Collections.unmodifiableList(myNodes);
     }
 

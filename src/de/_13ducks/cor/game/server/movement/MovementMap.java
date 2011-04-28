@@ -45,12 +45,16 @@ import java.util.List;
  */
 public class MovementMap {
 
+    private List<FreePolygon> polys;
+    private List<Node> nodes;
+
     /**
      * Privater Konstruktor. CreateMovementMap verwenden!
      */
     private MovementMap(CoRMap map, List<Building> blocked) {
         polys = new ArrayList<FreePolygon>();
         nodes = new ArrayList<Node>();
+        
 
         try {
 
@@ -85,7 +89,7 @@ public class MovementMap {
                 Coordinate[] coords = cPoly.getCoordinates();
                 // Schauen, ob die Nodes schon exisiteren, sonst neue nehmen
                 FreePolygon myPolygon = new FreePolygon(true, getKnownOrNew(coords[0].x, coords[0].y), getKnownOrNew(coords[1].x, coords[1].y), getKnownOrNew(coords[2].x, coords[2].y));
-                addPoly(myPolygon);
+                addPoly(myPolygon, holes);
             }
 
             System.out.println("Movemap calculation took: " + (System.currentTimeMillis() - time) + " ms");
@@ -103,10 +107,7 @@ public class MovementMap {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
-    private List<FreePolygon> polys;
-    private List<Node> nodes;
 
     /**
      * Erstellt eine neue MovementMap.
@@ -143,8 +144,23 @@ public class MovementMap {
      * Checkt, ob ein Polygon zur Liste hinzugefügt werden darf, verwaltet Nachbarschaftsbeziehungen und fügt ihn schließlich hinzu
      * @param poly ein neuer Polygon
      */
-    private void addPoly(FreePolygon poly) {
-        //@TODO: Auf Löcher testen
+    private void addPoly(FreePolygon poly, List<LinearRing> blocked) {
+        // Alle Blockierten Bereiche durchgehen, wenn der neue Polygon drei (oder mehr) Polygone mit einem gemeinsam ist ist es ein Loch
+        List<Node> pnodes = poly.getNodes();
+        for (LinearRing ring : blocked) {
+            int shared = 0;
+            Coordinate[] coords = ring.getCoordinates();
+            for (int i = 0; i < coords.length - 1; i++) { // Nur bis length - 1, der Startpunkt ist zweimal drin
+                Coordinate coord = coords[i];
+                if (pnodes.contains(new Node(coord.x, coord.y))) {
+                    shared++;
+                }
+            }
+            if (shared >= 3) {
+                return; // Geht nicht, Loch
+            }
+            
+        }
         // Nachbarn suchen
         for (FreePolygon freePoly : polys) {
             // Als Nachbar eintragen?
