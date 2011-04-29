@@ -215,4 +215,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public boolean moveStoppable() {
         return true;
     }
+
+    @Override
+    public void setMainPosition(Position mainPosition) {
+        super.setMainPosition(mainPosition); // Falls da noch sonst was gemanaged wird
+        if (mainPosition instanceof FloatingPointPosition) {
+        this.mainPosition = mainPosition;
+        } else {
+            this.mainPosition = new FloatingPointPosition(mainPosition);
+        }
+    }
 }
