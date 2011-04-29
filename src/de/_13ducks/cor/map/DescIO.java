@@ -21,22 +21,14 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-/**
- * Repräsentiert ein Feld im 2-Dimensionalen Raum.
- * Arbeitet mit dem bekannten Rauten-nur jedes zweite Feld-System.
- *
- **/
 package de._13ducks.cor.map;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,10 +54,10 @@ import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
  * Einlese-Klasse für Einheiten, Gebäude und Abilities
  * @author Johannes
  */
-public class GameDescReader {
+public class DescIO {
 
-    public static GameDescReaderParameter readMap(String path, int mapMode, ClientCore.InnerClient rgi, ServerCore.InnerServer serverrgi) {
-	GameDescReaderParameter Returndingens = new GameDescReaderParameter(); // Wird am Ende Returned
+    public static GameDescParams readDesc(String path, int mapMode, ClientCore.InnerClient rgi, ServerCore.InnerServer serverrgi) {
+	GameDescParams Returndingens = new GameDescParams(); // Wird am Ende Returned
 	ArrayList<File> olist = new ArrayList<File>();
 	ArrayList<File> flist = new ArrayList<File>();
 	ArrayList<File> dlist = new ArrayList<File>();

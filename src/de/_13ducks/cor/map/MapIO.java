@@ -107,7 +107,7 @@ public class MapIO {
             // DESC-Settings lesen:
             // Einglesen, normal weitermachen.
 
-	    GameDescReaderParameter descParameters = GameDescReader.readMap(path, mapMode, rgi, serverrgi);
+	    GameDescParams descParameters = DescIO.readDesc(path, mapMode, rgi, serverrgi);
 
 
             // Leere Map im Speicher anlegen
