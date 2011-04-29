@@ -49,6 +49,7 @@ import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.map.MapIO;
 
 /**
@@ -75,6 +76,7 @@ public class ServerMapModule {
     public byte[] abBuffer;
     public byte[] descBuffer;
     public byte[] mapBuffer;
+    private MovementMap moveMap;
 
     ServerMapModule(ServerCore.InnerServer in) {
         rgi = in;
@@ -708,6 +710,7 @@ public class ServerMapModule {
             createIDList();
             createAllLists();
             rgi.game.registerUnitList(unitList);
+            moveMap = MovementMap.createMovementMap(theMap, buildingList);
             rgi.logger("[MapModul] Map \"" + mapName + "\" loaded");
             // Maphash bekannt, jetzt Name + Hash an andere Clients übertragen
             System.out.println("Targethash: " + mapHash);
