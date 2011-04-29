@@ -31,8 +31,6 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.client.ClientCore;
-import de._13ducks.cor.game.client.ClientCore.InnerClient;
-import de._13ducks.cor.game.server.ServerCore.InnerServer;
 import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -88,11 +86,6 @@ public class Unit2x2 extends Unit {
         positions[1] = new Position(mainPosition.getX() + 1, mainPosition.getY() - 1);
         positions[2] = new Position(mainPosition.getX() + 1, mainPosition.getY() + 1);
         positions[3] = new Position(mainPosition.getX() + 2, mainPosition.getY());
-    }
-
-    @Override
-    public void moveToBuilding(Building building, InnerServer inner) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -179,23 +172,25 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
+        float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         //Einheit gehört zu / Selektiert
-        float[] xy = path.calcExcactPosition(x, y, this);
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png0").getImage().draw(rx + GraphicsContent.OFFSET_2x2_X, ry + GraphicsContent.OFFSET_2x2_Y);
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(rx + GraphicsContent.OFFSET_2x2_X, ry + GraphicsContent.OFFSET_2x2_Y);
         }
     }
 
     @Override
     public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
-        float[] xy = path.calcExcactPosition(x, y, this);
+        float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
+        float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (img != null) {
-            img.getImage().draw(xy[0] + GraphicsContent.OFFSET_2x2_X, xy[1] + GraphicsContent.OFFSET_2x2_Y);
+            img.getImage().draw(rx + GraphicsContent.OFFSET_2x2_X, ry + GraphicsContent.OFFSET_2x2_Y);
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }

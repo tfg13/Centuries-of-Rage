@@ -146,7 +146,7 @@ public class ServerCore extends Core {
 
         rgi.logger("[CoreInit]: Loading serverMoveManager");
 
-	smoveman = new ServerMoveManager(rgi);
+	smoveman = new ServerMoveManager();
 
         // Alle Module geladen, starten
 

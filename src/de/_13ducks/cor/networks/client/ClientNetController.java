@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.networks.client;
 
-import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.NetPlayer;
-import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.mainmenu.LobbyScreen;
@@ -222,8 +220,6 @@ public class ClientNetController {
             cmdMap[21] = new de._13ducks.cor.networks.cmd.client.C021_ADD_UNIT();
             cmdMap[22] = new de._13ducks.cor.networks.cmd.client.C022_RECRUIT_DEL();
             cmdMap[23] = new de._13ducks.cor.networks.cmd.client.C023_INIT_MOVE();
-            cmdMap[24] = new de._13ducks.cor.networks.cmd.client.C024_MOVE_DIRECT();
-            cmdMap[25] = new de._13ducks.cor.networks.cmd.client.C025_MOVE_SWITCH();
             cmdMap[27] = new de._13ducks.cor.networks.cmd.client.C027_SET_WAYPOINT();
             cmdMap[28] = new de._13ducks.cor.networks.cmd.client.C028_KILL_UNIT();
             cmdMap[30] = new de._13ducks.cor.networks.cmd.client.C030_KILL_BUILDING();
@@ -242,7 +238,6 @@ public class ClientNetController {
             cmdMap[50] = new de._13ducks.cor.networks.cmd.client.C050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.client.C051_SET_TEAMS();
             cmdMap[53] = new de._13ducks.cor.networks.cmd.client.C053_DEBUG_SERVER_COLLISION();
-            cmdMap[55] = new de._13ducks.cor.networks.cmd.client.C055_QUICKSTOP();
             cmdMap[56] = new de._13ducks.cor.networks.cmd.client.C056_DEBUG_SERVER_RES();
         }
 

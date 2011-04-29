@@ -46,7 +46,6 @@ public class ClientBehaviourMove extends ClientBehaviour {
 
     @Override
     public void execute() {
-        caster2.clientManagePath(rgi);
     }
 
     @Override

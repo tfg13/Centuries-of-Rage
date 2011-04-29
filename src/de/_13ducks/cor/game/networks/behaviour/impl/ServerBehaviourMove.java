@@ -63,7 +63,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
     @Override
     public void execute() {
-        caster2.serverManagePath(rgi);
     }
 
     @Override
