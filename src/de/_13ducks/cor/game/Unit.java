@@ -71,7 +71,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     protected Unit(DescParamsUnit params) {
         super(params);
         applyUnitParams(params);
-        this.mainPosition = new FloatingPointPosition(this.mainPosition);
+        this.mainPosition = new FloatingPointPosition(0, 0);
     }
 
     /**
@@ -84,7 +84,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     protected Unit(int newNetId, Unit copyFrom) {
         super(newNetId, copyFrom);
         this.speed = copyFrom.speed;
-        this.mainPosition = new FloatingPointPosition(this.mainPosition);
+        this.mainPosition = new FloatingPointPosition(0, 0);
     }
 
     /**
