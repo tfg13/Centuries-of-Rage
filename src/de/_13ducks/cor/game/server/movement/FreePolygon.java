@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,6 +50,11 @@ public class FreePolygon {
      * Die bekannten Nachbarn dieses Polygons
      */
     private List<FreePolygon> neighbors;
+    /**
+     * Diese Liste enthält immer alle Einheiten,
+     * die sich gerade auf dem Feld befinden.
+     */
+    private List<Unit> residents;
 
     /**
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
@@ -64,6 +70,7 @@ public class FreePolygon {
         }
         myNodes = new LinkedList<Node>();
         neighbors = new ArrayList<FreePolygon>();
+        residents = new ArrayList<Unit>();
         myNodes.addAll(Arrays.asList(nodes));
         if (registerNodes) {
             registerNodes();
