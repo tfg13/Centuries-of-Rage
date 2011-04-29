@@ -36,6 +36,11 @@ import de._13ducks.cor.graphics.input.InteractableGameElement;
  * Superklasse für Einheiten
  *
  * Einheiten sind GO's, die sich bewegen können.
+ * Dazu verwenden Einheiten statt normalen Positionen Fließkommazahlen,
+ * um auch Positionen zwischen Feldern darstellen zu können.
+ * Die von GameObject bekannten, feldbasierten Positionsoperationen funktionieren weiterhin,
+ * sind jedoch nur eine (abgerundetete!) Darstellung der "echten Feldern"
+ * Es existieren auch Getter für die Fließkommazahlen.
  * Im Gegensatz zu Gebäuden ermöglicht diese Implementierung keine flexiblen Größen
  * Einheiten dieser Implementierung spawnen sofort.
  * Unterklassen können Gebäude (Building) betreten (falls das Gebäude dies anbietet)
@@ -62,6 +67,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         maxhitpoints = 100;
         armorType = GameObject.ARMORTYPE_BUILDING;
         path = new Path(10);
+        this.mainPosition = new FloatingPointPosition(this.mainPosition);
     }
 
     /**
@@ -72,6 +78,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         super(params);
         applyUnitParams(params);
         path = null;
+        this.mainPosition = new FloatingPointPosition(this.mainPosition);
     }
 
     /**
@@ -85,6 +92,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         super(newNetId, copyFrom);
         path = new Path(copyFrom.speed);
         this.speed = copyFrom.speed;
+        this.mainPosition = new FloatingPointPosition(this.mainPosition);
     }
 
     /**
