@@ -33,6 +33,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.GraphicsImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.newdawn.slick.Input;
 
 /**
  * Grafisches Hauptmenü
@@ -86,6 +87,13 @@ public class MainMenu extends Container {
          */
         initComponents();
     }
+
+    @Override
+   public void keyPressed(int key, char c) {
+       if (key == Input.KEY_F10) {
+	    System.exit(0);
+       }
+   }
 
    
 

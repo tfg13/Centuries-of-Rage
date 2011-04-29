@@ -82,7 +82,7 @@ public class MultiplayerScreen extends Container {
         });
 
         // Start-Servr-Button:
-        super.addComponent(new ImageButton(m, 60, 70, 12, 6, "img/mainmenu/buttonnew.png", "Sart Server") {
+        super.addComponent(new ImageButton(m, 60, 70, 12, 6, "img/mainmenu/buttonnew.png", "Start Server") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -93,7 +93,7 @@ public class MultiplayerScreen extends Container {
         });
 
         // zurück-button:
-        super.addComponent(new ImageButton(m, 75, 70, 12, 6, "img/mainmenu/buttonnew.png", "BACK") {
+        super.addComponent(new ImageButton(m, 75, 70, 12, 6, "img/mainmenu/buttonnew.png", "Back") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
