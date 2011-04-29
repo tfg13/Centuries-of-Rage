@@ -23,24 +23,44 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-/**
- * Wie Position, aber mit double statt int
- **/
 
 package de._13ducks.cor.game;
 
-import de._13ducks.cor.game.Position;
-
+/**
+ * Dies ist eine Fließpunktposition, die durch eine Kompatibilitätsschicht
+ * auch überall dort eingesetzt werden kann, wo "normale" Positionen verwendet werden.
+ * Diese Position wird beispielsweise vom MapBuilder verwendet.
+ **/
 public class FloatingPointPosition extends Position {
 
+    /**
+     * Die X-Koordinate als Fließkommazahl
+     */
     private double fX;
+    /**
+     * Die Y-Koordinate als Fließkommazahl
+     */
     private double fY;
 
+    /**
+     * Erzeugt eine neue Position aus den angegebenen Koordinaten
+     * @param x Die X-Koordinate
+     * @param y Die Y-Koordinate
+     */
     public FloatingPointPosition(double x, double y) {
 	super((int) x, (int) y);
 	fX = x;
 	fY = y;
-
+    }
+    /**
+     * Erzeugt eine neue Fließkommapositiona aus der übergebenen Position.
+     * Die Position wird nur einmalig kopiert, nicht permanen gelinkt.
+     * @param pos Die Feld-Position
+     */
+    public FloatingPointPosition(Position pos) {
+        super(pos.getX(), pos.getY());
+        fX = pos.getX();
+        fY = pos.getY();
     }
 
     /**
