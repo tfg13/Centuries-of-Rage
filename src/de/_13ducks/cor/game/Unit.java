@@ -572,4 +572,8 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public void quickStop(int readInt, Position readPosition) {
         path.quickStop(readInt, readPosition, this);
     }
+
+    public FloatingPointPosition getPrecisePosition() {
+        return (FloatingPointPosition) mainPosition;
+    }
 }
