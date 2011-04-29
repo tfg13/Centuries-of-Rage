@@ -661,7 +661,6 @@ public class ServerMapModule {
     public void loadMap(String mapName) {
         // Läd die angegebene Map-Datei
         rgi.logger("[MapModul] Loading map...");
-        boolean fileAvailable = false;
         File tempMap = new File(mapName);
         if (!tempMap.exists()) {
             // Datei nicht gefunden - Fehler loggen
