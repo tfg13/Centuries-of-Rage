@@ -23,16 +23,36 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.game.server.movement;
 
 /**
- * Eine Kante aus 2 Polygonen. Wird für Polygon-Adden verwendet
+ * Eine Kante aus 2 Polygonen.
+ * Wird für Polygon-Merge Berechnungen verwendet.
+ * Die Kante hat zwar einen Start und einen Zielpolygon,
+ * bei den meisten Berechnungen spielt die Richtung
+ * aber keine Rolle. Deshalb ignorieren die meisten Methoden
+ * die Richtung, so z.B. die equals Methode.
  */
 public class Edge {
 
-    private Node start, end;
+    /**
+     * Der Startknoten dieser Kante.
+     * Im Prinzip einfach irgendein Knoten, da die Richtung meistens egal ist.
+     */
+    private Node start;
+    
+    /**
+     * Der Endknoten dieser Kante.
+     * Im Prinzip einfach irgendein Knoten, da die Richtung meistens egal ist.
+     */
+    private Node end;
 
+    /**
+     * Erzeugt eine neue Kante mit den angegebenen Start- und Zielpunkt.
+     * In der Regel ist die Reihenfolge egal, Start- und Zielpunkt als vertauschbar.
+     * @param start Der erste Knoten der Kante
+     * @param end Der zweite Knoten der Kante
+     */
     public Edge(Node start, Node end) {
         this.start = start;
         this.end = end;
@@ -58,17 +78,18 @@ public class Edge {
     }
 
     /**
-     * @return the start
+     * Returns the start (1st) node of this edge
+     * @return the start (1st) node of this edge
      */
     public Node getStart() {
         return start;
     }
 
     /**
-     * @return the end
+     * Resturn the end (2nd) node of this edge
+     * @return the end (2nd) node of this edge
      */
     public Node getEnd() {
         return end;
     }
-
 }
