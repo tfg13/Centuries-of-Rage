@@ -94,6 +94,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     private void applyUnitParams(DescParamsUnit par) {
         this.speed = par.getSpeed();
     }
+
     /**
      * @return the speed
      */
@@ -152,7 +153,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public boolean selectable() {
         return true;
     }
-    
+
     @Override
     public int getColorId() {
         return getPlayerId();
@@ -199,7 +200,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return (FloatingPointPosition) mainPosition;
     }
 
-        /**
+    /**
      * Stoppt die Einheit sofort - sofern genug Platz ist und die Einheit sich überhaupt bewegt.
      * Falls hier gerade kein Platz ist, wird die Einheit zur nächstmöglichen Position laufen.
      * Nur Client!
@@ -220,7 +221,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public void setMainPosition(Position mainPosition) {
         super.setMainPosition(mainPosition); // Falls da noch sonst was gemanaged wird
         if (mainPosition instanceof FloatingPointPosition) {
-        this.mainPosition = mainPosition;
+            this.mainPosition = mainPosition;
         } else {
             this.mainPosition = new FloatingPointPosition(mainPosition);
         }
