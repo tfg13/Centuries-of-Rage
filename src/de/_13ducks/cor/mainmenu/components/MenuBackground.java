@@ -44,6 +44,7 @@ public class MenuBackground extends Component {
     int resy; // Auflösung Y
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
     int tiley; // Anzahl notwendiger Bodentexturkacheln Y
+    String groundtex; // Gras / Sand / Wüste bei Bodentexturen
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
     final static int maxspawndelay = 10000;
     ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
@@ -55,9 +56,19 @@ public class MenuBackground extends Component {
 	nextspawntime = 0;
 	resx = m.getResX();
 	resy = m.getResY();
-	tilex = (int) Math.ceil(resx / 100) + 2;
-	tiley = (int) Math.ceil(resy / 100);
+	tilex = (int) Math.ceil(resx / 512) + 2;
+	tiley = (int) Math.ceil(resy / 512);
 	BackgroundObj.add(new MenuBackgroundObject((int) (resx * 3 / 4), (int) (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
+
+	// Zufällige Bodentextur wählen:
+	int random = (int) (Math.random() * 3);
+	if ( random == 0) {
+	    groundtex = "img/ground/menuground.png";
+	} else if (random == 1) {
+	    groundtex = "img/ground/menuground2.png";
+	} else {
+	    groundtex = "img/ground/menuground3.png";
+	}
     }
 
     @Override
@@ -68,7 +79,7 @@ public class MenuBackground extends Component {
 	// Bodentexturen zeichnen
 	for (int i = 0; i <= tilex; i++) {
 	    for (int j = 0; j <= tiley; j++) {
-		imgMap.get("img/ground/menuground.png").getImage().draw((float) (i * 100 - (time % (100 / speed)) * speed), (float) j * 100);
+		imgMap.get(groundtex).getImage().draw((float) (i * 512 - (time % (512 / speed)) * speed), (float) j * 512);
 	    }
 	}
 
@@ -103,7 +114,7 @@ public class MenuBackground extends Component {
 	    int height = imgMap.get(picturepath).getImage().getHeight(); // Höhe vom Hintergrund-Objekt
 	    int width = imgMap.get(picturepath).getImage().getWidth(); // s.o.
 
-	    // Überschneidet es sich mit anderen Bildern?
+	    // Überschneidet es sich mit anderen Bildern? -> Wird nicht erzeugt
 	    boolean everythingfine = true;
 	    for (int i = 0; i < BackgroundObj.size(); i++) {
 		// Bild noch am rechten Rand?
