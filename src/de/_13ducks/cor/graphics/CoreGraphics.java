@@ -2025,12 +2025,9 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                     // Fenster
                     for (int i = 0; i < sorted.length; i++) {
                         CoRDisplayMode bbb = new CoRDisplayMode();
-                        bbb.setdMode(sorted[i]);
+			bbb.setdMode(new DisplayMode(tx, ty));
                         bbb.setFullscreen(false);
-                        if (bbb.getdMode().getWidth() == tx && bbb.getdMode().getHeight() == ty) {
-                            // Gefunden
-                            return bbb;
-                        }
+                        return bbb;
                     }
                 }
             }
@@ -2040,6 +2037,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         if (fullfilter.length > 0) {
             CoRDisplayMode bbb = new CoRDisplayMode();
             bbb.setdMode(fullfilter[0]);
+	    bbb.setFullscreen(true);
             return bbb;
         } else {
             CoRDisplayMode bbb = new CoRDisplayMode();

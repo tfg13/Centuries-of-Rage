@@ -33,6 +33,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.GraphicsImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.newdawn.slick.Input;
 
 /**
  * Grafisches Hauptmenü
@@ -70,24 +71,29 @@ public class MainMenu extends Container {
      * Konstruktor
      */
     public MainMenu(int resX, int resY, ClientCore clientcore, HashMap<String, GraphicsImage> imgMap) {
-        super(null, 0, 0, (double) resX, (double) resY);
+	super(null, 0, 0, (double) resX, (double) resY);
 
-        this.imgMap = imgMap;
-        super.setMainMenuReference(this);
+	this.imgMap = imgMap;
+	super.setMainMenuReference(this);
 
-        this.resX = resX;
-        this.resY = resY;
-        this.core = clientcore;
+	this.resX = resX;
+	this.resY = resY;
+	this.core = clientcore;
 
-        menus = new HashMap<String, Container>();
+	menus = new HashMap<String, Container>();
 
-        /**
-         * Komponenten initialisieren:
-         */
-        initComponents();
+	/**
+	 * Komponenten initialisieren:
+	 */
+	initComponents();
     }
 
-   
+    @Override
+    public void keyPressed(int key, char c) {
+	if (key == Input.KEY_F10) {
+	    System.exit(0);
+	}
+    }
 
     /**
      * Initialisiert die Komponenten des Hauptmenüs
@@ -95,52 +101,51 @@ public class MainMenu extends Container {
     private void initComponents() {
 
 
-        /**********************************************************************
-         * Hintergrund:
+	/**********************************************************************
+	 * Hintergrund:
 	 *
-         *********************************************************************/
-
+	 *********************************************************************/
 	MenuBackground background = new MenuBackground(this, 0, 0, 100, 100, imgMap);
 	super.addComponent(background);
 
 
-        /**********************************************************************
-         * Menüs:
-         *********************************************************************/
-        // Hauptmenü:
-        Container startScreen = new StartScreen(this);
-        menus.put("startscreen", startScreen);
-        super.addComponent(startScreen);
-        startScreen.fadeIn();
+	/**********************************************************************
+	 * Menüs:
+	 *********************************************************************/
+	// Hauptmenü:
+	Container startScreen = new StartScreen(this);
+	menus.put("startscreen", startScreen);
+	super.addComponent(startScreen);
+	startScreen.fadeIn();
 
-        // StartServerscreen
-        Container startServerScreen = new StartServerScreen(this);
-        menus.put("startserverscreen", startServerScreen);
-        super.addComponent(startServerScreen);
-        startServerScreen.fadeOut();
+	// StartServerscreen
+	Container startServerScreen = new StartServerScreen(this);
+	menus.put("startserverscreen", startServerScreen);
+	super.addComponent(startServerScreen);
+	startServerScreen.fadeOut();
 
-        // RandomMapBuilder
-        Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
-        menus.put("randommapbuilderscreen", randomMapBuilderScreen);
-        super.addComponent(randomMapBuilderScreen);
-        randomMapBuilderScreen.fadeOut();
+	// RandomMapBuilder
+	Container randomMapBuilderScreen = new RandomMapBuilderScreen(this);
+	menus.put("randommapbuilderscreen", randomMapBuilderScreen);
+	super.addComponent(randomMapBuilderScreen);
+	randomMapBuilderScreen.fadeOut();
 
-        // Mehrspieler:
-        Container MultiplayerScreen = new MultiplayerScreen(this);
-        menus.put("multiplayerscreen", MultiplayerScreen);
-        super.addComponent(MultiplayerScreen);
-        MultiplayerScreen.fadeOut();
+	// Mehrspieler:
+	Container MultiplayerScreen = new MultiplayerScreen(this);
+	menus.put("multiplayerscreen", MultiplayerScreen);
+	super.addComponent(MultiplayerScreen);
+	MultiplayerScreen.fadeOut();
 
-        // Lobby
-        lobbyScreen = new LobbyScreen(this);
-        menus.put("lobbyscreen", lobbyScreen);
-        super.addComponent(lobbyScreen);
-        lobbyScreen.fadeOut();
+	// Lobby
+	lobbyScreen = new LobbyScreen(this);
+	menus.put("lobbyscreen", lobbyScreen);
+	super.addComponent(lobbyScreen);
+	lobbyScreen.fadeOut();
 
-        
 
-        // Koordinatenanzeige:
-        super.addComponent(new CoordinateView(this));
+
+	// Koordinatenanzeige:
+	super.addComponent(new CoordinateView(this));
     }
 
     /**
@@ -150,7 +155,7 @@ public class MainMenu extends Container {
      * @return     - Das Menü 
      */
     public Container getMenu(String name) {
-        return menus.get(name);
+	return menus.get(name);
     }
 
     /**
@@ -158,7 +163,7 @@ public class MainMenu extends Container {
      * @return X-Auflösung
      */
     public int getResX() {
-        return resX;
+	return resX;
     }
 
     /**
@@ -166,7 +171,7 @@ public class MainMenu extends Container {
      * @return Y-Auflösung
      */
     public int getResY() {
-        return resY;
+	return resY;
     }
 
     /**
@@ -176,18 +181,18 @@ public class MainMenu extends Container {
      * @param map   - der Name der Map, z.B. "/map/main/Randommap.map"
      */
     public void startServer(final boolean debug, final String map) {
-        System.out.println("Starting Server with debug=" + debug + " and map=" + map);
+	System.out.println("Starting Server with debug=" + debug + " and map=" + map);
 
-        Thread serverThread = new Thread(new Runnable() {
+	Thread serverThread = new Thread(new Runnable() {
 
-            public void run() {
-                new ServerCore(debug, map);
-            }
-        });
+	    public void run() {
+		new ServerCore(debug, map);
+	    }
+	});
 
-        serverThread.setName("serverThread");
+	serverThread.setName("serverThread");
 
-        serverThread.start();
+	serverThread.start();
     }
 
     /**
@@ -195,18 +200,18 @@ public class MainMenu extends Container {
      * @return true, wenns geklappt hat
      */
     public boolean joinServer(String server) {
-        System.out.println("Joining Server...");
-        // @TODO: ClientCore.joinServer() rufen, bei erfolg lobby anzeigen
-        final InetAddress adress;
-        try {
-            adress = InetAddress.getByName(server);
-        } catch (UnknownHostException ex) {
-            return false;
-        }
-        final int port = 39264;// default port
+	System.out.println("Joining Server...");
+	// @TODO: ClientCore.joinServer() rufen, bei erfolg lobby anzeigen
+	final InetAddress adress;
+	try {
+	    adress = InetAddress.getByName(server);
+	} catch (UnknownHostException ex) {
+	    return false;
+	}
+	final int port = 39264;// default port
 
-        core.joinServer("unknownP", adress, port);
-        return true;
+	core.joinServer("unknownP", adress, port);
+	return true;
     }
 
     /**
@@ -215,7 +220,7 @@ public class MainMenu extends Container {
      * @return - ClientCore-Referenz
      */
     public ClientCore getClientCore() {
-        return core;
+	return core;
     }
 
     /**
@@ -223,17 +228,17 @@ public class MainMenu extends Container {
      * @return - die Lobby
      */
     public LobbyScreen getLobby() {
-        return lobbyScreen;
+	return lobbyScreen;
     }
 
     /**
      * zeigt die Lobby an
      */
     public void showlobby() {
-        for (Container c : menus.values()) {
-            c.fadeOut();
-        }
-        lobbyScreen.fadeIn();
+	for (Container c : menus.values()) {
+	    c.fadeOut();
+	}
+	lobbyScreen.fadeIn();
     }
 
     /**
@@ -241,6 +246,6 @@ public class MainMenu extends Container {
      * @return die imgMap
      */
     public HashMap<String, GraphicsImage> getImgMap() {
-        return imgMap;
+	return imgMap;
     }
 }

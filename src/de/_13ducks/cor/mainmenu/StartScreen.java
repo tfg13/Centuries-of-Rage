@@ -79,7 +79,7 @@ public class StartScreen extends Container {
         });
 
         // Options Button:
-        super.addComponent(new ImageButton(mainMenu, 44, 86, 13, 6, "img/mainmenu/buttonnew.png", "OPTIONS") {
+        super.addComponent(new ImageButton(mainMenu, 44, 86, 13, 6, "img/mainmenu/buttonnew.png", "Options") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
@@ -96,7 +96,7 @@ public class StartScreen extends Container {
         });
 
         // Quit Game Button:
-        super.addComponent(new ImageButton(mainMenu, 72, 86, 13, 6, "img/mainmenu/buttonnew.png", "QUIT") {
+        super.addComponent(new ImageButton(mainMenu, 72, 86, 13, 6, "img/mainmenu/buttonnew.png", "Quit") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
