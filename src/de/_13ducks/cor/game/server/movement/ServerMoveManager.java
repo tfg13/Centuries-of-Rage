@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.game.server;
+package de._13ducks.cor.game.server.movement;
 
 /**
  * Der TopLevel-Movemanager des Servers.

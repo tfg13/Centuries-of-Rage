@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server;
 
+import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.networks.server.ServerNetController;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
