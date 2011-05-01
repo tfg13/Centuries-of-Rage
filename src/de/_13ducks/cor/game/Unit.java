@@ -30,6 +30,8 @@ import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.movement.GroupManager;
+import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 
 /**
@@ -61,6 +63,16 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @see ServerBehaviourMove
      */
     private ServerBehaviourMove lowLevelManager;
+    /**
+     * Der aktuelle MidLevel-Movemanager dieser Einheit.
+     * Einheiten haben nicht immer einen & er kann sich ändern.
+     */
+    private GroupManager midLevelManager;
+    /**
+     * Der TopLevel-Movemanager dieser Einheit.
+     * Ist normalerweise für den ganzen Server global.
+     */
+    private ServerMoveManager topLevelManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -232,5 +244,29 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         } else {
             this.mainPosition = new FloatingPointPosition(mainPosition);
         }
+    }
+    
+    /**
+     * Liefert den LowLevel-Manager dieser Einheit.
+     * @return den Lowlevel-Manager dieser Einheit.
+     */
+    public ServerBehaviourMove getLowLevelManager() {
+        return lowLevelManager;
+    }
+    
+    /**
+     * Liefert den MidLevel-Manager dieser Einheit.
+     * @return den Midlevel-Manager dieser Einheit.
+     */
+    public GroupManager getMidLevelManager() {
+        return midLevelManager;
+    }
+    
+    /**
+     * Liefert den TopLevel-Manager dieser Einheit.
+     * @return den TopLevel-Manager dieser Einheit.
+     */
+    public ServerMoveManager getTopLevelManager() {
+        return topLevelManager;
     }
 }
