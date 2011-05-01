@@ -26,13 +26,17 @@
 package de._13ducks.cor.game.server.movement;
 
 /**
- * TopLevel-Movemanagement
+ * MidLevel-Movemanagement
  * 
- * Oberste Ebene des 3-stufigen Server-Bewegungssystems.
- * Verwaltet Einheitengruppen.
- * Teilt Gruppen dynamisch ein, erstellt als neue, wenn nötig bzw. merged bestehende zusammen.
- * Nach der Gruppeneinteilung wird der Befehl an den GruppenMoveManager (das MidLevel-Management weitergegeben)
+ * Verwaltet die Positionierung der einzelnen Einheiten innerhalb einer kleineren Gruppe.
+ * Diese entscheiden, wie sich Einheitengruppen vor dem Gegner aufstellen,
+ * wie sie sich während dem Kampf verhalten, und ob sie davor und danach
+ * eine Formation einnehmen.
+ * Für jede Gruppe existiere ein GroupManager.
+ * Dieser verwaltet die Pfade und Ziele seiner Einheiten.
+ * Die tatsächliche Bewegung unterliegt der exklusiven Kontrolle des LowLevelManagers der
+ * einzelnen Einheiten. Der GroupManager kann nur eine Richtung und ein Ziel vorgeben.
  */
-public class ServerMoveManager {
+public class GroupManager {
     // Add_some_content
 }

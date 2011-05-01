@@ -30,26 +30,22 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Unit;
 
 /**
- * Das Behaviour für die Einheitenbewegung.
- * Server only, es gibt kein zugehörigies ClientBehaviour
- *
- * Verwaltet die Bewegung selbstständig.
- * Weicht aus, wenn neue Hindernisse auftauchen (Gebäude, STEHENDE Einheiten)
- * Handelt Routenänderungen damit die Einheit noch bis zum nächsten Feld weiter läuft
- *
- * Versendet automatisch alle geänderten Bewegungsinformationen an die Clients.
- *
- * Darf nicht umgangen werden.
- * Alle Bewegungsbefehle müssen an dieses Behaviour gesendet werden.
- *
- * @author tfg
+ * Lowlevel-Movemanagement
+ * 
+ * Verwaltet die reine Bewegung einer einzelnen Einheit.
+ * Kümmert sich nicht weiter um Formationen/Kampf oder ähnliches.
+ * Erhält vom übergeordneten MidLevelManager einen Richtungsvektor und eine Zielkoordinate.
+ * Läuft dann dort hin. Tut sonst nichts.
+ * Hat exklusive Kontrolle über die Einheitenposition.
+ * Weigert sich, sich schneller als die maximale Einheitengeschwindigkeit zu bewegen.
+ * Dadurch werden Sprünge verhindert.
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
     Unit caster2;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 10, true);
+        super(newinner, caster, 1, 20, true);
         caster2 = caster;
     }
 
