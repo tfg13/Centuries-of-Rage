@@ -177,10 +177,10 @@ public class Unit2x2 extends Unit {
         //Einheit gehört zu / Selektiert
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X, (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y));
+            imgMap.get("img/game/sel_s2.png0").getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY));
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(rx + GraphicsContent.OFFSET_2x2_X, ry + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx + GraphicsContent.OFFSET_2x2_X - scrollX),(float) (ry + GraphicsContent.OFFSET_2x2_Y - scrollY));
         }
     }
 
@@ -190,7 +190,7 @@ public class Unit2x2 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (img != null) {
-            img.getImage().draw(rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X, (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y));
+            img.getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY));
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
