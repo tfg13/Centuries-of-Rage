@@ -321,7 +321,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -339,7 +339,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
