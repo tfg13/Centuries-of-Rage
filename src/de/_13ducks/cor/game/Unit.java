@@ -29,6 +29,7 @@ import de._13ducks.cor.game.client.ClientCore;
 import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 
 /**
@@ -54,6 +55,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
      */
     private boolean isIntra = false;
+    /**
+     * Der LowLevel-Movemanager dieser Einheit.
+     * Jede Einheit hat ihren eigenen.
+     * @see ServerBehaviourMove
+     */
+    private ServerBehaviourMove lowLevelManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
