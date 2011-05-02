@@ -50,16 +50,15 @@ public class Component {
     /**
      * Die Koordinaten der linken oberen Ecke in Pixel
      */
-    private int x1, y1;
+    private float x1, y1;
     /**
      * Die Koordinaten der rechten unteren Ecke in Pixel
      */
-    private int x2, y2;
+    private float x2, y2;
     /**
      * gibt an, ob der Cursor über der Komponente schwebt
      */
     private boolean mouseHover;
-    
 
     /**
      * Konstruktor
@@ -92,8 +91,6 @@ public class Component {
         }
         mouseHover = false;
     }
-
-   
 
     /**
      * Renderfunktion
@@ -168,28 +165,28 @@ public class Component {
     /**
      * @return the x1
      */
-    public int getX1() {
+    public float getX1() {
         return x1;
     }
 
     /**
      * @return the y1
      */
-    public int getY1() {
+    public float getY1() {
         return y1;
     }
 
     /**
      * @return the x2
      */
-    public int getX2() {
+    public float getX2() {
         return x2;
     }
 
     /**
      * @return the y2
      */
-    public int getY2() {
+    public float getY2() {
         return y2;
     }
 
@@ -217,12 +214,11 @@ public class Component {
         return mainMenu;
     }
 
-  
     /**
      * Setter für X2
      * @param - X-Koordinate der rechten unteren Ecke
      */
-    public void setX2(int x2) {
+    public void setX2(float x2) {
         this.x2 = x2;
     }
 
@@ -230,7 +226,7 @@ public class Component {
      * Setter für Y2
      * @param - Y-Koordinate der rechten unteren Ecke
      */
-    public void setY2(int y2) {
+    public void setY2(float y2) {
         this.y2 = y2;
     }
 
