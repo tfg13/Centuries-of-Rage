@@ -107,7 +107,7 @@ public class StartScreen extends Container {
         // Schild
 
         super.addComponent(new ScaledImage(mainMenu, 11.20833333, 28.666666, 26.1458333, 23.58333333, "img/mainmenu/sign1.png"));
-        super.addComponent(new ScaledImage(mainMenu, 37.34375, 28.666666, 23.54166667, 23.58333333, "img/mainmenu/sign2.png"));
+        super.addComponent(new ScaledImage(mainMenu, 37.3, 28.666666, 23.54166667, 23.58333333, "img/mainmenu/sign2.png"));
         super.addComponent(new TiledImage(mainMenu, 0, 28.666666, 11.20833333, 4.1666666, "img/mainmenu/balken.png"));
 
         // Blätter
