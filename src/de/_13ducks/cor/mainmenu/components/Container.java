@@ -171,6 +171,18 @@ public class Container extends Component {
         }
     }
 
+    @Override
+    /**
+     * Wird gerufen, wenn das Mausrad gescrollt wird
+     */
+    public void mouseWheelMoved(int x) {
+        if (active) {
+            for (int i = 0; i < components.size(); i++) {
+                components.get(i).mouseWheelMoved(x);
+            }
+        }
+    }
+
     /**
      * Lässt den Container einblenden
      */

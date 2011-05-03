@@ -165,6 +165,13 @@ public class Component {
     }
 
     /**
+     * Wird gerufen, wenn das Mausrad gescrollt wird
+     * @param i - gibt an wie stark und in welche Richtung das Mausrad bewegt wurde
+     */
+    public void mouseWheelMoved(int i) {
+    }
+
+    /**
      * Gibt an, ob die Maus über diesem Objekt shcwebt
      * @return      true, wenn die Maus über diesem Objekt schwebt, sonst false
      */
