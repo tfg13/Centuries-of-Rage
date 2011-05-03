@@ -25,6 +25,8 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
+
 /**
  * Ein (double) Richtungsvektor.
  * Einfacher, aber weniger flexibel als FPP
@@ -33,7 +35,17 @@ public class Vector {
     
     private double x;
     private double y;
-
+    
+    /**
+     * Erstell einen neuen Vektor mit den angegebenen Koordinaten
+     * @param x x
+     * @param y y
+     */
+    public Vector(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+    
     /**
      * @return the x
      */
@@ -60,5 +72,9 @@ public class Vector {
      */
     public void setY(double y) {
         this.y = y;
+    }
+    
+    public FloatingPointPosition toFloatingPointPosition() {
+        return new FloatingPointPosition(x, y);
     }
 }
