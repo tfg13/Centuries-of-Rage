@@ -161,12 +161,14 @@ public abstract class Dropdown extends Component {
             if (firstItem > 0) {
                 firstItem--;
                 lastItem--;
+                cursorItem--;
             }
 
         } else if (i < 0) {
             if (lastItem < items.size()) {
                 firstItem++;
                 lastItem++;
+                cursorItem++;
             }
 
         }
