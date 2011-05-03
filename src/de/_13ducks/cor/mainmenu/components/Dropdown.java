@@ -110,7 +110,7 @@ public class Dropdown extends Component {
 
             // Ausgewähltes Item:
             g.setColor(Color.magenta);
-            g.fillRect(this.getX1() + 1, this.getY1() + cursorItem * lineHeight, this.getWidth() - 2, lineHeight);
+            g.fillRect(this.getX1() + 1, this.getY1() + (cursorItem-firstItem) * lineHeight, this.getWidth() - 2, lineHeight);
 
             // Text der Items:
             g.setColor(Color.black);
@@ -138,6 +138,7 @@ public class Dropdown extends Component {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
+        System.out.println("MMMMMMMMMMMM: " + button);
         if (this.showMenu == false) {
             showMenu();
         } else {
@@ -150,6 +151,24 @@ public class Dropdown extends Component {
     public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
         if (this.showMenu == true) {
             hideMenu();
+        }
+    }
+
+    @Override
+    public void mouseWheelMoved(int i) {
+        System.out.println(i);
+        if (i > 0) {
+            if (firstItem > 0) {
+                firstItem--;
+                lastItem--;
+            }
+
+        } else if (i < 0) {
+            if (lastItem < items.size()) {
+                firstItem++;
+                lastItem++;
+            }
+
         }
     }
 
