@@ -102,18 +102,28 @@ public class Component {
     }
 
     /**
-     * Wird aufgerufen, wenn der Benutzer etwas anklickt
+     * Verarbeitet alle MausKlicks. Bestimmt, ob diese Komponente angeklickt wurde oder der Klick wo anders hin ging-
+     * @param button
+     * @param x
+     * @param y
+     * @param clickCount
+     */
+    public void generalMouseClick(int button, int x, int y, int clickCount) {
+        if (this.getX1() < x && x < this.getX2() && this.getY1() < y && y < this.getY2()) {
+            mouseClicked(button, x, y, clickCount);
+        } else {
+            mouseClickedAnywhere(button, x, y, clickCount);
+        }
+    }
+
+    /**
+     * Wird aufgerufen, wenn der Benutzer irgendwo hinklickt, baer nicht auf diese Komponente
      * @param button
      * @param x
      * @param y
      * @param clickCount
      */
     public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
-
-        if (getX1() < x && x < getX2() && getY1() < y && y < getY2()) {
-            mouseClicked(button, x, y, clickCount);
-        }
-
     }
 
     /**
@@ -252,5 +262,14 @@ public class Component {
      */
     void setMainMenu(MainMenu m) {
         this.mainMenu = m;
+    }
+
+    /**
+     * Setzt die Höhe der Komponente
+     * @param height
+     */
+    public void setHeight(float height) {
+        this.y2 = this.y1 + height;
+
     }
 }

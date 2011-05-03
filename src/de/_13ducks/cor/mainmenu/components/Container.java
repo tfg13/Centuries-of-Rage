@@ -143,11 +143,7 @@ public class Container extends Component {
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (active) {
             for (int i = 0; i < components.size(); i++) {
-                if (components.get(i).getX1() < x && x < components.get(i).getX2() && components.get(i).getY1() < y && y < components.get(i).getY2()) {
-                    components.get(i).mouseClicked(button, x, y, clickCount);
-                } else {
-                    components.get(i).mouseClickedAnywhere(button, x, y, clickCount);
-                }
+                components.get(i).generalMouseClick(button, x, y, clickCount);
             }
         }
     }
