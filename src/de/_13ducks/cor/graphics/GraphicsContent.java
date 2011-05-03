@@ -27,6 +27,7 @@ package de._13ducks.cor.graphics;
 
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import java.awt.Dimension;
 import java.util.*;
@@ -902,16 +903,20 @@ public class GraphicsContent extends BasicGame {
         }
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
+        FloatingPointPosition precise = translateCoordinatesToFloatPos(mouseX, mouseY);
         // Position markieren:
         getImgMap().get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();
         String output = "Mouse: " + mouse.getX() + " " + mouse.getY();
+        String precout = "Mouse (precise): " + precise.getfX() + " " + precise.getfY();
         g2.fillRect(5, 40, font.getWidth(output), font.getHeight(output));
+        g2.fillRect(5, 60, font.getWidth(precout), font.getHeight(precout));
         g2.setFont(font);
         g2.setColor(Color.black);
         g2.drawString(output, 5, 40);
+        g2.drawString(precout, 5, 60);
     }
 
     private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {
@@ -1167,6 +1172,19 @@ public class GraphicsContent extends BasicGame {
         }
         return new Position(coordX, coordY);
     }
+
+    public FloatingPointPosition translateCoordinatesToFloatPos(int x, int y) {
+        // Versatz beachten
+        x = x - 10;
+        y = y - 15;
+        double coordX = (double) x / FIELD_HALF_X;
+        double coordY = (double) y / FIELD_HALF_Y;
+        // Scrollposition addieren
+        coordX = coordX + positionX;
+        coordY = coordY + positionY;
+        return new FloatingPointPosition(coordX, coordY);
+    }
+
 
     /*   public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
     // Koordinaten finden
