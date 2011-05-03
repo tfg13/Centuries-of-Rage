@@ -25,9 +25,11 @@
  */
 package de._13ducks.cor.game.networks.behaviour.impl;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.movement.Vector;
 
 /**
  * Lowlevel-Movemanagement
@@ -42,8 +44,12 @@ import de._13ducks.cor.game.Unit;
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
-    Unit caster2;
-
+    private Unit caster2;
+    private FloatingPointPosition target;
+    private double speed;
+    private boolean stopUnit = false;
+    private long lastTick;
+    
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
         super(newinner, caster, 1, 20, true);
         caster2 = caster;
@@ -51,14 +57,53 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
     @Override
     public void activate() {
+        active = true;
+        trigger();
     }
 
     @Override
     public void deactivate() {
+        active = false;
     }
 
     @Override
     public void execute() {
+        // Auto-Ende:
+        if (target == null || speed <= 0) {
+            deactivate();
+            return;
+        }
+        // Wir laufen also.
+        // Aktuelle Position berechnen:
+        Vector vec = target.subtract(caster2.getPrecisePosition()).toVector();
+        long ticktime = System.currentTimeMillis();
+        vec.normalize();
+        vec.multiply((ticktime - lastTick) / 1000.0 * speed);
+        FloatingPointPosition newpos = vec.toFloatingPointPosition();
+        
+        // Ziel schon erreicht?
+        Vector nextVec = target.subtract(newpos).toVector();
+        if (vec.isOpposite(nextVec)) {
+            // ZIEL!
+            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+            caster2.setMainPosition(target);
+            target = null;
+            stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+            deactivate();
+        } else {
+            // Sofort stoppen?
+            if (stopUnit) {
+                caster2.setMainPosition(newpos);
+                target = null;
+                stopUnit = false;
+                deactivate();
+            } else {
+                // Weiterlaufen
+                caster2.setMainPosition(newpos);
+                lastTick = System.currentTimeMillis();
+            }
+        }
+        
     }
 
     @Override
@@ -73,5 +118,55 @@ public class ServerBehaviourMove extends ServerBehaviour {
     @Override
     public void unpause() {
         caster2.unpause();
+    }
+    
+    /**
+     * Setzt den Zielvektor für diese Einheit.
+     * Es wird nicht untersucht, ob das Ziel in irgendeiner Weise ok ist, die Einheit beginnt sofort loszulaufen.
+     * In der Regel sollte noch eine Geschwindigkeit angegeben werden.
+     * Wehrt sich gegen nicht existente Ziele.
+     * @param pos die Zielposition, wird auf direktem Weg angesteuert.
+     */
+    public void setTargetVector(FloatingPointPosition pos) {
+        if (pos == null) {
+            throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
+        }
+        target = pos;
+        lastTick = System.currentTimeMillis();
+        activate();
+    }
+
+    /**
+     * Setzt den Zielvektor und die Geschwindigkeit und startet die Bewegung sofort.
+     * @param pos die Zielposition
+     * @param speed die Geschwindigkeit
+     */
+    public void setTargetVector(FloatingPointPosition pos, double speed) {
+        changeSpeed(speed);
+        setTargetVector(pos);
+    }
+
+    /**
+     * Ändert die Geschwindigkeit während des Laufens.
+     * Speed wird verkleinert, wenn der Wert über dem Einheiten-Maximum liegen würde
+     * @param speed Die Einheitengeschwindigkeit
+     */
+    public void changeSpeed(double speed) {
+        if (speed > 0 && speed <= caster2.getSpeed()) {
+            this.speed = speed;
+        }
+        trigger();
+    }
+    
+    public boolean isMoving() {
+        return target != null;
+    }
+    
+    /**
+     * Stoppt die Einheit innerhalb eines Ticks.
+     */
+    public void stopImmediately() {
+        stopUnit = true;
+        trigger();
     }
 }
