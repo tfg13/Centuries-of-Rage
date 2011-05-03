@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.FontManager;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
@@ -60,6 +61,14 @@ public class Dropdown extends Component {
      * Gibt an, ob das Dropdown-Menü gerade "ausgefahren" ist
      */
     private boolean showMenu;
+    /**
+     * gibt an, über welchem Item der Cursor gerade schwebt.
+     */
+    private int cursorItem;
+    /**
+     * Die Höhe einer Zeile
+     */
+    private int lineHeight;
 
     /**
      * Konstruktor
@@ -77,7 +86,8 @@ public class Dropdown extends Component {
         selectedIndex = 0;
         showMenu = false;
 
-
+        lineHeight = FontManager.getFont0().getLineHeight();
+        dropdownMenuHeight = lineHeight * 8;
 
         firstItem = 0;
         if (this.items.size() < 8) {
@@ -92,13 +102,18 @@ public class Dropdown extends Component {
         if (showMenu) {
             // Dropdown-Menü anzeigen:
 
-            dropdownMenuHeight = g.getFont().getLineHeight() * 8;
-
+            // Hintergrund + Rahmen:
             g.setColor(Color.lightGray);
             g.fillRect(this.getX1(), this.getY1(), this.getWidth(), dropdownMenuHeight);
             g.setColor(Color.darkGray);
             g.drawRect(this.getX1(), this.getY1(), this.getWidth(), dropdownMenuHeight);
 
+            // Ausgewähltes Item:
+            g.setColor(Color.magenta);
+            g.fillRect(this.getX1() + 1, this.getY1() + cursorItem * lineHeight, this.getWidth() - 2, lineHeight);
+
+            // Text der Items:
+            g.setColor(Color.black);
             for (int i = firstItem; i < lastItem; i++) {
                 g.drawString(items.get(i), this.getX1() + 1, this.getY1() + g.getFont().getLineHeight() * (i - firstItem));
             }
@@ -108,6 +123,7 @@ public class Dropdown extends Component {
             g.fillRect(this.getX1(), this.getY1(), this.getWidth(), g.getFont().getLineHeight() + 2);
             g.setColor(Color.darkGray);
             g.drawRect(this.getX1(), this.getY1(), this.getWidth(), g.getFont().getLineHeight() + 2);
+            g.setColor(Color.black);
             g.drawString(getSelectedItem(), this.getX1() + 1, this.getY1() + 1);
         }
     }
@@ -124,6 +140,9 @@ public class Dropdown extends Component {
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (this.showMenu == false) {
             showMenu();
+        } else {
+            selectedIndex = cursorItem;
+            hideMenu();
         }
     }
 
@@ -131,7 +150,6 @@ public class Dropdown extends Component {
     public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
         if (this.showMenu == true) {
             hideMenu();
-
         }
     }
 
@@ -149,5 +167,13 @@ public class Dropdown extends Component {
     private void showMenu() {
         this.showMenu = true;
         this.setAbsoluteHeight(dropdownMenuHeight);
+    }
+
+    @Override
+    public void mouseMoved(int x, int y) {
+        if (this.showMenu == true && this.getY1() < y && y < this.getY2()) {
+            int newCursorItem = (int) ((y - this.getY1()) / lineHeight);
+            cursorItem = firstItem + newCursorItem;
+        }
     }
 }
