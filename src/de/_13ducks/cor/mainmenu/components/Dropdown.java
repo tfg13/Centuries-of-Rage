@@ -35,7 +35,7 @@ import org.newdawn.slick.Graphics;
  * Ein Dropdown-Steuerelement
  * @author michael
  */
-public class Dropdown extends Component {
+public abstract class Dropdown extends Component {
 
     /**
      * Die Liste aller Items des Dropdowns
@@ -110,7 +110,7 @@ public class Dropdown extends Component {
 
             // Ausgewähltes Item:
             g.setColor(Color.magenta);
-            g.fillRect(this.getX1() + 1, this.getY1() + (cursorItem-firstItem) * lineHeight, this.getWidth() - 2, lineHeight);
+            g.fillRect(this.getX1() + 1, this.getY1() + (cursorItem - firstItem) * lineHeight, this.getWidth() - 2, lineHeight);
 
             // Text der Items:
             g.setColor(Color.black);
@@ -138,11 +138,11 @@ public class Dropdown extends Component {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        System.out.println("MMMMMMMMMMMM: " + button);
         if (this.showMenu == false) {
             showMenu();
         } else {
             selectedIndex = cursorItem;
+            this.selectionChanged(this.getSelectedItem());
             hideMenu();
         }
     }
@@ -195,4 +195,10 @@ public class Dropdown extends Component {
             cursorItem = firstItem + newCursorItem;
         }
     }
+
+    /**
+     * Wird aufgerufen, wenn ein neues Item ausgewählt wird
+     * @param newSelection - der Text des neuen Items
+     */
+    public abstract void selectionChanged(String newSelection);
 }
