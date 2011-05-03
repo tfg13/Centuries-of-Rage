@@ -32,10 +32,10 @@ import de._13ducks.cor.game.FloatingPointPosition;
  * Einfacher, aber weniger flexibel als FPP
  */
 public class Vector {
-    
+
     private double x;
     private double y;
-    
+
     /**
      * Erstell einen neuen Vektor mit den angegebenen Koordinaten
      * @param x x
@@ -45,7 +45,7 @@ public class Vector {
         this.x = x;
         this.y = y;
     }
-    
+
     /**
      * @return the x
      */
@@ -73,8 +73,64 @@ public class Vector {
     public void setY(double y) {
         this.y = y;
     }
-    
+
+    /**
+     * Wandelt den Vektor in eine FPP um.
+     * @return der Vektor als FPP.
+     */
     public FloatingPointPosition toFloatingPointPosition() {
         return new FloatingPointPosition(x, y);
+    }
+
+    /**
+     * Den Vektor mit einem Skalar multiplizieren.
+     * Verändert direkt den Vector!
+     * @param factor 
+     */
+    public void multiply(double factor) {
+        x *= factor;
+        y *= factor;
+    }
+
+    /**
+     * Normiert den Vektor
+     * Verändert direkt den Vector!
+     */
+    public void normalize() {
+        double fact = length();
+        x *= 1 / fact;
+        y *= 1 / fact;
+    }
+
+    /**
+     * Berechnet die Länge des Vektors
+     * @return die Länge des Vektors
+     */
+    public double length() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    /**
+     * True, wenn der gleiche Vektor, nur in die andere Richtung zeigend
+     */
+    public boolean isOpposite(Vector vec) {
+        return this.equals(new Vector(-vec.x, -vec.y));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Vector) {
+            Vector vec = (Vector) o;
+            return (Math.abs(this.x - vec.x) < 0.001 && Math.abs(this.y - vec.y) < 0.001);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 41 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
     }
 }
