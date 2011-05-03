@@ -70,12 +70,14 @@ public class Dropdown extends Component {
      * @param items - Eine ArrayList mit den Items, die das Dropdown anbieten soll
      */
     public Dropdown(MainMenu m, double x, double y, double width, ArrayList<String> items) {
-        super(m, x, y, width, 100);
+        super(m, x, y, width, 4.5);
 
         this.items = items;
 
         selectedIndex = 0;
-        showMenu = true;
+        showMenu = false;
+
+
 
         firstItem = 0;
         if (this.items.size() < 8) {
@@ -115,9 +117,37 @@ public class Dropdown extends Component {
      * @return
      */
     public String getSelectedItem() {
-        if (items == null) {
-            System.out.println("IIIIIIIIA");
-        }
         return items.get(selectedIndex);
+    }
+
+    @Override
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+        if (this.showMenu == false) {
+            showMenu();
+        }
+    }
+
+    @Override
+    public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
+        if (this.showMenu == true) {
+            hideMenu();
+
+        }
+    }
+
+    /**
+     * verbirgt das Dropdown-Menü
+     */
+    public void hideMenu() {
+        this.showMenu = false;
+        this.setRelativeHeight(10);
+    }
+
+    /**
+     * zeigt das Dropdown-Menü an
+     */
+    private void showMenu() {
+        this.showMenu = true;
+        this.setAbsoluteHeight(dropdownMenuHeight);
     }
 }
