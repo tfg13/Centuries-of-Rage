@@ -156,7 +156,6 @@ public abstract class Dropdown extends Component {
 
     @Override
     public void mouseWheelMoved(int i) {
-        System.out.println(i);
         if (i > 0) {
             if (firstItem > 0) {
                 firstItem--;
