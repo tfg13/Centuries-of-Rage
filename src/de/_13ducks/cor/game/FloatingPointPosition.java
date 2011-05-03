@@ -111,5 +111,18 @@ public class FloatingPointPosition extends Position {
 	this.Y = (int) fY;
     }
 
+     /**
+     * Substrahiert eine Position von dieser hier - präzise double-Version
+     */
+    public FloatingPointPosition subtract(FloatingPointPosition pos) {
+        return new FloatingPointPosition(this.fX - pos.fX, this.fY - pos.fY);
+    }
+
+    /**
+     * Addiert eine Position zu dieser hier - präzise double-Version
+     */
+    public FloatingPointPosition add(FloatingPointPosition pos) {
+        return new FloatingPointPosition(this.fX + pos.fX, this.fY + pos.fY);
+    }
 
 }
