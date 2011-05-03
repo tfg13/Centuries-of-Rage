@@ -186,7 +186,7 @@ public class Container extends Component {
     /**
      * Lässt den Container einblenden
      */
-    public void fadeIn() {
+    public void activate() {
         active = true;
 
     }
@@ -194,7 +194,7 @@ public class Container extends Component {
     /**
      * Lässt den Container ausblenden
      */
-    public void fadeOut() {
+    public void deactivate() {
         active = false;
     }
 }

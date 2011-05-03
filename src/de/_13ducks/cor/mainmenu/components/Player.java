@@ -69,7 +69,7 @@ public class Player extends Container {
         super(m, x, y, 43.5, playerSlotHeight);
         ready = false;
         this.name = name;
-        super.fadeIn();
+        super.activate();
         this.lobbyScreen = lobby;
 
         // Rahmen:

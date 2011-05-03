@@ -88,8 +88,8 @@ public class MultiplayerScreen extends Container {
 	    @Override
 	    public void mouseClicked(int button, int x, int y, int clickCount) {
 		// @TODO: Server Starten, Lobby anzeigen
-		this.getMainMenu().getMenu("startserverscreen").fadeIn();
-		fadeOut();
+		this.getMainMenu().getMenu("startserverscreen").activate();
+		deactivate();
 	    }
 	});
 
@@ -98,8 +98,8 @@ public class MultiplayerScreen extends Container {
 
 	    @Override
 	    public void mouseClicked(int button, int x, int y, int clickCount) {
-		super.getMainMenu().getMenu("startscreen").fadeIn();
-		fadeOut();
+		super.getMainMenu().getMenu("startscreen").activate();
+		deactivate();
 	    }
 	});
     }
