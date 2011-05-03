@@ -80,19 +80,19 @@ public class GraphicsContent extends BasicGame {
      */
     public static final int OFFSET_1x1_Y = 0;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_2x2_X = -5;
+    public static final int OFFSET_2x2_X = -30;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_2x2_Y = -17;
+    public static final int OFFSET_2x2_Y = -35;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
     public static final int OFFSET_3x3_X = -5;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
     public static final int OFFSET_3x3_Y = -35;
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
