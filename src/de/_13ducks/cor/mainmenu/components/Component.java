@@ -265,11 +265,18 @@ public class Component {
     }
 
     /**
-     * Setzt die Höhe der Komponente
+     * Setzt die Höhe der Komponente (in Prozent)
      * @param height
      */
-    public void setHeight(float height) {
-        this.y2 = this.y1 + height;
+    public void setRelativeHeight(float height) {
+        y2 = y1 + (int) (0.01 * height * getMainMenu().getHeight());
+    }
 
+    /**
+     * Setzt die Höhe absolut, d.h. in Pixel
+     * @param height
+     */
+    public void setAbsoluteHeight(float height) {
+        y2 = y1 + height;
     }
 }
