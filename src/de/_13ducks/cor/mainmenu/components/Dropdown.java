@@ -171,7 +171,7 @@ public class Dropdown extends Component {
 
     @Override
     public void mouseMoved(int x, int y) {
-        if (this.showMenu == true && this.getY1() < y && y < this.getY2()) {
+        if (this.showMenu == true && this.getY1() < y && y < this.getY2() && this.getX1() < x && x < this.getX2()) {
             int newCursorItem = (int) ((y - this.getY1()) / lineHeight);
             cursorItem = firstItem + newCursorItem;
         }
