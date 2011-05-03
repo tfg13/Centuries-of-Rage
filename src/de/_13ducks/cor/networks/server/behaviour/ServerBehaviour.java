@@ -103,6 +103,14 @@ public abstract class ServerBehaviour implements Pauseable {
     public boolean isActive() {
         return active;
     }
+    
+    /**
+     * Lässt das Behaviour schnellsmöglich wieder drankommen.
+     * Normalerweise im nächsten Tick, also praktisch sofort.
+     */
+    public void trigger() {
+        nextUse = System.currentTimeMillis() - 1;
+    }
 
     /**
      * Versucht, das Behaviour auszuführen.
