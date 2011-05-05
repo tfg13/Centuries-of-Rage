@@ -172,6 +172,7 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        clientManager.externalExecute(); // Updated die Position 
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         //Einheit gehört zu / Selektiert
@@ -182,7 +183,6 @@ public class Unit2x2 extends Unit {
             // Spielerfarbe
             imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X),(float) (ry + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
-        clientManager.trigger(); // Macht Bewegungen auf dem Client flüssig
     }
 
     @Override
@@ -195,7 +195,6 @@ public class Unit2x2 extends Unit {
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
-        clientManager.trigger(); // Macht Bewegungen auf dem Client flüssig
     }
 
     @Override
