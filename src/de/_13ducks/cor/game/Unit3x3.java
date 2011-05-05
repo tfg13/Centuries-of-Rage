@@ -126,7 +126,7 @@ public class Unit3x3 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (img != null) {
-            img.getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY));
+            img.getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
@@ -139,10 +139,10 @@ public class Unit3x3 extends Unit {
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s3.png0").getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY));
+            imgMap.get("img/game/sel_s3.png0").getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s3.png" + getPlayerId()).getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY));
+            imgMap.get("img/game/sel_s3.png" + getPlayerId()).getImage().draw((float) (rx + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
     }
 
