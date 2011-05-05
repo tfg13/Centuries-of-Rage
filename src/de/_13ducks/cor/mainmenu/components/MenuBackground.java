@@ -27,9 +27,18 @@ package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.mainmenu.MainMenu;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import java.awt.FontMetrics;
+
 
 /**
  * Zeichnet den Hintergrund für das Hauptmenü
@@ -45,15 +54,22 @@ public class MenuBackground extends Component {
     int tilex; // Anzahl notwendiger Bodentexturkacheln X
     int tiley; // Anzahl notwendiger Bodentexturkacheln Y
     String groundtex; // Gras / Sand / Wüste bei Bodentexturen
-    final static double speed = 0.04; // Geschwindikeit des Hintergrunds
-    final static int maxspawndelay = 10000;
     ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
+
+    final static double speed = 0.04; // Geschwindikeit des Hintergrunds
+    final static double sloganspeed = 0.08; // Geschwindikeit des Slogans
+    final static int maxspawndelay = 10000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
+
+    MenuSlogan currentSlogan; // Der aktuelle Slogan
+    long sloganspawntime; // Wann der aktuelle Slogan gestartet ist
+    ArrayList<Float> wheelsX = new ArrayList<Float>();
 
     public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
 	super(m, relX, relY, relWidth, relHeigth);
 	this.imgMap = imgMap;
 	starttime = System.currentTimeMillis();
 	nextspawntime = 0;
+	sloganspawntime = 100;
 	resx = m.getResX();
 	resy = m.getResY();
 	tilex = (int) Math.ceil(resx / 512) + 2;
@@ -69,6 +85,37 @@ public class MenuBackground extends Component {
 	} else {
 	    groundtex = "img/ground/menuground3.png";
 	}
+
+	// Slogans einlesen
+        File sloganFile = null;
+	ArrayList<String> Slogans = new ArrayList<String>(); // Eine ArrayList mit den Slogans
+        try {
+            sloganFile = new File("randomslogans");
+            FileReader sloganReader = new FileReader(sloganFile);
+            BufferedReader reader = new BufferedReader(sloganReader);
+            String zeile = null;
+            while ((zeile = reader.readLine()) != null) {
+                // Liest Zeile fuer Zeile, speichert als String
+		Slogans.add(zeile);
+            }
+            reader.close();
+        } catch (FileNotFoundException e1) {
+            // cfg-Datei nicht gefunden -  egal, wird automatisch neu angelegt
+            System.out.println("randomslogans not found, creating new one...");
+            try {
+                sloganFile.createNewFile();
+            } catch (IOException ex) {
+                System.out.println("[ERROR] Failed to create randomslogans.");
+            }
+        } catch (IOException e2) {
+            // Inakzeptabel
+            e2.printStackTrace();
+            System.out.println("[ERROR] Critical I/O ERROR!");
+            System.exit(1);
+        }
+
+	// 1. Slogan auswählen
+        currentSlogan = new MenuSlogan(0, Slogans.get((int) (Math.random() * Slogans.size())));
     }
 
     @Override
@@ -91,10 +138,30 @@ public class MenuBackground extends Component {
 		i--;
 	    } else {
 		// Zeichnen
-		//imgMap.get(BackgroundObj.get(i).getPic()).getImage().getHeight()
 		imgMap.get(BackgroundObj.get(i).getPic()).getImage().draw((float) (resx - (speed * (time - BackgroundObj.get(i).getStarttime()))), BackgroundObj.get(i).getY());
 	    }
 	}
+
+	// Slogan zeichnen
+        // Lkw zeichnen
+        Image LkwImg = imgMap.get(currentSlogan.getLkwpic()).getImage();
+        float lkwX = (float) (resx - (sloganspeed * time - currentSlogan.getStarttime()));
+        LkwImg.draw(lkwX, (float) (0.86 * resy - LkwImg.getHeight()));
+        wheelsX.add(lkwX);
+        wheelsX.add(lkwX + 170);
+
+        // Einzelne Wörte zeichnen
+	for (int i = 0; i < currentSlogan.getWords().size(); i++) {
+
+        }
+
+        // Räder zeichnen
+        final int wheelheight = 46;
+        Image WheelImg = imgMap.get(currentSlogan.getWheelpic()).getImage();
+        for (int i = 0; i < wheelsX.size(); i++) {
+            WheelImg.draw(wheelsX.get(i), (float) (0.86 * resy - LkwImg.getHeight() + wheelheight));
+        }
+        wheelsX.clear();
 
 	// Neue Background-Objekte zufällig erstellen
 	if (time > nextspawntime) {
