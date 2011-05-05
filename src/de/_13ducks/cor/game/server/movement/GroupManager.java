@@ -54,7 +54,7 @@ public class GroupManager {
      * Wenn sie gar nicht drin war, passiert nichts.
      * @param unit die zu löschende Einheit
      */
-    public void remove(Unit unit) {
+    public synchronized void remove(Unit unit) {
         myUnits.remove(unit);
     }
 
@@ -62,7 +62,7 @@ public class GroupManager {
      * Fügt die Einheit zu dieser Gruppe hinzu, falls sie noch nicht drin ist.
      * @param unit
      */
-    public void add(Unit unit) {
+    public synchronized void add(Unit unit) {
         if (!myUnits.contains(unit)) {
             myUnits.add(unit);
         }
@@ -75,7 +75,8 @@ public class GroupManager {
      * runTo aufrufen, für nicht-aggressives Vorrücken, jeder so schnell wie er kann.
      * @param target
      */
-    public void goTo(FloatingPointPosition target) {
+    public synchronized void goTo(FloatingPointPosition target) {
+        // TODO: Ziele, Formation verwalten!
     }
 
     /**
@@ -85,7 +86,7 @@ public class GroupManager {
      * goTo aufrufen, für geordnetes, aggressives Vorrücken
      * @param target
      */
-    public void runTo(FloatingPointPosition target) {
+    public synchronized void runTo(FloatingPointPosition target) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
