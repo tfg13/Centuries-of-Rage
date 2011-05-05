@@ -77,12 +77,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Wir laufen also.
         // Aktuelle Position berechnen:
         Vector vec = target.subtract(caster2.getPrecisePosition()).toVector();
+        vec.normalize();
         if (!vec.equals(lastVec)) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
         }
         long ticktime = System.currentTimeMillis();
-        vec.normalize();
         vec.multiply((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFloatingPointPosition();
         
