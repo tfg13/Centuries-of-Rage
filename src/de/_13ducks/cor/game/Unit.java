@@ -269,4 +269,26 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerMoveManager getTopLevelManager() {
         return topLevelManager;
     }
+
+    /**
+     * Entfernt die Einheit aus ihrer aktuellen Gruppe, falls vorhanden.
+     */
+    public void removeFromCurrentGroup() {
+        if (midLevelManager != null) {
+            midLevelManager.remove(this);
+            midLevelManager = null;
+        }
+    }
+
+    /**
+     * Setzt die aktuelle Gruppe der Einheit, falls sie derzeit keine hat.
+     * Wenn eine da ist, wird diese nicht überschrieben!!!
+     * @param man Die neue Gruppe
+     */
+    public void setCurrentGroup(GroupManager man) {
+        if (midLevelManager == null) {
+            midLevelManager = man;
+            man.add(this);
+        }
+    }
 }
