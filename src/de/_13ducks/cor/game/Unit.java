@@ -34,6 +34,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
 /**
  * Superklasse für Einheiten
@@ -74,6 +75,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Ist normalerweise für den ganzen Server global.
      */
     private ServerMoveManager topLevelManager;
+    /**
+     * Der Client-Movemanager dieser Einheit.
+     */
+    private ClientBehaviourMove clientManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -271,10 +276,25 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return topLevelManager;
     }
     
-    public void initMovementManagers(ServerCore.InnerServer rgi) {
+    /**
+     * Bereitet die Einheit für das Server-Bewegungssystem vor.
+     * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
+     * @param rgi der inner core
+     */
+    public void initServerMovementManagers(ServerCore.InnerServer rgi) {
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this);
         addServerBehaviour(lowLevelManager);
+    }
+    
+    /**
+     * Bereitet die Einheit für das Client-Bewegungssystem vor.
+     * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
+     * @param rgi der inner core
+     */
+    public void initClientMovementManager(ClientCore.InnerClient rgi) {
+        clientManager = new ClientBehaviourMove(rgi, this);
+        addClientBehaviour(clientManager);
     }
 
     /**
@@ -297,5 +317,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             midLevelManager = man;
             man.add(this);
         }
+    }
+
+    /**
+     * @return the clientManager
+     */
+    public ClientBehaviourMove getClientManager() {
+        return clientManager;
     }
 }

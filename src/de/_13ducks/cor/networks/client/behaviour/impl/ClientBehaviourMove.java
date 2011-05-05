@@ -23,43 +23,114 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.networks.client.behaviour.impl;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore;
+import de._13ducks.cor.game.server.movement.Vector;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 
 /**
- * Dieses Behaviour verwaltet das Client-Bewegungssystem.
- * Die genauen Delta-Berechnungen werden nach wie vor von der Grafikengine durchgeführt.
- * Dieses Behaviour ruft regelmäßig die calcAndManage-Methode des Weges der Einheit auf.
+ * Der Clientmover bewegt die Einheiten gemäß den Befehlen des Servers auf dem Client.
+ * Jede Einheit hat ihren eingenen Clientmover.
+ * 
  */
 public class ClientBehaviourMove extends ClientBehaviour {
-
+    
+    /**
+     * Das derzeitige Bewegungsziel der Einheit.
+     */
+    private FloatingPointPosition target;
+    /**
+     * Die Einheit, die von diesem Behaviour verwaltet wird
+     */
     private Unit caster2;
-
-    public ClientBehaviourMove(ClientCore.InnerClient newinner, Unit caster) {
-        super(newinner, caster, 1, 5, true);
-        this.caster2 = caster;
+    /**
+     * Die derzeitige Bewegungsgeschwindigkeit
+     */
+    private double speed;
+    /**
+     * Stoppen?
+     */
+    private boolean stopUnit = false;
+    /**
+     * Wann wurde die Bewegung zuletzt berechnet?
+     */
+    private long lastTick;
+    
+    
+    public ClientBehaviourMove(ClientCore.InnerClient rgi, Unit caster2) {
+        super(rgi, caster2, 1, 5, false);
+        this.caster2 = caster2;
     }
 
     @Override
     public void execute() {
+        // Auto-Ende:
+        if (target == null || speed <= 0) {
+            deactivate();
+            return;
+        }
+        // Wir laufen also.
+        // Aktuelle Position berechnen:
+        FloatingPointPosition oldPos = caster2.getPrecisePosition();
+        Vector vec = target.subtract(oldPos).toVector();
+        vec.normalizeMe();
+        long ticktime = System.currentTimeMillis();
+        vec.multiply((ticktime - lastTick) / 1000.0 * speed);
+        FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
+        
+        // Ziel schon erreicht?
+        Vector nextVec = target.subtract(newpos).toVector();
+        if (vec.isOpposite(nextVec)) {
+            // ZIEL!
+            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+            System.out.println("CZIEL");
+            caster2.setMainPosition(target);
+            target = null;
+            stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+            deactivate();
+        } else {
+            // Sofort stoppen?
+            if (stopUnit) {
+                caster2.setMainPosition(newpos);
+                target = null;
+                stopUnit = false;
+                deactivate();
+            } else {
+                // Weiterlaufen
+                caster2.setMainPosition(newpos);
+                lastTick = System.currentTimeMillis();
+            }
+        }
     }
 
     @Override
     public void gotSignal(byte[] packet) {
     }
 
-    @Override
     public void pause() {
-        caster2.pause();
     }
 
-    @Override
     public void unpause() {
-        caster2.unpause();
     }
-
+    
+    public void newMoveVec(double speed, FloatingPointPosition target) {
+        this.speed = speed;
+        this.target = target;
+        lastTick = System.currentTimeMillis();
+        activate();
+    }
+    
+    @Override
+    public void activate() {
+        active = true;
+        trigger();
+    }
+    
+    @Override
+    public void deactivate() {
+        active = false;
+    }
 }

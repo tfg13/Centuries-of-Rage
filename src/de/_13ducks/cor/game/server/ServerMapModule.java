@@ -1006,7 +1006,7 @@ public class ServerMapModule {
      */
     public void addUnit(Unit u) {
         // Diese Einheit für das Bewegungssystem fit machen
-        u.initMovementManagers(rgi);
+        u.initServerMovementManagers(rgi);
         //  u.moveManager = smove;
         ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, u);
         u.addServerBehaviour(amove);

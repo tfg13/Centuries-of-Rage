@@ -106,7 +106,7 @@ public class ServerGameController implements Runnable {
         rgi.serverstats.createStatArrays(numberOfPlayers); //Der Serverstatistik die Spielerzahl mitteilen
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
-            unit.initMovementManagers(rgi);
+            unit.initServerMovementManagers(rgi);
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
             unit.addServerBehaviour(amove);
             unit.attackManager = amove;
