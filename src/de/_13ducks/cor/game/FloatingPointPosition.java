@@ -130,5 +130,10 @@ public class FloatingPointPosition extends Position {
     public Vector toVector() {
         return new Vector(fX, fY);
     }
+    
+    @Override
+    public String toString() {
+        return fX + "|" + fY + "(" + super.toString() + ")";
+    }
 
 }
