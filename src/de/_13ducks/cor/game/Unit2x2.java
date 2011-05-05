@@ -182,6 +182,7 @@ public class Unit2x2 extends Unit {
             // Spielerfarbe
             imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx + GraphicsContent.OFFSET_2x2_X - scrollX),(float) (ry + GraphicsContent.OFFSET_2x2_Y - scrollY));
         }
+        clientManager.trigger(); // Macht Bewegungen auf dem Client flüssig
     }
 
     @Override
@@ -194,6 +195,7 @@ public class Unit2x2 extends Unit {
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }
+        clientManager.trigger(); // Macht Bewegungen auf dem Client flüssig
     }
 
     @Override
