@@ -96,6 +96,14 @@ public class GraphicsContent extends BasicGame {
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
     public static final int OFFSET_3x3_Y = -35;
+    /**
+     * Diesen Abstand muss man bei allen Zeichenoperationen reinrechnen, die mit präzisen Pixeln arbeiten.
+     */
+    public static final int OFFSET_PRECISE_X = 10;
+    /**
+     * Diesen Abstand muss man bei allen Zeichenoperationen reinrechnen, die mit präzisen Pixeln arbeiten.
+     */
+    public static final int OFFSET_PRECISE_Y = 15;
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
     public GraphicsImage colModeImage;
     public int modi = -2; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
@@ -1140,8 +1148,8 @@ public class GraphicsContent extends BasicGame {
         // Findet heraus, welches Feld geklickt wurde - Man muss die Felder mittig anklicken, sonst gehts nicht
         // Wir haben die X und Y Koordinate auf dem Display und wollen die X und Y Koordinate auf der Map bekommen
         // Versatz beachten
-        selX = selX - 10;
-        selY = selY - 15;
+        selX = selX - OFFSET_PRECISE_X;
+        selY = selY - OFFSET_PRECISE_Y;
         // Grundposition bestimmen
         int coordX = selX / FIELD_HALF_X;
         int coordY = (int) (selY / FIELD_HALF_Y);
@@ -1157,8 +1165,8 @@ public class GraphicsContent extends BasicGame {
     public Position translateCoordinatesToField(int x, int y) {
         // Grundposition bestimmen
         // Versatz beachten
-        x = x - 10;
-        y = y - 15;
+        x = x - OFFSET_PRECISE_X;
+        y = y - OFFSET_PRECISE_Y;
         int coordX = x / FIELD_HALF_X;
         int coordY = (int) (y / FIELD_HALF_Y);
         // Scrollposition addieren
