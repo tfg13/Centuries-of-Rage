@@ -49,6 +49,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
+    private Vector lastVec;
     
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
         super(newinner, caster, 1, 20, true);
@@ -76,6 +77,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Wir laufen also.
         // Aktuelle Position berechnen:
         Vector vec = target.subtract(caster2.getPrecisePosition()).toVector();
+        if (!vec.equals(lastVec)) {
+            // An Client senden
+            rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
+        }
         long ticktime = System.currentTimeMillis();
         vec.normalize();
         vec.multiply((ticktime - lastTick) / 1000.0 * speed);
@@ -133,6 +138,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         target = pos;
         lastTick = System.currentTimeMillis();
+        lastVec = Vector.NULL;
         activate();
     }
 

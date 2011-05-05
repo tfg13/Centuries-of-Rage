@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.networks.server;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import java.io.*;
@@ -297,6 +298,18 @@ public class ServerNetController implements Runnable {
                 rgi.netmap.playerLeft(servhan.client.playerId);
             }
         }
+    }
+
+    /**
+     * Sendet allen Clients den neuen Bewegungsvektor der angegebenen Einheit
+     * Lässt die Einheit sofort auf den Clients in Richtung des angegebenen Vektors loslaufen.
+     * Es wird die gegeben Geschwindigkeit verwendet.
+     * @param netID die NetID der Einheit
+     * @param target das Bewegungsziel
+     * @param speed Die Geschwindigkeit
+     */
+    public void broadcastMoveVec(int netID, FloatingPointPosition target, double speed) {
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 23, netID, Float.floatToIntBits((float) speed), Float.floatToIntBits((float) target.getfX()), Float.floatToIntBits((float) target.getfY())));
     }
 
     public class ServerHandler implements Runnable {
