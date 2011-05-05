@@ -130,6 +130,14 @@ public abstract class ClientBehaviour implements Pauseable {
             ex.printStackTrace();
         }
     }
+    
+    /**
+     * Lässt das Behaviour schnellsmöglich wieder drankommen.
+     * Normalerweise im nächsten Tick, also praktisch sofort.
+     */
+    public void trigger() {
+        nextUse = System.currentTimeMillis() - 1;
+    }
 
     /**
      * Führt das Behaviour aus. Sollte *nicht* direkt aufgerufen werden.
