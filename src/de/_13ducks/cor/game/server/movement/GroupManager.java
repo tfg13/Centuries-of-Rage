@@ -28,7 +28,6 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * MidLevel-Movemanagement
@@ -48,6 +47,10 @@ public class GroupManager {
      * Alle Einheiten, die zur Zeit in dieser Gruppe sind.
      */
     private ArrayList<Unit> myUnits;
+    
+    public GroupManager() {
+        myUnits = new ArrayList<Unit>();
+    }
 
     /**
      * Löscht eine Einheit aus der Gruppe heraus.
@@ -77,6 +80,9 @@ public class GroupManager {
      */
     public synchronized void goTo(FloatingPointPosition target) {
         // TODO: Ziele, Formation verwalten!
+        for (Unit unit : myUnits) {
+            unit.getLowLevelManager().setTargetVector(target, unit.getSpeed());
+        }
     }
 
     /**
