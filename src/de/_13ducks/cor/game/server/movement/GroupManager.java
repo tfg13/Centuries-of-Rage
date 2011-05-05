@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * MidLevel-Movemanagement
@@ -75,5 +76,16 @@ public class GroupManager {
      * @param target
      */
     public void goTo(FloatingPointPosition target) {
+    }
+
+    /**
+     * Lässt die Gruppe an dieses Ziel rennen.
+     * Rennen bedeutet flüchten, alle Feinde ignorieren, das Ziel um jeden Preis erreichen.
+     * Jede Einheit läuft mit ihrer individuellen Maximalgeschwindigkeit
+     * goTo aufrufen, für geordnetes, aggressives Vorrücken
+     * @param target
+     */
+    public void runTo(FloatingPointPosition target) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
