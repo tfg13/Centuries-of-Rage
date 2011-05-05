@@ -48,6 +48,18 @@ public class ServerMoveManager {
         for (Unit unit : movers) {
             System.out.println("Moving " + unit + " to " + target);
         }
+        // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
+        // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
+        for (Unit unit : movers) {
+            unit.removeFromCurrentGroup();
+        }
+        // Neue Gruppe aufmachen und alle hinzufügen
+        GroupManager man = new GroupManager();
+        for (Unit unit : movers) {
+            unit.setCurrentGroup(man);
+        }
+        // Gruppe ans Ziel senden
+        man.goTo(target);
     }
     // Add_some_content
 }

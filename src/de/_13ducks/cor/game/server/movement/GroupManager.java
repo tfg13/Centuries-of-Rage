@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 
@@ -64,5 +65,15 @@ public class GroupManager {
         if (!myUnits.contains(unit)) {
             myUnits.add(unit);
         }
+    }
+
+    /**
+     * Lässt die Gruppe an dieses Ziel laufen.
+     * Laufen bedeutet aggressives Vorrücken.
+     * Alle Einheiten laufen mit der gleichen Geschwindigkeit.
+     * runTo aufrufen, für nicht-aggressives Vorrücken, jeder so schnell wie er kann.
+     * @param target
+     */
+    public void goTo(FloatingPointPosition target) {
     }
 }
