@@ -78,7 +78,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * Der Client-Movemanager dieser Einheit.
      */
-    private ClientBehaviourMove clientManager;
+    protected ClientBehaviourMove clientManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
