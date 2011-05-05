@@ -226,7 +226,7 @@ public abstract class Core {
 
         /**
          * Liest eine RogPosition aus einem Datenpacket ein.
-         * @param b eine byte[17]
+         * @param b ein byte[17]
          * @param number 1, oder 2
          * @return Die gefundene Position
          */
@@ -240,6 +240,24 @@ public abstract class Core {
                 y |= (b[(number * 8) - i] & 0xff) << (i << 3);
             }
             return new Position(x, y);
+        }
+
+        /**
+         * Liest eine im Float-->Int Format codierte Fließkommaposition ein.
+         * @param b das datenpacket, byte[17]
+         * @param number 1, oder 2
+         * @return Die gefundene Position
+         */
+        public FloatingPointPosition readFloatingPointPosition(byte[] b, int number) {
+            int x = 0;
+            for (int i = 0; i < 4; ++i) {
+                x |= (b[-4 + (number * 8) - i] & 0xff) << (i << 3);
+            }
+            int y = 0;
+            for (int i = 0; i < 4; ++i) {
+                y |= (b[(number * 8) - i] & 0xff) << (i << 3);
+            }
+            return new FloatingPointPosition(Float.intBitsToFloat(x), Float.intBitsToFloat(y));
         }
 
         /**
