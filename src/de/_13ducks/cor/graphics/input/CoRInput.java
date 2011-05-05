@@ -853,7 +853,7 @@ public class CoRInput implements Pauseable {
                 }
             } else {
                 // Default = Move
-                selected.get(0).command(button, selField, Collections.unmodifiableList(selected), false, rgi);
+                selected.get(0).command(button, graphics.content.translateCoordinatesToFloatPos(x, y), Collections.unmodifiableList(selected), false, rgi);
             }
         }
     }

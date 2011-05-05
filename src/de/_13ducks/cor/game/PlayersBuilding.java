@@ -196,7 +196,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+    public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

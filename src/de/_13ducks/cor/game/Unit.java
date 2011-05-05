@@ -179,7 +179,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
     @Override
-    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+    public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         // Befehl abschicken:
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
         // Hier sind unter umständen mehrere Packete nötig:
