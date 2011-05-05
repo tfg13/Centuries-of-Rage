@@ -45,9 +45,6 @@ public class ServerMoveManager {
      * @param movers 
      */
     public void moveRequest(FloatingPointPosition target, ArrayList<Unit> movers) {
-        for (Unit unit : movers) {
-            System.out.println("Moving " + unit + " to " + target);
-        }
         // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
         // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
         for (Unit unit : movers) {
@@ -62,4 +59,15 @@ public class ServerMoveManager {
         man.goTo(target);
     }
     // Add_some_content
+
+    /**
+     * Ein Client-Stoprequest geht ein.
+     * @param unit54 Die anzuhaltende Einheit
+     */
+    public void stopRequest(Unit unit54) {
+        // TODO: Bessere Gruppenverwaltung
+        // Trivial: Einheit aus ihrer Gruppe werfen, dann anhalten.
+        unit54.removeFromCurrentGroup();
+        unit54.getLowLevelManager().stopImmediately();
+    }
 }

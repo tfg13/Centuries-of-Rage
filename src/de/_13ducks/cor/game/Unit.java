@@ -231,7 +231,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Nur Client!
      */
     public void stopMovement(ClientCore.InnerClient rgi) {
-        System.out.println("AddMe: Stop unit!");
+        if (moveStoppable()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 54, this.netID, 0, 0, 0));
+        }
     }
 
     /**
@@ -239,7 +241,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @return
      */
     public boolean moveStoppable() {
-        return true;
+        return clientManager.isActive();
     }
 
     @Override

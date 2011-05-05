@@ -93,7 +93,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (vec.isOpposite(nextVec)) {
             // ZIEL!
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            System.out.println("ZIEL");
             caster2.setMainPosition(target);
             target = null;
             stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
@@ -101,6 +100,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         } else {
             // Sofort stoppen?
             if (stopUnit) {
+                // Der Client muss das auch mitbekommen
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.netID, 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                 caster2.setMainPosition(newpos);
                 target = null;
                 stopUnit = false;

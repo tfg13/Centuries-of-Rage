@@ -53,7 +53,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     /**
      * Stoppen?
      */
-    private boolean stopUnit = false;
+    private FloatingPointPosition stopPos = null;
     /**
      * Wann wurde die Bewegung zuletzt berechnet?
      */
@@ -86,17 +86,16 @@ public class ClientBehaviourMove extends ClientBehaviour {
         if (vec.isOpposite(nextVec)) {
             // ZIEL!
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            System.out.println("CZIEL");
             caster2.setMainPosition(target);
             target = null;
-            stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+            stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
             deactivate();
         } else {
             // Sofort stoppen?
-            if (stopUnit) {
-                caster2.setMainPosition(newpos);
+            if (stopPos != null) {
+                caster2.setMainPosition(stopPos);
                 target = null;
-                stopUnit = false;
+                stopPos = null;
                 deactivate();
             } else {
                 // Weiterlaufen
@@ -132,5 +131,14 @@ public class ClientBehaviourMove extends ClientBehaviour {
     @Override
     public void deactivate() {
         active = false;
+    }
+
+    /**
+     * Stoppt die Einheit sofort auf der angegeben Position
+     * (innerhalb eines Ticks)
+     * @param pos 
+     */
+    public void stopAt(FloatingPointPosition pos) {
+        stopPos = pos;
     }
 }

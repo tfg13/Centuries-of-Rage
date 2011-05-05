@@ -446,6 +446,7 @@ public class ServerNetController implements Runnable {
             cmdMap[50] = new de._13ducks.cor.networks.cmd.server.S050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.server.S051_SET_TEAMS();
             cmdMap[52] = new de._13ducks.cor.networks.cmd.server.S052_MOVE_REQUEST();
+            cmdMap[54] = new de._13ducks.cor.networks.cmd.server.S054_STOP_REQUEST();
         }
 
         /*void sendACK(byte command) {
