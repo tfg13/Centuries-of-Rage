@@ -115,7 +115,7 @@ public abstract class ClientBehaviour implements Pauseable {
      * Es wird nur ausgeführt, wenn der Countdown bereits abgelaufen ist,
      * ansonsten kehrt diese Methode sofort zurück
      */
-    public void tryexecute() {
+    public synchronized void tryexecute() {
         if (System.currentTimeMillis() < nextUse) {
             return;
         }
@@ -137,6 +137,23 @@ public abstract class ClientBehaviour implements Pauseable {
      */
     public void trigger() {
         nextUse = System.currentTimeMillis() - 1;
+    }
+    
+    /**
+     * Führt das Behaviour sofort aus.
+     * ACHTUNG! Es wird direkt im aufrufenden Thread ausgeführt, es gibt also
+     * möglicherweise dort Verzögerungen und oder Nebenläufigkeitsprobleme.
+     */
+    public synchronized void externalExecute() {
+        // Timer neu setzen
+        nextUse = System.currentTimeMillis() + delay;
+
+        // Ausführen
+        try {
+            this.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
