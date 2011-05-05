@@ -44,7 +44,7 @@ public class C023_MOVE_UNIT extends ClientCommand {
             // Geschwindigkeit und Ziel rausbasteln
             float speed = Float.intBitsToFloat(rgi.readInt(data, 2));
             FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(data, 3)), Float.intBitsToFloat(rgi.readInt(data, 4)));
-            System.out.println(unit23 + " moves with speed: " + speed + " to " + pos);
+            unit23.getClientManager().newMoveVec(speed, pos);
         } else {
             System.out.println("Unit id mismatch (cmd 23)");
         }
