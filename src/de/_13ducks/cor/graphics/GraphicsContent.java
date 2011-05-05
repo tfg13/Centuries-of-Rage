@@ -1177,8 +1177,11 @@ public class GraphicsContent extends BasicGame {
         // Versatz beachten
         x = x - 10;
         y = y - 15;
-        double coordX = (((double) x / FIELD_HALF_X) + positionX) / 10;
-        double coordY = (((double) y / FIELD_HALF_Y) + positionY) / 10;
+        double coordX = (double) x / FIELD_HALF_X;
+        double coordY = (double) y / FIELD_HALF_Y;
+        // Scrollposition addieren
+        coordX = coordX + positionX;
+        coordY = coordY + positionY;
         return new FloatingPointPosition(coordX, coordY);
     }
 
