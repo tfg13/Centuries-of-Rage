@@ -81,6 +81,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (!vec.equals(lastVec)) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
+            lastVec = vec;
         }
         long ticktime = System.currentTimeMillis();
         vec.multiply((ticktime - lastTick) / 1000.0 * speed);
