@@ -25,6 +25,9 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.Unit;
+import java.util.ArrayList;
+
 /**
  * MidLevel-Movemanagement
  * 
@@ -38,5 +41,28 @@ package de._13ducks.cor.game.server.movement;
  * einzelnen Einheiten. Der GroupManager kann nur eine Richtung und ein Ziel vorgeben.
  */
 public class GroupManager {
-    // Add_some_content
+
+    /**
+     * Alle Einheiten, die zur Zeit in dieser Gruppe sind.
+     */
+    private ArrayList<Unit> myUnits;
+
+    /**
+     * Löscht eine Einheit aus der Gruppe heraus.
+     * Wenn sie gar nicht drin war, passiert nichts.
+     * @param unit die zu löschende Einheit
+     */
+    public void remove(Unit unit) {
+        myUnits.remove(unit);
+    }
+
+    /**
+     * Fügt die Einheit zu dieser Gruppe hinzu, falls sie noch nicht drin ist.
+     * @param unit
+     */
+    public void add(Unit unit) {
+        if (!myUnits.contains(unit)) {
+            myUnits.add(unit);
+        }
+    }
 }
