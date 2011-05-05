@@ -30,6 +30,7 @@ import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
@@ -268,6 +269,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public ServerMoveManager getTopLevelManager() {
         return topLevelManager;
+    }
+    
+    public void initMovementManagers(ServerCore.InnerServer rgi) {
+        topLevelManager = rgi.moveMan;
+        lowLevelManager = new ServerBehaviourMove(rgi, this);
+        addServerBehaviour(lowLevelManager);
     }
 
     /**

@@ -1005,9 +1005,8 @@ public class ServerMapModule {
      * @param u Die neue Einheit
      */
     public void addUnit(Unit u) {
-        // Einheit ServerBehaviourMove adden
-        ServerBehaviourMove smove = new ServerBehaviourMove(rgi, u);
-        u.addServerBehaviour(smove);
+        // Diese Einheit für das Bewegungssystem fit machen
+        u.initMovementManagers(rgi);
         //  u.moveManager = smove;
         ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, u);
         u.addServerBehaviour(amove);
