@@ -327,7 +327,7 @@ public class ServerNetController implements Runnable {
         public GameObject temp08;
         public ArrayList<Position> temp06;
         public ArrayList<Unit> temp07;
-        public Position temps052_1;
+        public FloatingPointPosition temps052_1;
         public ArrayList<Unit> temps052_2;
         public int moveMode;
         public String stringb44 = "";
@@ -445,6 +445,7 @@ public class ServerNetController implements Runnable {
             cmdMap[47] = new de._13ducks.cor.networks.cmd.server.S047_BUILDING_ATTACK_GO();
             cmdMap[50] = new de._13ducks.cor.networks.cmd.server.S050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.server.S051_SET_TEAMS();
+            cmdMap[52] = new de._13ducks.cor.networks.cmd.server.S052_MOVE_REQUEST();
         }
 
         /*void sendACK(byte command) {

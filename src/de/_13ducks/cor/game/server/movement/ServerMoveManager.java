@@ -25,6 +25,10 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.Unit;
+import java.util.ArrayList;
+
 /**
  * TopLevel-Movemanagement
  * 
@@ -34,5 +38,16 @@ package de._13ducks.cor.game.server.movement;
  * Nach der Gruppeneinteilung wird der Befehl an den GruppenMoveManager (das MidLevel-Management weitergegeben)
  */
 public class ServerMoveManager {
+
+    /**
+     * Ein Client-Moverequest geht ein.
+     * @param target
+     * @param movers 
+     */
+    public void moveRequest(FloatingPointPosition target, ArrayList<Unit> movers) {
+        for (Unit unit : movers) {
+            System.out.println("Moving " + unit + " to " + target);
+        }
+    }
     // Add_some_content
 }
