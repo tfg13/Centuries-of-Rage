@@ -33,6 +33,8 @@ import de._13ducks.cor.game.FloatingPointPosition;
  */
 public class Vector {
 
+    public static final Vector NULL = new Vector(0,0);
+    
     private double x;
     private double y;
 
