@@ -76,22 +76,24 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         // Wir laufen also.
         // Aktuelle Position berechnen:
-        Vector vec = target.subtract(caster2.getPrecisePosition()).toVector();
-        vec.normalize();
+        FloatingPointPosition oldPos = caster2.getPrecisePosition();
+        Vector vec = target.subtract(oldPos).toVector();
+        vec.normalizeMe();
         if (!vec.equals(lastVec)) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
-            lastVec = vec;
+            lastVec = new Vector(vec.getX(), vec.getY());
         }
         long ticktime = System.currentTimeMillis();
         vec.multiply((ticktime - lastTick) / 1000.0 * speed);
-        FloatingPointPosition newpos = vec.toFloatingPointPosition();
+        FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
         
         // Ziel schon erreicht?
         Vector nextVec = target.subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
             // ZIEL!
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+            System.out.println("ZIEL");
             caster2.setMainPosition(target);
             target = null;
             stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
