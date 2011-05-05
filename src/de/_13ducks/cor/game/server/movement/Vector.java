@@ -98,10 +98,19 @@ public class Vector {
      * Normiert den Vektor
      * Verändert direkt den Vector!
      */
-    public void normalize() {
+    public void normalizeMe() {
         double fact = length();
         x *= 1 / fact;
         y *= 1 / fact;
+    }
+    
+    /**
+     * Normiert den Vektor
+     * Gibt den Normierten zurück
+     */
+    public Vector normalize() {
+        double fact = length();
+        return new Vector(this.x / fact, this.y / fact);
     }
 
     /**
@@ -114,9 +123,10 @@ public class Vector {
 
     /**
      * True, wenn der gleiche Vektor, nur in die andere Richtung zeigend
+     * Länge egal.
      */
     public boolean isOpposite(Vector vec) {
-        return this.equals(new Vector(-vec.x, -vec.y));
+        return this.normalize().equals(new Vector(-vec.x, -vec.y).normalize());
     }
 
     @Override
