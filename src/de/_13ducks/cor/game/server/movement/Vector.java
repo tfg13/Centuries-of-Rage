@@ -135,4 +135,9 @@ public class Vector {
         hash = 41 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         return hash;
     }
+    
+    @Override
+    public String toString() {
+        return "v:" + x + "|" + y;
+    }
 }
