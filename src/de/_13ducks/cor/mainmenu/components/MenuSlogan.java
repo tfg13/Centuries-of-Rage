@@ -26,7 +26,9 @@
 
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.FontManager;
 import java.util.ArrayList;
+import org.newdawn.slick.Font;
 
 /**
  * Hat was mit den Sprüchen im Nauptmenü zu tun
@@ -54,6 +56,11 @@ public class MenuSlogan {
             // todo: vernünftige Werte übergeben
             Words.add(new MenuSloganWord(starttime, WordWIP[i]));
         }
+
+        /*for (int i = 0; i < currentSlogan.getWords().size(); i++) {
+            Font bla = FontManager.getFont0();
+            bla.getWidth(currentSlogan.getWords().get(i).getWord());
+        }*/
     }
 
     /**
