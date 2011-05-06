@@ -85,7 +85,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             lastVec = new Vector(vec.getX(), vec.getY());
         }
         long ticktime = System.currentTimeMillis();
-        vec.multiply((ticktime - lastTick) / 1000.0 * speed);
+        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
         
         // Ziel schon erreicht?
