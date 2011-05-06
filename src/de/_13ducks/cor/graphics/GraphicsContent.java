@@ -91,11 +91,11 @@ public class GraphicsContent extends BasicGame {
     /**
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_3x3_X = -5;
+    public static final int OFFSET_3x3_X = -40;
     /**
      * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_3x3_Y = -35;
+    public static final int OFFSET_3x3_Y = -54;
     /**
      * Diesen Abstand muss man bei allen Zeichenoperationen reinrechnen, die mit präzisen Pixeln arbeiten.
      */
