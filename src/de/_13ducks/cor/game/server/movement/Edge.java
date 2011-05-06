@@ -92,4 +92,13 @@ public class Edge {
     public Node getEnd() {
         return end;
     }
+    /**
+     * Erzeugt einen Koordinatenvektor der auf den Mittelpunkt dieser Kante zeigt.
+     * @return einen Koordinatenvektor der auf den Mittelpunkt dieser Kante zeigt.
+     */
+    public Vector getCenter() {
+       Vector vec = new Vector(start.getX() - end.getX(), start.getY() - end.getY());
+       vec.multiplyMe(0.5);
+       return vec.add(end.toVector());
+    }
 }
