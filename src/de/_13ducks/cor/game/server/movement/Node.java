@@ -125,4 +125,14 @@ public class Node {
     public String toString() {
         return x + "/" + y;
     }
+    
+    /**
+     * Liefert eine Vektor-Representation dieses Knotens.
+     * Der Vektor enthält nur die derzeitgen Positionsdaten.
+     * Alle anderen Daten wie z.B. benachbarte Polygone gehen verloren.
+     * @return einen Vektor-Representation dieses Knotens.
+     */
+    public Vector toVector() {
+        return new Vector(x, y);
+    }
 }
