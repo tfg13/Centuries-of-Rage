@@ -27,6 +27,7 @@ package de._13ducks.cor.graphics;
 
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import java.awt.Dimension;
 import java.util.*;
@@ -80,21 +81,29 @@ public class GraphicsContent extends BasicGame {
      */
     public static final int OFFSET_1x1_Y = 0;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_2x2_X = -5;
+    public static final int OFFSET_2x2_X = -30;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_2x2_Y = -17;
+    public static final int OFFSET_2x2_Y = -35;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_3x3_X = -5;
+    public static final int OFFSET_3x3_X = -40;
     /**
-     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Ursprung des Zuordungsfeldes entfernt ist.
+     * Wie viele Pixel der Zeichenursprung für ein 2x2 Feld von dem Rohkoordinatenfeld entfernt ist.
      */
-    public static final int OFFSET_3x3_Y = -35;
+    public static final int OFFSET_3x3_Y = -54;
+    /**
+     * Diesen Abstand muss man bei allen Zeichenoperationen reinrechnen, die mit präzisen Pixeln arbeiten.
+     */
+    public static final int OFFSET_PRECISE_X = 10;
+    /**
+     * Diesen Abstand muss man bei allen Zeichenoperationen reinrechnen, die mit präzisen Pixeln arbeiten.
+     */
+    public static final int OFFSET_PRECISE_Y = 15;
     // Diese Klasse repräsentiert den Tatsächlichen GrafikINHALT von RogGraphics und RogMapEditor
     public GraphicsImage colModeImage;
     public int modi = -2; // Was gerendert werden soll, spezielle Ansichten für den Editor etc...
@@ -321,7 +330,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -339,7 +348,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -902,16 +911,20 @@ public class GraphicsContent extends BasicGame {
         }
         // Aktuelle Position suchen:
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
+        FloatingPointPosition precise = translateCoordinatesToFloatPos(mouseX, mouseY);
         // Position markieren:
         getImgMap().get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();
         String output = "Mouse: " + mouse.getX() + " " + mouse.getY();
+        String precout = "Mouse (precise): " + precise.getfX() + " " + precise.getfY();
         g2.fillRect(5, 40, font.getWidth(output), font.getHeight(output));
+        g2.fillRect(5, 60, font.getWidth(precout), font.getHeight(precout));
         g2.setFont(font);
         g2.setColor(Color.black);
         g2.drawString(output, 5, 40);
+        g2.drawString(precout, 5, 60);
     }
 
     private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {
@@ -1135,8 +1148,8 @@ public class GraphicsContent extends BasicGame {
         // Findet heraus, welches Feld geklickt wurde - Man muss die Felder mittig anklicken, sonst gehts nicht
         // Wir haben die X und Y Koordinate auf dem Display und wollen die X und Y Koordinate auf der Map bekommen
         // Versatz beachten
-        selX = selX - 10;
-        selY = selY - 15;
+        selX = selX - OFFSET_PRECISE_X;
+        selY = selY - OFFSET_PRECISE_Y;
         // Grundposition bestimmen
         int coordX = selX / FIELD_HALF_X;
         int coordY = (int) (selY / FIELD_HALF_Y);
@@ -1152,8 +1165,8 @@ public class GraphicsContent extends BasicGame {
     public Position translateCoordinatesToField(int x, int y) {
         // Grundposition bestimmen
         // Versatz beachten
-        x = x - 10;
-        y = y - 15;
+        x = x - OFFSET_PRECISE_X;
+        y = y - OFFSET_PRECISE_Y;
         int coordX = x / FIELD_HALF_X;
         int coordY = (int) (y / FIELD_HALF_Y);
         // Scrollposition addieren
@@ -1167,6 +1180,19 @@ public class GraphicsContent extends BasicGame {
         }
         return new Position(coordX, coordY);
     }
+
+    public FloatingPointPosition translateCoordinatesToFloatPos(int x, int y) {
+        // Versatz beachten
+        x = x - 10;
+        y = y - 15;
+        double coordX = (double) x / FIELD_HALF_X;
+        double coordY = (double) y / FIELD_HALF_Y;
+        // Scrollposition addieren
+        coordX = coordX + positionX;
+        coordY = coordY + positionY;
+        return new FloatingPointPosition(coordX, coordY);
+    }
+
 
     /*   public void klickedOnMiniMap(final int button, final int x, final int y, final int clickCount) {
     // Koordinaten finden

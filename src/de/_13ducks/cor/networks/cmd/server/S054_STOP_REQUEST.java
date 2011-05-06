@@ -23,14 +23,27 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.game.server;
+package de._13ducks.cor.networks.cmd.server;
+
+import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.ServerCore.InnerServer;
+import de._13ducks.cor.networks.cmd.ServerCommand;
+import de._13ducks.cor.networks.server.ServerNetController.ServerHandler;
 
 /**
- * Der TopLevel-Movemanager des Servers.
- * Arbeitet nur mit Einheitengruppen.
- * Verarbeitet Requests des Clients.
- * @author tfg
+ * Der Client möchte eine Einheit stoppen.
  */
-public class ServerMoveManager {
-    // Add_some_content
+public class S054_STOP_REQUEST extends ServerCommand {
+
+    @Override
+    public void process(byte[] data, ServerHandler handler, InnerServer rgi) {
+        // Einheit suchen 
+        Unit unit54 = rgi.netmap.getUnitviaID(rgi.readInt(data, 1));
+        if (unit54 != null) {
+            rgi.moveMan.stopRequest(unit54);
+        } else {
+            System.out.println("Unit id mismatch! (cmd54s)");
+        }
+    }
+    
 }

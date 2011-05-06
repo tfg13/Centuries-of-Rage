@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.networks.server;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import java.io.*;
@@ -299,6 +300,18 @@ public class ServerNetController implements Runnable {
         }
     }
 
+    /**
+     * Sendet allen Clients den neuen Bewegungsvektor der angegebenen Einheit
+     * Lässt die Einheit sofort auf den Clients in Richtung des angegebenen Vektors loslaufen.
+     * Es wird die gegeben Geschwindigkeit verwendet.
+     * @param netID die NetID der Einheit
+     * @param target das Bewegungsziel
+     * @param speed Die Geschwindigkeit
+     */
+    public void broadcastMoveVec(int netID, FloatingPointPosition target, double speed) {
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 23, netID, Float.floatToIntBits((float) speed), Float.floatToIntBits((float) target.getfX()), Float.floatToIntBits((float) target.getfY())));
+    }
+
     public class ServerHandler implements Runnable {
 
         public int loadStatus = 0;
@@ -314,7 +327,7 @@ public class ServerNetController implements Runnable {
         public GameObject temp08;
         public ArrayList<Position> temp06;
         public ArrayList<Unit> temp07;
-        public Position temps052_1;
+        public FloatingPointPosition temps052_1;
         public ArrayList<Unit> temps052_2;
         public int moveMode;
         public String stringb44 = "";
@@ -432,6 +445,8 @@ public class ServerNetController implements Runnable {
             cmdMap[47] = new de._13ducks.cor.networks.cmd.server.S047_BUILDING_ATTACK_GO();
             cmdMap[50] = new de._13ducks.cor.networks.cmd.server.S050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.server.S051_SET_TEAMS();
+            cmdMap[52] = new de._13ducks.cor.networks.cmd.server.S052_MOVE_REQUEST();
+            cmdMap[54] = new de._13ducks.cor.networks.cmd.server.S054_STOP_REQUEST();
         }
 
         /*void sendACK(byte command) {

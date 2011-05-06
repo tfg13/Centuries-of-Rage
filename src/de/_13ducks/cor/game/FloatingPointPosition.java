@@ -26,6 +26,8 @@
 
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.server.movement.Vector;
+
 /**
  * Dies ist eine Fließpunktposition, die durch eine Kompatibilitätsschicht
  * auch überall dort eingesetzt werden kann, wo "normale" Positionen verwendet werden.
@@ -111,5 +113,27 @@ public class FloatingPointPosition extends Position {
 	this.Y = (int) fY;
     }
 
+     /**
+     * Substrahiert eine Position von dieser hier - präzise double-Version
+     */
+    public FloatingPointPosition subtract(FloatingPointPosition pos) {
+        return new FloatingPointPosition(this.fX - pos.fX, this.fY - pos.fY);
+    }
+
+    /**
+     * Addiert eine Position zu dieser hier - präzise double-Version
+     */
+    public FloatingPointPosition add(FloatingPointPosition pos) {
+        return new FloatingPointPosition(this.fX + pos.fX, this.fY + pos.fY);
+    }
+    
+    public Vector toVector() {
+        return new Vector(fX, fY);
+    }
+    
+    @Override
+    public String toString() {
+        return fX + "|" + fY + "(" + super.toString() + ")";
+    }
 
 }

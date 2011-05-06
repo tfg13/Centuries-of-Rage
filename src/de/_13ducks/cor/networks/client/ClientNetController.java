@@ -219,7 +219,8 @@ public class ClientNetController {
             cmdMap[20] = new de._13ducks.cor.networks.cmd.client.C020_RECRUIT_ADD();
             cmdMap[21] = new de._13ducks.cor.networks.cmd.client.C021_ADD_UNIT();
             cmdMap[22] = new de._13ducks.cor.networks.cmd.client.C022_RECRUIT_DEL();
-            cmdMap[23] = new de._13ducks.cor.networks.cmd.client.C023_INIT_MOVE();
+            cmdMap[23] = new de._13ducks.cor.networks.cmd.client.C023_MOVE_UNIT();
+            cmdMap[24] = new de._13ducks.cor.networks.cmd.client.C024_STOP_UNIT();
             cmdMap[27] = new de._13ducks.cor.networks.cmd.client.C027_SET_WAYPOINT();
             cmdMap[28] = new de._13ducks.cor.networks.cmd.client.C028_KILL_UNIT();
             cmdMap[30] = new de._13ducks.cor.networks.cmd.client.C030_KILL_BUILDING();

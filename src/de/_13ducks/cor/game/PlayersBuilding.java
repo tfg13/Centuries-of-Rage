@@ -95,7 +95,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x + GraphicsContent.BASIC_FIELD_OFFSET_X - getGraphicsData().offsetX, (int) (y - 7.5 - getGraphicsData().offsetY));
     }
 
@@ -176,7 +176,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
             x += GraphicsContent.BASIC_FIELD_OFFSET_X;
             y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
             // Linien ziehen
@@ -196,7 +196,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+    public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

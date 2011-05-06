@@ -25,44 +25,94 @@
  */
 package de._13ducks.cor.game.networks.behaviour.impl;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.movement.Vector;
 
 /**
- * Das Behaviour für die Einheitenbewegung.
- * Server only, es gibt kein zugehörigies ClientBehaviour
- *
- * Verwaltet die Bewegung selbstständig.
- * Weicht aus, wenn neue Hindernisse auftauchen (Gebäude, STEHENDE Einheiten)
- * Handelt Routenänderungen damit die Einheit noch bis zum nächsten Feld weiter läuft
- *
- * Versendet automatisch alle geänderten Bewegungsinformationen an die Clients.
- *
- * Darf nicht umgangen werden.
- * Alle Bewegungsbefehle müssen an dieses Behaviour gesendet werden.
- *
- * @author tfg
+ * Lowlevel-Movemanagement
+ * 
+ * Verwaltet die reine Bewegung einer einzelnen Einheit.
+ * Kümmert sich nicht weiter um Formationen/Kampf oder ähnliches.
+ * Erhält vom übergeordneten MidLevelManager einen Richtungsvektor und eine Zielkoordinate.
+ * Läuft dann dort hin. Tut sonst nichts.
+ * Hat exklusive Kontrolle über die Einheitenposition.
+ * Weigert sich, sich schneller als die maximale Einheitengeschwindigkeit zu bewegen.
+ * Dadurch werden Sprünge verhindert.
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
-    Unit caster2;
-
+    private Unit caster2;
+    private FloatingPointPosition target;
+    private double speed;
+    private boolean stopUnit = false;
+    private long lastTick;
+    private Vector lastVec;
+    
     public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 10, true);
+        super(newinner, caster, 1, 20, true);
         caster2 = caster;
     }
 
     @Override
     public void activate() {
+        active = true;
+        trigger();
     }
 
     @Override
     public void deactivate() {
+        active = false;
     }
 
     @Override
     public void execute() {
+        // Auto-Ende:
+        if (target == null || speed <= 0) {
+            deactivate();
+            return;
+        }
+        // Wir laufen also.
+        // Aktuelle Position berechnen:
+        FloatingPointPosition oldPos = caster2.getPrecisePosition();
+        Vector vec = target.subtract(oldPos).toVector();
+        vec.normalizeMe();
+        if (!vec.equals(lastVec)) {
+            // An Client senden
+            rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
+            lastVec = new Vector(vec.getX(), vec.getY());
+        }
+        long ticktime = System.currentTimeMillis();
+        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
+        FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
+        
+        // Ziel schon erreicht?
+        Vector nextVec = target.subtract(newpos).toVector();
+        if (vec.isOpposite(nextVec)) {
+            // ZIEL!
+            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+            caster2.setMainPosition(target);
+            target = null;
+            stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+            deactivate();
+        } else {
+            // Sofort stoppen?
+            if (stopUnit) {
+                // Der Client muss das auch mitbekommen
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.netID, 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                caster2.setMainPosition(newpos);
+                target = null;
+                stopUnit = false;
+                deactivate();
+            } else {
+                // Weiterlaufen
+                caster2.setMainPosition(newpos);
+                lastTick = System.currentTimeMillis();
+            }
+        }
+        
     }
 
     @Override
@@ -77,5 +127,56 @@ public class ServerBehaviourMove extends ServerBehaviour {
     @Override
     public void unpause() {
         caster2.unpause();
+    }
+    
+    /**
+     * Setzt den Zielvektor für diese Einheit.
+     * Es wird nicht untersucht, ob das Ziel in irgendeiner Weise ok ist, die Einheit beginnt sofort loszulaufen.
+     * In der Regel sollte noch eine Geschwindigkeit angegeben werden.
+     * Wehrt sich gegen nicht existente Ziele.
+     * @param pos die Zielposition, wird auf direktem Weg angesteuert.
+     */
+    public void setTargetVector(FloatingPointPosition pos) {
+        if (pos == null) {
+            throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
+        }
+        target = pos;
+        lastTick = System.currentTimeMillis();
+        lastVec = Vector.NULL;
+        activate();
+    }
+
+    /**
+     * Setzt den Zielvektor und die Geschwindigkeit und startet die Bewegung sofort.
+     * @param pos die Zielposition
+     * @param speed die Geschwindigkeit
+     */
+    public void setTargetVector(FloatingPointPosition pos, double speed) {
+        changeSpeed(speed);
+        setTargetVector(pos);
+    }
+
+    /**
+     * Ändert die Geschwindigkeit während des Laufens.
+     * Speed wird verkleinert, wenn der Wert über dem Einheiten-Maximum liegen würde
+     * @param speed Die Einheitengeschwindigkeit
+     */
+    public void changeSpeed(double speed) {
+        if (speed > 0 && speed <= caster2.getSpeed()) {
+            this.speed = speed;
+        }
+        trigger();
+    }
+    
+    public boolean isMoving() {
+        return target != null;
+    }
+    
+    /**
+     * Stoppt die Einheit innerhalb eines Ticks.
+     */
+    public void stopImmediately() {
+        stopUnit = true;
+        trigger();
     }
 }
