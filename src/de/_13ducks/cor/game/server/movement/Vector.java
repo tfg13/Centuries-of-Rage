@@ -87,11 +87,54 @@ public class Vector {
     /**
      * Den Vektor mit einem Skalar multiplizieren.
      * Verändert direkt den Vector!
-     * @param factor 
+     * @param scalar 
      */
-    public void multiply(double factor) {
-        x *= factor;
-        y *= factor;
+    public void multiplyMe(double scalar) {
+        x *= scalar;
+        y *= scalar;
+    }
+    
+    /**
+     * Liefert eine Skalar multiplizierte Version dieses Vektors hinzu
+     * @param scalar
+     * @return 
+     */
+    public Vector multiply(double scalar) {
+        return new Vector(x * scalar, y * scalar);
+    }
+    
+    /**
+     * Addiert einen Vektor auf diesen hier.
+     * @param vector 
+     */
+    public void addToMe(Vector vector) {
+        x += vector.x;
+        y += vector.y;
+    }
+    
+    /**
+     * Liefert einen neuen Vektor, der das Ergebniss einer Summation dieses mit dem gegebenen Vektor darstellt
+     * @param vector der zweite summand
+     * @return einen neuen Vektor, der das Ergebniss einer Summation dieses mit dem gegebenen Vektor darstellt
+     */
+    public Vector add(Vector vector) {
+        return new Vector( + vector.x, y + vector.y);
+    }
+    
+    /**
+     * Invertiert direkt diesen Vektor selbst.
+     */
+    public void invertMe() {
+        x *= -1;
+        y *= -1;
+    }
+    
+    /**
+     * Liefert eine invertierte Kopie dieses Vektors.
+     * @return 
+     */
+    public Vector getInverted() {
+        return new Vector(-x, -y);
     }
 
     /**
