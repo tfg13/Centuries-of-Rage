@@ -52,13 +52,12 @@ public class MenuSlogan {
 
         this.starttime = starttime;
         this.Slogan = Slogan;
-        System.out.println("Slogan: " + Slogan);
 
         // Slogan in Worte aufteilen
         String[] WordWIP; // Array aus den einzelnen Wörtern, wird nur hier kurz benutzt
         WordWIP = Slogan.split("\\s+");
         Font bla = FontManager.getFont0();
-        int currentwagonpos = 244 + 33;
+        int currentwagonpos = 243 + 33;
         for (int i = 0; i < WordWIP.length; i++) {
             int wordlength = bla.getWidth(WordWIP[i]);
             int wagonlength = (int) Math.ceil((double) wordlength / 59);

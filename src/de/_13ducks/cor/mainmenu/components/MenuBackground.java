@@ -145,19 +145,24 @@ public class MenuBackground extends Component {
 
         float lkwX = (float) (resx - (sloganspeed * time - currentSlogan.getStarttime()));
         LkwImg.draw(lkwX, (float) (0.86 * resy - LkwImg.getHeight()));
+        BarImg.draw(lkwX + 210, (float) (0.86 * resy - LkwImg.getHeight() + 55));
 
         ArrayList<Float> wheelsX = new ArrayList<Float>(); // Positionen der Lkw-Räder
         wheelsX.add(lkwX);
         wheelsX.add(lkwX + 168);
 
-        // Einzelne Wörte zeichnen
+        // Einzelne Worte zeichnen
         for (int i = 0; i < currentSlogan.getWords().size(); i++) {
             Font bla = FontManager.getFont0();
             float wagonX = lkwX + currentSlogan.getWords().get(i).getWagonX();
-            BarImg.draw(wagonX - 33, (float) (0.86 * resy - LkwImg.getHeight() + 38));
+            BarImg.draw(wagonX - 33, (float) (0.86 * resy - LkwImg.getHeight() + 55));
             for (int j = 0; j < currentSlogan.getWords().get(i).getNumberofpics(); j++) {
-                WagonImg.draw(wagonX + j * 59, (float) (0.86 * resy - LkwImg.getHeight() + 28));
+                float xpos = wagonX + j * 59;
+                float ypos = (float) 0.86 * resy - LkwImg.getHeight() + 44;
+                WagonImg.draw(xpos, ypos);
+                wheelsX.add(xpos + 6);
             }
+            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy - LkwImg.getHeight() + 27);
         }
 
         // Räder zeichnen
