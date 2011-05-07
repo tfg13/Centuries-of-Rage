@@ -56,7 +56,7 @@ public class FontManager {
             fonts.add(ubuntu1);
             
             // Font für Hauptmenü-Slogan
-            UnicodeFont ubuntu2 = new UnicodeFont("misc/Ubuntu-R.ttf", 35, false, false);
+            UnicodeFont ubuntu2 = new UnicodeFont("misc/Ubuntu-B.ttf", 35, false, false);
             ubuntu2.getEffects().add(new org.newdawn.slick.font.effects.ColorEffect(new java.awt.Color(0, 0, 0)));
             ubuntu2.addAsciiGlyphs();
             ubuntu2.addGlyphs("Кирилица"); // Bissle hässlich, aber sonst werden diese Zeichen bei den Slogans nicht dargestellt
