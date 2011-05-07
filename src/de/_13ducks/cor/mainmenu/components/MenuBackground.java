@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -164,9 +165,17 @@ public class MenuBackground extends Component {
                     wheelsX.add(xpos + 6);
                 }
             }
+
             g.setFont(FontManager.getSloganFont());
             g.setColor(Color.black);
-            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy + 44 - LkwImg.getHeight() - FontManager.getSloganFont().getAscent());
+            
+            // Text zentrieren
+            float lastwagonend = wagonX + 59 * currentSlogan.getWords().get(i).getNumberofpics();
+            float middleofwagons = (wagonX + lastwagonend) / 2;
+            Font bla = FontManager.getSloganFont();
+            int wordlength = bla.getWidth(currentSlogan.getWords().get(i).getWord());
+
+            g.drawString(currentSlogan.getWords().get(i).getWord(), middleofwagons - (wordlength / 2), (float) 0.86 * resy + 44 - LkwImg.getHeight() - FontManager.getSloganFont().getAscent());
         }
 
         // Räder zeichnen
