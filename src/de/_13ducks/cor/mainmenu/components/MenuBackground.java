@@ -140,6 +140,9 @@ public class MenuBackground extends Component {
 
         // Slogan-Lkw zeichnen
         Image LkwImg = imgMap.get(currentSlogan.getLkwpic()).getImage();
+        Image WagonImg = imgMap.get(currentSlogan.getWagonpic()).getImage();
+        Image BarImg = imgMap.get(currentSlogan.getBarpic()).getImage();
+
         float lkwX = (float) (resx - (sloganspeed * time - currentSlogan.getStarttime()));
         LkwImg.draw(lkwX, (float) (0.86 * resy - LkwImg.getHeight()));
 
@@ -150,7 +153,11 @@ public class MenuBackground extends Component {
         // Einzelne Wörte zeichnen
         for (int i = 0; i < currentSlogan.getWords().size(); i++) {
             Font bla = FontManager.getFont0();
-            //bla.getWidth(currentSlogan.getWords().get(i).getWord());
+            float wagonX = lkwX + currentSlogan.getWords().get(i).getWagonX();
+            BarImg.draw(wagonX - 33, (float) (0.86 * resy - LkwImg.getHeight() + 38));
+            for (int j = 0; j < currentSlogan.getWords().get(i).getNumberofpics(); j++) {
+                WagonImg.draw(wagonX + j * 59, (float) (0.86 * resy - LkwImg.getHeight() + 28));
+            }
         }
 
         // Räder zeichnen
@@ -160,7 +167,6 @@ public class MenuBackground extends Component {
         for (int i = 0; i < wheelsX.size(); i++) {
             WheelImg.draw(wheelsX.get(i), (float) (0.86 * resy - LkwImg.getHeight() + wheelheight));
         }
-
 
         // Neue Background-Objekte zufällig erstellen
         if (time > nextspawntime) {

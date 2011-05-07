@@ -38,11 +38,15 @@ public class MenuSloganWord {
     private int length;
     private int numberofpics;
     private int lastpicpos;
+    private int wagonX;
     private String Word;
 
-    public MenuSloganWord(long starttime, String Word) {
+    public MenuSloganWord(long starttime, String Word, int length, int numberofpics, int wagonX) {
         this.starttime = starttime;
         this.Word = Word;
+        this.length = length;
+        this.numberofpics = numberofpics;
+        this.wagonX = wagonX;
     }
 
     /**
@@ -113,5 +117,19 @@ public class MenuSloganWord {
      */
     public void setWord(String Word) {
         this.Word = Word;
+    }
+
+    /**
+     * @return the wagonX
+     */
+    public int getWagonX() {
+        return wagonX;
+    }
+
+    /**
+     * @param wagonX the wagonX to set
+     */
+    public void setWagonX(int wagonX) {
+        this.wagonX = wagonX;
     }
 }

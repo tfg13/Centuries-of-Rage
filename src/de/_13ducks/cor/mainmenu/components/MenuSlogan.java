@@ -39,28 +39,32 @@ public class MenuSlogan {
     private String Slogan;
     private ArrayList<MenuSloganWord> Words = new ArrayList<MenuSloganWord>();
     private String Lkwpic;
+    private String Wagonpic;
     private String Wheelpic;
+    private String Barpic; // Deichsel-Bild
 
     // Konstruktor
     public MenuSlogan(long starttime, String Slogan) {
         Lkwpic = "img/mainmenu/lkw.png";
+        Wagonpic = "img/mainmenu/kachelbar.png";
         Wheelpic = "img/mainmenu/rad.png";
+        Barpic ="img/mainmenu/deichsel.png";
 
         this.starttime = starttime;
         this.Slogan = Slogan;
+        System.out.println("Slogan: " + Slogan);
 
         // Slogan in Worte aufteilen
         String[] WordWIP; // Array aus den einzelnen Wörtern, wird nur hier kurz benutzt
         WordWIP = Slogan.split("\\s+");
+        Font bla = FontManager.getFont0();
+        int currentwagonpos = 244 + 33;
         for (int i = 0; i < WordWIP.length; i++) {
-            // todo: vernünftige Werte übergeben
-            Words.add(new MenuSloganWord(starttime, WordWIP[i]));
+            int wordlength = bla.getWidth(WordWIP[i]);
+            int wagonlength = (int) Math.ceil((double) wordlength / 59);
+            Words.add(new MenuSloganWord(starttime, WordWIP[i], wordlength, wagonlength, currentwagonpos));
+            currentwagonpos += wagonlength * 59 + 33;
         }
-
-        /*for (int i = 0; i < currentSlogan.getWords().size(); i++) {
-            Font bla = FontManager.getFont0();
-            bla.getWidth(currentSlogan.getWords().get(i).getWord());
-        }*/
     }
 
     /**
@@ -96,5 +100,68 @@ public class MenuSlogan {
      */
     public String getWheelpic() {
         return Wheelpic;
+    }
+
+    /**
+     * @param starttime the starttime to set
+     */
+    public void setStarttime(long starttime) {
+        this.starttime = starttime;
+    }
+
+    /**
+     * @param Slogan the Slogan to set
+     */
+    public void setSlogan(String Slogan) {
+        this.Slogan = Slogan;
+    }
+
+    /**
+     * @param Lkwpic the Lkwpic to set
+     */
+    public void setLkwpic(String Lkwpic) {
+        this.Lkwpic = Lkwpic;
+    }
+
+    /**
+     * @return the Wagonpic
+     */
+    public String getWagonpic() {
+        return Wagonpic;
+    }
+
+    /**
+     * @param Wagonpic the Wagonpic to set
+     */
+    public void setWagonpic(String Wagonpic) {
+        this.Wagonpic = Wagonpic;
+    }
+
+    /**
+     * @param Wheelpic the Wheelpic to set
+     */
+    public void setWheelpic(String Wheelpic) {
+        this.Wheelpic = Wheelpic;
+    }
+
+    /**
+     * @param Words the Words to set
+     */
+    public void setWords(ArrayList<MenuSloganWord> Words) {
+        this.Words = Words;
+    }
+
+    /**
+     * @return the Barpic
+     */
+    public String getBarpic() {
+        return Barpic;
+    }
+
+    /**
+     * @param Barpic the Barpic to set
+     */
+    public void setBarpic(String Barpic) {
+        this.Barpic = Barpic;
     }
 }
