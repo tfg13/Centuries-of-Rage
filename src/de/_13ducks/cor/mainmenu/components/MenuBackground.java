@@ -162,9 +162,9 @@ public class MenuBackground extends Component {
                 WagonImg.draw(xpos, ypos);
                 wheelsX.add(xpos + 6);
             }
-            g.setFont(FontManager.getFont0());
+            g.setFont(FontManager.getSloganFont());
             g.setColor(Color.black);
-            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy - LkwImg.getHeight() + 23);
+            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy + 44 - LkwImg.getHeight() - FontManager.getSloganFont().getAscent());
         }
 
         // Räder zeichnen

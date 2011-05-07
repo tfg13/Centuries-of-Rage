@@ -54,12 +54,24 @@ public class FontManager {
             ubuntu1.addAsciiGlyphs();
             ubuntu1.loadGlyphs();
             fonts.add(ubuntu1);
+            
+            // Font für Hauptmenü-Slogan
+            UnicodeFont ubuntu2 = new UnicodeFont("misc/Ubuntu-R.ttf", 35, false, false);
+            ubuntu2.getEffects().add(new org.newdawn.slick.font.effects.ColorEffect(new java.awt.Color(0, 0, 0)));
+            ubuntu2.addAsciiGlyphs();
+            ubuntu2.loadGlyphs();
+            fonts.add(ubuntu2);
         } catch (SlickException ex) {
         }
     }
 
     public static UnicodeFont getFont0() {
         return fonts.get(0);
+    }
+
+     // Font für Hauptmenü-Slogan
+    public static UnicodeFont getSloganFont() {
+        return fonts.get(1);
     }
 
     private FontManager() { // Privater Konstruktor, kann nicht aufgerufen werden.

@@ -58,7 +58,7 @@ public class MenuSlogan {
         // Slogan in Worte aufteilen
         String[] WordWIP; // Array aus den einzelnen Wörtern, wird nur hier kurz benutzt
         WordWIP = Slogan.split("\\s+");
-        Font bla = FontManager.getFont0();
+        Font bla = FontManager.getSloganFont();
         int currentwagonpos = 243 + 33;
         for (int i = 0; i < WordWIP.length; i++) {
             int wordlength = bla.getWidth(WordWIP[i]);
