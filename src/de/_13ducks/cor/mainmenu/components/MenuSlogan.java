@@ -105,45 +105,10 @@ public class MenuSlogan {
     }
 
     /**
-     * @param starttime the starttime to set
-     */
-    public void setStarttime(long starttime) {
-        this.starttime = starttime;
-    }
-
-    /**
-     * @param Slogan the Slogan to set
-     */
-    public void setSlogan(String Slogan) {
-        this.Slogan = Slogan;
-    }
-
-    /**
-     * @param Lkwpic the Lkwpic to set
-     */
-    public void setLkwpic(String Lkwpic) {
-        this.Lkwpic = Lkwpic;
-    }
-
-    /**
      * @return the Wagonpic
      */
     public String getWagonpic() {
         return Wagonpic;
-    }
-
-    /**
-     * @param Wagonpic the Wagonpic to set
-     */
-    public void setWagonpic(String Wagonpic) {
-        this.Wagonpic = Wagonpic;
-    }
-
-    /**
-     * @param Wheelpic the Wheelpic to set
-     */
-    public void setWheelpic(String Wheelpic) {
-        this.Wheelpic = Wheelpic;
     }
 
     /**
@@ -154,30 +119,9 @@ public class MenuSlogan {
     }
 
     /**
-     * @param Barpic the Barpic to set
-     */
-    public void setBarpic(String Barpic) {
-        this.Barpic = Barpic;
-    }
-
-    /**
-     * @param Words the Words to set
-     */
-    public void setWords(ArrayList<MenuSloganWord> Words) {
-        this.Words = Words;
-    }
-
-    /**
      * @return the endofslogan
      */
     public int getEndofslogan() {
         return endofslogan;
-    }
-
-    /**
-     * @param endofslogan the endofslogan to set
-     */
-    public void setEndofslogan(int endofslogan) {
-        this.endofslogan = endofslogan;
     }
 }
