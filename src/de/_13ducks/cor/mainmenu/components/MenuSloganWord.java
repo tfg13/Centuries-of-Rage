@@ -40,7 +40,7 @@ public class MenuSloganWord {
 
     public MenuSloganWord(long starttime, String Word, int length, int numberofpics, int wagonX) {
         this.starttime = starttime;
-        this.Word = Word;
+        this.Word = Word.replace("_", " ");
         this.length = length;
         this.numberofpics = numberofpics;
         this.wagonX = wagonX;
