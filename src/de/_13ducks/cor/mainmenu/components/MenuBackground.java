@@ -55,7 +55,7 @@ public class MenuBackground extends Component {
     String groundtex; // Gras / Sand / Wüste bei Bodentexturen
     ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
-    final static double sloganspeed = 0.08; // Geschwindikeit des Slogans
+    final static double sloganspeed = 0.3; // Geschwindikeit des Slogans
     final static int maxspawndelay = 10000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
     MenuSlogan currentSlogan; // Der aktuelle Slogan
     long sloganspawntime; // Wann der aktuelle Slogan gestartet ist
@@ -160,7 +160,9 @@ public class MenuBackground extends Component {
                 float xpos = wagonX + j * 59;
                 float ypos = (float) 0.86 * resy - LkwImg.getHeight() + 44;
                 WagonImg.draw(xpos, ypos);
-                wheelsX.add(xpos + 6);
+                if (j == 0 || j == currentSlogan.getWords().get(i).getNumberofpics() - 1) {
+                    wheelsX.add(xpos + 6);
+                }
             }
             g.setFont(FontManager.getSloganFont());
             g.setColor(Color.black);
