@@ -31,13 +31,13 @@ import java.util.ArrayList;
 import org.newdawn.slick.Font;
 
 /**
- * Hat was mit den Sprüchen im Nauptmenü zu tun
+ * Hat was mit den Sprüchen im Nauptmenü zu tun, aber rendert nicht
  * @author Johannes
  */
-public class MenuSlogan {
+public class Slogan {
     private long starttime;
     private String Slogan;
-    private ArrayList<MenuSloganWord> Words = new ArrayList<MenuSloganWord>();
+    private ArrayList<SloganWord> Words = new ArrayList<SloganWord>();
     private String Lkwpic;
     private String Wagonpic;
     private String Wheelpic;
@@ -45,7 +45,7 @@ public class MenuSlogan {
     private int endofslogan; // Letzter Pixel in x-Richtung
 
     // Konstruktor
-    public MenuSlogan(long starttime, String Slogan) {
+    public Slogan(long starttime, String Slogan) {
         Lkwpic = "img/mainmenu/lkw.png";
         Wagonpic = "img/mainmenu/kachelbar.png";
         Wheelpic = "img/mainmenu/rad.png";
@@ -63,7 +63,7 @@ public class MenuSlogan {
         for (int i = 0; i < WordWIP.length; i++) {
             int wordlength = bla.getWidth(WordWIP[i]);
             int wagonlength = (int) Math.ceil((double) wordlength / 59);
-            Words.add(new MenuSloganWord(starttime, WordWIP[i], wordlength, wagonlength, currentwagonpos));
+            Words.add(new SloganWord(starttime, WordWIP[i], wordlength, wagonlength, currentwagonpos));
             currentwagonpos += wagonlength * 59 + 33;
         }
         endofslogan = currentwagonpos; // Hier ist der Slogan zu Ende
@@ -86,7 +86,7 @@ public class MenuSlogan {
     /**
      * @return the Words
      */
-    public ArrayList<MenuSloganWord> getWords() {
+    public ArrayList<SloganWord> getWords() {
         return Words;
     }
 
@@ -105,45 +105,10 @@ public class MenuSlogan {
     }
 
     /**
-     * @param starttime the starttime to set
-     */
-    public void setStarttime(long starttime) {
-        this.starttime = starttime;
-    }
-
-    /**
-     * @param Slogan the Slogan to set
-     */
-    public void setSlogan(String Slogan) {
-        this.Slogan = Slogan;
-    }
-
-    /**
-     * @param Lkwpic the Lkwpic to set
-     */
-    public void setLkwpic(String Lkwpic) {
-        this.Lkwpic = Lkwpic;
-    }
-
-    /**
      * @return the Wagonpic
      */
     public String getWagonpic() {
         return Wagonpic;
-    }
-
-    /**
-     * @param Wagonpic the Wagonpic to set
-     */
-    public void setWagonpic(String Wagonpic) {
-        this.Wagonpic = Wagonpic;
-    }
-
-    /**
-     * @param Wheelpic the Wheelpic to set
-     */
-    public void setWheelpic(String Wheelpic) {
-        this.Wheelpic = Wheelpic;
     }
 
     /**
@@ -154,30 +119,9 @@ public class MenuSlogan {
     }
 
     /**
-     * @param Barpic the Barpic to set
-     */
-    public void setBarpic(String Barpic) {
-        this.Barpic = Barpic;
-    }
-
-    /**
-     * @param Words the Words to set
-     */
-    public void setWords(ArrayList<MenuSloganWord> Words) {
-        this.Words = Words;
-    }
-
-    /**
      * @return the endofslogan
      */
     public int getEndofslogan() {
         return endofslogan;
-    }
-
-    /**
-     * @param endofslogan the endofslogan to set
-     */
-    public void setEndofslogan(int endofslogan) {
-        this.endofslogan = endofslogan;
     }
 }
