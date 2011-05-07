@@ -30,14 +30,12 @@ import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -172,7 +170,7 @@ public class MenuBackground extends Component {
         // Räder zeichnen
         final int wheelheight = 46;
         Image WheelImg = imgMap.get(currentSlogan.getWheelpic()).getImage();
-        WheelImg.rotate(-4);
+        WheelImg.rotate((float) (-50 * sloganspeed));
         for (int i = 0; i < wheelsX.size(); i++) {
             WheelImg.draw(wheelsX.get(i), (float) (0.86 * resy - LkwImg.getHeight() + wheelheight));
         }

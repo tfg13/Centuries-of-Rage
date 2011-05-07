@@ -53,6 +53,7 @@ public class MenuSlogan {
 
         this.starttime = starttime;
         this.Slogan = Slogan;
+        System.out.println("SLOGAN: " + Slogan);
 
         // Slogan in Worte aufteilen
         String[] WordWIP; // Array aus den einzelnen Wörtern, wird nur hier kurz benutzt
