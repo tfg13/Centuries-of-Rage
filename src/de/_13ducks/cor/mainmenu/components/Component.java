@@ -50,16 +50,15 @@ public class Component {
     /**
      * Die Koordinaten der linken oberen Ecke in Pixel
      */
-    private int x1, y1;
+    private float x1, y1;
     /**
      * Die Koordinaten der rechten unteren Ecke in Pixel
      */
-    private int x2, y2;
+    private float x2, y2;
     /**
      * gibt an, ob der Cursor über der Komponente schwebt
      */
     private boolean mouseHover;
-    
 
     /**
      * Konstruktor
@@ -93,8 +92,6 @@ public class Component {
         mouseHover = false;
     }
 
-   
-
     /**
      * Renderfunktion
      * wird regelmäßig aufgerufen um die Komponente zu zeichnen
@@ -105,18 +102,28 @@ public class Component {
     }
 
     /**
-     * Wird aufgerufen, wenn der Benutzer etwas anklickt
+     * Verarbeitet alle MausKlicks. Bestimmt, ob diese Komponente angeklickt wurde oder der Klick wo anders hin ging-
+     * @param button
+     * @param x
+     * @param y
+     * @param clickCount
+     */
+    public void generalMouseClick(int button, int x, int y, int clickCount) {
+        if (this.getX1() < x && x < this.getX2() && this.getY1() < y && y < this.getY2()) {
+            mouseClicked(button, x, y, clickCount);
+        } else {
+            mouseClickedAnywhere(button, x, y, clickCount);
+        }
+    }
+
+    /**
+     * Wird aufgerufen, wenn der Benutzer irgendwo hinklickt, baer nicht auf diese Komponente
      * @param button
      * @param x
      * @param y
      * @param clickCount
      */
     public void mouseClickedAnywhere(int button, int x, int y, int clickCount) {
-
-        if (getX1() < x && x < getX2() && getY1() < y && y < getY2()) {
-            mouseClicked(button, x, y, clickCount);
-        }
-
     }
 
     /**
@@ -158,6 +165,13 @@ public class Component {
     }
 
     /**
+     * Wird gerufen, wenn das Mausrad gescrollt wird
+     * @param i - gibt an wie stark und in welche Richtung das Mausrad bewegt wurde
+     */
+    public void mouseWheelMoved(int i) {
+    }
+
+    /**
      * Gibt an, ob die Maus über diesem Objekt shcwebt
      * @return      true, wenn die Maus über diesem Objekt schwebt, sonst false
      */
@@ -168,28 +182,28 @@ public class Component {
     /**
      * @return the x1
      */
-    public int getX1() {
+    public float getX1() {
         return x1;
     }
 
     /**
      * @return the y1
      */
-    public int getY1() {
+    public float getY1() {
         return y1;
     }
 
     /**
      * @return the x2
      */
-    public int getX2() {
+    public float getX2() {
         return x2;
     }
 
     /**
      * @return the y2
      */
-    public int getY2() {
+    public float getY2() {
         return y2;
     }
 
@@ -217,12 +231,11 @@ public class Component {
         return mainMenu;
     }
 
-  
     /**
      * Setter für X2
      * @param - X-Koordinate der rechten unteren Ecke
      */
-    public void setX2(int x2) {
+    public void setX2(float x2) {
         this.x2 = x2;
     }
 
@@ -230,7 +243,7 @@ public class Component {
      * Setter für Y2
      * @param - Y-Koordinate der rechten unteren Ecke
      */
-    public void setY2(int y2) {
+    public void setY2(float y2) {
         this.y2 = y2;
     }
 
@@ -256,5 +269,21 @@ public class Component {
      */
     void setMainMenu(MainMenu m) {
         this.mainMenu = m;
+    }
+
+    /**
+     * Setzt die Höhe der Komponente (in Prozent)
+     * @param height
+     */
+    public void setRelativeHeight(float height) {
+        y2 = y1 + (int) (0.01 * height * getMainMenu().getHeight());
+    }
+
+    /**
+     * Setzt die Höhe absolut, d.h. in Pixel
+     * @param height
+     */
+    public void setAbsoluteHeight(float height) {
+        y2 = y1 + height;
     }
 }

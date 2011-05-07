@@ -33,10 +33,10 @@ public class LobbyChat extends Container {
         chatWindow = new ChatWindow(m, x, y);
         super.addComponent(chatWindow);
 
-        chatBox = new TextBox(m, x, y + 15);
+        chatBox = new TextBox(m, x, y + 11.5);
         super.addComponent(chatBox);
 
-        super.addComponent(new ImageButton(m, x + 31, y + 14.5, 12, 4.8, "img/mainmenu/buttonnew.png", "send") {
+        super.addComponent(new ImageButton(m, x + 31, y + 11.5, 12, 4.8, "img/mainmenu/buttonnew.png", "send") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {

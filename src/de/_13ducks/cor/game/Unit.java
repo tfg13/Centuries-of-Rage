@@ -29,7 +29,12 @@ import de._13ducks.cor.game.client.ClientCore;
 import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.game.server.movement.GroupManager;
+import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
 /**
  * Superklasse für Einheiten
@@ -54,6 +59,26 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Ist die Einheit gerade in einem Gebäude? Dann sind fast alle Behaviours (alle?) abgeschaltet.
      */
     private boolean isIntra = false;
+    /**
+     * Der LowLevel-Movemanager dieser Einheit.
+     * Jede Einheit hat ihren eigenen.
+     * @see ServerBehaviourMove
+     */
+    private ServerBehaviourMove lowLevelManager;
+    /**
+     * Der aktuelle MidLevel-Movemanager dieser Einheit.
+     * Einheiten haben nicht immer einen & er kann sich ändern.
+     */
+    private GroupManager midLevelManager;
+    /**
+     * Der TopLevel-Movemanager dieser Einheit.
+     * Ist normalerweise für den ganzen Server global.
+     */
+    private ServerMoveManager topLevelManager;
+    /**
+     * Der Client-Movemanager dieser Einheit.
+     */
+    protected ClientBehaviourMove clientManager;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -160,9 +185,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     }
 
     @Override
-    public void command(int button, Position target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+    public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         // Befehl abschicken:
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, target.getX(), target.getY(), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, Float.floatToIntBits((float) target.getfX()),Float.floatToIntBits((float) target.getfY()), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
         // Hier sind unter umständen mehrere Packete nötig:
         if (repeaters.size() == 2) {
             // Nein, abbrechen
@@ -206,7 +231,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Nur Client!
      */
     public void stopMovement(ClientCore.InnerClient rgi) {
-        System.out.println("AddMe: Stop unit!");
+        if (moveStoppable()) {
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 54, this.netID, 0, 0, 0));
+        }
     }
 
     /**
@@ -214,7 +241,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @return
      */
     public boolean moveStoppable() {
-        return true;
+        return clientManager.isActive();
     }
 
     @Override
@@ -225,5 +252,79 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         } else {
             this.mainPosition = new FloatingPointPosition(mainPosition);
         }
+    }
+    
+    /**
+     * Liefert den LowLevel-Manager dieser Einheit.
+     * @return den Lowlevel-Manager dieser Einheit.
+     */
+    public ServerBehaviourMove getLowLevelManager() {
+        return lowLevelManager;
+    }
+    
+    /**
+     * Liefert den MidLevel-Manager dieser Einheit.
+     * @return den Midlevel-Manager dieser Einheit.
+     */
+    public GroupManager getMidLevelManager() {
+        return midLevelManager;
+    }
+    
+    /**
+     * Liefert den TopLevel-Manager dieser Einheit.
+     * @return den TopLevel-Manager dieser Einheit.
+     */
+    public ServerMoveManager getTopLevelManager() {
+        return topLevelManager;
+    }
+    
+    /**
+     * Bereitet die Einheit für das Server-Bewegungssystem vor.
+     * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
+     * @param rgi der inner core
+     */
+    public void initServerMovementManagers(ServerCore.InnerServer rgi) {
+        topLevelManager = rgi.moveMan;
+        lowLevelManager = new ServerBehaviourMove(rgi, this);
+        addServerBehaviour(lowLevelManager);
+    }
+    
+    /**
+     * Bereitet die Einheit für das Client-Bewegungssystem vor.
+     * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
+     * @param rgi der inner core
+     */
+    public void initClientMovementManager(ClientCore.InnerClient rgi) {
+        clientManager = new ClientBehaviourMove(rgi, this);
+        addClientBehaviour(clientManager);
+    }
+
+    /**
+     * Entfernt die Einheit aus ihrer aktuellen Gruppe, falls vorhanden.
+     */
+    public void removeFromCurrentGroup() {
+        if (midLevelManager != null) {
+            midLevelManager.remove(this);
+            midLevelManager = null;
+        }
+    }
+
+    /**
+     * Setzt die aktuelle Gruppe der Einheit, falls sie derzeit keine hat.
+     * Wenn eine da ist, wird diese nicht überschrieben!!!
+     * @param man Die neue Gruppe
+     */
+    public void setCurrentGroup(GroupManager man) {
+        if (midLevelManager == null) {
+            midLevelManager = man;
+            man.add(this);
+        }
+    }
+
+    /**
+     * @return the clientManager
+     */
+    public ClientBehaviourMove getClientManager() {
+        return clientManager;
     }
 }

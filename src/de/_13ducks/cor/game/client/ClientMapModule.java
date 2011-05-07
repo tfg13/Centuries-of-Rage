@@ -1018,7 +1018,7 @@ public class ClientMapModule {
         for (Unit unit : unitList) {
             // Alle Parameter kopieren
             unit.copyPropertiesFrom(descUnit.get(unit.getDescTypeId()));
-            unit.addClientBehaviour(new ClientBehaviourMove(rgi, unit));
+            unit.initClientMovementManager(rgi);
             unit.addAbility(new AbilityStop(unit, rgi));
         }
     }
@@ -1289,7 +1289,7 @@ public class ClientMapModule {
                 rgi.game.getOwnPlayer().uList.add(u.getDescTypeId());
             }
         }
-        u.addClientBehaviour(new ClientBehaviourMove(rgi, u));
+        u.initClientMovementManager(rgi);
         u.addAbility(new AbilityStop(u, rgi));
     }
 

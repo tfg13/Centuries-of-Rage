@@ -81,7 +81,7 @@ public class StartServerScreen extends Container {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                super.getMainMenu().getMenu("startscreen").fadeIn();
+                super.getMainMenu().getMenu("startscreen").activate();
 
                 // @TODO: Server Starten und selber joinen
 
@@ -99,7 +99,7 @@ public class StartServerScreen extends Container {
 
                 super.getMainMenu().joinServer("localhost");
 
-                fadeOut();
+                deactivate();
 
             }
         });

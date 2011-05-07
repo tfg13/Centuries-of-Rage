@@ -330,6 +330,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         input.addMouseListener(new MouseListener() {
 
             public void mouseWheelMoved(int i) {
+                getMainmenu().mouseWheelMoved(i);
             }
 
             public void mouseClicked(int i, int i1, int i2, int i3) {

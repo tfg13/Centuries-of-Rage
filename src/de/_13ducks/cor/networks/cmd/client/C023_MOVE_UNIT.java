@@ -25,27 +25,29 @@
  */
 package de._13ducks.cor.networks.cmd.client;
 
-import java.util.ArrayList;
+import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
-import de._13ducks.cor.game.Position;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**
- * Startet eine Wegübertragung
+ * Einheiten-Vektorbewegung
  */
-public class C023_INIT_MOVE extends ClientCommand {
+public class C023_MOVE_UNIT extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
-        // Bewegung einleiten
-        handler.temp04 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
-        if (handler.temp04 != null) {
-            handler.temp05 = rgi.readPosition(data, 2);
-            handler.temp06 = new ArrayList<Position>();
-            System.out.println("AddMe: Check for Jumps");
+        // Einheite suchen
+        Unit unit23 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
+        if (unit23 != null) {
+            // Geschwindigkeit und Ziel rausbasteln
+            float speed = Float.intBitsToFloat(rgi.readInt(data, 2));
+            FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(data, 3)), Float.intBitsToFloat(rgi.readInt(data, 4)));
+            unit23.getClientManager().newMoveVec(speed, pos);
         } else {
-            System.out.println("FixMe: Unit ID mismatch (cmd23)");
+            System.out.println("Unit id mismatch (cmd 23)");
         }
     }
+    
 }

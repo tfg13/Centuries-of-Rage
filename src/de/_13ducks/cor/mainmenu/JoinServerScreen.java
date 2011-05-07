@@ -106,7 +106,7 @@ public class JoinServerScreen extends Container {
                 }
 
 
-                fadeOut();
+                deactivate();
             }
         });
 

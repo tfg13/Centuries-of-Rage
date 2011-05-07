@@ -249,7 +249,7 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
         System.out.println("AddMe: Render Sprite.");
     }
 
@@ -293,7 +293,7 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         // Bullets haben keine
     }
 

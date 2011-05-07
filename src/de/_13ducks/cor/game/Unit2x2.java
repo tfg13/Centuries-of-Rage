@@ -171,26 +171,27 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        clientManager.externalExecute(); // Updated die Position 
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         //Einheit gehört zu / Selektiert
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s2.png0").getImage().draw(rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X, (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y));
+            imgMap.get("img/game/sel_s2.png0").getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw(rx + GraphicsContent.OFFSET_2x2_X, ry + GraphicsContent.OFFSET_2x2_Y);
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X),(float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (img != null) {
-            img.getImage().draw(rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X, (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y));
+            img.getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
         }

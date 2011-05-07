@@ -253,7 +253,7 @@ public class ClientGameController implements Runnable {
             }
 
             try {
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 rgi.logger(ex);
             }

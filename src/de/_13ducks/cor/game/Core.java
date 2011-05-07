@@ -25,8 +25,6 @@
  */
 package de._13ducks.cor.game;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.util.*;
 
 /**
@@ -40,11 +38,11 @@ public abstract class Core {
 
     /* public static void main(String args[]) {
     // Es geht los!
-
+    
     boolean debug = true; // DEVELOPEMENT --> Debug is always on...
-
+    
     // Argumente auswerten:
-
+    
     if (args.length > 0) {
     // Wenn mehr als 0 Startargumente da sind, dann diese auslesen
     String arg;
@@ -58,20 +56,20 @@ public abstract class Core {
     } else {
     System.out.println("Unknown Option: " + arg);
     }
-
+    
     }
-
+    
     }
-
+    
     // Genug Speicher (RAM)
-
-
-
+    
+    
+    
     // Wenn Argumente da waren wurden sie jetzt ausgelesen, also los, Objekt erstellen
-
+    
     RogMainMenu rMainMenu = new RogMainMenu();
     rMainMenu.main();
-
+    
     } */
     public abstract void initLogger();
 
@@ -201,14 +199,14 @@ public abstract class Core {
                 System.out.println("ERROR: Packetsyntax mismatch! (long)");
                 return 0;
             }
-            return (((long)b[9] << 56) +
-                ((long)(b[10] & 255) << 48) +
-		((long)(b[11] & 255) << 40) +
-                ((long)(b[12] & 255) << 32) +
-                ((long)(b[13] & 255) << 24) +
-                ((b[14] & 255) << 16) +
-                ((b[15] & 255) <<  8) +
-                ((b[16] & 255) <<  0));
+            return (((long) b[9] << 56)
+                    + ((long) (b[10] & 255) << 48)
+                    + ((long) (b[11] & 255) << 40)
+                    + ((long) (b[12] & 255) << 32)
+                    + ((long) (b[13] & 255) << 24)
+                    + ((b[14] & 255) << 16)
+                    + ((b[15] & 255) << 8)
+                    + ((b[16] & 255) << 0));
         }
 
         public char readChar(byte[] b, int number) {
@@ -228,7 +226,7 @@ public abstract class Core {
 
         /**
          * Liest eine RogPosition aus einem Datenpacket ein.
-         * @param b eine byte[17]
+         * @param b ein byte[17]
          * @param number 1, oder 2
          * @return Die gefundene Position
          */
@@ -242,6 +240,24 @@ public abstract class Core {
                 y |= (b[(number * 8) - i] & 0xff) << (i << 3);
             }
             return new Position(x, y);
+        }
+
+        /**
+         * Liest eine im Float-->Int Format codierte Fließkommaposition ein.
+         * @param b das datenpacket, byte[17]
+         * @param number 1, oder 2
+         * @return Die gefundene Position
+         */
+        public FloatingPointPosition readFloatingPointPosition(byte[] b, int number) {
+            int x = 0;
+            for (int i = 0; i < 4; ++i) {
+                x |= (b[-4 + (number * 8) - i] & 0xff) << (i << 3);
+            }
+            int y = 0;
+            for (int i = 0; i < 4; ++i) {
+                y |= (b[(number * 8) - i] & 0xff) << (i << 3);
+            }
+            return new FloatingPointPosition(Float.intBitsToFloat(x), Float.intBitsToFloat(y));
         }
 
         /**
