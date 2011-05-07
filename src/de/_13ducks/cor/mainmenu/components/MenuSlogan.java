@@ -42,6 +42,7 @@ public class MenuSlogan {
     private String Wagonpic;
     private String Wheelpic;
     private String Barpic; // Deichsel-Bild
+    private int endofslogan; // Letzter Pixel in x-Richtung
 
     // Konstruktor
     public MenuSlogan(long starttime, String Slogan) {
@@ -64,6 +65,7 @@ public class MenuSlogan {
             Words.add(new MenuSloganWord(starttime, WordWIP[i], wordlength, wagonlength, currentwagonpos));
             currentwagonpos += wagonlength * 59 + 33;
         }
+        endofslogan = currentwagonpos; // Hier ist der Slogan zu Ende
     }
 
     /**
@@ -144,13 +146,6 @@ public class MenuSlogan {
     }
 
     /**
-     * @param Words the Words to set
-     */
-    public void setWords(ArrayList<MenuSloganWord> Words) {
-        this.Words = Words;
-    }
-
-    /**
      * @return the Barpic
      */
     public String getBarpic() {
@@ -162,5 +157,26 @@ public class MenuSlogan {
      */
     public void setBarpic(String Barpic) {
         this.Barpic = Barpic;
+    }
+
+    /**
+     * @param Words the Words to set
+     */
+    public void setWords(ArrayList<MenuSloganWord> Words) {
+        this.Words = Words;
+    }
+
+    /**
+     * @return the endofslogan
+     */
+    public int getEndofslogan() {
+        return endofslogan;
+    }
+
+    /**
+     * @param endofslogan the endofslogan to set
+     */
+    public void setEndofslogan(int endofslogan) {
+        this.endofslogan = endofslogan;
     }
 }

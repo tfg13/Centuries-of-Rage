@@ -36,6 +36,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -60,13 +61,14 @@ public class MenuBackground extends Component {
     final static int maxspawndelay = 10000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
     MenuSlogan currentSlogan; // Der aktuelle Slogan
     long sloganspawntime; // Wann der aktuelle Slogan gestartet ist
+    ArrayList<String> Slogans = new ArrayList<String>(); // Eine ArrayList mit den Slogans
 
     public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
         super(m, relX, relY, relWidth, relHeigth);
         this.imgMap = imgMap;
         starttime = System.currentTimeMillis();
         nextspawntime = 0;
-        sloganspawntime = 100;
+        sloganspawntime = 1000;
         resx = m.getResX();
         resy = m.getResY();
         tilex = (int) Math.ceil(resx / 512) + 2;
@@ -85,7 +87,6 @@ public class MenuBackground extends Component {
 
         // Slogans einlesen
         File sloganFile = null;
-        ArrayList<String> Slogans = new ArrayList<String>(); // Eine ArrayList mit den Slogans
         try {
             sloganFile = new File("randomslogans");
             FileReader sloganReader = new FileReader(sloganFile);
@@ -139,11 +140,13 @@ public class MenuBackground extends Component {
         }
 
         // Slogan-Lkw zeichnen
+
         Image LkwImg = imgMap.get(currentSlogan.getLkwpic()).getImage();
         Image WagonImg = imgMap.get(currentSlogan.getWagonpic()).getImage();
         Image BarImg = imgMap.get(currentSlogan.getBarpic()).getImage();
 
-        float lkwX = (float) (resx - (sloganspeed * time - currentSlogan.getStarttime()));
+        float lkwX = (float) (resx - (sloganspeed * (time - currentSlogan.getStarttime())));
+
         LkwImg.draw(lkwX, (float) (0.86 * resy - LkwImg.getHeight()));
         BarImg.draw(lkwX + 210, (float) (0.86 * resy - LkwImg.getHeight() + 55));
 
@@ -153,7 +156,6 @@ public class MenuBackground extends Component {
 
         // Einzelne Worte zeichnen
         for (int i = 0; i < currentSlogan.getWords().size(); i++) {
-            Font bla = FontManager.getFont0();
             float wagonX = lkwX + currentSlogan.getWords().get(i).getWagonX();
             BarImg.draw(wagonX - 33, (float) (0.86 * resy - LkwImg.getHeight() + 55));
             for (int j = 0; j < currentSlogan.getWords().get(i).getNumberofpics(); j++) {
@@ -162,7 +164,9 @@ public class MenuBackground extends Component {
                 WagonImg.draw(xpos, ypos);
                 wheelsX.add(xpos + 6);
             }
-            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy - LkwImg.getHeight() + 27);
+            g.setFont(FontManager.getFont0());
+            g.setColor(Color.black);
+            g.drawString(currentSlogan.getWords().get(i).getWord(), wagonX, (float) 0.86 * resy - LkwImg.getHeight() + 23);
         }
 
         // Räder zeichnen
@@ -171,6 +175,11 @@ public class MenuBackground extends Component {
         WheelImg.rotate(-4);
         for (int i = 0; i < wheelsX.size(); i++) {
             WheelImg.draw(wheelsX.get(i), (float) (0.86 * resy - LkwImg.getHeight() + wheelheight));
+        }
+
+        // Slogan außerhalb des Bildes? -> Neuer Slogan
+        if (lkwX + currentSlogan.getEndofslogan() < 0) {
+            currentSlogan = new MenuSlogan(time + sloganspawntime, Slogans.get((int) (Math.random() * Slogans.size())));
         }
 
         // Neue Background-Objekte zufällig erstellen

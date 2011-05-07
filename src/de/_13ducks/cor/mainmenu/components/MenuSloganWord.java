@@ -26,9 +26,6 @@
 
 package de._13ducks.cor.mainmenu.components;
 
-import de._13ducks.cor.graphics.FontManager;
-import org.newdawn.slick.Font;
-
 /**
  *
  * @author Johannes
