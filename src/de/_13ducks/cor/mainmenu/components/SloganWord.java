@@ -30,7 +30,7 @@ package de._13ducks.cor.mainmenu.components;
  *
  * @author Johannes
  */
-public class MenuSloganWord {
+public class SloganWord {
     private long starttime;
     private int length;
     private int numberofpics;
@@ -38,7 +38,7 @@ public class MenuSloganWord {
     private int wagonX;
     private String Word;
 
-    public MenuSloganWord(long starttime, String Word, int length, int numberofpics, int wagonX) {
+    public SloganWord(long starttime, String Word, int length, int numberofpics, int wagonX) {
         this.starttime = starttime;
         this.Word = Word;
         this.length = length;

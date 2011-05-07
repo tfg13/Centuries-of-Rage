@@ -107,12 +107,11 @@ public class MainMenu extends Container {
         MenuBackground background = new MenuBackground(this, 0, 0, 100, 100, imgMap);
         super.addComponent(background);
 
-
         /**********************************************************************
          * Menüs:
          *********************************************************************/
         // Hauptmenü:
-        Container startScreen = new StartScreen(this);
+        Container startScreen = new StartScreen(this, imgMap);
         menus.put("startscreen", startScreen);
         super.addComponent(startScreen);
         startScreen.activate();
