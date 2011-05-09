@@ -37,7 +37,6 @@ import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import de._13ducks.cor.game.Unit;
 
 /**
