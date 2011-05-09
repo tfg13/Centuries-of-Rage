@@ -106,7 +106,7 @@ public class Edge {
         Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
         if (intersection != null) {
             // Liegt dieser Schnittpunkt auf dieser Kante?
-            if (intersection.getX() >= Math.max(start.getX(), end.getX()) && intersection.getX() <= Math.min(start.getX(), end.getX()) && intersection.getY() >= Math.max(start.getY(), end.getY()) && intersection.getY() <= Math.min(start.getY(), end.getY())) {
+            if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
                 return true;
             }
         }

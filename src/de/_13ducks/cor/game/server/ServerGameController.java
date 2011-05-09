@@ -111,6 +111,8 @@ public class ServerGameController implements Runnable {
             unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
             rgi.netmap.trackCollision(unit);
+            // Bewegungssektor für jede Einheit suchen und setzten
+            rgi.netmap.registerUnitMovements(unit);
         }
         // Alle auf fertig setzen
         for (NetPlayer player : playerList) {

@@ -262,10 +262,10 @@ public class FreePolygon {
             Edge checkEdge = new Edge(new Node(x, y), edge.getCenter());
             // Darf sich nicht schneiden!
             for (int e = 0; e < edges.size(); e++) {
-                if (e == 1) {
+                if (e == i) {
                     continue;
                 }
-                if (edge.intersectsWith(checkEdge)) {
+                if (edges.get(e).intersectsWith(checkEdge)) {
                     // Abbruch, es ist außerhalb
                     return false;
                 }
@@ -315,5 +315,16 @@ public class FreePolygon {
         }
 
         return rechts ^ links;
+    }
+
+    /**
+     * Fügt eine Einheit zu diesem Polygon hinzu.
+     * Es passiert nichts, wenn die Einheit schon bekannt ist.
+     * @param unit 
+     */
+    public void addUnit(Unit unit) {
+        if (!residents.contains(unit)) {
+            residents.add(unit);
+        }
     }
 }

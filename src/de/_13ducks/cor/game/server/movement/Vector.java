@@ -118,7 +118,7 @@ public class Vector {
      * @return einen neuen Vektor, der das Ergebniss einer Summation dieses mit dem gegebenen Vektor darstellt
      */
     public Vector add(Vector vector) {
-        return new Vector( + vector.x, y + vector.y);
+        return new Vector(x + vector.x, y + vector.y);
     }
     
     /**
@@ -174,7 +174,7 @@ public class Vector {
      */
     public boolean isParallel(Vector vec) {
         vec.normalizeMe();
-        Vector meNormal = vec.normalize();
+        Vector meNormal = this.normalize();
         return (vec.equals(meNormal) || vec.equals(meNormal.getInverted()));
     }
 
@@ -198,9 +198,9 @@ public class Vector {
         }
         // Es gibt einen Schnittpunkt
         // Diese Formel hab ich mir durch umwandeln von (a,b)+x(c,d)=(e,f)+y(g,h) gebildet
-        double fact = (otherS.y * this.x - mySPos.y * this.x - otherS.x * this.y - mySPos.x * this.y) / (otherVec.x * this.y - otherVec.y * this.x);
+        double fact = (otherS.y * this.x - mySPos.y * this.x - otherS.x * this.y + mySPos.x * this.y) / (otherVec.x * this.y - otherVec.y * this.x);
         
-        return mySPos.add(multiply(fact));
+        return otherS.add(otherVec.multiply(fact));
     }
 
     @Override

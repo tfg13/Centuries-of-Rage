@@ -1025,6 +1025,8 @@ public class ServerMapModule {
         for (Position pos : u.getPositions()) {
             addPerm(pos, u);
         }
+        
+        registerUnitMovements(u);
 
         // Broadcasten
 
@@ -1114,6 +1116,14 @@ public class ServerMapModule {
             rgi.serverstats.trackBuildingkill(killer, b.getPlayerId());
             killBuilding(b);
         }
+    }
+    
+    /**
+     * Initialisiert diese Einheit für das neue Server-Bewegunssystem
+     * @param unit 
+     */
+    public void registerUnitMovements(Unit unit) {
+        moveMap.registerUnit(unit);
     }
 
     /**

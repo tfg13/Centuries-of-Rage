@@ -34,7 +34,9 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Position;
+import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.map.CoRMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +49,7 @@ public class MovementMap {
 
     private List<FreePolygon> polys;
     private List<Node> nodes;
+    private List<Unit> managedUnits;
 
     /**
      * Privater Konstruktor. CreateMovementMap verwenden!
@@ -54,6 +57,7 @@ public class MovementMap {
     private MovementMap(CoRMap map, List<Building> blocked) {
         polys = new ArrayList<FreePolygon>();
         nodes = new ArrayList<Node>();
+        managedUnits = new ArrayList<Unit>();
 
 
         try {
@@ -243,5 +247,24 @@ public class MovementMap {
 
     public List<FreePolygon> getPolysForDebug() {
         return Collections.unmodifiableList(polys);
+    }
+
+    /**
+     * Ordnet der Einheit (einmalig) einen Sektor zu.
+     * Wenn die Einheit schon bekannt ist, passiert gar nichts
+     * @param unit die Einheit
+     */
+    public void registerUnit(Unit unit) {
+        if (!managedUnits.contains(unit)) {
+            FloatingPointPosition upos = unit.getPrecisePosition();
+            for (FreePolygon poly : polys) {
+                if (poly.contains(upos.getfX(), upos.getfY())) {
+                    poly.addUnit(unit);
+                    System.out.println(poly + " contains " + unit);
+                } else {
+                    System.out.println(poly + " NOT " + unit);
+                }
+            }
+        }
     }
 }
