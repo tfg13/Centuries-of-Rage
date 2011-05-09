@@ -40,7 +40,6 @@ public class Edge {
      * Im Prinzip einfach irgendein Knoten, da die Richtung meistens egal ist.
      */
     private Node start;
-    
     /**
      * Der Endknoten dieser Kante.
      * Im Prinzip einfach irgendein Knoten, da die Richtung meistens egal ist.
@@ -92,13 +91,36 @@ public class Edge {
     public Node getEnd() {
         return end;
     }
+
     /**
-     * Erzeugt einen Koordinatenvektor der auf den Mittelpunkt dieser Kante zeigt.
-     * @return einen Koordinatenvektor der auf den Mittelpunkt dieser Kante zeigt.
+     * Findet heraus, sich diese und die gegebenen Kante schneiden.
+     * Das Verhalten für gleiche Kanten ist undefiniert.
+     * @param edge die andere Kante
+     * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
      */
-    public Vector getCenter() {
-       Vector vec = new Vector(start.getX() - end.getX(), start.getY() - end.getY());
-       vec.multiplyMe(0.5);
-       return vec.add(end.toVector());
+    public boolean intersectsWith(Edge edge) {
+        // Beide Richtungsvektoren berechnen:
+        Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
+        Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
+        // Gibts einen Schnittpunkt?
+        Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
+        if (intersection != null) {
+            // Liegt dieser Schnittpunkt auf dieser Kante?
+            if (intersection.getX() >= Math.max(start.getX(), end.getX()) && intersection.getX() <= Math.min(start.getX(), end.getX()) && intersection.getY() >= Math.max(start.getY(), end.getY()) && intersection.getY() <= Math.min(start.getY(), end.getY())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Erzeugt einen neuen Knoten, der auf den Mittelpunkt dieser Kante zeigt.
+     * @return einen neuen Knoten, der auf den Mittelpunkt dieser Kante zeigt.
+     */
+    public Node getCenter() {
+        Vector vec = new Vector(start.getX() - end.getX(), start.getY() - end.getY());
+        vec.multiplyMe(0.5);
+        vec.addToMe(end.toVector());
+        return new Node(vec.getX(), vec.getY());
     }
 }

@@ -237,6 +237,44 @@ public class FreePolygon {
         hash = 89 * hash + (this.myNodes != null ? this.myNodes.hashCode() : 0);
         return hash;
     }
+    
+    /**
+     * Findet heraus, ob der gegebene Punkt innerhalb dieses Polygons liegt.
+     * Wenn der Punkt genau auf einer Kante oder auf einem Knoten liegt, ist das Resultat undefiniert.
+     * @param x X
+     * @param y Y
+     * @return true, wenn innen, sonst false
+     */
+    public boolean contains(double x, double y) {
+        // Idee: Strecke Mittelpunkt von jeder Kante --> zu dem zu untersuchenden Punkt bilden.
+        //       Wenn keine dieser Kanten mit einer Kante dieses Polygons kollidiert, dann ist es innerhalb.
+        // Hnws: Diese Methode funktioniert nur für convexe Polygone, ist aber einfacher einzubauen, als die normale Strahlmethode.
+        
+        // Liste mit Kanten:
+        ArrayList<Edge> edges = new ArrayList<Edge>();
+        for (int i = 0; i < myNodes.size(); i++) {
+            edges.add(new Edge(myNodes.get(i), myNodes.get(i + 1 < myNodes.size() ? i + 1 : 0)));
+        }
+        
+        for (int i = 0; i < edges.size(); i++) {
+            Edge edge = edges.get(i); 
+            // Strecke bauen
+            Edge checkEdge = new Edge(new Node(x, y), edge.getCenter());
+            // Darf sich nicht schneiden!
+            for (int e = 0; e < edges.size(); e++) {
+                if (e == 1) {
+                    continue;
+                }
+                if (edge.intersectsWith(checkEdge)) {
+                    // Abbruch, es ist außerhalb
+                    return false;
+                }
+            }
+        }
+        
+        // Wenn wir bis hier kommen gibt es keine Schnittkanten, dann liegt es innen.
+        return true;
+    }
 
     /**
      * Prüft, ob dieses Polygon konvex oder konkav ist.

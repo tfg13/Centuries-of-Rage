@@ -163,6 +163,20 @@ public class Vector {
     public double length() {
         return Math.sqrt(x * x + y * y);
     }
+    
+    /**
+     * Findet heraus, ob dieser Vektor zu dem gegeben Parallel ist.
+     * Wie bei allen Vektorvergleichen gibt es eine Toleranz gegen Rundungsfehler.
+     * Diese Toleranz beträgt ein Promille pro Richtung.
+     * Dies ist eine Behandlung für Richtungsvektoren, ein eventuelles Auf-/Ineinanderliegen von Vektoren wird ignoriert.
+     * @param vec der andere Vektor
+     * @return true, wenn parallel
+     */
+    public boolean isParallel(Vector vec) {
+        vec.normalizeMe();
+        Vector meNormal = vec.normalize();
+        return (vec.equals(meNormal) || vec.equals(meNormal.getInverted()));
+    }
 
     /**
      * True, wenn der gleiche Vektor, nur in die andere Richtung zeigend
@@ -170,6 +184,23 @@ public class Vector {
      */
     public boolean isOpposite(Vector vec) {
         return this.normalize().equals(new Vector(-vec.x, -vec.y).normalize());
+    }
+    
+    /**
+     * Berechnet einen Schnittpunkt zwischen diesem und dem gegeben Vector.
+     * Liefert null, falls die Vektoren parallel sind (auch, wenn sie aufeinander liegen!!!)
+     * @param vec der andere Vektor
+     * @return Einen Stützvektor zum Schnittpunkt oder null, wenns keinen gibt.
+     */
+    public Vector intersectionWith(Vector mySPos, Vector otherS, Vector otherVec) {
+        if (isParallel(otherVec)) {
+            return null;
+        }
+        // Es gibt einen Schnittpunkt
+        // Diese Formel hab ich mir durch umwandeln von (a,b)+x(c,d)=(e,f)+y(g,h) gebildet
+        double fact = (otherS.y * this.x - mySPos.y * this.x - otherS.x * this.y - mySPos.x * this.y) / (otherVec.x * this.y - otherVec.y * this.x);
+        
+        return mySPos.add(multiply(fact));
     }
 
     @Override
