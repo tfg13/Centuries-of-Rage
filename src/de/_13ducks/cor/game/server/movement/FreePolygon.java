@@ -246,9 +246,9 @@ public class FreePolygon {
      * @return true, wenn innen, sonst false
      */
     public boolean contains(double x, double y) {
-        // Idee: Strecke Mittelpunkt von jeder Kante --> zu dem zu untersuchenden Punkt bilden.
-        //       Wenn keine dieser Kanten mit einer Kante dieses Polygons kollidiert, dann ist es innerhalb.
-        // Hnws: Diese Methode funktioniert nur für convexe Polygone, ist aber einfacher einzubauen, als die normale Strahlmethode.
+        // Verwendet die übliche Strahlmethode. Dabei wird ein Strahl vom zu untersuchenden Punkt in eine beliebige Richtung
+        // augesandt. Dann werden die Anzahl der Schnittpunkte mit Kanten des Polygons gezählt.
+        // Ist diese Anzahl ungerade, so befindet sich der Punkt innerhalb. Sonst außen.
         
         // Liste mit Kanten:
         ArrayList<Edge> edges = new ArrayList<Edge>();
@@ -256,24 +256,19 @@ public class FreePolygon {
             edges.add(new Edge(myNodes.get(i), myNodes.get(i + 1 < myNodes.size() ? i + 1 : 0)));
         }
         
+        // Linie bauen:
+        Edge edge = new Edge(new Node(x, y), new Node(10000, 10000));
+        
+        int intersections = 0;
         for (int i = 0; i < edges.size(); i++) {
-            Edge edge = edges.get(i); 
-            // Strecke bauen
-            Edge checkEdge = new Edge(new Node(x, y), edge.getCenter());
-            // Darf sich nicht schneiden!
-            for (int e = 0; e < edges.size(); e++) {
-                if (e == i) {
-                    continue;
-                }
-                if (edges.get(e).intersectsWith(checkEdge)) {
-                    // Abbruch, es ist außerhalb
-                    return false;
-                }
+            // Schnitte suchen
+            if (edges.get(i).intersectsWith(edge)) {
+                intersections++;
             }
         }
         
-        // Wenn wir bis hier kommen gibt es keine Schnittkanten, dann liegt es innen.
-        return true;
+        // Wenn Anzahl ungerade ist es innen.
+        return intersections % 2 == 1;
     }
 
     /**
