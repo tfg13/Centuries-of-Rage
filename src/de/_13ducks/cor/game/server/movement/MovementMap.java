@@ -262,7 +262,6 @@ public class MovementMap {
                     poly.addUnit(unit);
                     System.out.println(poly + " contains " + unit);
                 } else {
-                    System.out.println(poly + " NOT " + unit);
                 }
             }
         }
