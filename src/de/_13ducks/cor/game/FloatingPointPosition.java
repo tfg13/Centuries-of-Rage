@@ -135,5 +135,15 @@ public class FloatingPointPosition extends Position {
     public String toString() {
         return fX + "|" + fY + "(" + super.toString() + ")";
     }
+    
+    @Override
+    public double getDistance(Position pos) {
+        // Das andere auch eine FPP?
+        if (pos instanceof FloatingPointPosition) {
+            FloatingPointPosition fpos = (FloatingPointPosition) pos;
+            return Math.sqrt((fX - fpos.fX) * (fX - fpos.fX) + (fY - fpos.fY) * (fY - fpos.fY));
+        }
+        return Math.sqrt((fX - pos.X) * (fX - pos.X) + (fY - pos.Y) * (fY - pos.Y));
+    }
 
 }
