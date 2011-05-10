@@ -49,7 +49,7 @@ import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
  * Einheiten dieser Implementierung spawnen sofort.
  * Unterklassen können Gebäude (Building) betreten (falls das Gebäude dies anbietet)
  */
-public abstract class Unit extends GameObject implements Serializable, Cloneable, Pauseable {
+public abstract class Unit extends GameObject implements Serializable, Cloneable, Pauseable, Moveable {
 
     /**
      * Die Geschwindigkeit der Einheit in Feldern pro Sekunde.

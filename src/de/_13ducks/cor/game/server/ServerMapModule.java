@@ -1123,7 +1123,7 @@ public class ServerMapModule {
      * @param unit 
      */
     public void registerUnitMovements(Unit unit) {
-        moveMap.registerUnit(unit);
+        moveMap.registerMoveable(unit);
     }
 
     /**
