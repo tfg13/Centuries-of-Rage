@@ -261,7 +261,6 @@ public class MovementMap {
                 if (poly.contains(upos.getfX(), upos.getfY())) {
                     poly.addUnit(unit);
                     System.out.println(poly + " contains " + unit);
-                } else {
                 }
             }
         }
