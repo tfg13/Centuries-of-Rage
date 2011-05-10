@@ -26,6 +26,8 @@
 package de._13ducks.cor.game.networks.behaviour.impl;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Unit;
@@ -44,16 +46,16 @@ import de._13ducks.cor.game.server.movement.Vector;
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
-    private Unit caster2;
+    private Moveable caster2;
     private FloatingPointPosition target;
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
     private Vector lastVec;
     
-    public ServerBehaviourMove(ServerCore.InnerServer newinner, Unit caster) {
-        super(newinner, caster, 1, 20, true);
-        caster2 = caster;
+    public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2) {
+        super(newinner, caster1, 1, 20, true);
+        this.caster2 = caster2;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         vec.normalizeMe();
         if (!vec.equals(lastVec)) {
             // An Client senden
-            rgi.netctrl.broadcastMoveVec(caster2.netID, target, speed);
+            rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target, speed);
             lastVec = new Vector(vec.getX(), vec.getY());
         }
         long ticktime = System.currentTimeMillis();
@@ -101,7 +103,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Sofort stoppen?
             if (stopUnit) {
                 // Der Client muss das auch mitbekommen
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.netID, 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                 caster2.setMainPosition(newpos);
                 target = null;
                 stopUnit = false;

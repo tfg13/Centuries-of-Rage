@@ -285,7 +285,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public void initServerMovementManagers(ServerCore.InnerServer rgi) {
         topLevelManager = rgi.moveMan;
-        lowLevelManager = new ServerBehaviourMove(rgi, this);
+        lowLevelManager = new ServerBehaviourMove(rgi, this, this);
         addServerBehaviour(lowLevelManager);
     }
     
@@ -326,5 +326,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public ClientBehaviourMove getClientManager() {
         return clientManager;
+    }
+    
+    public int getNetID() {
+        return netID;
     }
 }

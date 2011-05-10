@@ -36,7 +36,7 @@ import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 /**
  * Alles was Moveable ist, kann sich bewegen.
  */
-public interface Moveable extends InteractableGameElement {
+public interface Moveable extends InteractableGameElement, Pauseable {
     
    /**
      * Stoppt die Einheit sofort - sofern genug Platz ist und die Einheit sich überhaupt bewegt.
@@ -107,5 +107,26 @@ public interface Moveable extends InteractableGameElement {
      * @return 
      */
     public FloatingPointPosition getPrecisePosition();
+    
+    /**
+     * Liefert die maximale Geschwindigkeit dieses Moveables.
+     * @return the speed
+     */
+    public double getSpeed();
+    
+    /**
+     * Setzt eine neue Position (bewegt also die Einheit)
+     * In der Regel sollte hier eine FPP Position reingegeben werden, es ist nur aus
+     * Kompatibiltätsgrunden Position
+     * @param mainPosition die neue Position
+     */
+    public void setMainPosition(Position mainPosition);
+    
+    /**
+     * Liefert den Netzwerk-Identifier dieses Moveables.
+     * Bei GameObjects die "normale" netID.
+     * @return 
+     */
+    public int getNetID();
     
 }
