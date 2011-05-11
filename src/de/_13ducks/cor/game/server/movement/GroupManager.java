@@ -88,8 +88,19 @@ public class GroupManager {
      */
     public synchronized void goTo(FloatingPointPosition target) {
         // TODO: Ziele, Formation verwalten!
+        // Route planen
+        Node targetNode = moveMap.nearestSectorNode(target);
         for (GroupMember member : myMovers) {
-            member.getMover().getLowLevelManager().setTargetVector(target, member.getMover().getSpeed());
+            Node startNode = moveMap.nearestSectorNode(member.getMover());
+            List<Node> path = ServerPathfinder.findPath(startNode, targetNode);
+            if (path != null) {
+                // Weg setzen
+                for (Node node : path) {
+                    member.addWaypoint(node.toFPP());
+                }
+            }
+            // Loslaufen lassen
+            member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
         }
     }
 
