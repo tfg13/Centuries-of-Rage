@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -243,5 +244,13 @@ public class Node {
      */
     public void setHeuristic(double heuristic) {
         this.heuristic = heuristic;
+    }
+
+    /**
+     * Wandelt einen Node in eine FloatingPointPosition um.
+     * @return eine FloatingPointPosition mit den Koordinaten dieses Knotens
+     */
+    public FloatingPointPosition toFPP() {
+        return new FloatingPointPosition(x, y);
     }
 }
