@@ -27,7 +27,9 @@ package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MidLevel-Movemanagement
@@ -47,9 +49,14 @@ public class GroupManager {
      * Alle Einheiten, die zur Zeit in dieser Gruppe sind.
      */
     private ArrayList<GroupMember> myMovers;
+    /**
+     * Die aktuelle MovementMap
+     */
+    private MovementMap moveMap;
     
-    public GroupManager() {
+    public GroupManager(MovementMap moveMap) {
         myMovers = new ArrayList<GroupMember>();
+        this.moveMap = moveMap;
     }
 
     /**

@@ -38,6 +38,19 @@ import java.util.ArrayList;
  * Nach der Gruppeneinteilung wird der Befehl an den GruppenMoveManager (das MidLevel-Management weitergegeben)
  */
 public class ServerMoveManager {
+    
+    /**
+     * Die aktuelle MovementMap
+     */
+    private MovementMap moveMap;
+    
+    /**
+     * Initialisiert den Server-Bewegungsmanager.
+     * @param moveMap 
+     */
+    public void initMoveManager(MovementMap moveMap) {
+        this.moveMap = moveMap;
+    }
 
     /**
      * Ein Client-Moverequest geht ein.
@@ -51,7 +64,7 @@ public class ServerMoveManager {
             unit.removeFromCurrentGroup();
         }
         // Neue Gruppe aufmachen und alle hinzufügen
-        GroupManager man = new GroupManager();
+        GroupManager man = new GroupManager(moveMap);
         for (Unit unit : movers) {
             unit.setCurrentGroup(man);
         }

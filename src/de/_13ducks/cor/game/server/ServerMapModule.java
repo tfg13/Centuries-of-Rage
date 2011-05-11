@@ -711,6 +711,7 @@ public class ServerMapModule {
             createAllLists();
             rgi.game.registerUnitList(unitList);
             moveMap = MovementMap.createMovementMap(theMap, buildingList);
+            rgi.moveMan.initMoveManager(moveMap);
             rgi.logger("[MapModul] Map \"" + mapName + "\" loaded");
             // Maphash bekannt, jetzt Name + Hash an andere Clients übertragen
             System.out.println("Targethash: " + mapHash);
