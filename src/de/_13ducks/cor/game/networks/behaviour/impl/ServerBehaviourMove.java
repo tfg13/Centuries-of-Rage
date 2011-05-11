@@ -30,6 +30,10 @@ import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.game.server.movement.Edge;
+import de._13ducks.cor.game.server.movement.FreePolygon;
+import de._13ducks.cor.game.server.movement.MovementMap;
+import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
 
 /**
@@ -51,10 +55,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private boolean stopUnit = false;
     private long lastTick;
     private Vector lastVec;
+    private MovementMap moveMap;
 
-    public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2) {
+    public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
+        this.moveMap = moveMap;
     }
 
     @Override
@@ -101,6 +107,17 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
+            } else {
+                // Herausfinden, ob der Sektor gewechselt wurde
+                // Strecke zwischen Position und Ziel aufspannen und Sektor des Mittelpunkts suchen
+                FloatingPointPosition pos = caster2.getPrecisePosition();
+                Vector searchline = new Vector(target.getfX() - pos.getfX(), target.getfY() - pos.getfY());
+                searchline.multiplyMe(0.5);
+                searchline.addToMe(pos.toVector());
+                FreePolygon sector = moveMap.containingPoly(searchline.getX(), searchline.getY());
+                if (!sector.equals(caster2.getMyPoly())) {
+                    caster2.setMyPoly(sector);
+                }
             }
         } else {
             // Sofort stoppen?
