@@ -217,4 +217,13 @@ public class Node {
         nodes.remove(this);
         return nodes;
     }
+
+    /**
+     * Liefert die Kosten (Wegfindung, siehe dort) von diesem Knoten zu einem anderen.
+     * @param node der andere
+     * @return die Kosten von diesem Knoten zu einem anderen.
+     */
+    public double movementCostTo(Node node) {
+        return Math.sqrt((x - node.x) * (x - node.x) + (y - node.y) * (y - node.y));
+    }
 }
