@@ -332,4 +332,13 @@ public class MovementMap {
         
         return aPolys;
     }
+    
+    /**
+     * Sucht den nächstgelegenen Knoten zu einem Moveable in seinem Sektor.
+     * @param mover das Moveable
+     * @return Der nächste Node
+     */
+    public Node nearestSectorNode(Moveable mover) {
+        return mover.getMyPoly().closestNode(mover.getPrecisePosition());
+    }
 }
