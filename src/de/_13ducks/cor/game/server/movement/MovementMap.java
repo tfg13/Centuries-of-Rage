@@ -340,6 +340,26 @@ public class MovementMap {
      * @return Der nächste Node
      */
     public Node nearestSectorNode(Moveable mover) {
-        return mover.getMyPoly().closestNode(mover.getPrecisePosition());
+        return nearestNode(mover.getMyPoly(), mover.getPrecisePosition());
+    }
+
+    /**
+     * Sucht den nächstgelegenen Knoten zu einer gegebenen Position.
+     * @param target die Position
+     * @return Der nächste Node
+     */
+    public Node nearestSectorNode(FloatingPointPosition target) {
+        // Erst den Knoten suchen
+        return nearestNode(containingPoly(target.getfX(), target.getfY()), target);
+    }
+    
+    /**
+     * Fragt den gegebenen Sektor nach dem nächsten Knoten.
+     * @param poly
+     * @param pos
+     * @return 
+     */
+    private Node nearestNode(FreePolygon poly, FloatingPointPosition pos) {
+        return poly.closestNode(pos);
     }
 }
