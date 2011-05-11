@@ -26,7 +26,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
-import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.Moveable;
 import java.util.ArrayList;
 
 /**
@@ -46,28 +46,29 @@ public class GroupManager {
     /**
      * Alle Einheiten, die zur Zeit in dieser Gruppe sind.
      */
-    private ArrayList<Unit> myUnits;
+    private ArrayList<GroupMember> myMovers;
     
     public GroupManager() {
-        myUnits = new ArrayList<Unit>();
+        myMovers = new ArrayList<GroupMember>();
     }
 
     /**
      * Löscht eine Einheit aus der Gruppe heraus.
      * Wenn sie gar nicht drin war, passiert nichts.
-     * @param unit die zu löschende Einheit
+     * @param mover die zu löschende Einheit
      */
-    public synchronized void remove(Unit unit) {
-        myUnits.remove(unit);
+    public synchronized void remove(Moveable mover) {
+        myMovers.remove(new GroupMember(mover));
     }
 
     /**
      * Fügt die Einheit zu dieser Gruppe hinzu, falls sie noch nicht drin ist.
-     * @param unit
+     * @param mover
      */
-    public synchronized void add(Unit unit) {
-        if (!myUnits.contains(unit)) {
-            myUnits.add(unit);
+    public synchronized void add(Moveable mover) {
+        GroupMember tempmem = new GroupMember(mover);
+        if (!myMovers.contains(tempmem)) {
+            myMovers.add(tempmem);
         }
     }
 
@@ -80,8 +81,8 @@ public class GroupManager {
      */
     public synchronized void goTo(FloatingPointPosition target) {
         // TODO: Ziele, Formation verwalten!
-        for (Unit unit : myUnits) {
-            unit.getLowLevelManager().setTargetVector(target, unit.getSpeed());
+        for (GroupMember member : myMovers) {
+            member.getMover().getLowLevelManager().setTargetVector(target, member.getMover().getSpeed());
         }
     }
 
