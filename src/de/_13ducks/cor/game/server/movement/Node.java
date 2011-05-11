@@ -36,7 +36,7 @@ import java.util.List;
  * Mit Hilfe dieser Knoten sucht ein A* den besten Weg.
  * Deshalb hat dieses Objekt auch diverse Wegfindungs-Relevante Variablen
  */
-public class Node {
+public class Node implements Comparable<Node> {
 
     /**
      * Diese Listen enthält alle Polygone, auf deren Kanten dieser Polygon liegt oder deren Ecken er markiert.
