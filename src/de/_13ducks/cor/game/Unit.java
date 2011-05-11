@@ -31,6 +31,7 @@ import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
@@ -85,6 +86,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Server only.
      */
     private MovementMap moveMap;
+    /**
+     * Der derzeitige Polygon dieser Einheit.
+     */
+    private FreePolygon myPoly;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -342,5 +347,19 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public List<Moveable> moversAroundMe(double radius) {
         // Das macht die movementMap
         return moveMap.moversAround(this, radius);
+    }
+
+    /**
+     * @return the myPoly
+     */
+    public FreePolygon getMyPoly() {
+        return myPoly;
+    }
+
+    /**
+     * @param myPoly the myPoly to set
+     */
+    public void setMyPoly(FreePolygon myPoly) {
+        this.myPoly = myPoly;
     }
 }
