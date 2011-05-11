@@ -99,6 +99,8 @@ public class GroupManager {
                     member.addWaypoint(node.toFPP());
                 }
             }
+            // Ziel einfügen
+            member.addWaypoint(target);
             // Loslaufen lassen
             member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
         }

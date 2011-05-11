@@ -52,6 +52,10 @@ public final class ServerPathfinder {
             System.out.println("FixMe: SPathfinder, irregular call: " + startNode + "-->" + targetNode);
             return null;
         }
+        
+        if (startNode.equals(targetNode)) {
+            return new ArrayList<Node>();
+        }
 
         PriorityBuffer open = new PriorityBuffer();      // Liste für entdeckte Knoten
         LinkedHashSet<Node> containopen = new LinkedHashSet<Node>();  // Auch für entdeckte Knoten, hiermit kann viel schneller festgestellt werden, ob ein bestimmter Knoten schon enthalten ist.
