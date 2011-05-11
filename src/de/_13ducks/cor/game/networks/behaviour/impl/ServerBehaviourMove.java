@@ -30,7 +30,6 @@ import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.Vector;
 
 /**
@@ -52,7 +51,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private boolean stopUnit = false;
     private long lastTick;
     private Vector lastVec;
-    
+
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2) {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
@@ -89,16 +88,20 @@ public class ServerBehaviourMove extends ServerBehaviour {
         long ticktime = System.currentTimeMillis();
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
-        
+
         // Ziel schon erreicht?
         Vector nextVec = target.subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
-            // ZIEL!
+            // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target);
-            target = null;
-            stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-            deactivate();
+            // Neuen Wegpunkt anfordern:
+            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
+                // Wenn das false gibt, gibts keine weiteren, dann hier halten.
+                target = null;
+                stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+                deactivate();
+            }
         } else {
             // Sofort stoppen?
             if (stopUnit) {
@@ -114,7 +117,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 lastTick = System.currentTimeMillis();
             }
         }
-        
+
     }
 
     @Override
@@ -130,7 +133,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     public void unpause() {
         caster2.unpause();
     }
-    
+
     /**
      * Setzt den Zielvektor für diese Einheit.
      * Es wird nicht untersucht, ob das Ziel in irgendeiner Weise ok ist, die Einheit beginnt sofort loszulaufen.
@@ -169,11 +172,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         trigger();
     }
-    
+
     public boolean isMoving() {
         return target != null;
     }
-    
+
     /**
      * Stoppt die Einheit innerhalb eines Ticks.
      */

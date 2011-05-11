@@ -114,4 +114,35 @@ public class GroupManager {
     public synchronized void runTo(FloatingPointPosition target) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /**
+     * Eine LowLevelManager hat sein Wegziel erreicht und will wissen, wie die Route weitergeht
+     * Gibt false zurück wenns nicht weitergeht und liefert true zurück, wenns weiter geht und das
+     * neue Ziel schon gesetzt wurde.
+     * @return true, wenn neues Ziel gesetzt sonst false
+     */
+    public boolean reachedTarget(Moveable mover) {
+        GroupMember member = memberForMover(mover);
+        FloatingPointPosition nextPoint = member.popWaypoint();
+        if (nextPoint != null) {
+            mover.getLowLevelManager().setTargetVector(nextPoint);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Sucht den GroupMember zu einem Mover raus
+     * @param mover
+     * @return 
+     */
+    private GroupMember memberForMover(Moveable mover) {
+        for (GroupMember member : myMovers) {
+            if (member.getMover().equals(mover)) {
+                return member;
+            }
+        }
+        return null;
+    }
 }
