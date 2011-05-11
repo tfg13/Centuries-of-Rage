@@ -65,4 +65,32 @@ public class GroupMember {
         return false;
     }
     
+    /**
+     * Fügt einen neuen Wegpunkt für diese Einheit ein.
+     * Der Wegpunkt wird an das ende des geplanten Weges gesetzt.
+     * Der Wegpunkt wird nur eingefügt, wenn er nicht schon am Ende ist.
+     * @param waypoint 
+     */
+    public void addWaypoint(FloatingPointPosition waypoint) {
+        if (!path.getLast().equals(waypoint)) {
+            path.add(waypoint);
+        }
+    }
+    
+    /**
+     * Löscht alle zukünftigen Wegpunkte.
+     */
+    public void clearWaypoints() {
+        path.clear();
+    }
+    
+    /**
+     * Holt den nächsten Wegpunkt dieser Einheit.
+     * Lösch ihn anschließend aus der Route.
+     * @return 
+     */
+    public FloatingPointPosition popWaypoint() {
+        return path.pollFirst();
+    }
+    
 }
