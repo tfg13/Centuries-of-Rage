@@ -101,6 +101,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target);
+            System.out.println("Reached " + target);
             // Neuen Wegpunkt anfordern:
             if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
@@ -110,6 +111,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
                 // Strecke zwischen Position und Ziel aufspannen und Sektor des Mittelpunkts suchen
+                System.out.println("Next " + target);
+                System.out.println("VglPos: " + caster2.getPrecisePosition());
                 FloatingPointPosition pos = caster2.getPrecisePosition();
                 Vector searchline = new Vector(target.getfX() - pos.getfX(), target.getfY() - pos.getfY());
                 searchline.multiplyMe(0.5);

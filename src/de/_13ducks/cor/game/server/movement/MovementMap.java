@@ -282,6 +282,7 @@ public class MovementMap {
                 return poly;
             }
         }
+        System.out.println("Noone contains " + x + " " + y);
         return null;
     }
 
