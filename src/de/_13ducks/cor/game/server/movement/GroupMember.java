@@ -41,5 +41,28 @@ public class GroupMember {
         this.mover = mover;
         path = new LinkedList<FloatingPointPosition>();
     }
+
+    /**
+     * @return the mover
+     */
+    public Moveable getMover() {
+        return mover;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + (this.mover != null ? this.mover.hashCode() : 0);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GroupMember) {
+            GroupMember g = (GroupMember) o;
+            return g.mover.equals(mover);
+        }
+        return false;
+    }
     
 }
