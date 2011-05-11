@@ -137,12 +137,7 @@ public class ServerGameController implements Runnable {
                 try {
                     while (true) {
                         Thread.sleep(10000);
-                        List<Moveable> movers = unitList.get(0).moversAroundMe(10);
-                        System.out.println("Found movers (checking " + unitList.get(0) + ":");
-                        for (Moveable mover : movers) {
-                            System.out.println(mover);
-                        }
-                        System.out.println();
+                        
                     }
                 } catch (InterruptedException ex) {
                 }
