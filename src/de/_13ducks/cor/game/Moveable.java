@@ -29,9 +29,11 @@ import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.GroupManager;
+import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
+import java.util.List;
 
 /**
  * Alles was Moveable ist, kann sich bewegen.
@@ -73,8 +75,9 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * Bereitet die Einheit für das Server-Bewegungssystem vor.
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
      * @param rgi der inner core
+     * @param die movementMap
      */
-    public void initServerMovementManagers(ServerCore.InnerServer rgi);
+    public void initServerMovementManagers(ServerCore.InnerServer rgi, MovementMap moveMap);
     
     /**
      * Bereitet die Einheit für das Client-Bewegungssystem vor.
@@ -128,5 +131,14 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @return 
      */
     public int getNetID();
+    
+    /**
+     * Liefert alle Movers in der Umgebung dieses Moveable.
+     * Der Radius muss natürlich positiv und > null sein.
+     * Arbeitet über Sektorgrenzen hinweg.
+     * @param radius in welchen Radius gesucht werden soll.
+     * @return 
+     */
+    public List<Moveable> moversAroundMe(double radius);
     
 }

@@ -32,6 +32,7 @@ import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.GroupManager;
+import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
@@ -79,6 +80,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der Client-Movemanager dieser Einheit.
      */
     protected ClientBehaviourMove clientManager;
+    /**
+     * Die Movement-Map
+     * Server only.
+     */
+    private MovementMap moveMap;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -283,10 +289,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
      * @param rgi der inner core
      */
-    public void initServerMovementManagers(ServerCore.InnerServer rgi) {
+    public void initServerMovementManagers(ServerCore.InnerServer rgi, MovementMap moveMap) {
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this, this);
         addServerBehaviour(lowLevelManager);
+        this.moveMap = moveMap;
     }
     
     /**
@@ -330,5 +337,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     
     public int getNetID() {
         return netID;
+    }
+    
+    public List<Moveable> moversAroundMe(double radius) {
+        // Das macht die movementMap
+        return moveMap.moversAround(this, radius);
     }
 }

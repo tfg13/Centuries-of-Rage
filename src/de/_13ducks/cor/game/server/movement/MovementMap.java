@@ -40,7 +40,9 @@ import de._13ducks.cor.game.Position;
 import de._13ducks.cor.map.CoRMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import org.newdawn.slick.geom.Circle;
 
 /**
  * Stellt die Map als (ungerichteten) Graph von konvexen Vielecken (Polygonen) dar.
@@ -257,13 +259,77 @@ public class MovementMap {
     public void registerMoveable(Moveable moveable) {
         if (!managedMovers.contains(moveable)) {
             FloatingPointPosition upos = moveable.getPrecisePosition();
-            for (FreePolygon poly : polys) {
-                if (poly.contains(upos.getfX(), upos.getfY())) {
-                    poly.addMoveable(moveable);
+            FreePolygon poly = containingPoly(upos.getfX(), upos.getfY());
+            if (poly != null) {
+                poly.addMoveable(moveable);
                     System.out.println(poly + " contains " + moveable);
                     managedMovers.add(moveable);
+            }
+        }
+    }
+
+    /**
+     * Sucht den Polygon, der diesen Punkt enthält.
+     * Vorsicht: Das Polygonnetz deckt nicht alle Punkte ab!
+     * @param x
+     * @param y
+     * @return der gefundene Polygon oder null
+     */
+    public FreePolygon containingPoly(double x, double y) {
+        for (FreePolygon poly : polys) {
+            if (poly.contains(x, y)) {
+                return poly;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Sucht alle Einheiten im Umkreis um diese hier heraus.
+     * Sucht über Sektorgrenzen hinweg.
+     * @param mover der Mover um den gesucht wird.
+     * @param radius der radius
+     * @return eine List mit allen gefundenen Einheiten
+     */
+    public List<Moveable> moversAround(Moveable mover, double radius) {
+        LinkedList<Moveable> movers = new LinkedList<Moveable>();
+        // Alle relevanten Sektoren herausfinden:
+        List<FreePolygon> relPolys = polysAround(mover.getPrecisePosition().getfX(), mover.getPrecisePosition().getfY(), radius);
+        for (FreePolygon poly : relPolys) {
+            // Alle Einheiten dieses Sektors analysieren
+            List<Moveable> moversInSec = poly.getResidents();
+            for (Moveable moverS : moversInSec) {
+                if (moverS.getPrecisePosition().getDistance(mover.getPrecisePosition()) <= radius) {
+                    movers.add(moverS);
                 }
             }
         }
+        return movers;
+    }
+
+    /**
+     * Findet alle Polygone, die einen Teil des Kreises mit Radius radius um x,y bilden.
+     * @param x x-punkt
+     * @param y y-punkt
+     * @param radius der suchradius
+     * @return true, or false;
+     */
+    private List<FreePolygon> polysAround(double x, double y, double radius) {
+        LinkedList<FreePolygon> aPolys = new LinkedList<FreePolygon>();
+        FreePolygon owner = containingPoly(x, y);
+        aPolys.add(owner);
+        
+        Circle circle = new Circle((float) x, (float) y, (float) radius);
+        
+        for (FreePolygon poly : polys) {
+            if (poly.equals(owner)) {
+                continue;
+            }
+            if (circle.intersects(poly.toSlickPoly())) {
+                aPolys.add(poly);
+            }
+        }
+        
+        return aPolys;
     }
 }

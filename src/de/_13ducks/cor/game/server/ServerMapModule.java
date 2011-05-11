@@ -76,7 +76,7 @@ public class ServerMapModule {
     public byte[] abBuffer;
     public byte[] descBuffer;
     public byte[] mapBuffer;
-    private MovementMap moveMap;
+    MovementMap moveMap;
 
     ServerMapModule(ServerCore.InnerServer in) {
         rgi = in;
@@ -1006,7 +1006,7 @@ public class ServerMapModule {
      */
     public void addUnit(Unit u) {
         // Diese Einheit für das Bewegungssystem fit machen
-        u.initServerMovementManagers(rgi);
+        u.initServerMovementManagers(rgi, moveMap);
         //  u.moveManager = smove;
         ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, u);
         u.addServerBehaviour(amove);

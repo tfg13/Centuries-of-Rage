@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import de._13ducks.cor.game.BehaviourProcessor;
+import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
@@ -105,7 +106,7 @@ public class ServerGameController implements Runnable {
         rgi.serverstats.createStatArrays(numberOfPlayers); //Der Serverstatistik die Spielerzahl mitteilen
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
-            unit.initServerMovementManagers(rgi);
+            unit.initServerMovementManagers(rgi, rgi.netmap.moveMap);
             ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
             unit.addServerBehaviour(amove);
             unit.attackManager = amove;
@@ -130,6 +131,24 @@ public class ServerGameController implements Runnable {
             rgi.netmap.sendInitialCollisionMap();
         }
         this.startMainloop();
+        Thread tr = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    while (true) {
+                        Thread.sleep(10000);
+                        List<Moveable> movers = unitList.get(0).moversAroundMe(10);
+                        System.out.println("Found movers (checking " + unitList.get(0) + ":");
+                        for (Moveable mover : movers) {
+                            System.out.println(mover);
+                        }
+                        System.out.println();
+                    }
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
+        tr.start();
     }
 
     public ServerGameController(ServerCore.InnerServer inner) {
