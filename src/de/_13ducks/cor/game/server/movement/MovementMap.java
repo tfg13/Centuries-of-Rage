@@ -262,8 +262,9 @@ public class MovementMap {
             FreePolygon poly = containingPoly(upos.getfX(), upos.getfY());
             if (poly != null) {
                 poly.addMoveable(moveable);
-                    System.out.println(poly + " contains " + moveable);
-                    managedMovers.add(moveable);
+                System.out.println(poly + " contains " + moveable);
+                managedMovers.add(moveable);
+                moveable.setMyPoly(poly);
             }
         }
     }
@@ -318,9 +319,9 @@ public class MovementMap {
         LinkedList<FreePolygon> aPolys = new LinkedList<FreePolygon>();
         FreePolygon owner = containingPoly(x, y);
         aPolys.add(owner);
-        
+
         Circle circle = new Circle((float) x, (float) y, (float) radius);
-        
+
         for (FreePolygon poly : polys) {
             if (poly.equals(owner)) {
                 continue;
@@ -329,10 +330,10 @@ public class MovementMap {
                 aPolys.add(poly);
             }
         }
-        
+
         return aPolys;
     }
-    
+
     /**
      * Sucht den nächstgelegenen Knoten zu einem Moveable in seinem Sektor.
      * @param mover das Moveable
