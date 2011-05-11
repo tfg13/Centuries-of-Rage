@@ -26,12 +26,14 @@
 package de._13ducks.cor.game.server.movement;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Ein Knoten. Zwischen diesen werden Vielecke aufgespannt (FreePolygon)
  * Ein Knoten gehört dabei zu mehreren Polygonen.
  * Mit Hilfe dieser Knoten sucht ein A* den besten Weg.
+ * Deshalb hat dieses Objekt auch diverse Wegfindungs-Relevante Variablen
  */
 public class Node {
 
@@ -47,6 +49,18 @@ public class Node {
      * Die absolute y-Koordinate dieses Polygons
      */
     private final double y;
+    /**
+     * Die "Kosten" eines Weges. Siehe Pathfinder
+     */
+    private double cost;
+    /**
+     * Der "Vorgänger" dieses Knotens auf einem Weg. Siehe Pathfinder
+     */
+    private Node parent;
+    /**
+     * Der magische "F-Wert" dieses Knotens. Siehe Pathfinder
+     */
+    private double valF;
 
     /**
      * Erzeugt einen neuen Knoten mit den angegebenen Koordinaten.
@@ -134,5 +148,73 @@ public class Node {
      */
     public Vector toVector() {
         return new Vector(x, y);
+    }
+
+    /**
+     * @return the cost
+     */
+    public double getCost() {
+        return cost;
+    }
+
+    /**
+     * @param cost the cost to set
+     */
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    /**
+     * @return the parent
+     */
+    public Node getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+    
+    
+    public int compareTo(Node f) {
+        if (f.getValF() > this.getValF()) {
+            return -1;
+        } else if (f.getValF() < getValF()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @return the valF
+     */
+    public double getValF() {
+        return valF;
+    }
+
+    /**
+     * @param valF the valF to set
+     */
+    public void setValF(double valF) {
+        this.valF = valF;
+    }
+
+    public List<Node> getReachableNodes() {
+        LinkedList<Node> nodes = new LinkedList();
+        for (FreePolygon poly : myPolys) {
+            List<Node> polynodes = poly.getNodes();
+            for (Node n : polynodes) {
+                if (!nodes.contains(n)) {
+                    nodes.add(n);
+                }
+            }
+        }
+        // Uns selber raus nehmen, falls drin
+        nodes.remove(this);
+        return nodes;
     }
 }
