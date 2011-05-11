@@ -72,7 +72,7 @@ public class GroupMember {
      * @param waypoint 
      */
     public void addWaypoint(FloatingPointPosition waypoint) {
-        if (!path.getLast().equals(waypoint)) {
+        if (path.isEmpty() || !path.getLast().equals(waypoint)) {
             path.add(waypoint);
         }
     }
