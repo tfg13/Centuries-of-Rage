@@ -61,6 +61,10 @@ public class Node {
      * Der magische "F-Wert" dieses Knotens. Siehe Pathfinder
      */
     private double valF;
+    /**
+     * Der heuristik-Suchwert. Siehe Pathfinder
+     */
+    private double heuristic;
 
     /**
      * Erzeugt einen neuen Knoten mit den angegebenen Koordinaten.
@@ -225,5 +229,19 @@ public class Node {
      */
     public double movementCostTo(Node node) {
         return Math.sqrt((x - node.x) * (x - node.x) + (y - node.y) * (y - node.y));
+    }
+
+    /**
+     * @return the heuristic
+     */
+    public double getHeuristic() {
+        return heuristic;
+    }
+
+    /**
+     * @param heuristic the heuristic to set
+     */
+    public void setHeuristic(double heuristic) {
+        this.heuristic = heuristic;
     }
 }
