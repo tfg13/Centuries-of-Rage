@@ -52,7 +52,6 @@ public class ServerCore extends Core {
     ServerNetController servNet;
     ServerMapModule mapMod;
     ServerGameController gamectrl;
-    ServerPathfinder spath;
     ServerStatistics sstat;	//Statistik
     ServerMoveManager smoveman;
     public boolean ready;              // gibt an, ob das Spiel gestartet werden soll.
@@ -122,10 +121,6 @@ public class ServerCore extends Core {
         // Module laden
 
         rgi.logger("[CoreInit]: Loading modules...");
-
-        rgi.logger("[CoreInit]: Loading pathfinder...");
-
-        spath = new ServerPathfinder(rgi);
 
         rgi.logger("[CoreInit]: Loading gamecontroller");
 
@@ -294,7 +289,6 @@ public class ServerCore extends Core {
         public ServerNetController netctrl;
         public ServerMapModule netmap;
         public ServerGameController game;
-        public ServerPathfinder pathfinder;
 	public ServerStatistics serverstats;
         String lastlog = "";
         public ServerMoveManager moveMan;
@@ -305,7 +299,6 @@ public class ServerCore extends Core {
             netctrl = servNet;
             netmap = mapMod;
             game = gamectrl;
-            pathfinder = spath;
 	    serverstats = sstat;
             moveMan = smoveman;
         }
