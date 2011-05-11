@@ -322,4 +322,21 @@ public class FreePolygon {
             residents.add(mover);
         }
     }
+
+    /**
+     * Liefert eine (unveränderliche) Liste aller derzeitiger Movers auf diesem Sektor zurück.
+     * @return eine Liste mit allen movers auf diesem sektor.
+     */
+    public List<Moveable> getResidents() {
+        return Collections.unmodifiableList(residents);
+    }
+    
+    public org.newdawn.slick.geom.Polygon toSlickPoly() {
+        org.newdawn.slick.geom.Polygon poly = new org.newdawn.slick.geom.Polygon();
+        for (Node node : myNodes) {
+            poly.addPoint((float) node.getX(),(float) node.getY());
+        }
+        poly.addPoint((float) myNodes.get(0).getX(), (float) myNodes.get(0).getX());
+        return poly;
+    }
 }
