@@ -97,7 +97,7 @@ public class GroupManager {
             if (path != null) {
                 // Weg setzen
                 for (Node node : path) {
-                    member.addWaypoint(node.toFPP());
+                    member.addWaypoint(node);
                 }
             }
             // Ziel einfügen
