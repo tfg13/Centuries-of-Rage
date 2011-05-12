@@ -25,8 +25,8 @@
  */
 package de._13ducks.cor.game.server.movement;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import java.util.LinkedList;
 
 /**
@@ -35,11 +35,11 @@ import java.util.LinkedList;
 public class GroupMember {
     
     private Moveable mover;
-    private LinkedList<FloatingPointPosition> path;
+    private LinkedList<SimplePosition> path;
     
     public GroupMember(Moveable mover) {
         this.mover = mover;
-        path = new LinkedList<FloatingPointPosition>();
+        path = new LinkedList<SimplePosition>();
     }
 
     /**
@@ -71,7 +71,7 @@ public class GroupMember {
      * Der Wegpunkt wird nur eingefügt, wenn er nicht schon am Ende ist.
      * @param waypoint 
      */
-    public void addWaypoint(FloatingPointPosition waypoint) {
+    public void addWaypoint(SimplePosition waypoint) {
         if (path.isEmpty() || !path.getLast().equals(waypoint)) {
             path.add(waypoint);
         }
@@ -89,7 +89,7 @@ public class GroupMember {
      * Lösch ihn anschließend aus der Route.
      * @return 
      */
-    public FloatingPointPosition popWaypoint() {
+    public SimplePosition popWaypoint() {
         return path.pollFirst();
     }
     

@@ -28,12 +28,11 @@ package de._13ducks.cor.game.networks.behaviour.impl;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.server.movement.Edge;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.MovementMap;
-import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
 
 /**
@@ -50,7 +49,7 @@ import de._13ducks.cor.game.server.movement.Vector;
 public class ServerBehaviourMove extends ServerBehaviour {
 
     private Moveable caster2;
-    private FloatingPointPosition target;
+    private SimplePosition target;
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
@@ -84,11 +83,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Wir laufen also.
         // Aktuelle Position berechnen:
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
-        Vector vec = target.subtract(oldPos).toVector();
+        Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
         if (!vec.equals(lastVec)) {
             // An Client senden
-            rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target, speed);
+            rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
             lastVec = new Vector(vec.getX(), vec.getY());
         }
         long ticktime = System.currentTimeMillis();
@@ -96,11 +95,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
         // Ziel schon erreicht?
-        Vector nextVec = target.subtract(newpos).toVector();
+        Vector nextVec = target.toFPP().subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            caster2.setMainPosition(target);
+            caster2.setMainPosition(target.toFPP());
             System.out.println("Reached " + target);
             // Neuen Wegpunkt anfordern:
             if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
@@ -110,11 +109,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 deactivate();
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
+                
+                
+                
+                
                 // Strecke zwischen Position und Ziel aufspannen und Sektor des Mittelpunkts suchen
                 System.out.println("Next " + target);
                 System.out.println("VglPos: " + caster2.getPrecisePosition());
                 FloatingPointPosition pos = caster2.getPrecisePosition();
-                Vector searchline = new Vector(target.getfX() - pos.getfX(), target.getfY() - pos.getfY());
+                Vector searchline = new Vector(target.x() - pos.getfX(), target.y() - pos.getfY());
                 searchline.multiplyMe(0.5);
                 searchline.addToMe(pos.toVector());
                 FreePolygon sector = moveMap.containingPoly(searchline.getX(), searchline.getY());
@@ -161,7 +164,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Wehrt sich gegen nicht existente Ziele.
      * @param pos die Zielposition, wird auf direktem Weg angesteuert.
      */
-    public void setTargetVector(FloatingPointPosition pos) {
+    public void setTargetVector(SimplePosition pos) {
         if (pos == null) {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
         }
@@ -176,7 +179,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @param pos die Zielposition
      * @param speed die Geschwindigkeit
      */
-    public void setTargetVector(FloatingPointPosition pos, double speed) {
+    public void setTargetVector(SimplePosition pos, double speed) {
         changeSpeed(speed);
         setTargetVector(pos);
     }

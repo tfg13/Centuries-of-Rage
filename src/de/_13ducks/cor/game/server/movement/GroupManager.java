@@ -27,6 +27,7 @@ package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +126,7 @@ public class GroupManager {
      */
     public boolean reachedTarget(Moveable mover) {
         GroupMember member = memberForMover(mover);
-        FloatingPointPosition nextPoint = member.popWaypoint();
+        SimplePosition nextPoint = member.popWaypoint();
         if (nextPoint != null) {
             mover.getLowLevelManager().setTargetVector(nextPoint);
             return true;
