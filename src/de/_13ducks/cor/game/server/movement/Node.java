@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.SimplePosition;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -265,5 +266,9 @@ public class Node implements Comparable<Node>, SimplePosition {
 
     public Node toNode() {
         return this;
+    }
+
+    public List<FreePolygon> getPolygons() {
+        return Collections.unmodifiableList(myPolys);
     }
 }
