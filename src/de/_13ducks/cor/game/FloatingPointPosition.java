@@ -26,6 +26,7 @@
 
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
 
 /**
@@ -33,7 +34,7 @@ import de._13ducks.cor.game.server.movement.Vector;
  * auch überall dort eingesetzt werden kann, wo "normale" Positionen verwendet werden.
  * Diese Position wird beispielsweise vom MapBuilder verwendet.
  **/
-public class FloatingPointPosition extends Position {
+public class FloatingPointPosition extends Position implements SimplePosition {
 
     /**
      * Die X-Koordinate als Fließkommazahl
@@ -144,6 +145,22 @@ public class FloatingPointPosition extends Position {
             return Math.sqrt((fX - fpos.fX) * (fX - fpos.fX) + (fY - fpos.fY) * (fY - fpos.fY));
         }
         return Math.sqrt((fX - pos.X) * (fX - pos.X) + (fY - pos.Y) * (fY - pos.Y));
+    }
+
+    public double x() {
+        return fX;
+    }
+
+    public double y() {
+        return fY;
+    }
+
+    public FloatingPointPosition toFPP() {
+        return this;
+    }
+
+    public Node toNode() {
+        return new Node(fX, fY);
     }
 
 }

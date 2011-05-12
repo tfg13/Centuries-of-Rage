@@ -26,6 +26,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.SimplePosition;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +37,7 @@ import java.util.List;
  * Mit Hilfe dieser Knoten sucht ein A* den besten Weg.
  * Deshalb hat dieses Objekt auch diverse Wegfindungs-Relevante Variablen
  */
-public class Node implements Comparable<Node> {
+public class Node implements Comparable<Node>, SimplePosition {
 
     /**
      * Diese Listen enthält alle Polygone, auf deren Kanten dieser Polygon liegt oder deren Ecken er markiert.
@@ -252,5 +253,17 @@ public class Node implements Comparable<Node> {
      */
     public FloatingPointPosition toFPP() {
         return new FloatingPointPosition(x, y);
+    }
+
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    public Node toNode() {
+        return this;
     }
 }

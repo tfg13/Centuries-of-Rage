@@ -79,7 +79,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
         vec.normalizeMe();
         long ticktime = System.currentTimeMillis();
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
-        FloatingPointPosition newpos = vec.toFloatingPointPosition().add(oldPos);
+        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
         
         // Ziel schon erreicht?
         Vector nextVec = target.subtract(newpos).toVector();

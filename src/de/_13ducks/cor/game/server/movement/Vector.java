@@ -26,12 +26,13 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.SimplePosition;
 
 /**
  * Ein (double) Richtungsvektor.
  * Einfacher, aber weniger flexibel als FPP
  */
-public class Vector {
+public class Vector implements SimplePosition {
 
     public static final Vector NULL = new Vector(0,0);
     
@@ -80,7 +81,7 @@ public class Vector {
      * Wandelt den Vektor in eine FPP um.
      * @return der Vektor als FPP.
      */
-    public FloatingPointPosition toFloatingPointPosition() {
+    public FloatingPointPosition toFPP() {
         return new FloatingPointPosition(x, y);
     }
 
@@ -223,5 +224,21 @@ public class Vector {
     @Override
     public String toString() {
         return "v:" + x + "|" + y;
+    }
+
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    public Vector toVector() {
+        return this;
+    }
+
+    public Node toNode() {
+        return new Node(x, y);
     }
 }
