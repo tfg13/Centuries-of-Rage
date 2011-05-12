@@ -213,6 +213,10 @@ public class MovementMap {
                 }
             }
             if (shared >= 3) {
+                // Verweis auf diesen Polygon aus den Nodes löschen
+                for (Node node : poly.getNodes()) {
+                    node.removePoly(poly);
+                }
                 return; // Geht nicht, Loch
             }
 
