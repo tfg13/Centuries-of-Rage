@@ -33,6 +33,7 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.MovementMap;
+import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
 
 /**
@@ -101,6 +102,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
             System.out.println("Reached " + target);
+            SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
             if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
@@ -110,19 +112,14 @@ public class ServerBehaviourMove extends ServerBehaviour {
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
                 
-                
-                
-                
-                // Strecke zwischen Position und Ziel aufspannen und Sektor des Mittelpunkts suchen
-                System.out.println("Next " + target);
-                System.out.println("VglPos: " + caster2.getPrecisePosition());
-                FloatingPointPosition pos = caster2.getPrecisePosition();
-                Vector searchline = new Vector(target.x() - pos.getfX(), target.y() - pos.getfY());
-                searchline.multiplyMe(0.5);
-                searchline.addToMe(pos.toVector());
-                FreePolygon sector = moveMap.containingPoly(searchline.getX(), searchline.getY());
-                if (!sector.equals(caster2.getMyPoly())) {
-                    caster2.setMyPoly(sector);
+                SimplePosition newTar = target;
+                if (newTar instanceof Node && oldTar instanceof Node) {
+                    // Nur in diesem Fall kommt ein Sektorwechsel in Frage
+                    FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
+                    // Sektor geändert?
+                    if (!sector.equals(caster2.getMyPoly())) {
+                        caster2.setMyPoly(sector);
+                    }
                 }
             }
         } else {
@@ -206,5 +203,19 @@ public class ServerBehaviourMove extends ServerBehaviour {
     public void stopImmediately() {
         stopUnit = true;
         trigger();
+    }
+    
+    /**
+     * Findet einen Sektor, den beide Knoten gemeinsam haben
+     * @param n1 Knoten 1
+     * @param n2 Knoten 2
+     */
+    private FreePolygon commonSector(Node n1, Node n2) {
+        for (FreePolygon poly : n1.getPolygons()) {
+            if (n2.getPolygons().contains(poly)) {
+                return poly;
+            }
+        }
+        return null;
     }
 }
