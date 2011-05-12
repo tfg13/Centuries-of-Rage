@@ -27,6 +27,7 @@ package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -343,17 +344,18 @@ public class FreePolygon {
 
     /**
      * Liefert einen zu dieser Position möglichst nahe liegenden Knoten dieses Polygons.
-     * @param precisePosition die Position  
+     * @param pos die Position  
      * @return der nächste Knoten
      */
-    public Node closestNode(FloatingPointPosition precisePosition) {
-        Node nearest = myNodes.get(0);
-        double dist = Math.sqrt((precisePosition.getfX() - nearest.getX())*(precisePosition.getfX() - nearest.getX()) + (precisePosition.getfY() - nearest.getY())*(precisePosition.getfY() - nearest.getY()));
-        for (int i = 1; i < myNodes.size(); i++) {
-            double newdist = Math.sqrt((precisePosition.getfX() - myNodes.get(i).getX())*(precisePosition.getfX() - myNodes.get(i).getX()) + (precisePosition.getfY() - myNodes.get(i).getY())*(precisePosition.getfY() - myNodes.get(i).getY()));
+    public Node closestNode(SimplePosition pos) {
+        Node nearest = null;
+        double dist = Double.MAX_VALUE;
+        for (int i = 0; i < myNodes.size(); i++) {
+            Node n = myNodes.get(i);
+            double newdist = Math.sqrt((pos.x() - n.x())*(pos.x() - n.x()) + ((pos.y() - n.y())*(pos.y() - n.y())));
             if (newdist < dist) {
                 dist = newdist;
-                nearest = myNodes.get(i);
+                nearest = n;
             }
         }
         return nearest;
