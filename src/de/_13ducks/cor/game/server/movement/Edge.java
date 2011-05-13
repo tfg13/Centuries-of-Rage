@@ -25,6 +25,8 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.SimplePosition;
+
 /**
  * Eine Kante aus 2 Polygonen.
  * Wird für Polygon-Merge Berechnungen verwendet.
@@ -99,6 +101,10 @@ public class Edge {
      * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
      */
     public boolean intersectsWith(Edge edge) {
+        return intersectionWith(edge) != null;
+    }
+    
+    public SimplePosition intersectionWith(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
@@ -108,11 +114,11 @@ public class Edge {
             // Liegt dieser Schnittpunkt auf beiden Kante?
             if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
                 if (intersection.getX() >= Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() <= Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() >= Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() <= Math.max(edge.start.getY(), edge.end.getY())) {
-                    return true;
+                    return intersection;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     /**
