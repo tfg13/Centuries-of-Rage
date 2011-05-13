@@ -360,4 +360,12 @@ public class FreePolygon {
         }
         return nearest;
     }
+    
+    public List<Edge> calcEdges() {
+        LinkedList list = new LinkedList<Edge>();
+        for (int i = 0; i < myNodes.size(); i++) {
+            list.add(new Edge(myNodes.get(i), myNodes.get(i + 1 < myNodes.size() ? i + 1 : 0)));
+        }
+        return list;
+    }
 }
