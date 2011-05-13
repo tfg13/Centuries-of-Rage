@@ -25,6 +25,10 @@
  */
 package de._13ducks.cor.game.server;
 
+import de._13ducks.cor.game.SimplePosition;
+import de._13ducks.cor.game.server.movement.Edge;
+import de._13ducks.cor.game.server.movement.FreePolygon;
+import de._13ducks.cor.game.server.movement.MovementMap;
 import java.util.*;
 import org.apache.commons.collections.buffer.PriorityBuffer;
 import de._13ducks.cor.game.server.movement.Node;
@@ -52,7 +56,7 @@ public final class ServerPathfinder {
             System.out.println("FixMe: SPathfinder, irregular call: " + startNode + "-->" + targetNode);
             return null;
         }
-        
+
         if (startNode.equals(targetNode)) {
             return new ArrayList<Node>();
         }
@@ -88,11 +92,11 @@ public final class ServerPathfinder {
             List<Node> neighbors = current.getReachableNodes();
 
             for (Node node : neighbors) {
-                
+
                 if (closed.contains(node)) {
                     continue;
                 }
-                
+
                 // Kosten dort hin berechnen
                 cost_t = current.movementCostTo(node);
 
@@ -137,5 +141,80 @@ public final class ServerPathfinder {
         }
 
         return path;					//Pfad zurückgeben
+    }
+
+    public static List<SimplePosition> optimizePath(List<Node> path, SimplePosition startPos, SimplePosition endPos, MovementMap moveMap) {
+        List<SimplePosition> optiList = new LinkedList<SimplePosition>();
+
+        path.add(0, startPos.toNode());
+        path.add(endPos.toNode());
+
+        FreePolygon currentPoly = moveMap.containingPoly(startPos.x(), startPos.y());
+
+        int firstindex = 0;
+        for (int i = 1; i < path.size() - 1; i++) {
+
+            Node pre = path.get(firstindex);
+            Node cur = path.get(i);
+            Node nxt = path.get(i + 1);
+
+            Edge edge = new Edge(pre, nxt);
+
+            LinkedList<Node> extraNodes = new LinkedList<Node>();
+
+            while (!nxt.getPolygons().contains(currentPoly)) {
+                // Die Seite mit Schnitt finden
+                List<Edge> edges = currentPoly.calcEdges();
+                Edge intersecting = null;
+                for (Edge testedge : edges) {
+                    // Gibts da einen Schnitt?
+                    if (edge.intersectsWith(testedge)) {
+                        intersecting = testedge;
+                        break;
+                    }
+                }
+                // Von dieser Kante die Enden suchen
+                FreePolygon nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
+                // Existiert dieser Polygon?
+                if (nextPoly != null) {
+                    // JA!
+                    // Extra Node einfügen
+                    Node extraNode = intersecting.intersectionWith(edge).toNode();
+                    extraNode.addPolygon(nextPoly);
+                    extraNode.addPolygon(currentPoly);
+                    extraNodes.add(extraNode);
+                    currentPoly = nextPoly;
+                } else {
+                    // Nein. Also ist die direkte Route nicht möglich. Der derzeitge Polygon ist also Pflicht.
+                    optiList.add(cur);
+                    firstindex++;
+                    break;
+                }
+            }
+
+            // Alle nach pre löschen
+            if (optiList.size() > 1) {
+                optiList = optiList.subList(0, i);
+            }
+
+            // Alle gefundenen neuen Knoten einbauen
+            optiList.addAll(extraNodes);
+            extraNodes.clear();
+
+        }
+
+        return optiList;
+    }
+
+    private static FreePolygon getOtherPoly(Node n1, Node n2, FreePolygon myself) {
+        for (FreePolygon poly : n1.getPolygons()) {
+            if (poly.equals(myself)) {
+                continue;
+            }
+            if (n2.getPolygons().contains(poly)) {
+                return poly;
+            }
+        }
+        return null;
     }
 }

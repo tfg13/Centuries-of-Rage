@@ -95,8 +95,9 @@ public class GroupManager {
             Node startNode = moveMap.nearestSectorNode(member.getMover());
             List<Node> path = ServerPathfinder.findPath(startNode, targetNode);
             if (path != null) {
+                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap); 
                 // Weg setzen
-                for (Node node : path) {
+                for (SimplePosition node : optiPath) {
                     member.addWaypoint(node);
                 }
             }
