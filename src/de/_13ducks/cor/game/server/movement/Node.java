@@ -132,10 +132,10 @@ public class Node implements Comparable<Node>, SimplePosition {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Node) {
-            Node n = (Node) o;
+        if (o instanceof SimplePosition) {
+            SimplePosition n = (SimplePosition) o;
             // Bei Fließkomma-Vergleichen immer eine Toleranz zulassen, wegen den Rundungsfehlern.
-            if (Math.abs(n.x - this.x) < 0.01 && Math.abs(n.y - this.y) < 0.01) {
+            if (Math.abs(n.x() - this.x) < 0.01 && Math.abs(n.y() - this.y) < 0.01) {
                 return true;
             }
         }

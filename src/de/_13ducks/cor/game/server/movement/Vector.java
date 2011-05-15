@@ -206,9 +206,9 @@ public class Vector implements SimplePosition {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Vector) {
-            Vector vec = (Vector) o;
-            return (Math.abs(this.x - vec.x) < 0.001 && Math.abs(this.y - vec.y) < 0.001);
+        if (o instanceof SimplePosition) {
+            SimplePosition vec = (SimplePosition) o;
+            return (Math.abs(this.x - vec.x()) < 0.001 && Math.abs(this.y - vec.y()) < 0.001);
         }
         return false;
     }

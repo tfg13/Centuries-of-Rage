@@ -162,5 +162,31 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     public Node toNode() {
         return new Node(fX, fY);
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof SimplePosition) {
+            SimplePosition n = (SimplePosition) o;
+            // Bei Fließkomma-Vergleichen immer eine Toleranz zulassen, wegen den Rundungsfehlern.
+            if (Math.abs(n.x() - this.fX) < 0.01 && Math.abs(n.y() - this.fY) < 0.01) {
+                return true;
+            }
+        } else if (o instanceof Position) {
+            Position n = (Position) o;
+            // Bei Fließkomma-Vergleichen immer eine Toleranz zulassen, wegen den Rundungsfehlern.
+            if (Math.abs(n.getX() - this.fX) < 0.01 && Math.abs(n.getY() - this.fY) < 0.01) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.fX) ^ (Double.doubleToLongBits(this.fX) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.fY) ^ (Double.doubleToLongBits(this.fY) >>> 32));
+        return hash;
+    }
 
 }
