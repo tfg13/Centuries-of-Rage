@@ -161,6 +161,7 @@ public final class ServerPathfinder {
             Edge edge = new Edge(pre, nxt);
 
             LinkedList<Node> extraNodes = new LinkedList<Node>();
+            Node lastNode = null;
 
             while (!nxt.getPolygons().contains(currentPoly)) {
                 // Die Seite mit Schnitt finden
@@ -168,7 +169,8 @@ public final class ServerPathfinder {
                 Edge intersecting = null;
                 for (Edge testedge : edges) {
                     // Gibts da einen Schnitt?
-                    if (edge.intersectsWith(testedge)) {
+                    SimplePosition intersection = edge.intersectionWith(testedge);
+                    if (intersection != null && !intersection.equals(lastNode)) {
                         intersecting = testedge;
                         break;
                     }
@@ -183,11 +185,17 @@ public final class ServerPathfinder {
                     extraNode.addPolygon(nextPoly);
                     extraNode.addPolygon(currentPoly);
                     extraNodes.add(extraNode);
+                    lastNode = extraNode;
                     currentPoly = nextPoly;
                 } else {
                     // Nein. Also ist die direkte Route nicht möglich. Der derzeitge Polygon ist also Pflicht.
                     optiList.add(cur);
-                    firstindex++;
+                    firstindex = i;
+                    // CurrentPoly ändern, wenn in neuem Sektor:
+                    FreePolygon currentCand = commonSector(cur, nxt);
+                    if (currentCand != null) {
+                        currentPoly = currentCand;
+                    }
                     break;
                 }
             }
@@ -211,6 +219,20 @@ public final class ServerPathfinder {
             if (poly.equals(myself)) {
                 continue;
             }
+            if (n2.getPolygons().contains(poly)) {
+                return poly;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Findet einen Sektor, den beide Knoten gemeinsam haben
+     * @param n1 Knoten 1
+     * @param n2 Knoten 2
+     */
+    private static FreePolygon commonSector(Node n1, Node n2) {
+        for (FreePolygon poly : n1.getPolygons()) {
             if (n2.getPolygons().contains(poly)) {
                 return poly;
             }
