@@ -144,78 +144,116 @@ public final class ServerPathfinder {
     }
 
     public static List<SimplePosition> optimizePath(List<Node> path, SimplePosition startPos, SimplePosition endPos, MovementMap moveMap) {
-        List<SimplePosition> optiList = new LinkedList<SimplePosition>();
-
+        // Besseres, iteratives Vorgehen
+        // Vorbereitungen: Der Weg muss Start und Ziel beinhalten
         path.add(0, startPos.toNode());
         path.add(endPos.toNode());
 
-        FreePolygon currentPoly = moveMap.containingPoly(startPos.x(), startPos.y());
+        FreePolygon startPolygon = moveMap.containingPoly(startPos.x(), startPos.y());
 
-        int firstindex = 0;
-        for (int i = 1; i < path.size() - 1; i++) {
+        boolean improved = true;
 
-            Node pre = path.get(firstindex);
-            Node cur = path.get(i);
-            Node nxt = path.get(i + 1);
+        while (improved) {
+            improved = false;
 
-            Edge edge = new Edge(pre, nxt);
+            FreePolygon currentPoly = startPolygon;
 
-            LinkedList<Node> extraNodes = new LinkedList<Node>();
-            Node lastNode = null;
+            // Weg durchgehen
 
-            while (!nxt.getPolygons().contains(currentPoly)) {
-                // Die Seite mit Schnitt finden
-                List<Edge> edges = currentPoly.calcEdges();
-                Edge intersecting = null;
-                for (Edge testedge : edges) {
-                    // Gibts da einen Schnitt?
-                    SimplePosition intersection = edge.intersectionWithEdgeNotAllowed(testedge);
-                    if (intersection != null && !intersection.equals(lastNode)) {
-                        intersecting = testedge;
+            for (int i = 1; i < path.size() - 1; i++) {
+                Node pre = path.get(i - 1);
+                Node cur = path.get(i);
+                Node nxt = path.get(i + 1);
+
+                // Testweise Kante zwischen pre und nxt erstellen
+
+                Edge edge = new Edge(pre, nxt);
+
+                // Im Folgenden wird untersucht, ob der neue Weg "edge" passierbar ist.
+                // Eventuell müssen für Polygonwechsel neue Nodes eingefügt werden
+
+                LinkedList<Node> extraNodes = new LinkedList<Node>();
+                // Damit wir beim Dreieckwechsel nicht wieder zurück gehen:
+                Node lastNode = null;
+                
+                boolean routeAllowed = true;
+
+                // Jetzt so lange weiter laufen, bis wir im Ziel-Polygon sind
+                while (!nxt.getPolygons().contains(currentPoly)) {
+                    
+                    
+
+                    // Untersuchen, ob es eine Seite des currentPolygons gibt, die sich mit der alternativRoute schneidet
+                    List<Edge> edges = currentPoly.calcEdges();
+                    Edge intersecting = null;
+                    for (Edge testedge : edges) {
+                        // Gibts da einen Schnitt?
+                        SimplePosition intersection = edge.intersectionWithEdgeNotAllowed(testedge);
+                        if (intersection != null && !intersection.equals(lastNode)) {
+                            intersecting = testedge;
+                            break;
+                        }
+                    }
+                    // Kandidat für den nächsten Polygon
+                    FreePolygon nextPoly = null;
+                    // Kante gefunden
+                    if (intersecting != null) {
+                        // Von dieser Kante die Enden suchen
+                        nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
+                    }
+                    if (intersecting != null && nextPoly != null) {
+                        // Wir haben einen Schnittpunkt und eine Kante gefunden, sind jetzt also in einem neuen Polygon
+                        // Extra Node einfügen
+                        Node extraNode = intersecting.intersectionWithEdgeNotAllowed(edge).toNode();
+                        extraNode.addPolygon(nextPoly);
+                        extraNode.addPolygon(currentPoly);
+                        extraNodes.add(extraNode);
+                        lastNode = extraNode;
+                        currentPoly = nextPoly;
+                        // Der nächste Schleifendurchlauf wird den nächsten Polygon untersuchen
+                    } else {
+                        // Es gab leider keinen betretbaren Polygon hier.
+                        // Das bedeutet, dass wir die Suche abbrechen können, der derzeit untersuchte Wegpunkt (cur)
+                        // Ist also unverzichtbar.
+                        // Es soll also der nächste Punkt untersucht werden, also die for einfach weiter laufen
+                        // Eventuell muss aber der currentPoly geändert werden.
+                        // CurrentPoly ändern, wenn in neuem Sektor:
+                        FreePolygon currentCand = commonSector(cur, nxt);
+                        if (currentCand != null) {
+                            currentPoly = currentCand;
+                        }
+                        routeAllowed = false;
                         break;
                     }
+
                 }
-                FreePolygon nextPoly = null;
-                // Kante gefunden
-                if (intersecting != null) {
-                    // Von dieser Kante die Enden suchen
-                    nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
-                }
-                // Existiert dieser Polygon?
-                if (intersecting != null && nextPoly != null) {
-                    // JA!
-                    // Extra Node einfügen
-                    Node extraNode = intersecting.intersectionWithEdgeNotAllowed(edge).toNode();
-                    extraNode.addPolygon(nextPoly);
-                    extraNode.addPolygon(currentPoly);
-                    extraNodes.add(extraNode);
-                    lastNode = extraNode;
-                    currentPoly = nextPoly;
-                } else {
-                    // Nein. Also ist die direkte Route nicht möglich. Der derzeitge Polygon ist also Pflicht.
-                    optiList.add(cur);
-                    firstindex = i;
-                    // CurrentPoly ändern, wenn in neuem Sektor:
-                    FreePolygon currentCand = commonSector(cur, nxt);
-                    if (currentCand != null) {
-                        currentPoly = currentCand;
-                    }
+                
+                // Wenn der neue Weg gültig war, einbauen. Sonst weiter mit dem nächsten Knoten
+                if (routeAllowed) {
+                    // Den ursprünglichen Knoten löschen und die neuen Einbauen
+                    path.remove(i);
+                    path.addAll(i, extraNodes);
+                    // Der Weg wurde geändert, die for muss neu starten
+                    improved = true;
                     break;
                 }
+                
+                // Wenn wir hier hinkommen, soll der nächste Knoten getestet werden.
+                extraNodes.clear();
             }
 
-            // Alle nach pre löschen
-            if (optiList.size() > 1) {
-                optiList = optiList.subList(0, i);
-            }
-
-            // Alle gefundenen neuen Knoten einbauen
-            optiList.addAll(extraNodes);
-            extraNodes.clear();
 
         }
 
-        return optiList;
+        // Hier ist der Weg fertig optimiert
+        // Start wieder löschen und zurückgeben
+        path.remove(0);
+
+        LinkedList<SimplePosition> retList = new LinkedList<SimplePosition>();
+        for (Node n : path) {
+            retList.add(n);
+        }
+        return retList;
     }
 
     private static FreePolygon getOtherPoly(Node n1, Node n2, FreePolygon myself) {
@@ -229,7 +267,7 @@ public final class ServerPathfinder {
         }
         return null;
     }
-    
+
     /**
      * Findet einen Sektor, den beide Knoten gemeinsam haben
      * @param n1 Knoten 1
