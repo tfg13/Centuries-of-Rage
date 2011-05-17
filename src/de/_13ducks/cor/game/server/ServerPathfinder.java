@@ -169,19 +169,23 @@ public final class ServerPathfinder {
                 Edge intersecting = null;
                 for (Edge testedge : edges) {
                     // Gibts da einen Schnitt?
-                    SimplePosition intersection = edge.intersectionWith(testedge);
+                    SimplePosition intersection = edge.intersectionWithEdgeNotAllowed(testedge);
                     if (intersection != null && !intersection.equals(lastNode)) {
                         intersecting = testedge;
                         break;
                     }
                 }
-                // Von dieser Kante die Enden suchen
-                FreePolygon nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
+                FreePolygon nextPoly = null;
+                // Kante gefunden
+                if (intersecting != null) {
+                    // Von dieser Kante die Enden suchen
+                    nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
+                }
                 // Existiert dieser Polygon?
-                if (nextPoly != null) {
+                if (intersecting != null && nextPoly != null) {
                     // JA!
                     // Extra Node einfügen
-                    Node extraNode = intersecting.intersectionWith(edge).toNode();
+                    Node extraNode = intersecting.intersectionWithEdgeNotAllowed(edge).toNode();
                     extraNode.addPolygon(nextPoly);
                     extraNode.addPolygon(currentPoly);
                     extraNodes.add(extraNode);
