@@ -97,14 +97,15 @@ public class Edge {
     /**
      * Findet heraus, sich diese und die gegebenen Kante schneiden.
      * Das Verhalten für gleiche Kanten ist undefiniert.
+     * Sollte der Schnittpunkt genau auf dem Ende liegen, sagt diese Methode true.
      * @param edge die andere Kante
      * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
      */
-    public boolean intersectsWith(Edge edge) {
-        return intersectionWith(edge) != null;
+    public boolean intersectsWithEdgeAllowed(Edge edge) {
+        return intersectionWithEdgeAllowed(edge) != null;
     }
     
-    public SimplePosition intersectionWith(Edge edge) {
+    public SimplePosition intersectionWithEdgeAllowed(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
@@ -114,6 +115,34 @@ public class Edge {
             // Liegt dieser Schnittpunkt auf beiden Kante?
             if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
                 if (intersection.getX() >= Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() <= Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() >= Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() <= Math.max(edge.start.getY(), edge.end.getY())) {
+                    return intersection;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Findet heraus, sich diese und die gegebenen Kante schneiden.
+     * Das Verhalten für gleiche Kanten ist undefiniert.
+     * Sollte der Schnittpunkt genau auf dem Ende liegen, sagt diese Methode false.
+     * @param edge die andere Kante
+     * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
+     */
+    public boolean intersectsWithEdgeNotAllowed(Edge edge) {
+        return intersectionWithEdgeAllowed(edge) != null;
+    }
+    
+    public SimplePosition intersectionWithEdgeNotAllowed(Edge edge) {
+        // Beide Richtungsvektoren berechnen:
+        Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
+        Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
+        // Gibts einen Schnittpunkt?
+        Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
+        if (intersection != null) {
+            // Liegt dieser Schnittpunkt auf beiden Kante?
+            if (intersection.getX() > Math.min(start.getX(), end.getX()) && intersection.getX() < Math.max(start.getX(), end.getX()) && intersection.getY() > Math.min(start.getY(), end.getY()) && intersection.getY() < Math.max(start.getY(), end.getY())) {
+                if (intersection.getX() > Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() < Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() > Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() < Math.max(edge.start.getY(), edge.end.getY())) {
                     return intersection;
                 }
             }
