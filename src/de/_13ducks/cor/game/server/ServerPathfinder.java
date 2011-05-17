@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.server.movement.Edge;
 import de._13ducks.cor.game.server.movement.FreePolygon;
@@ -180,9 +181,6 @@ public final class ServerPathfinder {
 
                 // Jetzt so lange weiter laufen, bis wir im Ziel-Polygon sind
                 while (!nxt.getPolygons().contains(currentPoly)) {
-                    
-                    
-
                     // Untersuchen, ob es eine Seite des currentPolygons gibt, die sich mit der alternativRoute schneidet
                     List<Edge> edges = currentPoly.calcEdges();
                     Edge intersecting = null;
@@ -248,11 +246,17 @@ public final class ServerPathfinder {
         // Hier ist der Weg fertig optimiert
         // Start wieder löschen und zurückgeben
         path.remove(0);
+        
+        // Das Sektorsystem unterscheidet strikt zwischen SimplePosition und Node, deshalb die letzte durch eine Simple ersetzten
+        Node last = path.remove(path.size() - 1);
 
         LinkedList<SimplePosition> retList = new LinkedList<SimplePosition>();
         for (Node n : path) {
             retList.add(n);
         }
+        
+        // Jetzt wieder einfügen
+        retList.add(new FloatingPointPosition(last.x(), last.y()));
         return retList;
     }
 
