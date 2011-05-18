@@ -195,6 +195,7 @@ public class MainMenu extends Container {
 
     /**
      * Tritt einer Partie bei
+     * versucht 10 mal sich zu verbinden, gibt dann auf
      * @return true, wenns geklappt hat
      */
     public boolean joinServer(String server) {
@@ -208,8 +209,20 @@ public class MainMenu extends Container {
         }
         final int port = 39264;// default port
 
-        core.joinServer("unknownP", adress, port);
-        return true;
+        try {
+            for (int i = 0; i < 10; i++) {
+                Thread.sleep(500);
+                if (core.joinServer("unknownP", adress, port) == true) {
+                    return true;
+                }
+                if (i == 10) {
+                    System.out.println("Connect to Server failed 10 times, giving up...");
+                }
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     /**
