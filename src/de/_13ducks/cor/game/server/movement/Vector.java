@@ -34,8 +34,7 @@ import de._13ducks.cor.game.SimplePosition;
  */
 public class Vector implements SimplePosition {
 
-    public static final Vector NULL = new Vector(0,0);
-    
+    public static final Vector NULL = new Vector(0, 0);
     private double x;
     private double y;
 
@@ -94,7 +93,7 @@ public class Vector implements SimplePosition {
         x *= scalar;
         y *= scalar;
     }
-    
+
     /**
      * Liefert eine Skalar multiplizierte Version dieses Vektors hinzu
      * @param scalar
@@ -103,7 +102,7 @@ public class Vector implements SimplePosition {
     public Vector multiply(double scalar) {
         return new Vector(x * scalar, y * scalar);
     }
-    
+
     /**
      * Addiert einen Vektor auf diesen hier.
      * @param vector 
@@ -112,7 +111,7 @@ public class Vector implements SimplePosition {
         x += vector.x;
         y += vector.y;
     }
-    
+
     /**
      * Liefert einen neuen Vektor, der das Ergebniss einer Summation dieses mit dem gegebenen Vektor darstellt
      * @param vector der zweite summand
@@ -121,7 +120,7 @@ public class Vector implements SimplePosition {
     public Vector add(Vector vector) {
         return new Vector(x + vector.x, y + vector.y);
     }
-    
+
     /**
      * Invertiert direkt diesen Vektor selbst.
      */
@@ -129,7 +128,7 @@ public class Vector implements SimplePosition {
         x *= -1;
         y *= -1;
     }
-    
+
     /**
      * Liefert eine invertierte Kopie dieses Vektors.
      * @return 
@@ -147,7 +146,7 @@ public class Vector implements SimplePosition {
         x *= 1 / fact;
         y *= 1 / fact;
     }
-    
+
     /**
      * Normiert den Vektor
      * Gibt den Normierten zurück
@@ -164,7 +163,7 @@ public class Vector implements SimplePosition {
     public double length() {
         return Math.sqrt(x * x + y * y);
     }
-    
+
     /**
      * Findet heraus, ob dieser Vektor zu dem gegeben Parallel ist.
      * Wie bei allen Vektorvergleichen gibt es eine Toleranz gegen Rundungsfehler.
@@ -186,7 +185,7 @@ public class Vector implements SimplePosition {
     public boolean isOpposite(Vector vec) {
         return this.normalize().equals(new Vector(-vec.x, -vec.y).normalize());
     }
-    
+
     /**
      * Berechnet einen Schnittpunkt zwischen diesem und dem gegeben Vector.
      * Liefert null, falls die Vektoren parallel sind (auch, wenn sie aufeinander liegen!!!)
@@ -198,9 +197,23 @@ public class Vector implements SimplePosition {
             return null;
         }
         // Es gibt einen Schnittpunkt
-        // Diese Formel hab ich mir durch umwandeln von (a,b)+x(c,d)=(e,f)+y(g,h) gebildet
-        double fact = (otherS.y * this.x - mySPos.y * this.x - otherS.x * this.y + mySPos.x * this.y) / (otherVec.x * this.y - otherVec.y * this.x);
-        
+        double fact = 0d;
+        // Sonderfälle:
+        if (this.x == 0) {
+            // Implizit: otherVec.x != 0, weil sonst paralell
+            fact = (mySPos.x - otherS.x) / otherVec.x;
+        } else if (this.y == 0) {
+            // Implizit: otherVec.y != 0, weil sonst paralell
+            fact = (mySPos.y - otherS.y) / otherVec.y;
+        } else if (otherVec.x == 0) {
+            fact = (mySPos.y + (otherS.x - mySPos.x) / x * y - otherS.y) / otherVec.y;
+        } else if (otherVec.y == 0) {
+            fact = (mySPos.x + (otherS.y - mySPos.y) / y * x - otherS.x) / otherVec.x;
+        } else {
+            // Normalfall:
+            // Diese Formel hab ich mir durch umwandeln von (a,b)+x(c,d)=(e,f)+y(g,h) gebildet
+            fact = (otherS.y * this.x - mySPos.y * this.x - otherS.x * this.y + mySPos.x * this.y) / (otherVec.x * this.y - otherVec.y * this.x);
+        }
         return otherS.add(otherVec.multiply(fact));
     }
 
@@ -220,7 +233,7 @@ public class Vector implements SimplePosition {
         hash = 41 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
         return hash;
     }
-    
+
     @Override
     public String toString() {
         return "v:" + x + "|" + y;
