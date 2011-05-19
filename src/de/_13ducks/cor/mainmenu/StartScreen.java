@@ -33,6 +33,7 @@ import de._13ducks.cor.mainmenu.components.ScaledImage;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 import de._13ducks.cor.tools.randommapbuilder.RandomMapBuilder;
 import java.util.HashMap;
+
 /**
  * Der Startbildschirm, der als erstes angezeigt wird
  *
@@ -55,7 +56,7 @@ public class StartScreen extends Container {
 
         mainMenu = m;
 
-         /**********************************************************************
+        /**********************************************************************
          * Slogans:
          *
          *********************************************************************/
@@ -66,12 +67,23 @@ public class StartScreen extends Container {
         super.addComponent(new ScaledImage(mainMenu, -20, 85, 140, 8, "img/mainmenu/buttonnew.png"));
 
 
-        // Einzelspieler:
-        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "Singleplayer") {
+        // Schnellstart
+        super.addComponent(new ImageButton(mainMenu, 16, 86, 13, 6, "img/mainmenu/buttonnew.png", "GO GO GO!") {
 
             @Override
             public void mouseClicked(int button, int x, int y, int clickCount) {
-                // @TODO ert mal singleplayer programmieren....
+
+                // Schnellstart ist für die ungeduldigen Programmierer, die wollen immer debug:
+                boolean debug = true;
+                // Die schönste Karte von allen:
+                String map = "map/Random Map.map";
+
+                // Server starten:
+                super.getMainMenu().startServer(debug, map);
+                // Joinen:
+                getMainMenu().joinServer("localhost");
+                // Partie starten (Status des eigenen Spielers auf ready setzen):
+                getMainMenu().getLobby().send('3' + getMainMenu().getLobby().getPlayername());
             }
         });
 
@@ -128,7 +140,7 @@ public class StartScreen extends Container {
         super.addComponent(new ScaledImage(mainMenu, 0.3, 2.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(mainMenu, -6.9, 6.3, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(mainMenu, 14.9, -8.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
-        super.addComponent(new ScaledImage(mainMenu, 6.6,  9.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
+        super.addComponent(new ScaledImage(mainMenu, 6.6, 9.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(mainMenu, -3.3, 18.6, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(mainMenu, 4.6, 21.0, 13.333, 21.333, "img/mainmenu/blatt.png"));
         super.addComponent(new ScaledImage(mainMenu, -4.2, 26.4, 13.333, 21.333, "img/mainmenu/blatt.png"));
