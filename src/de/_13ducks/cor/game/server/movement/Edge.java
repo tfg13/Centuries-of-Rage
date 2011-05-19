@@ -164,4 +164,9 @@ public class Edge {
         vec.addToMe(end.toVector());
         return new Node(vec.getX(), vec.getY());
     }
+    
+    @Override
+    public String toString() {
+        return start + "-->" + end;
+    }
 }
