@@ -111,7 +111,7 @@ public final class ServerPathfinder {
                     }
                 } else {
                     node.setCost(current.getCost() + cost_t);
-                    node.setHeuristic((Math.abs((targetNode.getX() - node.getX())) + Math.abs((targetNode.getY() - node.getY()))) * 3);	// geschätzte Distanz zum Ziel
+                    node.setHeuristic(Math.sqrt(Math.pow(Math.abs((targetNode.getX() - node.getX())), 2) + Math.pow(Math.abs((targetNode.getY() - node.getY())), 2)));	// geschätzte Distanz zum Ziel
                     //Die Zahl am Ende der Berechnung ist der Aufwand der Wegsuche
                     //5 ist schnell, 4 normal, 3 dauert lange
 
