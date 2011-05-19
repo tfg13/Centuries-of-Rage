@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.game.server.movement;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import java.util.ArrayList;
@@ -222,7 +221,7 @@ public class FreePolygon {
     public boolean equals(Object o) {
         if (o instanceof FreePolygon) {
             FreePolygon p = (FreePolygon) o;
-            for (Node node: p.getNodes()) {
+            for (Node node : p.getNodes()) {
                 if (!myNodes.contains(node)) {
                     return false;
                 }
@@ -239,7 +238,7 @@ public class FreePolygon {
         hash = 89 * hash + (this.myNodes != null ? this.myNodes.hashCode() : 0);
         return hash;
     }
-    
+
     /**
      * Findet heraus, ob der gegebene Punkt innerhalb dieses Polygons liegt.
      * Wenn der Punkt genau auf einer Kante oder auf einem Knoten liegt, ist das Resultat undefiniert.
@@ -251,16 +250,16 @@ public class FreePolygon {
         // Verwendet die übliche Strahlmethode. Dabei wird ein Strahl vom zu untersuchenden Punkt in eine beliebige Richtung
         // augesandt. Dann werden die Anzahl der Schnittpunkte mit Kanten des Polygons gezählt.
         // Ist diese Anzahl ungerade, so befindet sich der Punkt innerhalb. Sonst außen.
-        
+
         // Liste mit Kanten:
         ArrayList<Edge> edges = new ArrayList<Edge>();
         for (int i = 0; i < myNodes.size(); i++) {
             edges.add(new Edge(myNodes.get(i), myNodes.get(i + 1 < myNodes.size() ? i + 1 : 0)));
         }
-        
+
         // Linie bauen:
         Edge edge = new Edge(new Node(x, y), new Node(10000, 10000));
-        
+
         int intersections = 0;
         for (int i = 0; i < edges.size(); i++) {
             // Schnitte suchen
@@ -268,7 +267,7 @@ public class FreePolygon {
                 intersections++;
             }
         }
-        
+
         // Wenn Anzahl ungerade ist es innen.
         return intersections % 2 == 1;
     }
@@ -279,6 +278,9 @@ public class FreePolygon {
      * @return true, wenn konvex.
      */
     public boolean isConvex() {
+        if (this.equals(new FreePolygon(false, new Node(421, 401), new Node(403, 301), new Node(403, 221), new Node(403, 115), new Node(338, 42), new Node(350, 30), new Node(421, 0)))) {
+            System.out.println();
+        }
         boolean rechts = false;
         boolean links = false;
         for (int i = 0; i < myNodes.size(); i++) {
@@ -286,6 +288,31 @@ public class FreePolygon {
             Node n1 = myNodes.get(i > 0 ? i - 1 : myNodes.size() - 1);
             Node n2 = myNodes.get(i);
             Node n3 = myNodes.get(i < myNodes.size() - 1 ? i + 1 : 0);
+            // Vorüberprüfungen:
+            // Sonderfall:
+            // Alle in x oder y-Richtung auf einer Linie:
+            if ((n1.x() == n2.x() && n2.x() == n3.x()) || (n1.y() == n2.y() && n2.y() == n3.y())) {
+                continue; // Weder links noch rechts
+            }
+            // Sonderfall: n1.x() == n2.x(). Das erzeugt sonst immer "rechts" was zu schlimmen Polygonen führen kann!
+            if (n1.x() == n2.x()) {
+                // Nach oben oder unten?
+                if (n1.y() < n2.y()) {
+                    // Zeigt nach oben
+                    if (n3.x() < n1.x()) {
+                        links |= true;
+                    } else if (n3.x() > n1.x()) {
+                        rechts |= true;
+                    }
+                } else {
+                    // Nach unten
+                    if (n3.x() < n1.x()) {
+                        rechts |= true;
+                    } else if (n3.x() > n1.x()) {
+                        links |= true;
+                    }
+                }
+            }
             // Rechts oder Links abbiegen?
             // XY Richtung suchen:
             double vecX = n2.getX() - n1.getX();
@@ -332,11 +359,11 @@ public class FreePolygon {
     public List<Moveable> getResidents() {
         return Collections.unmodifiableList(residents);
     }
-    
+
     public org.newdawn.slick.geom.Polygon toSlickPoly() {
         org.newdawn.slick.geom.Polygon poly = new org.newdawn.slick.geom.Polygon();
         for (Node node : myNodes) {
-            poly.addPoint((float) node.getX(),(float) node.getY());
+            poly.addPoint((float) node.getX(), (float) node.getY());
         }
         poly.addPoint((float) myNodes.get(0).getX(), (float) myNodes.get(0).getX());
         return poly;
@@ -352,7 +379,7 @@ public class FreePolygon {
         double dist = Double.MAX_VALUE;
         for (int i = 0; i < myNodes.size(); i++) {
             Node n = myNodes.get(i);
-            double newdist = Math.sqrt((pos.x() - n.x())*(pos.x() - n.x()) + ((pos.y() - n.y())*(pos.y() - n.y())));
+            double newdist = Math.sqrt((pos.x() - n.x()) * (pos.x() - n.x()) + ((pos.y() - n.y()) * (pos.y() - n.y())));
             if (newdist < dist) {
                 dist = newdist;
                 nearest = n;
@@ -360,7 +387,7 @@ public class FreePolygon {
         }
         return nearest;
     }
-    
+
     public List<Edge> calcEdges() {
         LinkedList list = new LinkedList<Edge>();
         for (int i = 0; i < myNodes.size(); i++) {
