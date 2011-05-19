@@ -176,7 +176,7 @@ public final class ServerPathfinder {
                 LinkedList<Node> extraNodes = new LinkedList<Node>();
                 // Damit wir beim Dreieckwechsel nicht wieder zurück gehen:
                 Node lastNode = null;
-                
+
                 boolean routeAllowed = true;
 
                 // Jetzt so lange weiter laufen, bis wir im Ziel-Polygon sind
@@ -203,6 +203,17 @@ public final class ServerPathfinder {
                         // Wir haben einen Schnittpunkt und eine Kante gefunden, sind jetzt also in einem neuen Polygon
                         // Extra Node einfügen
                         Node extraNode = intersecting.intersectionWithEdgeNotAllowed(edge).toNode();
+
+                        if (extraNode.equals(cur)) {
+                            // Abbruch, das ist eine Gerade, hier kann man nicht abkürzen!
+                            FreePolygon currentCand = commonSector(cur, nxt);
+                            if (currentCand != null) {
+                                currentPoly = currentCand;
+                            }
+                            routeAllowed = false;
+                            break;
+                        }
+
                         extraNode.addPolygon(nextPoly);
                         extraNode.addPolygon(currentPoly);
                         extraNodes.add(extraNode);
@@ -225,7 +236,7 @@ public final class ServerPathfinder {
                     }
 
                 }
-                
+
                 // Wenn der neue Weg gültig war, einbauen. Sonst weiter mit dem nächsten Knoten
                 if (routeAllowed) {
                     // Den ursprünglichen Knoten löschen und die neuen Einbauen
@@ -235,7 +246,7 @@ public final class ServerPathfinder {
                     improved = true;
                     break;
                 }
-                
+
                 // Wenn wir hier hinkommen, soll der nächste Knoten getestet werden.
                 extraNodes.clear();
             }
@@ -246,7 +257,7 @@ public final class ServerPathfinder {
         // Hier ist der Weg fertig optimiert
         // Start wieder löschen und zurückgeben
         path.remove(0);
-        
+
         // Das Sektorsystem unterscheidet strikt zwischen SimplePosition und Node, deshalb die letzte durch eine Simple ersetzten
         Node last = path.remove(path.size() - 1);
 
@@ -254,7 +265,7 @@ public final class ServerPathfinder {
         for (Node n : path) {
             retList.add(n);
         }
-        
+
         // Jetzt wieder einfügen
         retList.add(new FloatingPointPosition(last.x(), last.y()));
         return retList;
