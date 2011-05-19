@@ -148,7 +148,10 @@ public final class ServerPathfinder {
         // Besseres, iteratives Vorgehen
         // Vorbereitungen: Der Weg muss Start und Ziel beinhalten
         path.add(0, startPos.toNode());
-        path.add(endPos.toNode());
+        // Ende muss seinen Polygon kennen:
+        Node endNode = endPos.toNode();
+        endNode.addPolygon(moveMap.containingPoly(endNode.x(), endNode.y()));
+        path.add(endNode);
 
         FreePolygon startPolygon = moveMap.containingPoly(startPos.x(), startPos.y());
 
