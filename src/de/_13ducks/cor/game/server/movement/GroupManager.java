@@ -92,6 +92,7 @@ public class GroupManager {
         // Route planen
         Node targetNode = moveMap.nearestSectorNode(target);
         for (GroupMember member : myMovers) {
+            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
             Node startNode = moveMap.nearestSectorNode(member.getMover());
             List<Node> path = ServerPathfinder.findPath(startNode, targetNode);
             if (path != null) {
