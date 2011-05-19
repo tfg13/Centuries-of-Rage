@@ -141,8 +141,12 @@ public class Edge {
         Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
         if (intersection != null) {
             // Liegt dieser Schnittpunkt auf beiden Kante?
-            if (intersection.getX() > Math.min(start.getX(), end.getX()) && intersection.getX() < Math.max(start.getX(), end.getX()) && intersection.getY() > Math.min(start.getY(), end.getY()) && intersection.getY() < Math.max(start.getY(), end.getY())) {
-                if (intersection.getX() > Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() < Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() > Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() < Math.max(edge.start.getY(), edge.end.getY())) {
+            if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
+                if (intersection.getX() >= Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() <= Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() >= Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() <= Math.max(edge.start.getY(), edge.end.getY())) {
+                    // Liegts genau auf den Ecken?
+                    if (intersection.equals(end.toVector()) || intersection.equals(start.toVector()) || intersection.equals(edge.start.toVector()) || intersection.equals(edge.end.toVector())) {
+                        return null; // Dann nicht!
+                    }
                     return intersection;
                 }
             }
