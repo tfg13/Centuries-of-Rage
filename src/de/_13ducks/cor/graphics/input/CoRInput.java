@@ -30,6 +30,7 @@ import de._13ducks.cor.graphics.CoreGraphics;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import java.awt.Dimension;
@@ -853,7 +854,7 @@ public class CoRInput implements Pauseable {
                 }
             } else {
                 // Default = Move
-                selected.get(0).command(button, graphics.content.translateCoordinatesToFloatPos(x, y), Collections.unmodifiableList(selected), false, rgi);
+                selected.get(0).command(button, notranslation ? new FloatingPointPosition(x, y) : graphics.content.translateCoordinatesToFloatPos(x, y), Collections.unmodifiableList(selected), false, rgi);
             }
         }
     }
