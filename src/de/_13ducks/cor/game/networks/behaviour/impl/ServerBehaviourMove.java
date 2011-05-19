@@ -101,7 +101,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
-            System.out.println("Reached " + target);
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
             if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
