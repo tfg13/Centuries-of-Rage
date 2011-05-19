@@ -38,12 +38,12 @@ import java.util.ArrayList;
  * Nach der Gruppeneinteilung wird der Befehl an den GruppenMoveManager (das MidLevel-Management weitergegeben)
  */
 public class ServerMoveManager {
-    
+
     /**
      * Die aktuelle MovementMap
      */
     private MovementMap moveMap;
-    
+
     /**
      * Initialisiert den Server-Bewegungsmanager.
      * @param moveMap 
@@ -61,12 +61,16 @@ public class ServerMoveManager {
         // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
         // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
         for (Unit unit : movers) {
-            unit.removeFromCurrentGroup();
+            synchronized (unit) {
+                unit.removeFromCurrentGroup();
+            }
         }
         // Neue Gruppe aufmachen und alle hinzufügen
         GroupManager man = new GroupManager(moveMap);
         for (Unit unit : movers) {
-            unit.setCurrentGroup(man);
+            synchronized (unit) {
+                unit.setCurrentGroup(man);
+            }
         }
         // Gruppe ans Ziel senden
         man.goTo(target);
@@ -78,9 +82,11 @@ public class ServerMoveManager {
      * @param unit54 Die anzuhaltende Einheit
      */
     public void stopRequest(Unit unit54) {
-        // TODO: Bessere Gruppenverwaltung
-        // Trivial: Einheit aus ihrer Gruppe werfen, dann anhalten.
-        unit54.removeFromCurrentGroup();
-        unit54.getLowLevelManager().stopImmediately();
+        synchronized (unit54) { // Nicht im laufenden Behaviour rumpfuschen
+            // TODO: Bessere Gruppenverwaltung
+            // Trivial: Einheit aus ihrer Gruppe werfen, dann anhalten.
+            unit54.removeFromCurrentGroup();
+            unit54.getLowLevelManager().stopImmediately();
+        }
     }
 }

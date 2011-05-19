@@ -35,6 +35,7 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Lowlevel-Movemanagement
@@ -75,7 +76,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     }
 
     @Override
-    public void execute() {
+    public synchronized void execute() {
         // Auto-Ende:
         if (target == null || speed <= 0) {
             deactivate();
@@ -160,7 +161,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Wehrt sich gegen nicht existente Ziele.
      * @param pos die Zielposition, wird auf direktem Weg angesteuert.
      */
-    public void setTargetVector(SimplePosition pos) {
+    public synchronized void setTargetVector(SimplePosition pos) {
         if (pos == null) {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
         }
@@ -175,7 +176,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @param pos die Zielposition
      * @param speed die Geschwindigkeit
      */
-    public void setTargetVector(SimplePosition pos, double speed) {
+    public synchronized void setTargetVector(SimplePosition pos, double speed) {
         changeSpeed(speed);
         setTargetVector(pos);
     }
@@ -185,7 +186,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Speed wird verkleinert, wenn der Wert über dem Einheiten-Maximum liegen würde
      * @param speed Die Einheitengeschwindigkeit
      */
-    public void changeSpeed(double speed) {
+    public synchronized void changeSpeed(double speed) {
         if (speed > 0 && speed <= caster2.getSpeed()) {
             this.speed = speed;
         }
@@ -199,7 +200,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     /**
      * Stoppt die Einheit innerhalb eines Ticks.
      */
-    public void stopImmediately() {
+    public synchronized void stopImmediately() {
         stopUnit = true;
         trigger();
     }
