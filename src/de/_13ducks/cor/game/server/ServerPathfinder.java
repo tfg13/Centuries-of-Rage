@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.server.movement.Edge;
+import de._13ducks.cor.game.server.movement.FakeNode;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import java.util.*;
@@ -49,18 +50,23 @@ public final class ServerPathfinder {
     private ServerPathfinder() {
     }
 
-    public static synchronized List<Node> findPath(Node startNode, Node targetNode) {
+    public static synchronized List<Node> findPath(SimplePosition start, SimplePosition target, FreePolygon startSector,MovementMap moveMap) {
 
-
-
-        if (startNode == null || targetNode == null) {
-            System.out.println("FixMe: SPathfinder, irregular call: " + startNode + "-->" + targetNode);
+        if (start == null || target == null) {
+            System.out.println("FixMe: SPathfinder, irregular call: " + start + "-->" + target);
             return null;
         }
-
-        if (startNode.equals(targetNode)) {
-            return new ArrayList<Node>();
-        }
+        
+        FreePolygon targetSector = moveMap.containingPoly(target.x(), target.y());
+        FakeNode startNode = new FakeNode(start.x(), start.y(), startSector);
+        Node targetNode = new FakeNode(target.x(), target.y(), targetSector);
+        targetNode.addPolygon(moveMap.containingPoly(target.x(), target.y()));
+        
+        // Der Startknoten muss die Member seines Polys kennen
+        startNode.setReachableNodes(startSector.getNodes().toArray(new Node[0]));
+        // Der Zielknoten muss den Membern seines Polys bekannt sein
+        // Die Movement-Map darf aber nicht verändert werden. Des halb müssen einige Aufrufe intern abgefangen werden und das reingedoktert werden.
+        List<Node> preTargetNodes = targetSector.getNodes();
 
         PriorityBuffer open = new PriorityBuffer();      // Liste für entdeckte Knoten
         LinkedHashSet<Node> containopen = new LinkedHashSet<Node>();  // Auch für entdeckte Knoten, hiermit kann viel schneller festgestellt werden, ob ein bestimmter Knoten schon enthalten ist.
@@ -90,7 +96,7 @@ public final class ServerPathfinder {
             // Aus der open wurde current bereits gelöscht, jetzt in die closed verschieben
             closed.add(current);
 
-            List<Node> neighbors = current.getReachableNodes();
+            List<Node> neighbors = computeNeighbors(current, targetNode, preTargetNodes);
 
             for (Node node : neighbors) {
 
@@ -143,15 +149,17 @@ public final class ServerPathfinder {
 
         return path;					//Pfad zurückgeben
     }
+    
+    private static List<Node> computeNeighbors(Node current, Node target, List<Node> preTargetNodes) {
+        List<Node> originalNodes = current.getReachableNodes();
+        if (preTargetNodes.contains(current)) {
+            originalNodes.add(target);
+        }
+        return originalNodes;
+    }
 
     public static List<SimplePosition> optimizePath(List<Node> path, SimplePosition startPos, SimplePosition endPos, MovementMap moveMap) {
         // Besseres, iteratives Vorgehen
-        // Vorbereitungen: Der Weg muss Start und Ziel beinhalten
-        path.add(0, startPos.toNode());
-        // Ende muss seinen Polygon kennen:
-        Node endNode = endPos.toNode();
-        endNode.addPolygon(moveMap.containingPoly(endNode.x(), endNode.y()));
-        path.add(endNode);
 
         FreePolygon startPolygon = moveMap.containingPoly(startPos.x(), startPos.y());
 
@@ -261,16 +269,10 @@ public final class ServerPathfinder {
         // Start wieder löschen und zurückgeben
         path.remove(0);
 
-        // Das Sektorsystem unterscheidet strikt zwischen SimplePosition und Node, deshalb die letzte durch eine Simple ersetzten
-        Node last = path.remove(path.size() - 1);
-
         LinkedList<SimplePosition> retList = new LinkedList<SimplePosition>();
         for (Node n : path) {
             retList.add(n);
         }
-
-        // Jetzt wieder einfügen
-        retList.add(new FloatingPointPosition(last.x(), last.y()));
         return retList;
     }
 

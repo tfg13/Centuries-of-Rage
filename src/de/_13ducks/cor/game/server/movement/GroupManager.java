@@ -54,7 +54,7 @@ public class GroupManager {
      * Die aktuelle MovementMap
      */
     private MovementMap moveMap;
-    
+
     public GroupManager(MovementMap moveMap) {
         myMovers = new ArrayList<GroupMember>();
         this.moveMap = moveMap;
@@ -90,20 +90,19 @@ public class GroupManager {
     public synchronized void goTo(FloatingPointPosition target) {
         // TODO: Ziele, Formation verwalten!
         // Route planen
-        Node targetNode = moveMap.nearestSectorNode(target);
+
         for (GroupMember member : myMovers) {
             System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
-            Node startNode = moveMap.nearestSectorNode(member.getMover());
-            List<Node> path = ServerPathfinder.findPath(startNode, targetNode);
+            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
             if (path != null) {
-                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap); 
+                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 // Weg setzen
                 for (SimplePosition node : optiPath) {
                     member.addWaypoint(node);
                 }
+                // Loslaufen lassen
+                member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
             }
-            // Loslaufen lassen
-            member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
         }
     }
 
@@ -134,7 +133,7 @@ public class GroupManager {
             return false;
         }
     }
-    
+
     /**
      * Sucht den GroupMember zu einem Mover raus
      * @param mover
