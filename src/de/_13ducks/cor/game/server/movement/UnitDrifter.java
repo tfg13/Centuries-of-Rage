@@ -70,6 +70,7 @@ public class UnitDrifter extends ServerBehaviour {
                 }
                 // Normalisieren und setzten
                 if (!drift.equals(Vector.ZERO)) {
+                    drift.normalizeMe();
                     caster2.getLowLevelManager().setDrift(drift);
                 }
             }
