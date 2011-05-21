@@ -310,6 +310,7 @@ public class MovementMap {
                 }
             }
         }
+        movers.remove(mover); // Die Einheit ist selber nicht dabei!
         return movers;
     }
 
