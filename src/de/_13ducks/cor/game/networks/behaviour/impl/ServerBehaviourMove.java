@@ -87,6 +87,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
         Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
+        // Drift einrechnen:
+        if (driftVector != null) {
+            vec.addToMe(driftVector);
+            vec.normalizeMe();
+        }
         if (!vec.equals(lastVec)) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
@@ -100,6 +105,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
             // Zielvektor erreicht
+            // Drift auf jeden fall löschen
+            driftVector = null;
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
