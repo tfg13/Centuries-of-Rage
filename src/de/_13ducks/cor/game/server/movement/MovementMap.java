@@ -323,7 +323,9 @@ public class MovementMap {
     private List<FreePolygon> polysAround(double x, double y, double radius) {
         LinkedList<FreePolygon> aPolys = new LinkedList<FreePolygon>();
         FreePolygon owner = containingPoly(x, y);
-        aPolys.add(owner);
+        if (owner != null) {
+            aPolys.add(owner);
+        }
 
         Circle circle = new Circle((float) x, (float) y, (float) radius);
 
@@ -357,7 +359,7 @@ public class MovementMap {
         // Erst den Knoten suchen
         return nearestNode(containingPoly(target.getfX(), target.getfY()), target);
     }
-    
+
     /**
      * Fragt den gegebenen Sektor nach dem nächsten Knoten.
      * @param poly

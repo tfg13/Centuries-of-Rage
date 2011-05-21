@@ -35,6 +35,7 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
+import de._13ducks.cor.game.server.movement.UnitDrifter;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
@@ -298,6 +299,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this, this, moveMap);
         addServerBehaviour(lowLevelManager);
+        addServerBehaviour(new UnitDrifter(this, moveMap, rgi));
         this.moveMap = moveMap;
     }
     

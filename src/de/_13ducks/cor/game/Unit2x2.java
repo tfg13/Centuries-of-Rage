@@ -202,4 +202,8 @@ public class Unit2x2 extends Unit {
 	g.setColor(spriteColor);
 	g.fillRect(x, y, 2, 2);
     }
+
+    public double getRadius() {
+        return 1;
+    }
 }

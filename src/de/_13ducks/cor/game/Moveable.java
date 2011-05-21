@@ -153,4 +153,10 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @param myPoly the myPoly to set
      */
     public void setMyPoly(FreePolygon myPoly);
+    
+    /**
+     * Liefert den Kollisionsradius dieses Movers
+     * @return den Kollisionsradius dieses Movers
+     */
+    public double getRadius();
 }

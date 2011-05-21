@@ -35,7 +35,6 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.game.server.movement.Vector;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Lowlevel-Movemanagement
@@ -56,6 +55,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private boolean stopUnit = false;
     private long lastTick;
     private Vector lastVec;
+    private Vector driftVector;
     private MovementMap moveMap;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
@@ -111,7 +111,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 deactivate();
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
-                
+
                 SimplePosition newTar = target;
                 if (newTar instanceof Node && oldTar instanceof Node) {
                     // Nur in diesem Fall kommt ein Sektorwechsel in Frage
@@ -167,7 +167,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         target = pos;
         lastTick = System.currentTimeMillis();
-        lastVec = Vector.NULL;
+        lastVec = Vector.ZERO;
         activate();
     }
 
@@ -193,6 +193,18 @@ public class ServerBehaviourMove extends ServerBehaviour {
         trigger();
     }
 
+    /**
+     * Setzt den Driftvektor. Gilt bis zum Sektorwechsel bzw. bis ein Ziel erreicht wurde.
+     * @param driftVector 
+     */
+    public synchronized void setDrift(Vector driftVector) {
+        if (isMoving()) {
+            System.out.println("Drift set to " + driftVector);
+            this.driftVector = driftVector;
+            trigger();
+        }
+    }
+
     public boolean isMoving() {
         return target != null;
     }
@@ -204,7 +216,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         stopUnit = true;
         trigger();
     }
-    
+
     /**
      * Findet einen Sektor, den beide Knoten gemeinsam haben
      * @param n1 Knoten 1
