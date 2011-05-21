@@ -31,7 +31,6 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import java.util.List;
-import org.newdawn.slick.util.pathfinding.Mover;
 
 /**
  * Lässt Einheitenbatzen auseinanderdriften.
@@ -39,7 +38,10 @@ import org.newdawn.slick.util.pathfinding.Mover;
  */
 public class UnitDrifter extends ServerBehaviour {
 
+    private static final double MOVE_DRIFT_FACTOR = 1.0;
+    
     private Unit caster2;
+    
 
     public UnitDrifter(Unit caster2, MovementMap mover, ServerCore.InnerServer rgi) {
         super(rgi, caster2, 3, 1, true);
@@ -66,11 +68,12 @@ public class UnitDrifter extends ServerBehaviour {
                 FloatingPointPosition me = caster2.getPrecisePosition();
                 for (Moveable mover : colliding) {
                     FloatingPointPosition pos = mover.getPrecisePosition();
-                    drift.addToMe(new Vector(pos.x() - me.x(), pos.y() - me.y()));
+                    drift.addToMe(new Vector(me.x() - pos.x(), me.y() - pos.y()));
                 }
                 // Normalisieren und setzten
                 if (!drift.equals(Vector.ZERO)) {
                     drift.normalizeMe();
+                    drift.multiplyMe(MOVE_DRIFT_FACTOR);
                     caster2.getLowLevelManager().setDrift(drift);
                 }
             }
