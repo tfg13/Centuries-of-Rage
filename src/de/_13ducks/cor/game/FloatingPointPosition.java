@@ -156,7 +156,7 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     }
 
     public FloatingPointPosition toFPP() {
-        return this;
+        return new FloatingPointPosition(fX, fY);
     }
 
     public Node toNode() {

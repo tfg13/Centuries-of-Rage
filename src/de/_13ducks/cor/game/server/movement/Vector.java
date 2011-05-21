@@ -248,7 +248,7 @@ public class Vector implements SimplePosition {
     }
 
     public Vector toVector() {
-        return this;
+        return new Vector(x, y);
     }
 
     public Node toNode() {
