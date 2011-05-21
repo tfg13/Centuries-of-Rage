@@ -265,7 +265,7 @@ public class Node implements Comparable<Node>, SimplePosition {
     }
 
     public Node toNode() {
-        return this;
+        return new Node(x, y);
     }
 
     public List<FreePolygon> getPolygons() {
