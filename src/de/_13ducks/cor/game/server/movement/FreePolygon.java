@@ -27,6 +27,7 @@ package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
+import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -342,14 +343,23 @@ public class FreePolygon {
     }
 
     /**
-     * Fügt eine Einheit zu diesem Polygon hinzu.
-     * Es passiert nichts, wenn die Einheit schon bekannt ist.
+     * Fügt einen Mover zu diesem Polygon hinzu.
+     * Es passiert nichts, wenn der Mover schon bekannt ist.
      * @param unit 
      */
     public void addMoveable(Moveable mover) {
         if (!residents.contains(mover)) {
             residents.add(mover);
         }
+    }
+    
+    /**
+     * Löscht ein Mover wieder aus diesem Polygon.
+     * Es passiert nichts, wenn der Mover gar nicht bekannt war.
+     * @param mover 
+     */
+    public void removeMoveable(Moveable mover) {
+        residents.remove(mover);
     }
 
     /**

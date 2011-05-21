@@ -362,6 +362,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * @param myPoly the myPoly to set
      */
     public void setMyPoly(FreePolygon myPoly) {
+        // Beim alten abmelden:
+        if (this.myPoly != null) {
+            this.myPoly.removeMoveable(this);
+        }
         this.myPoly = myPoly;
+        this.myPoly.addMoveable(this);
     }
 }
