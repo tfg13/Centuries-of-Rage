@@ -105,7 +105,7 @@ public class Edge {
     public boolean intersectsWithEndsAllowed(Edge edge) {
         return intersectionWithEndsAllowed(edge) != null;
     }
-    
+
     public SimplePosition intersectionWithEndsAllowed(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
@@ -122,7 +122,7 @@ public class Edge {
         }
         return null;
     }
-    
+
     /**
      * Findet heraus, sich diese und die gegebenen Kante schneiden.
      * Das Verhalten für gleiche Kanten ist undefiniert.
@@ -133,7 +133,7 @@ public class Edge {
     public boolean intersectsWithEndsNotAllowed(Edge edge) {
         return intersectionWithEndsAllowed(edge) != null;
     }
-    
+
     public SimplePosition intersectionWithEndsNotAllowed(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
@@ -156,6 +156,34 @@ public class Edge {
     }
 
     /**
+     * Findet den Schnittpunkt zwischen dieser und der gegebenen Edge, sofern er existiert.
+     * Nimmt dazu unendlich lange Edges an.
+     * @param edge Die andere Kante
+     * @return Der Schnittpunkt oder null.
+     */
+    public SimplePosition endlessIntersection(Edge edge) {
+        // Beide Richtungsvektoren berechnen:
+        Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
+        Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
+        // Gibts einen Schnittpunkt?
+        return me.intersectionWith(start.toVector(), edge.start.toVector(), other);
+    }
+
+    /**
+     * Findet für Punkte, die auf dieser Kante liegen würden, wenn sie unendlich wäre
+     * heraus, ob sie auch auf dieser endlich langen Kante liegen.
+     * @param onLine Die Position. MUSS (!) auf der unendlich langen Linie liegen
+     * @return true, wenn drauf (ecken zählen mit)
+     */
+    public boolean partOf(SimplePosition onLine) {
+        // Liegt dieser Schnittpunkt auf beiden Kante?
+        if (onLine.x() >= Math.min(start.x(), end.x()) && onLine.x() <= Math.max(start.x(), end.x()) && onLine.y() >= Math.min(start.getY(), end.getY()) && onLine.y() <= Math.max(start.getY(), end.getY())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Erzeugt einen neuen Knoten, der auf den Mittelpunkt dieser Kante zeigt.
      * @return einen neuen Knoten, der auf den Mittelpunkt dieser Kante zeigt.
      */
@@ -165,7 +193,7 @@ public class Edge {
         vec.addToMe(end.toVector());
         return new Node(vec.getX(), vec.getY());
     }
-    
+
     @Override
     public String toString() {
         return start + "-->" + end;
@@ -184,6 +212,6 @@ public class Edge {
         Edge direct = new Edge(pos1.toNode(), pos2.toNode());
         // Schnittpunkt suchen
         return intersectsWithEndsAllowed(direct);
-        
+
     }
 }
