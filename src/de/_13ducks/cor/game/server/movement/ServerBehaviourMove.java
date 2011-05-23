@@ -31,10 +31,6 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.server.movement.FreePolygon;
-import de._13ducks.cor.game.server.movement.MovementMap;
-import de._13ducks.cor.game.server.movement.Node;
-import de._13ducks.cor.game.server.movement.Vector;
 
 /**
  * Lowlevel-Movemanagement
@@ -46,20 +42,52 @@ import de._13ducks.cor.game.server.movement.Vector;
  * Hat exklusive Kontrolle über die Einheitenposition.
  * Weigert sich, sich schneller als die maximale Einheitengeschwindigkeit zu bewegen.
  * Dadurch werden Sprünge verhindert.
+ * 
+ *      * Der Client lässt Einheiten auf konkrete Ziele zu laufen,
+ * während der Server Einheiten anhand zweier Vektoren bewegt (direction und drift),
+ * und auf ein variables Ziel in Form einer Linie zu läuft.
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
+    /**
+     * Der von diesem Behaviour bewegte mover
+     */
     private Moveable caster2;
-    private SimplePosition target;
+    /**
+     * Das Ziel, das der Client zurzeit ansteuert.
+     */
+    private SimplePosition clientTarget;
+    /**
+     * Das eigentliche, ursprüngliche Ziel.
+     */
+    private SimplePosition basicTarget;
+    /**
+     * Die Linie, auf der die Einheit stehen bleiben wird.
+     */
+    private Edge targetLine;
+    /**
+     * Die derzeitige Einheitengeschwindigkeit
+     */
     private double speed;
+    /**
+     * Ermöglicht sofortiges stoppen
+     */
     private boolean stopUnit = false;
+    /**
+     * Wann zuletzt eine Berechnung durchgeführt wurde
+     */
     private long lastTick;
-    private Vector lastVec;
     /**
      * Der Richtungsvektor dieser Einheit, in diese Richtung läuft die Einheit
      */
-    private Vector directionVec;
+    private Vector directionVector;
+    /**
+     * Der Driftvektor, kann während der Bewegung geändert werden, ohne dass die Einheit Schaden nimmt
+     */
     private Vector driftVector;
+    /**
+     * Die Movemap, die alles verwaltet
+     */
     private MovementMap moveMap;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
@@ -82,48 +110,48 @@ public class ServerBehaviourMove extends ServerBehaviour {
     @Override
     public synchronized void execute() {
         // Auto-Ende:
-        if (target == null || speed <= 0) {
+        if (targetLine == null || speed <= 0) {
             deactivate();
             return;
         }
         // Wir laufen also.
-        // Aktuelle Position berechnen:
+        // Alte Position
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
-        Vector vec = target.toFPP().subtract(oldPos).toVector();
-        vec.normalizeMe();
-        // Drift einrechnen:
+        // Richtung berechnen:
+        Vector vec = directionVector.normalize(); // Kopiert den Vector
+        // Drift?
         if (driftVector != null) {
             vec.addToMe(driftVector);
-            vec.normalizeMe();
         }
-        if (!vec.equals(lastVec)) {
-            // An Client senden
-            rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
-            lastVec = new Vector(vec.getX(), vec.getY());
-        }
+        // Auf Länge eins
+        vec.normalizeMe();
+        // Mit Zeitfaktor verrechnen (also den zurückgelegten Weg berechnen)
         long ticktime = System.currentTimeMillis();
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
-        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
-
-        // Ziel schon erreicht?
-        Vector nextVec = target.toFPP().subtract(newpos).toVector();
-        if (vec.isOpposite(nextVec)) {
-            // Zielvektor erreicht
-            // Drift auf jeden fall löschen
+        // Neue Position bestimmen
+        FloatingPointPosition newPos = vec.toFPP().add(oldPos);
+        // Ziellinie überquert?
+        Edge thisMove = new Edge(oldPos.toNode(), newPos.toNode());
+        SimplePosition intersection = targetLine.endlessIntersection(thisMove);
+        
+        if (thisMove.partOf(intersection)) {
+            // Ziel erreicht!
             driftVector = null;
-            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            caster2.setMainPosition(target.toFPP());
-            SimplePosition oldTar = target;
-            // Neuen Wegpunkt anfordern:
+            directionVector = null;
+            // Ziel setzen
+            caster2.setMainPosition(intersection.toFPP());
+            // Altes Ziel backupen
+            SimplePosition oldTar = basicTarget;
+            // Achtung: Benötigt eventuell Anpassungen!
             if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
-                target = null;
+                basicTarget = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
 
-                SimplePosition newTar = target;
+                SimplePosition newTar = basicTarget;
                 if (newTar instanceof Node && oldTar instanceof Node) {
                     // Nur in diesem Fall kommt ein Sektorwechsel in Frage
                     FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
@@ -134,21 +162,28 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 }
             }
         } else {
+            // Wir laufen noch.
             // Sofort stoppen?
             if (stopUnit) {
                 // Der Client muss das auch mitbekommen
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
-                caster2.setMainPosition(newpos);
-                target = null;
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newPos.getfX()), Float.floatToIntBits((float) newPos.getfY())));
+                caster2.setMainPosition(newPos);
+                basicTarget = null;
+                driftVector = null;
+                directionVector = null;
                 stopUnit = false;
                 deactivate();
             } else {
                 // Weiterlaufen
-                caster2.setMainPosition(newpos);
+                // Muss dem Client eine Änderung mitgeteilt werden?
+                if (!intersection.equals(clientTarget)) {
+                    rgi.netctrl.broadcastMoveVec(caster2.getNetID(), intersection.toFPP(), speed);
+                    clientTarget = intersection;
+                }
+                caster2.setMainPosition(newPos);
                 lastTick = System.currentTimeMillis();
             }
         }
-
     }
 
     @Override
@@ -176,10 +211,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (pos == null) {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
         }
-        target = pos;
+        basicTarget = pos;
         lastTick = System.currentTimeMillis();
-        lastVec = Vector.ZERO;
-        directionVec = target.toFPP().subtract(caster2.getPrecisePosition()).toVector().normalize();
+        directionVector = pos.toFPP().subtract(caster2.getPrecisePosition()).toVector().normalize();
+        // Neue targetLine berechnen:
+        Vector direction = new Vector(-directionVector.y(), directionVector.x());
+        targetLine = new Edge(basicTarget.toFPP().add(direction.multiply(50000).toFPP()).toNode(), basicTarget.toFPP().subtract(direction.multiply(50000).toFPP()).toNode());
         activate();
     }
 
@@ -218,7 +255,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     }
 
     public boolean isMoving() {
-        return target != null;
+        return basicTarget != null;
     }
 
     /**
