@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.SimplePosition;
 
 /**
@@ -168,5 +169,21 @@ public class Edge {
     @Override
     public String toString() {
         return start + "-->" + end;
+    }
+
+    /**
+     * Findet heraus, ob der eine Punkt auf der einen, der andere auf der anderen Seite dieser Linie liegen - 
+     * oder ob beide auf der gleichen Seite sind.
+     * Gibt true, wenn die Seiten unterschiedlich sind.
+     * @param pos1 Position 1
+     * @param pos2 Position 
+     * @return 
+     */
+    boolean sidesDiffer(SimplePosition pos1, SimplePosition pos2) {
+        // Linie ziehen:
+        Edge direct = new Edge(pos1.toNode(), pos2.toNode());
+        // Schnittpunkt suchen
+        return intersectsWithEndsAllowed(direct);
+        
     }
 }
