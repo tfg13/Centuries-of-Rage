@@ -197,7 +197,7 @@ public final class ServerPathfinder {
                     Edge intersecting = null;
                     for (Edge testedge : edges) {
                         // Gibts da einen Schnitt?
-                        SimplePosition intersection = edge.intersectionWithEdgeNotAllowed(testedge);
+                        SimplePosition intersection = edge.intersectionWithEndsNotAllowed(testedge);
                         if (intersection != null && !intersection.equals(lastNode)) {
                             intersecting = testedge;
                             break;
@@ -213,7 +213,7 @@ public final class ServerPathfinder {
                     if (intersecting != null && nextPoly != null) {
                         // Wir haben einen Schnittpunkt und eine Kante gefunden, sind jetzt also in einem neuen Polygon
                         // Extra Node einfügen
-                        Node extraNode = intersecting.intersectionWithEdgeNotAllowed(edge).toNode();
+                        Node extraNode = intersecting.intersectionWithEndsNotAllowed(edge).toNode();
 
                         if (extraNode.equals(cur)) {
                             // Abbruch, das ist eine Gerade, hier kann man nicht abkürzen!
