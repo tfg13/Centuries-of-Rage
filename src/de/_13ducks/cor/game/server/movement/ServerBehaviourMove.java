@@ -279,4 +279,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         return null;
     }
+
+    /**
+     * Liefert den Driftvektor zurück
+     * @return der Driftvektor
+     */
+    Vector getDriftVector() {
+        return driftVector;
+    }
 }

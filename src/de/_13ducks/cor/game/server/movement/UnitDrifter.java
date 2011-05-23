@@ -73,7 +73,7 @@ public class UnitDrifter extends ServerBehaviour {
                     drift.addToMe(vect.multiply(MOVE_DRIFT_FACTOR / searchDist));
                 }
                 // Normalisieren und setzten
-                if (!drift.equals(Vector.ZERO)) {
+                if (!drift.equals(caster2.getLowLevelManager().getDriftVector())) {
                     caster2.getLowLevelManager().setDrift(drift);
                 }
             }
