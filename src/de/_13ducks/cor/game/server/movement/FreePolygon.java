@@ -264,7 +264,7 @@ public class FreePolygon {
         int intersections = 0;
         for (int i = 0; i < edges.size(); i++) {
             // Schnitte suchen
-            if (edges.get(i).intersectsWithEdgeAllowed(edge)) {
+            if (edges.get(i).intersectsWithEndsAllowed(edge)) {
                 intersections++;
             }
         }

@@ -101,11 +101,11 @@ public class Edge {
      * @param edge die andere Kante
      * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
      */
-    public boolean intersectsWithEdgeAllowed(Edge edge) {
-        return intersectionWithEdgeAllowed(edge) != null;
+    public boolean intersectsWithEndsAllowed(Edge edge) {
+        return intersectionWithEndsAllowed(edge) != null;
     }
     
-    public SimplePosition intersectionWithEdgeAllowed(Edge edge) {
+    public SimplePosition intersectionWithEndsAllowed(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
@@ -129,11 +129,11 @@ public class Edge {
      * @param edge die andere Kante
      * @return true, wenn ein Schnittpunkt existiert, der auf beiden Kanten liegt, sonst false.
      */
-    public boolean intersectsWithEdgeNotAllowed(Edge edge) {
-        return intersectionWithEdgeAllowed(edge) != null;
+    public boolean intersectsWithEndsNotAllowed(Edge edge) {
+        return intersectionWithEndsAllowed(edge) != null;
     }
     
-    public SimplePosition intersectionWithEdgeNotAllowed(Edge edge) {
+    public SimplePosition intersectionWithEndsNotAllowed(Edge edge) {
         // Beide Richtungsvektoren berechnen:
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
