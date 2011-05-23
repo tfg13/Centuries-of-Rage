@@ -62,18 +62,18 @@ public class UnitDrifter extends ServerBehaviour {
         if (caster2.getLowLevelManager().isMoving()) {
             // Drift-Vektor berechnen:
             // Einheiten in der Nähe suchen:
-            List<Moveable> colliding = caster2.moversAroundMe(caster2.getRadius() * 2);
+            double searchDist = caster2.getRadius() * 2;
+            List<Moveable> colliding = caster2.moversAroundMe(searchDist);
             if (!colliding.isEmpty()) {
                 Vector drift = Vector.ZERO.toVector(); // Kopiert den Vektor
                 FloatingPointPosition me = caster2.getPrecisePosition();
                 for (Moveable mover : colliding) {
                     FloatingPointPosition pos = mover.getPrecisePosition();
-                    drift.addToMe(new Vector(me.x() - pos.x(), me.y() - pos.y()));
+                    Vector vect = new Vector(me.x() - pos.x(), me.y() - pos.y());
+                    drift.addToMe(vect.multiply(MOVE_DRIFT_FACTOR / searchDist));
                 }
                 // Normalisieren und setzten
                 if (!drift.equals(Vector.ZERO)) {
-                    drift.normalizeMe();
-                    drift.multiplyMe(MOVE_DRIFT_FACTOR);
                     caster2.getLowLevelManager().setDrift(drift);
                 }
             }
