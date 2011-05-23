@@ -26,7 +26,7 @@
 package de._13ducks.cor.game;
 
 import de._13ducks.cor.game.client.ClientCore;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;

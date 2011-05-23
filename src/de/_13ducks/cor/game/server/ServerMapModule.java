@@ -48,7 +48,7 @@ import de._13ducks.cor.game.Unit2x2;
 import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourMove;
+import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.map.MapIO;
 

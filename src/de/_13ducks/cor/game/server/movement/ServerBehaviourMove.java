@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.game.networks.behaviour.impl;
+package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
@@ -55,6 +55,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private boolean stopUnit = false;
     private long lastTick;
     private Vector lastVec;
+    /**
+     * Der Richtungsvektor dieser Einheit, in diese Richtung läuft die Einheit
+     */
+    private Vector directionVec;
     private Vector driftVector;
     private MovementMap moveMap;
 
@@ -175,6 +179,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         target = pos;
         lastTick = System.currentTimeMillis();
         lastVec = Vector.ZERO;
+        directionVec = target.toFPP().subtract(caster2.getPrecisePosition()).toVector().normalize();
         activate();
     }
 
