@@ -38,10 +38,7 @@ import java.util.List;
  */
 public class UnitDrifter extends ServerBehaviour {
 
-    private static final double MOVE_DRIFT_FACTOR = 1.0;
-    
     private Unit caster2;
-    
 
     public UnitDrifter(Unit caster2, MovementMap mover, ServerCore.InnerServer rgi) {
         super(rgi, caster2, 3, 1, true);
@@ -68,8 +65,10 @@ public class UnitDrifter extends ServerBehaviour {
             FloatingPointPosition me = caster2.getPrecisePosition();
             for (Moveable mover : colliding) {
                 FloatingPointPosition pos = mover.getPrecisePosition();
+                double distance = caster2.getPrecisePosition().getDistance(mover.getPrecisePosition());
                 Vector vect = new Vector(me.x() - pos.x(), me.y() - pos.y());
-                drift.addToMe(vect.multiply(MOVE_DRIFT_FACTOR / searchDist));
+                vect.normalizeMe();
+                drift.addToMe(vect.multiply(searchDist - distance));
             }
             // Normalisieren und setzten
             if (!drift.equals(caster2.getLowLevelManager().getDriftVector())) {
