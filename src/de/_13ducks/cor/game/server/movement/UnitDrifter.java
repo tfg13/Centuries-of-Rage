@@ -64,18 +64,16 @@ public class UnitDrifter extends ServerBehaviour {
             // Einheiten in der Nähe suchen:
             double searchDist = caster2.getRadius() * 2;
             List<Moveable> colliding = caster2.moversAroundMe(searchDist);
-            if (!colliding.isEmpty()) {
-                Vector drift = Vector.ZERO.toVector(); // Kopiert den Vektor
-                FloatingPointPosition me = caster2.getPrecisePosition();
-                for (Moveable mover : colliding) {
-                    FloatingPointPosition pos = mover.getPrecisePosition();
-                    Vector vect = new Vector(me.x() - pos.x(), me.y() - pos.y());
-                    drift.addToMe(vect.multiply(MOVE_DRIFT_FACTOR / searchDist));
-                }
-                // Normalisieren und setzten
-                if (!drift.equals(caster2.getLowLevelManager().getDriftVector())) {
-                    caster2.getLowLevelManager().setDrift(drift);
-                }
+            Vector drift = Vector.ZERO.toVector(); // Kopiert den Vektor
+            FloatingPointPosition me = caster2.getPrecisePosition();
+            for (Moveable mover : colliding) {
+                FloatingPointPosition pos = mover.getPrecisePosition();
+                Vector vect = new Vector(me.x() - pos.x(), me.y() - pos.y());
+                drift.addToMe(vect.multiply(MOVE_DRIFT_FACTOR / searchDist));
+            }
+            // Normalisieren und setzten
+            if (!drift.equals(caster2.getLowLevelManager().getDriftVector())) {
+                caster2.getLowLevelManager().setDrift(drift);
             }
         }
     }
