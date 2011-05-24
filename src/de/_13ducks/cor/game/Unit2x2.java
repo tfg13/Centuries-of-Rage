@@ -205,7 +205,7 @@ public class Unit2x2 extends Unit {
     
     @Override
     public double getRadius() {
-        return 1;
+        return 2;
     }
     
 }
