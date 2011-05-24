@@ -168,6 +168,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Der Client muss das auch mitbekommen
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newPos.getfX()), Float.floatToIntBits((float) newPos.getfY())));
                 caster2.setMainPosition(newPos);
+                System.out.println("STOP " + caster2 + " to " + newPos);
                 basicTarget = null;
                 driftVector = null;
                 directionVector = null;
