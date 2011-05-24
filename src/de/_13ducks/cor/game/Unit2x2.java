@@ -204,6 +204,6 @@ public class Unit2x2 extends Unit {
     }
 
     public double getRadius() {
-        return 1;
+        return 2;
     }
 }

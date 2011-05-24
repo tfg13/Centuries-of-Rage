@@ -211,6 +211,6 @@ public class Unit3x3 extends Unit {
     }
 
     public double getRadius() {
-        return 1.5;
+        return 3;
     }
 }
