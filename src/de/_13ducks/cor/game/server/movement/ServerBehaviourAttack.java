@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -92,14 +93,73 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Dieser Modus wird nicht automatisch verlassen.
      */
     private static final int STAY_STILL = 7;
+    
+    
+    /**
+     * Der derzeitige Modus
+     */
+    private int mode = MODE_SEARCHENEMY;
+    /**
+     * Das derzeitige Ziel
+     */
+    private GameObject target;
+    /**
+     * Die Einheit selbst
+     */
+    private Unit caster2;
+    /**
+     * Wann die Einheit frühstens das nächste mal "feuern" kann
+     */
+    private long nextHit;
 
     public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner) {
         super(inner, caster, 2, 5, true);
+        caster2 = caster;
     }
 
     @Override
     public void execute() {
+        switch (mode) {
+            case STAY_STILL:
+                // Überhaupt gar nichts. Die Einheit wehrt sich nicht.
+                break;
+            case STAY_FIGHTING:
+                // Angriff nur auf Einheiten in Reichweite
+                if (target != null && inRange(target)) {
+                    shootIfReady();
+                } else {
+                    // Einheit in Reichweite suchen
+                }
+                break;
+        }
+    }
+    
+    /**
+     * Prüft, ob das gegebene GO in Reichweite ist
+     * @param object
+     * @return 
+     */
+    private boolean inRange(GameObject object) {
+        return caster2.getPrecisePosition().getDistance(object.getCentralPosition()) <= caster2.getRange();
+    }
+    
+    /**
+     * Sucht nach Einheiten in Reichweite.
+     * Um die Serverlast zu reduzieren, wird nur gelegentlich gesucht.
+     */
+    private void searchInRangeScheduled() {
         
+    }
+    
+    /**
+     * "Feuert", falls der Cooldown ok ist.
+     */
+    private void shootIfReady() {
+        if (System.currentTimeMillis() >= nextHit) {
+            // FEUER!
+            System.out.println("FEUER!");
+            nextHit += caster2.getAtkdelay();
+        }
     }
 
     @Override
