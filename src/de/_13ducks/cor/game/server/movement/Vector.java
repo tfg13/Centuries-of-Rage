@@ -34,7 +34,7 @@ import de._13ducks.cor.game.SimplePosition;
  */
 public class Vector implements SimplePosition {
 
-    public static final Vector NULL = new Vector(0, 0);
+    public static final Vector ZERO = new Vector(0, 0);
     private double x;
     private double y;
 

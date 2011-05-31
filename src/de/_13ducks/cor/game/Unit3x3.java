@@ -209,4 +209,9 @@ public class Unit3x3 extends Unit {
 	g.setColor(spriteColor);
 	g.fillRect(x, y, 3, 3);
     }
+    
+    @Override
+    public double getRadius() {
+        return 1.5;
+    }
 }

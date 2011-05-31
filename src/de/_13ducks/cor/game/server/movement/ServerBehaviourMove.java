@@ -162,7 +162,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         target = pos;
         lastTick = System.currentTimeMillis();
-        lastVec = Vector.NULL;
+        lastVec = Vector.ZERO;
         activate();
     }
 
