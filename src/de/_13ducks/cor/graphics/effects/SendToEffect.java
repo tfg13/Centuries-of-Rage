@@ -29,6 +29,7 @@ import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.GraphicsImage;
 import java.util.Map;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 /**
  * Der Effekt, der angezeigt wird, wenn mit selektierten Einheiten auf den Boden rechtsgeklickt wird.
@@ -36,6 +37,8 @@ import org.newdawn.slick.Graphics;
 public class SendToEffect extends SkyEffect {
     
     private static final int DURATION = 500;
+    private static final int OFFSET_X = -16;
+    private static final int OFFSET_Y = -32;
     
     /**
      * Die x-Koordinate dieses Effekts
@@ -45,6 +48,9 @@ public class SendToEffect extends SkyEffect {
      * Die y-Koordinate dieses Effekts
      */
     private double y;
+    /**
+     * Zu diesem Zeitpunkt ist der Effekt zu Ende
+     */
     private long finish;
     
     public SendToEffect(double x, double y) {
@@ -55,7 +61,8 @@ public class SendToEffect extends SkyEffect {
 
     @Override
     public void renderSkyEffect(Graphics g, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap) {
-        imgMap.get("img/game/send.png").getImage().draw((float) (x - scrollX), (float) (y - scrollY));
+        Image img = imgMap.get("img/game/send.png").getImage();
+        img.draw((float) (x - scrollX) + OFFSET_X, (float) (y - scrollY) + OFFSET_Y);
     }
 
     @Override
