@@ -110,14 +110,16 @@ public class SendToEffect extends SkyEffect {
     @Override
     public void renderSkyEffect(Graphics g, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap) {
         g.setColor(color);
+        g.setLineWidth(2);
         g.fillOval((float) (x - scrollX) - 5, (float) (y - scrollY) - 3, 10, 6);
 
-        // Pfeil ist nur kurz sichtbar
+        // Pfeil&Kreis sind nur kurz sichtbar
         if (System.currentTimeMillis() < (start + DURATION)) {
             Image img = imgMap.get("img/game/send.png").getImage();
             int animPixel = (int) (((1.0 * System.currentTimeMillis() - start) / DURATION) * 32);
             float rX = (float) (x - scrollX) + OFFSET_X;
             float rY = (float) (y - scrollY) + OFFSET_Y;
+            g.drawOval((float) (x - scrollX) - 5 - ((32 - animPixel) / 1.5f), (float) (y - scrollY) - 3 - ((32 - animPixel) / 2), 10 + ((32 - animPixel) / 0.75f), 6 + ((32 - animPixel)));
             img.draw(rX + (animPixel / 2), rY + animPixel, rX + (img.getWidth() / 4) - (animPixel / 2), rY + img.getHeight(), imgX, 0, imgX + (img.getWidth() / 4), 32 - animPixel);
         }
     }
