@@ -41,9 +41,14 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
  *              wenn das Ziel erreicht/besiegt ist. Vorher nicht.
  */
 public class ServerBehaviourAttack extends ServerBehaviour {
-    
+
     public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner) {
         super(inner, caster, 2, 5, true);
+    }
+
+    @Override
+    public void execute() {
+        System.out.println("ATK-Tick");
     }
 
     @Override
@@ -57,11 +62,6 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     }
 
     @Override
-    public void execute() {
-        System.out.println("ATK-Tick");
-    }
-
-    @Override
     public void gotSignal(byte[] packet) {
     }
 
@@ -72,5 +72,4 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     @Override
     public void unpause() {
     }
-    
 }
