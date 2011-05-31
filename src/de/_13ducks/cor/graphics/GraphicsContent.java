@@ -41,6 +41,7 @@ import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.Node;
+import de._13ducks.cor.graphics.effects.SkyEffect;
 import org.newdawn.slick.geom.Polygon;
 
 @SuppressWarnings("CallToThreadDumpStack")
@@ -175,6 +176,7 @@ public class GraphicsContent extends BasicGame {
     public long endTime;
     public ReentrantLock allListLock;
     public ArrayList<Overlay> overlays;
+    public ArrayList<SkyEffect> skyEffects;
     public GraphicsFireManager fireMan;
     private Minimap minimap;
 
@@ -255,6 +257,8 @@ public class GraphicsContent extends BasicGame {
 //                if (renderFogOfWar) {
 //                    renderFogOfWar(g);
 //                }
+                
+                renderSkyEffects(g);
 
                 if (renderPicCursor) {
                     renderCursor();
@@ -308,6 +312,26 @@ public class GraphicsContent extends BasicGame {
             }
             // Pause zurücksetzten
             pause = 0;
+        }
+    }
+    
+    /**
+     * Zeichnet alle SkyEffects, die derzeit sichtbar sind.
+     * Schmeißt SkyEffects raus, die fertig sind.
+     * @param g der Grafikkontext
+     */
+    private void renderSkyEffects(Graphics g) {
+        for (int i = 0; i < skyEffects.size(); i++) {
+            SkyEffect sky = skyEffects.get(i);
+            if (sky.isDone()) {
+                // Löschen
+                skyEffects.remove(i);
+                i--;
+                continue;
+            }
+            if (sky.isVisible(positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, realPixX, realPixY)) {
+                sky.renderSkyEffect(g, positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, imgMap);
+            }
         }
     }
 
@@ -1409,6 +1433,7 @@ public class GraphicsContent extends BasicGame {
         super("Centuries of Rage HD (pre-Alpha)");
         coloredImgMap = new HashMap<String, GraphicsImage>();
         overlays = new ArrayList<Overlay>();
+        skyEffects = new ArrayList<SkyEffect>();
         fowpatmgr = new GraphicsFogOfWarPattern();
         allListLock = new ReentrantLock();
     }
