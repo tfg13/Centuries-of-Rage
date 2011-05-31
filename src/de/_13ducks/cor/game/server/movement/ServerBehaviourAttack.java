@@ -39,8 +39,59 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
  * - Normal. Die Einheit kämpft gerade, läuft zu einem Kampf oder steht herum und hält nach feinden Ausschau.
  * - F-Mode. (Flucht/Focus). Die Einheit läuft ohne sich zu wehren auf ihr Ziel zu. Dieser Modus wird automatisch verlassen, 
  *              wenn das Ziel erreicht/besiegt ist. Vorher nicht.
+ * Intern gibt es noch mehr Modi, die aber an dieser Stelle nicht genauer erläutert werden.
+ * Default ist Normal-Searching
  */
 public class ServerBehaviourAttack extends ServerBehaviour {
+    
+    /**
+     * Der default-Zustand.
+     * Die Einheit sucht nach Zielen in ihrer Umgebung.
+     * Die Einheit tut dies normalerweise immer, auch beim normalen laufen.
+     */
+    private static final int MODE_SEARCHENEMY = 1;
+    /**
+     * Die Einheit kämpft gerade.
+     * Konkret ist das Ziel in Reichweite, und die Einheit wartet darauf, erneut Schaden zufügen zu können.
+     * In diesem Zustand steht die Einheit.
+     * Ist das Ziel außer Reichweite, wird ein neues in Reichweite gesucht, wenn keins da ist, wird auf MODE_GOTO umgeschaltet und das Ziel verfolgt.
+     */
+    private static final int MODE_FIGHTING = 2;
+    /**
+     * Die Einheit kämpft gerade, läuft konkret gerade auf ihr Ziel zu.
+     * Wechselt auf MODE_FIGHTING, wenn angekommen.
+     * Die Einheit feuert aber auch in diesem Modus, kann also auch während Verfolgungen den Gegner angreiffen.
+     * Die Einheit sucht in diesem Modus permanent alternative Ziele, die ohne weiteres Laufen verfügbar sind.
+     * Sollte so eines gefunden werden, wird das Ziel gewechselt und auf MODE_FIGHTING umgeschaltet
+     */
+    private static final int MODE_GOTO = 3;
+    /**
+     * In diesem Modus setzt die Einheit alles daran, dieses Ziel anzugreiffen.
+     * Das bedeutet: Sie verfolg diese Einheit, auch wenn andere in Reichweite wären.
+     * Sie wehrt sich nicht, auch wenn die verfolgte Einheit weit weg ist.
+     * Die Einheit wird dort hinlaufen und angreiffen, bis sie abgezogen wird.
+     * Dieser Modus wechselt automatisch zurück zu MODE_SEARCHENEMY, wenn das Ziel besiegt ist.
+     */
+    private static final int FOCUS = 4;
+    /**
+     * Dies ist der Fluchtmodus. Die Einheit versucht, das Ziel um jeden Preis zu erreichen.
+     * Die Einheit läuft nur direkt auf das Ziel zu und sucht auf dem Weg keine Ziele.
+     * Die Einheit wird sich nicht verteidigen, wenn sie angegriffen wird.
+     * Sobald das Ziel erreicht ist, schält die Einheit wieder auf MODE_SEARCHENEMY um.
+     */
+    private static final int FLEE = 5;
+    /**
+     * Dies ist "Stellung halten".
+     * Die Einheit wird sich niemals vom Fleck bewegen, auch wenn sie von einem Ziel außer eigener Reichweite angegriffen wird.
+     * Die Einheit wird sich nur wehren, wenn sie sich dafür nicht bewegen muss.
+     * Dieser Modus wird nicht automatisch verlassen.
+     */
+    private static final int STAY_FIGHTING = 6;
+    /**
+     * In diesem Modus wird die Einheit sich weder bewegen, noch sich gegen angreifende Feinde zur Wehr setzen.
+     * Dieser Modus wird nicht automatisch verlassen.
+     */
+    private static final int STAY_STILL = 7;
 
     public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner) {
         super(inner, caster, 2, 5, true);
@@ -48,7 +99,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
     @Override
     public void execute() {
-        System.out.println("ATK-Tick");
+        
     }
 
     @Override
