@@ -23,8 +23,9 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.graphics;
+package de._13ducks.cor.graphics.effects;
 
+import de._13ducks.cor.graphics.GraphicsImage;
 import java.util.Map;
 import org.newdawn.slick.Graphics;
 
