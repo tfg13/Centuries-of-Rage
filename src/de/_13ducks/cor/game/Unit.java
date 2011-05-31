@@ -92,6 +92,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der derzeitige Polygon dieser Einheit.
      */
     private FreePolygon myPoly;
+    /**
+     * Der kleine Pfeil, der erscheint, wenn man die Einheit irgendwo hin schickt
+     */
+    private SendToEffect sendEffect;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -232,8 +236,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             // Fertig, den Rest noch senden
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
         }
-        // Effekt an dieser Stelle anzeigen
-        rgi.rogGraphics.content.skyEffects.add(new SendToEffect(target.getfX(), target.getfY()));
+        // Effekt an dieser Stelle anzeigen. Erstmal den alten abbrechen, falls noch da.
+        if (sendEffect != null) {
+            sendEffect.kill();
+        }
+        sendEffect = new SendToEffect(target.getfX(), target.getfY(), SendToEffect.MODE_GOTO);
+        rgi.rogGraphics.content.skyEffects.add(sendEffect);
     }
 
     public FloatingPointPosition getPrecisePosition() {
