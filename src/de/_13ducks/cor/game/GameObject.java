@@ -66,45 +66,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     public static final int LIFESTATUS_DEAD = 2;
     /**
-     * Dieses Objekt tut gerade nichts. (Normalzustand)
-     */
-    public static final int STATUS_IDLE = 0;
-    /**
-     * Dieses Objekt bewegt sich gerade.
-     */
-    public static final int STATUS_MOVING = 1;
-    /**
-     * Dieses Objekt arbeitet gerade.
-     */
-    public static final int STATUS_WORKING = 2;
-    /**
      * Agressive Bewegung zum Ziel. Ziele in Reichweite werden während der Bewegung angegriffen,
      * das Objekt bliebt notfalls auch stehen.
      * Default-Bewegungsmodus bei Rechtsklick auf den Boden.
-     */
-    public static final int MOVE_AGGRESSIVE = 0;
-    /**
-     * Direkte Bewegung ("fliehen").
-     * Das Objekt wird auf dem Weg nicht stehen bleiben um Feinde zu bekämpfen,
-     * außer das Ziel wird durch eine vollständige Blockade unerreichbar.
-     * Wird durch einen doppel-Rechtsklick (Boden) aktiviert.
-     */
-    public static final int MOVE_DIRECT = 1;
-    /**
-     * Agressive Bewegung zum Ziel / anschließend wird es angegriffen.
-     * Auf dem Weg werden Feinde bekämpft, eventuell bleibt das Objekt auch stehen.
-     * Das hat zur Folge, dass auch andere Objekte angegriffen werden, wenn man so eine ganze
-     * Gruppe anklickt.
-     * Default-Angriffsmodus beim Rechtsklick auf Feinde.
-     */
-    public static final int ATK_AGGRESSIVE = 2;
-    /**
-     * Das Objekt versucht nah genug an das Ziel heranzukommen, damit es angegriffen werden kann.
-     * Das Objekt wird keine anderen Einheiten angreiffen, solange noch die Möglichkeit besteht,
-     * das gesetzte Ziel zu erreichen.
-     * Dieses "Focus-Fire" kann mit einem Doppel-Rechtsklick auf Feinde aktiviert werden.
-     */
-    public static final int ATK_FOCUS = 3;
     /**
      * Leichte Infantrie
      */
@@ -206,16 +170,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     protected int lifeStatus;
     /**
-     * Bewegungs/Angriffszustand dieses Objekts.
-     * z.B. Aggressive Bewegung, FocusFire
-     */
-    private int moveAtkMode;
-    /**
-     * Was die Einheit gerade tut.
-     * z.B. "nichts" "gehen" "arbeiten"
-     */
-    private int status;
-    /**
      * Die Sichtweite dieses Objekts im FoW.
      * Gemessen in eckigen Kreisen um das Zentrum, (sogut es ganzzahlig geht)
      */
@@ -290,7 +244,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         mainPosition = mainPos;
         this.abilitys = new ArrayList<Ability>();
         this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
-        this.status = GameObject.STATUS_IDLE;
         this.graphicsData = new GOGraphicsData();
         this.sbehaviours = new ArrayList<ServerBehaviour>();
         this.cbehaviours = new ArrayList<ClientBehaviour>();
