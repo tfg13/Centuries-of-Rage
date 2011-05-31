@@ -315,6 +315,17 @@ public class MovementMap {
     }
 
     /**
+     * Gibt true zurück, wenn der angegebene Punkt begehbar ist, oder false wenn nicht.
+     */
+    public boolean isPositionWalkable(FloatingPointPosition position) {
+        if (containingPoly(position.getfX(), position.getfY()) == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Findet alle Polygone, die einen Teil des Kreises mit Radius radius um x,y bilden.
      * @param x x-punkt
      * @param y y-punkt
