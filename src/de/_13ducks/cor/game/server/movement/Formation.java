@@ -5,6 +5,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.server.Server;
 
 /**
  * Diese Klasse bietet Funktionen für Einheitenformationen
@@ -129,9 +130,11 @@ public class Formation {
                 position.setfX(position.getfX() + dx);
                 position.setfY(position.getfY() + dy);
 
-                // TODO: prüfen, ob die position frei ist, wenn ja hinzufügen
-                System.out.println("POS: " + position.toString());
-                foundPositions++;
+                // Wenn die Position gültig ist zur liste inzufügen:
+                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position)) {
+                    foundPositions++;
+                }
+
             }
 
             // Richtung ändern:
@@ -157,5 +160,4 @@ public class Formation {
 
 
     }
-
 }
