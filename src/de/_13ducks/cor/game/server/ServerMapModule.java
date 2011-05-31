@@ -76,7 +76,7 @@ public class ServerMapModule {
     public byte[] abBuffer;
     public byte[] descBuffer;
     public byte[] mapBuffer;
-    MovementMap moveMap;
+    private MovementMap moveMap;
 
     ServerMapModule(ServerCore.InnerServer in) {
         rgi = in;
@@ -711,7 +711,7 @@ public class ServerMapModule {
             createAllLists();
             rgi.game.registerUnitList(unitList);
             moveMap = MovementMap.createMovementMap(theMap, buildingList);
-            rgi.moveMan.initMoveManager(moveMap);
+            rgi.moveMan.initMoveManager(getMoveMap());
             rgi.logger("[MapModul] Map \"" + mapName + "\" loaded");
             // Maphash bekannt, jetzt Name + Hash an andere Clients übertragen
             System.out.println("Targethash: " + mapHash);
@@ -1007,7 +1007,7 @@ public class ServerMapModule {
      */
     public void addUnit(Unit u) {
         // Diese Einheit für das Bewegungssystem fit machen
-        u.initServerMovementManagers(rgi, moveMap);
+        u.initServerMovementManagers(rgi, getMoveMap());
         //  u.moveManager = smove;
         ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, u);
         u.addServerBehaviour(amove);
@@ -1026,7 +1026,7 @@ public class ServerMapModule {
         for (Position pos : u.getPositions()) {
             addPerm(pos, u);
         }
-        
+
         registerUnitMovements(u);
 
         // Broadcasten
@@ -1118,13 +1118,13 @@ public class ServerMapModule {
             killBuilding(b);
         }
     }
-    
+
     /**
      * Initialisiert diese Einheit für das neue Server-Bewegunssystem
      * @param unit 
      */
     public void registerUnitMovements(Unit unit) {
-        moveMap.registerMoveable(unit);
+        getMoveMap().registerMoveable(unit);
     }
 
     /**
@@ -1471,7 +1471,7 @@ public class ServerMapModule {
      * @param oldTarget das alte Ziel der Einheit
      */
     public void deleteMoveTargetReservation(Unit unit, Position oldTarget) {
-       Position diff = unit.getMainPosition().subtract(oldTarget);
+        Position diff = unit.getMainPosition().subtract(oldTarget);
         for (Position pos : unit.getPositions()) {
             pos = pos.subtract(diff);
             theMap.getVisMap()[pos.getX()][pos.getY()].deleteReservation();
@@ -1479,5 +1479,12 @@ public class ServerMapModule {
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), 0));
             }
         }
+    }
+
+    /**
+     * Getter für die MoveMap
+     */
+    public MovementMap getMoveMap() {
+        return moveMap;
     }
 }
