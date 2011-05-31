@@ -57,6 +57,7 @@ public class ServerCore extends Core {
     public boolean ready;              // gibt an, ob das Spiel gestartet werden soll.
 
     public ServerCore(boolean debug, String Mapname) {
+        
         debugmode = debug;
 
         rgi = new ServerCore.InnerServer();
@@ -296,6 +297,10 @@ public class ServerCore extends Core {
         @Override
         public void initInner() {
             super.initInner();
+
+            // Server-Referenz initialisiern:
+            Server.setInnerServer(this);
+
             netctrl = servNet;
             netmap = mapMod;
             game = gamectrl;
