@@ -430,4 +430,9 @@ public abstract class Building extends GameObject {
         selectionSet = true;
         return new SelectionMarker(this, null, positions);
     }
+    
+    @Override
+    public Position getCentralPosition() {
+        return mainPosition;
+    }
 }

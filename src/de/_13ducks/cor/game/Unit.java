@@ -393,4 +393,9 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
     }
+    
+    @Override
+    public Position getCentralPosition() {
+        return mainPosition;
+    }
 }

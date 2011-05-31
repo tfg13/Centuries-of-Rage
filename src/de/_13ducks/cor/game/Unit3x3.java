@@ -106,11 +106,6 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public Position getCentralPosition() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public GameObject getCopy(int newNetId) {
         return new Unit3x3(newNetId, this);
     }
