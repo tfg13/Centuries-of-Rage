@@ -39,7 +39,6 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourHeal;
 import de._13ducks.cor.graphics.GOGraphicsData;
 import de._13ducks.cor.graphics.Sprite;
@@ -280,12 +279,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
-    /**
-     * VORSICHT PFUSCH!
-     * Nur aus kompatibiltätsgründen da
-     * @deprecated 
-     */
-    public ServerBehaviourAttack attackManager;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos

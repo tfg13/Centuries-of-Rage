@@ -34,6 +34,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
+import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.effects.SkyEffect;
@@ -79,6 +80,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Ist normalerweise für den ganzen Server global.
      */
     private ServerMoveManager topLevelManager;
+    /**
+     * Der Angriffsmanager dieser Einheit.
+     */
+    private ServerBehaviourAttack atkManager;
     /**
      * Der Client-Movemanager dieser Einheit.
      */
@@ -378,5 +383,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         }
         this.myPoly = myPoly;
         this.myPoly.addMoveable(this);
+    }
+
+    /**
+     * @return the atkManager
+     */
+    public ServerBehaviourAttack getAtkManager() {
+        return atkManager;
     }
 }

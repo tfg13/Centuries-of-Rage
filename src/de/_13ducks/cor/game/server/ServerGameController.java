@@ -34,13 +34,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import de._13ducks.cor.game.BehaviourProcessor;
-import de._13ducks.cor.game.FloatingPointPosition;
-import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourAttack;
 import de._13ducks.cor.game.Unit;
-import de._13ducks.cor.game.server.movement.Node;
 
 /**
  * Die Server-Mainloop und GameLogic
@@ -109,9 +105,6 @@ public class ServerGameController implements Runnable {
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
             unit.initServerMovementManagers(rgi, rgi.netmap.moveMap);
-            ServerBehaviourAttack amove = new ServerBehaviourAttack(rgi, unit);
-            unit.addServerBehaviour(amove);
-            unit.attackManager = amove;
             // Referenzen aller Einheiten eintragen
             rgi.netmap.trackCollision(unit);
             // Bewegungssektor für jede Einheit suchen und setzten

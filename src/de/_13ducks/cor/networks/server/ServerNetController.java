@@ -431,7 +431,6 @@ public class ServerNetController implements Runnable {
             cmdMap[18] = new de._13ducks.cor.networks.cmd.server.S018_ADD_BUILDING();
             cmdMap[20] = new de._13ducks.cor.networks.cmd.server.S020_RECRUIT_ADD();
             cmdMap[22] = new de._13ducks.cor.networks.cmd.server.S022_RECRUIT_DEL();
-            cmdMap[26] = new de._13ducks.cor.networks.cmd.server.S026_MOVE_UNIT_TO_BUILDING();
             cmdMap[27] = new de._13ducks.cor.networks.cmd.server.S027_SET_WAYPOINT();
             cmdMap[28] = new de._13ducks.cor.networks.cmd.server.S028_KILL_UNIT();
             cmdMap[30] = new de._13ducks.cor.networks.cmd.server.S030_KILL_BUILDING();
@@ -442,7 +441,6 @@ public class ServerNetController implements Runnable {
             cmdMap[44] = new de._13ducks.cor.networks.cmd.server.S044_CHAT_MESSAGE();
             cmdMap[45] = new de._13ducks.cor.networks.cmd.server.S045_INIT_CHAT();
             cmdMap[46] = new de._13ducks.cor.networks.cmd.server.S046_TRANSFER_STATISTICS();
-            cmdMap[47] = new de._13ducks.cor.networks.cmd.server.S047_BUILDING_ATTACK_GO();
             cmdMap[50] = new de._13ducks.cor.networks.cmd.server.S050_SET_ANIM();
             cmdMap[51] = new de._13ducks.cor.networks.cmd.server.S051_SET_TEAMS();
             cmdMap[52] = new de._13ducks.cor.networks.cmd.server.S052_MOVE_REQUEST();

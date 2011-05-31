@@ -57,8 +57,6 @@ public class ServerBehaviourConstruct extends ServerBehaviour {
         if (start == 0 && pause == 0) {
             // Neue Startzeit, es geht los
             this.start = (long) (-(building.getBuildprogress() * duration) + System.currentTimeMillis());
-            caster2.attackManager.setIdle(false, false);
-            caster2.attackManager.deactivate();
         }
         // Baut das Gebäude weiter
         // Zeit bestimmen, die bereits vergangen ist
@@ -89,9 +87,6 @@ public class ServerBehaviourConstruct extends ServerBehaviour {
             this.deactivate();
             rgi.serverstats.trackBuildingbuilt(caster.getPlayerId());
             fortschritt = 1;
-            // Einheit nach Zielen in der Umgebung suchen lassen
-            caster2.attackManager.atkTarget = null;
-            caster2.attackManager.activate();
         }
         // Soviel Energie adden:
         building.setHitpoints((int) (fortschritt * building.getMaxhitpoints() / 4 * 3) + building.getMaxhitpoints() / 4 - building.getDamageWhileContruction());
