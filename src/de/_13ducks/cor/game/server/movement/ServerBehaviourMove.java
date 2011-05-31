@@ -31,11 +31,6 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.server.movement.FreePolygon;
-import de._13ducks.cor.game.server.movement.MovementMap;
-import de._13ducks.cor.game.server.movement.Node;
-import de._13ducks.cor.game.server.movement.Vector;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Lowlevel-Movemanagement
