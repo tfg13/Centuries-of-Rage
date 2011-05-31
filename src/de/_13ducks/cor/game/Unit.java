@@ -35,6 +35,8 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
+import de._13ducks.cor.graphics.effects.SendToEffect;
+import de._13ducks.cor.graphics.effects.SkyEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
@@ -230,6 +232,8 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             // Fertig, den Rest noch senden
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, ids[0], ids[1], ids[2], ids[3]));
         }
+        // Effekt an dieser Stelle anzeigen
+        rgi.rogGraphics.content.skyEffects.add(new SendToEffect(target.getfX(), target.getfY()));
     }
 
     public FloatingPointPosition getPrecisePosition() {
