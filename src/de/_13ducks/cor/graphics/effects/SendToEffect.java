@@ -49,6 +49,10 @@ public class SendToEffect extends SkyEffect {
      */
     private double y;
     /**
+     * Start-Zeitpunkt
+     */
+    private long start;
+    /**
      * Zu diesem Zeitpunkt ist der Effekt zu Ende
      */
     private long finish;
@@ -57,12 +61,14 @@ public class SendToEffect extends SkyEffect {
         this.x = x * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X;
         this.y = y * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_PRECISE_Y;
         finish = System.currentTimeMillis() + DURATION;
+        start = System.currentTimeMillis();
     }
 
     @Override
     public void renderSkyEffect(Graphics g, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap) {
         Image img = imgMap.get("img/game/send.png").getImage();
-        img.draw((float) (x - scrollX) + OFFSET_X, (float) (y - scrollY) + OFFSET_Y);
+        int animPixel = (int) (((1.0 * System.currentTimeMillis() - start) / DURATION) * 32);
+        img.draw((float) (x - scrollX) + OFFSET_X, (float) (y - scrollY) + OFFSET_Y, 0, 0, img.getWidth(), animPixel);
     }
 
     @Override
