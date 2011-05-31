@@ -91,9 +91,15 @@ public class GroupManager {
         // TODO: Ziele, Formation verwalten!
         // Route planen
 
+        FloatingPointPosition targetVector = new FloatingPointPosition((0),(1));// immer nach oben zeigen
+
+        FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
+
+        int i=0;
+
         for (GroupMember member : myMovers) {
             System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
-            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
+            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 // Weg setzen
@@ -103,6 +109,7 @@ public class GroupManager {
                 // Loslaufen lassen
                 member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
             }
+            i++;
         }
     }
 
