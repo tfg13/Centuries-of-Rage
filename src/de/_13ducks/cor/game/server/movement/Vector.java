@@ -254,4 +254,15 @@ public class Vector implements SimplePosition {
     public Node toNode() {
         return new Node(x, y);
     }
+
+    /**
+     * Überprüft, ob der Vektor ok, ist. Bedeutet: Kein Wert undendlich und kein Wert NaN
+     * @return 
+     */
+    boolean isValid() {
+        if (Double.isNaN(x) || Double.isNaN(y) || Double.isInfinite(x) || Double.isInfinite(y)) {
+            return false;
+        }
+        return true;
+    }
 }

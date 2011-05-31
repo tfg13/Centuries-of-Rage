@@ -166,7 +166,11 @@ public class Edge {
         Vector me = new Vector(end.getX() - start.getX(), end.getY() - start.getY());
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
         // Gibts einen Schnittpunkt?
-        return me.intersectionWith(start.toVector(), edge.start.toVector(), other);
+        Vector inter = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
+        if (inter.isValid()) {
+            return inter;
+        }
+        return null;
     }
 
     /**
