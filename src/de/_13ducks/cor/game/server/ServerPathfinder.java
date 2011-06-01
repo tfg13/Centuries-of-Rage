@@ -162,6 +162,10 @@ public final class ServerPathfinder {
         // Besseres, iteratives Vorgehen
 
         FreePolygon startPolygon = moveMap.containingPoly(startPos.x(), startPos.y());
+        if (startPolygon == null) {
+            System.out.println("ERROR! Target unreachable (no poly found)");
+            return null;
+        }
 
         boolean improved = true;
 

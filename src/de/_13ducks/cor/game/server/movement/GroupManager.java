@@ -96,12 +96,14 @@ public class GroupManager {
             List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
-                // Weg setzen
-                for (SimplePosition node : optiPath) {
-                    member.addWaypoint(node);
+                if (optiPath != null) {
+                    // Weg setzen
+                    for (SimplePosition node : optiPath) {
+                        member.addWaypoint(node);
+                    }
+                    // Loslaufen lassen
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
                 }
-                // Loslaufen lassen
-                member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
             }
         }
     }
