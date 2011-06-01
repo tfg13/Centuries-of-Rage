@@ -28,33 +28,39 @@ public class Formation {
             formation[i] = new FloatingPointPosition(0, 0);
         }
 
-        int side = 0;
-        for (int i = 0; i < 10; i++) {
-            if ((i * i) < unitCount && unitCount <= ((i + 1) * (i + 1))) {
-                side = ++i;
-                break;
-            }
-        }
-
-        // Die Koordinaten der linken oberen Einheit der Formation:
-        double luX, luY;
-        luX = 0 - (((side - 1) * distance) / 2);
-        luY = 0 - (((side - 1) * distance) / 2);
-        FloatingPointPosition leftuppercorner = new FloatingPointPosition(luX, luY);
-
-        // Die Formation aufbauen:
-        // (Ein Gitter mit den angegebenen Startkoordinaten und dem gegebenen Abstand erstellen)
-        double posX, posY;
-        int fpos = 0;
-        for (int x = 0; x < side; x++) {
-            for (int y = 0; y < side; y++) {
-                formation[fpos] = new FloatingPointPosition(luX + x * distance, luY + y * distance);
-                fpos++;
-                if (fpos >= formation.length) {
-                    x = side;// äußere schleife verlassen
-                    break;// innere schleife verlassen
-                }
-            }
+//        int side = 0;
+//        for (int i = 0; i < 10; i++) {
+//            if ((i * i) < unitCount && unitCount <= ((i + 1) * (i + 1))) {
+//                side = ++i;
+//                break;
+//            }
+//        }
+//
+//        // Die Koordinaten der linken oberen Einheit der Formation:
+//        double luX, luY;
+//        luX = 0 - (((side - 1) * distance) / 2);
+//        luY = 0 - (((side - 1) * distance) / 2);
+//        FloatingPointPosition leftuppercorner = new FloatingPointPosition(luX, luY);
+//
+//        // Die Formation aufbauen:
+//        // (Ein Gitter mit den angegebenen Startkoordinaten und dem gegebenen Abstand erstellen)
+//        double posX, posY;
+//        int fpos = 0;
+//        for (int x = 0; x < side; x++) {
+//            for (int y = 0; y < side; y++) {
+//                formation[fpos] = new FloatingPointPosition(luX + x * distance, luY + y * distance);
+//                fpos++;
+//                if (fpos >= formation.length) {
+//                    x = side;// äußere schleife verlassen
+//                    break;// innere schleife verlassen
+//                }
+//            }
+//        }
+        
+        try {
+            formation = around(formation, 5.0, unitCount, position);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -82,17 +88,21 @@ public class Formation {
 
         // fertige Formation zurückgeben:
 
+        for(int i=0; i<formation.length; i++)
+        {
+            System.out.println(formation[i].toString());
+        }
+
+
         return formation;
     }
 
-    public static void around() {
+    public static FloatingPointPosition[] around(FloatingPointPosition formation[],double distance, int count, FloatingPointPosition target) {
 
-        FloatingPointPosition position = new FloatingPointPosition(0, 0);
-        // abstand der punkte
-        double distance = 5.0;
+       FloatingPointPosition position = new FloatingPointPosition(0,0);
 
         // gefundene positionen / zahl der gesuchten positionen
-        int foundPositions = 0, searchedPositions = 10;
+        int foundPositions = 0, searchedPositions = count;
 
         // Richtung (1=E, 2=N, 3=W, 4=S)
         int direction = 1;
@@ -130,10 +140,18 @@ public class Formation {
                 position.setfX(position.getfX() + dx);
                 position.setfY(position.getfY() + dy);
 
+System.out.println(position.add(target).toString() + " walkable: " + Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position.add(target)));
+
                 // Wenn die Position gültig ist zur liste inzufügen:
-                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position)) {
+                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position.add(target))) {
+                    formation[foundPositions] = new FloatingPointPosition(position.getfX(), position.getfY());
                     foundPositions++;
+                    if(foundPositions == searchedPositions)
+                    {
+                        return formation;
+                    }
                 }
+               
 
             }
 
@@ -158,6 +176,6 @@ public class Formation {
 
 
 
-
+        return formation;
     }
 }
