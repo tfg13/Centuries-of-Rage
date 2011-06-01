@@ -39,6 +39,7 @@ import org.newdawn.slick.opengl.renderer.Renderer;
 import de._13ducks.cor.map.AbstractMapElement;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.Node;
 import de._13ducks.cor.graphics.effects.SkyEffect;
@@ -949,6 +950,14 @@ public class GraphicsContent extends BasicGame {
         g2.setColor(Color.black);
         g2.drawString(output, 5, 40);
         g2.drawString(precout, 5, 60);
+
+        // DEBUG - Begehbarkeit anzeigen:
+        String walk = "free";
+        if(Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(precise))
+        {
+            walk = "blocked";
+        }
+        g2.drawString(walk, 5, 80);
     }
 
     private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {

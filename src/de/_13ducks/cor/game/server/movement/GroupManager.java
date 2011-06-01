@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +91,19 @@ public class GroupManager {
     public synchronized void goTo(FloatingPointPosition target) {
         // TODO: Ziele, Formation verwalten!
         // Route planen
+        List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
+        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size()-2).toFPP());
+
+        FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
+
+
+
+
+        int i = 0;
 
         for (GroupMember member : myMovers) {
             System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
-            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
+            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
@@ -105,6 +115,7 @@ public class GroupManager {
                     member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
                 }
             }
+            i++;
         }
     }
 
