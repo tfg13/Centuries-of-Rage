@@ -93,7 +93,11 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Dieser Modus wird nicht automatisch verlassen.
      */
     private static final int STAY_STILL = 7;
-    
+    /**
+     * Minimale Wartedauer zwischen zwei regulären Suchläufen.
+     * Hinweis: Wird gelegentlich auch sofort getriggert.
+     */
+    private static final int SEARCH_INTERVAL = 500;
     
     /**
      * Der derzeitige Modus
@@ -111,6 +115,10 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Wann die Einheit frühstens das nächste mal "feuern" kann
      */
     private long nextHit;
+    /**
+     * Wann die Einheit das nächste mal nach Feinden suchen kann.
+     */
+    private long nextSearch;
 
     public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner) {
         super(inner, caster, 2, 5, true);
@@ -125,12 +133,22 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 break;
             case STAY_FIGHTING:
                 // Angriff nur auf Einheiten in Reichweite
-                if (target != null && inRange(target)) {
+                if (target != null) {
+                    if (inRange(target)) {
+                        // Dieses Ziel ist weg, wir dürfen es nicht verfolgen, also fallen lassen.
+                        target = null;
+                    }
                     shootIfReady();
                 } else {
                     // Einheit in Reichweite suchen
+                    searchInRangeScheduled();
+                    if (target != null) {
+                        // Neues gefunden? - Dann gleich nochmal rechnen
+                        trigger();
+                    }
                 }
                 break;
+                
         }
     }
     
@@ -148,6 +166,13 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Um die Serverlast zu reduzieren, wird nur gelegentlich gesucht.
      */
     private void searchInRangeScheduled() {
+        if (System.currentTimeMillis() >= nextSearch) {
+            nextSearch = System.currentTimeMillis() + SEARCH_INTERVAL;
+            searchInRangeImmediately();
+        }
+    }
+    
+    private void searchInRangeImmediately() {
         
     }
     
