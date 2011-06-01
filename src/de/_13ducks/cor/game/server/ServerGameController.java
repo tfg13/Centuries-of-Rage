@@ -104,7 +104,7 @@ public class ServerGameController implements Runnable {
         rgi.serverstats.createStatArrays(numberOfPlayers); //Der Serverstatistik die Spielerzahl mitteilen
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
-            unit.initServerMovementManagers(rgi, rgi.netmap.moveMap);
+            unit.initServerMovementManagers(rgi, rgi.netmap.getMoveMap());
             // Referenzen aller Einheiten eintragen
             rgi.netmap.trackCollision(unit);
             // Bewegungssektor für jede Einheit suchen und setzten

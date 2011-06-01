@@ -74,7 +74,7 @@ public class ServerMapModule {
     public byte[] abBuffer;
     public byte[] descBuffer;
     public byte[] mapBuffer;
-    MovementMap moveMap;
+    private MovementMap moveMap;
 
     ServerMapModule(ServerCore.InnerServer in) {
         rgi = in;
@@ -1473,5 +1473,12 @@ public class ServerMapModule {
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), 0));
             }
         }
+    }
+    
+    /**
+     * Getter für die MoveMap
+     */
+    public MovementMap getMoveMap() {
+        return moveMap;
     }
 }
