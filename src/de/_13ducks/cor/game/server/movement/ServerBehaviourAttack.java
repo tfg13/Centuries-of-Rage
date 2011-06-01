@@ -129,6 +129,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     public void execute() {
         switch (mode) {
             case STAY_STILL:
+            case FLEE:
                 // Überhaupt gar nichts. Die Einheit wehrt sich nicht.
                 break;
             case STAY_FIGHTING:
@@ -148,7 +149,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     }
                 }
                 break;
-                
+            
         }
     }
     
