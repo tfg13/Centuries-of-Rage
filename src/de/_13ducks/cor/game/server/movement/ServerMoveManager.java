@@ -89,4 +89,12 @@ public class ServerMoveManager {
             unit54.getLowLevelManager().stopImmediately();
         }
     }
+
+    /**
+     * Einheit soll anhalten, der Befehl kommt nicht vom Client, sondern intern vom Kampfsystem.
+     */
+    void stopForFight(Unit unit) {
+        // Erst mal trivial implementiert (wie ein Client-Befehl)
+        stopRequest(unit);
+    }
 }

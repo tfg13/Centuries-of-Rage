@@ -50,14 +50,14 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Die Einheit sucht nach Zielen in ihrer Umgebung.
      * Die Einheit tut dies normalerweise immer, auch beim normalen laufen.
      */
-    private static final int MODE_SEARCHENEMY = 1;
+    private static final int SEARCHENEMY = 1;
     /**
      * Die Einheit kämpft gerade.
      * Konkret ist das Ziel in Reichweite, und die Einheit wartet darauf, erneut Schaden zufügen zu können.
      * In diesem Zustand steht die Einheit.
      * Ist das Ziel außer Reichweite, wird ein neues in Reichweite gesucht, wenn keins da ist, wird auf MODE_GOTO umgeschaltet und das Ziel verfolgt.
      */
-    private static final int MODE_FIGHTING = 2;
+    private static final int FIGHTING = 2;
     /**
      * Die Einheit kämpft gerade, läuft konkret gerade auf ihr Ziel zu.
      * Wechselt auf MODE_FIGHTING, wenn angekommen.
@@ -65,7 +65,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Die Einheit sucht in diesem Modus permanent alternative Ziele, die ohne weiteres Laufen verfügbar sind.
      * Sollte so eines gefunden werden, wird das Ziel gewechselt und auf MODE_FIGHTING umgeschaltet
      */
-    private static final int MODE_GOTO = 3;
+    private static final int GOTO = 3;
     /**
      * In diesem Modus setzt die Einheit alles daran, dieses Ziel anzugreiffen.
      * Das bedeutet: Sie verfolg diese Einheit, auch wenn andere in Reichweite wären.
@@ -102,7 +102,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     /**
      * Der derzeitige Modus
      */
-    private int mode = MODE_SEARCHENEMY;
+    private int mode = SEARCHENEMY;
     /**
      * Das derzeitige Ziel
      */
@@ -128,8 +128,14 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     @Override
     public void execute() {
         switch (mode) {
-            case STAY_STILL:
             case FLEE:
+                // Ende, wenn Ziel erreicht
+                if (caster2.getLowLevelManager().isMoving()) {
+                    mode = SEARCHENEMY;
+                    trigger();
+                }
+                break;
+            case STAY_STILL:
                 // Überhaupt gar nichts. Die Einheit wehrt sich nicht.
                 break;
             case STAY_FIGHTING:
@@ -149,7 +155,23 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     }
                 }
                 break;
-            
+            case FOCUS:
+                // Keine alternativen Ziele suchen
+                // Ende des Modus, wenn Ziel zerstört
+                if (target == null || target.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
+                    mode = SEARCHENEMY;
+                    trigger();
+                } else {
+                    // In Range?
+                    if (inRange(target)) {
+                        // Bewegung stoppen, falls läuft
+                        if (caster2.getLowLevelManager().isMoving()) {
+                            caster2.getTopLevelManager().stopForFight(caster2);
+                        }
+                        shootIfReady();
+                    }
+                }
+                break;
         }
     }
     
