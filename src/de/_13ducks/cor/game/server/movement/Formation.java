@@ -17,23 +17,22 @@ public class Formation {
     /**
      * erstellt eine Quadratformation am Ziel, die in die Richtung des Vektors zeigt
      * @param unitCount - die Zahl der Einheiten
-     * @param position  - Die Mitte der Formation
+     * @param target    - Die Mitte der Formation
      * @param vector    - Die Richtung in die die Formation zeigen soll
      * @param distance  - Der Abstand zwischen den Einheiten
      */
     public static FloatingPointPosition[] createSquareFormation(int unitCount, FloatingPointPosition target, FloatingPointPosition vector, double distance) {
-        // RückgabeArray initialisieren:
+        // Rückgabe-Array initialisieren:
         FloatingPointPosition[] formation = new FloatingPointPosition[unitCount];
         for (int i = 0; i < formation.length; i++) {
             formation[i] = new FloatingPointPosition(0, 0);
         }
 
-
         // Die Position, die gerde bearbeitet wird
         FloatingPointPosition checkPosition = new FloatingPointPosition(0, 0);
 
-        // gefundene positionen / zahl der gesuchten positionen
-        int foundPositions = 0, searchedPositions = unitCount;
+        // Wieviele Positionen wurden schon gefudnden?
+        int foundPositions = 0;
 
         // Richtung (1=E, 2=N, 3=W, 4=S)
         int direction = 1;
@@ -44,10 +43,12 @@ public class Formation {
         // wenn true wird steps erhöt
         boolean increaseStepFlag = false;
 
-        // solange suchen, bis genügend positionen gefunden wurden:
-        while (foundPositions < searchedPositions) {
-            // X/Y-Veränderung
+        // endlosschleife, wenn genug positionen gefunden wurden wird sie abgebrochen
+        while (true) {
+            // X- und Y-Veränderung
             double dx = 0, dy = 0;
+
+            // in welche Richtung wird gerade gesucht?
             switch (direction) {
                 case 1:
                     dx = distance;
@@ -67,40 +68,34 @@ public class Formation {
                     break;
             }
 
+            // (steps) Schritte in die aktuelle Richtung gehen und bei jedem Schritt die Position überprüfen:
             for (int i = 0; i < steps; i++) {
-                // Position verschieben:
+
+                // CheckPosition verschieben:
                 checkPosition.setfX(checkPosition.getfX() + dx);
                 checkPosition.setfY(checkPosition.getfY() + dy);
 
-
-                // Position rotieren:
+                // CheckPosition rotieren (und damit finalPos berechnen):
                 double lenght = Math.sqrt((vector.getX() * vector.getX()) + (vector.getY() * vector.getY()));
                 double skalar = vector.getY();
                 double cosrot = skalar / lenght;
                 double rotation = Math.acos(cosrot);
                 double x = checkPosition.getfX();
                 double y = checkPosition.getfY();
-
-                // Abstand zum nullpunkt:
                 double dist = Math.sqrt((x * x) + (y * y));
-
                 double newRot = rotation + Math.atan2(checkPosition.getfX(), checkPosition.getfY());
-
                 x = (Math.cos(newRot) * dist);
                 y = (Math.sin(newRot) * dist);
                 FloatingPointPosition finalPos = new FloatingPointPosition(x, y);
 
-
-                // Wenn die Position gültig ist zur liste inzufügen:
+                // Wenn finalPos gültig ist zur Liste hinzufügen:
                 if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
                     formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
                     foundPositions++;
-                    if (foundPositions == searchedPositions) {
+                    if (foundPositions == unitCount) {
                         return formation;
                     }
                 }
-
-
             }
 
             // Richtung ändern:
@@ -117,10 +112,6 @@ public class Formation {
             } else {
                 increaseStepFlag = true;
             }
-
         }
-
-
-        return formation;
     }
 }
