@@ -44,7 +44,7 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
  * Default ist Normal-Searching
  */
 public class ServerBehaviourAttack extends ServerBehaviour {
-    
+
     /**
      * Der default-Zustand.
      * Die Einheit sucht nach Zielen in ihrer Umgebung.
@@ -97,7 +97,6 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Hinweis: Wird gelegentlich auch sofort getriggert.
      */
     private static final int SEARCH_INTERVAL = 500;
-    
     /**
      * Der derzeitige Modus
      */
@@ -201,10 +200,19 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     }
                 }
                 break;
-                
+            default: // (case SEARCHENEMY:)
+                // Die Einheit hat Kampftechnisch nichts zu tun, steht/läuft aber.
+                if (searchInRangeScheduled()) {
+                    // Stehenbleiben
+                    if (caster2.getLowLevelManager().isMoving()) {
+                        caster2.getTopLevelManager().stopForFight(caster2);
+                    }
+                    mode = FIGHTING;
+                }
+                break;
         }
     }
-    
+
     /**
      * Prüft, ob das gegebene GO in Reichweite ist
      * @param object
@@ -213,7 +221,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     private boolean inRange(GameObject object) {
         return caster2.getPrecisePosition().getDistance(object.getCentralPosition()) <= caster2.getRange();
     }
-    
+
     /**
      * Sucht nach Einheiten in Reichweite.
      * Um die Serverlast zu reduzieren, wird nur gelegentlich gesucht.
@@ -225,11 +233,11 @@ public class ServerBehaviourAttack extends ServerBehaviour {
         }
         return false;
     }
-    
+
     private boolean searchInRangeImmediately() {
         return false;
     }
-    
+
     /**
      * "Feuert", falls der Cooldown ok ist.
      */
