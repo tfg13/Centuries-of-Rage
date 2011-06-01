@@ -180,6 +180,7 @@ public class GraphicsContent extends BasicGame {
     public ArrayList<SkyEffect> skyEffects;
     public GraphicsFireManager fireMan;
     private Minimap minimap;
+    private IngameMenu ingamemenu;
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
@@ -1542,7 +1543,9 @@ public class GraphicsContent extends BasicGame {
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, getImgMap(), realPixX, realPixY, rgi);
             minimap.setAllList(allList);
+	    ingamemenu = new IngameMenu();
             overlays.add(minimap);
+	    overlays.add(ingamemenu);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 3, 0, 0, 0, 0));
