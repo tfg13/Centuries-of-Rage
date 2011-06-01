@@ -61,7 +61,6 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     /**
      * Die Einheit kämpft gerade, läuft konkret gerade auf ihr Ziel zu.
      * Wechselt auf MODE_FIGHTING, wenn angekommen.
-     * Die Einheit feuert aber auch in diesem Modus, kann also auch während Verfolgungen den Gegner angreiffen.
      * Die Einheit sucht in diesem Modus permanent alternative Ziele, die ohne weiteres Laufen verfügbar sind.
      * Sollte so eines gefunden werden, wird das Ziel gewechselt und auf MODE_FIGHTING umgeschaltet
      */
@@ -148,8 +147,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     shootIfReady();
                 } else {
                     // Einheit in Reichweite suchen
-                    searchInRangeScheduled();
-                    if (target != null) {
+                    if (searchInRangeScheduled()) {
                         // Neues gefunden? - Dann gleich nochmal rechnen
                         trigger();
                     }
@@ -172,6 +170,22 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     }
                 }
                 break;
+            case GOTO:
+                // Eigentliches Ziel erreicht?
+                if (inRange(target)) {
+                    // Auf Kämpfen umschalten
+                    mode = FIGHTING;
+                    trigger();
+                } else {
+                    // Besseres Ziel verfügbar
+                    if (searchInRangeScheduled()) {
+                        mode = FIGHTING;
+                        trigger();
+                    } else {
+                        // Kein besseres Ziel. Weiterlaufen
+                    }
+                }
+                break;
         }
     }
     
@@ -188,15 +202,16 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Sucht nach Einheiten in Reichweite.
      * Um die Serverlast zu reduzieren, wird nur gelegentlich gesucht.
      */
-    private void searchInRangeScheduled() {
+    private boolean searchInRangeScheduled() {
         if (System.currentTimeMillis() >= nextSearch) {
             nextSearch = System.currentTimeMillis() + SEARCH_INTERVAL;
-            searchInRangeImmediately();
+            return searchInRangeImmediately();
         }
+        return false;
     }
     
-    private void searchInRangeImmediately() {
-        
+    private boolean searchInRangeImmediately() {
+        return false;
     }
     
     /**
