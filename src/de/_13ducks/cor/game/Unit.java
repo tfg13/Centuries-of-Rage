@@ -314,7 +314,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public void initServerMovementManagers(ServerCore.InnerServer rgi, MovementMap moveMap) {
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this, this, moveMap);
-        atkManager = new ServerBehaviourAttack(this, rgi);
+        atkManager = new ServerBehaviourAttack(this, rgi, moveMap);
         addServerBehaviour(lowLevelManager);
         addServerBehaviour(atkManager);
         this.moveMap = moveMap;
@@ -397,5 +397,16 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     @Override
     public Position getCentralPosition() {
         return mainPosition;
+    }
+    
+    @Override
+    public boolean isAttackableBy(int playerID) {
+        // TODO: Auf globales Server-Objekt zugreiffen
+        return getPlayerId() != playerID;
+    }
+
+    @Override
+    public GameObject getAttackable() {
+        return this;
     }
 }

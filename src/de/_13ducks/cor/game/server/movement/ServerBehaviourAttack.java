@@ -26,9 +26,12 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Das Server-Angriffsbehaviour
@@ -117,10 +120,15 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Wann die Einheit das nächste mal nach Feinden suchen kann.
      */
     private long nextSearch;
+    /**
+     * Die MovementMap
+     */
+    private MovementMap movemap;
 
-    public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner) {
+    public ServerBehaviourAttack(Unit caster, ServerCore.InnerServer inner, MovementMap movemap) {
         super(inner, caster, 2, 5, true);
         caster2 = caster;
+        this.movemap = movemap;
     }
 
     @Override
@@ -235,6 +243,28 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     }
 
     private boolean searchInRangeImmediately() {
+        List<Moveable> moversAround = movemap.moversAround(caster2, caster2.getRange());
+        // Liste nach möglichen Zielen filtern (und das mit der geringsten Distanz herausfinden)
+        Iterator<Moveable> it = moversAround.iterator();
+        double minDist = caster2.getRange();
+        Moveable minDistMoveable = null;
+        while (it.hasNext()) {
+            Moveable move = it.next();
+            if (move.isAttackableBy(caster2.getPlayerId())) {
+                double dist = caster2.getPrecisePosition().getDistance(move.getPrecisePosition());
+                if (dist <= minDist) {
+                    minDist = dist;
+                    minDistMoveable = move;
+                }
+            } else {
+                it.remove();
+            }
+        }
+        
+        if (minDistMoveable != null) {
+            target = minDistMoveable.getAttackable();
+            return true;
+        }
         return false;
     }
 

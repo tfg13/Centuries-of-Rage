@@ -159,4 +159,17 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @return den Kollisionsradius dieses Movers
      */
     public double getRadius();
+    
+    /**
+     * Findet heraus, ob dieser Mover von der gegebenen playerID angegriffen werden kann
+     * @param playerId die ID des Angreiffers
+     * @return true, wenn angreifbar
+     */
+    public boolean isAttackableBy(int playerID);
+    
+    /**
+     * Liefert das angreiffbare Ziel. Moveable, die nicht angreiffbar sind, liefern hier null.
+     * @return Das angreiffbare GameObject
+     */
+    public GameObject getAttackable();
 }
