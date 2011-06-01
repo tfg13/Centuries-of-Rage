@@ -21,88 +21,19 @@ public class Formation {
      * @param vector    - Die Richtung in die die Formation zeigen soll
      * @param distance  - Der Abstand zwischen den Einheiten
      */
-    public static FloatingPointPosition[] createSquareFormation(int unitCount, FloatingPointPosition position, FloatingPointPosition vector, double distance) {
+    public static FloatingPointPosition[] createSquareFormation(int unitCount, FloatingPointPosition target, FloatingPointPosition vector, double distance) {
         // RückgabeArray initialisieren:
         FloatingPointPosition[] formation = new FloatingPointPosition[unitCount];
         for (int i = 0; i < formation.length; i++) {
             formation[i] = new FloatingPointPosition(0, 0);
         }
 
-//        int side = 0;
-//        for (int i = 0; i < 10; i++) {
-//            if ((i * i) < unitCount && unitCount <= ((i + 1) * (i + 1))) {
-//                side = ++i;
-//                break;
-//            }
-//        }
-//
-//        // Die Koordinaten der linken oberen Einheit der Formation:
-//        double luX, luY;
-//        luX = 0 - (((side - 1) * distance) / 2);
-//        luY = 0 - (((side - 1) * distance) / 2);
-//        FloatingPointPosition leftuppercorner = new FloatingPointPosition(luX, luY);
-//
-//        // Die Formation aufbauen:
-//        // (Ein Gitter mit den angegebenen Startkoordinaten und dem gegebenen Abstand erstellen)
-//        double posX, posY;
-//        int fpos = 0;
-//        for (int x = 0; x < side; x++) {
-//            for (int y = 0; y < side; y++) {
-//                formation[fpos] = new FloatingPointPosition(luX + x * distance, luY + y * distance);
-//                fpos++;
-//                if (fpos >= formation.length) {
-//                    x = side;// äußere schleife verlassen
-//                    break;// innere schleife verlassen
-//                }
-//            }
-//        }
-        
-        try {
-            formation = around(formation, 5.0, unitCount, position);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-
-        // Die Formation Rotieren:
-
-        // Winkel zwischen Standardrotation und dem gegebenen Vektor berechnen:
-        double lenght = Math.sqrt((vector.getX() * vector.getX()) + (vector.getY() * vector.getY()));
-        double skalar = vector.getY();
-        double cosrot = skalar / lenght;
-        double rotation = Math.acos(cosrot);
-
-        // Jeden Punkt der Formation drehen:
-        for (int i = 0; i < formation.length; i++) {
-            double x = formation[i].getX();
-            double y = formation[i].getY();
-            double dist = Math.sqrt((x * x) + (y * y));
-
-            double newRot = rotation + Math.atan2(x, y);
-
-            formation[i].setfX(Math.cos(newRot) * dist);
-            formation[i].setfY(Math.sin(newRot) * dist);
-        }
-
-
-
-        // fertige Formation zurückgeben:
-
-        for(int i=0; i<formation.length; i++)
-        {
-            System.out.println(formation[i].toString());
-        }
-
-
-        return formation;
-    }
-
-    public static FloatingPointPosition[] around(FloatingPointPosition formation[],double distance, int count, FloatingPointPosition target) {
-
-       FloatingPointPosition position = new FloatingPointPosition(0,0);
+        // Die Position, die gerde bearbeitet wird
+        FloatingPointPosition checkPosition = new FloatingPointPosition(0, 0);
 
         // gefundene positionen / zahl der gesuchten positionen
-        int foundPositions = 0, searchedPositions = count;
+        int foundPositions = 0, searchedPositions = unitCount;
 
         // Richtung (1=E, 2=N, 3=W, 4=S)
         int direction = 1;
@@ -137,21 +68,38 @@ public class Formation {
             }
 
             for (int i = 0; i < steps; i++) {
-                position.setfX(position.getfX() + dx);
-                position.setfY(position.getfY() + dy);
+                // Position verschieben:
+                checkPosition.setfX(checkPosition.getfX() + dx);
+                checkPosition.setfY(checkPosition.getfY() + dy);
 
-System.out.println(position.add(target).toString() + " walkable: " + Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position.add(target)));
+
+                // Position rotieren:
+                double lenght = Math.sqrt((vector.getX() * vector.getX()) + (vector.getY() * vector.getY()));
+                double skalar = vector.getY();
+                double cosrot = skalar / lenght;
+                double rotation = Math.acos(cosrot);
+                double x = checkPosition.getfX();
+                double y = checkPosition.getfY();
+
+                // Abstand zum nullpunkt:
+                double dist = Math.sqrt((x * x) + (y * y));
+
+                double newRot = rotation + Math.atan2(checkPosition.getfX(), checkPosition.getfY());
+
+                x = (Math.cos(newRot) * dist);
+                y = (Math.sin(newRot) * dist);
+                FloatingPointPosition finalPos = new FloatingPointPosition(x, y);
+
 
                 // Wenn die Position gültig ist zur liste inzufügen:
-                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(position.add(target))) {
-                    formation[foundPositions] = new FloatingPointPosition(position.getfX(), position.getfY());
+                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
+                    formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
                     foundPositions++;
-                    if(foundPositions == searchedPositions)
-                    {
+                    if (foundPositions == searchedPositions) {
                         return formation;
                     }
                 }
-               
+
 
             }
 
@@ -171,9 +119,6 @@ System.out.println(position.add(target).toString() + " walkable: " + Server.getI
             }
 
         }
-
-
-
 
 
         return formation;
