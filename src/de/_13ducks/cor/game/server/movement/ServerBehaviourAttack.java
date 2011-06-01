@@ -140,7 +140,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             case STAY_FIGHTING:
                 // Angriff nur auf Einheiten in Reichweite
                 if (target != null) {
-                    if (inRange(target)) {
+                    if (!inRange(target)) {
                         // Dieses Ziel ist weg, wir dürfen es nicht verfolgen, also fallen lassen.
                         target = null;
                     }
@@ -186,6 +186,22 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     }
                 }
                 break;
+            case FIGHTING:
+                // Das derzeitige Ziel noch in Reichweite?
+                if (inRange(target)) {
+                    // Dann ist ja alles klar
+                    shootIfReady();
+                } else {
+                    // Besseres Ziel in Reichweite? (Zwangs-Sofortsuche)
+                    if (searchInRangeImmediately()) {
+                        shootIfReady();
+                    } else {
+                        // Nein, wir verfolgen also besser das alte Ziel.
+                        mode = GOTO;
+                    }
+                }
+                break;
+                
         }
     }
     
