@@ -212,5 +212,19 @@ public class Unit3x3 extends Unit {
 
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
+            SimplePosition pos = getPrecisePosition();
+            // Billigen Balken rendern
+            g.setColor(Color.black);
+            g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX) - 6, (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 16, 7, 7);
+            // Farbe bestimmen
+            double percent = 1.0 * getHitpoints() / getMaxhitpoints();
+            if (percent >= 0.3) {
+                g.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
+            } else {
+                g.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
+            }
+            g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX) - 5, (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 15, 5, 5);
+        }
     }
 }

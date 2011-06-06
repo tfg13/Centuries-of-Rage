@@ -176,7 +176,7 @@ public class Unit2x2 extends Unit {
             imgMap.get("img/game/sel_s2.png0").getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X),(float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            imgMap.get("img/game/sel_s2.png" + getPlayerId()).getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
     }
 
@@ -194,10 +194,10 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
-	g.setColor(spriteColor);
-	g.fillRect(x, y, 2, 2);
+        g.setColor(spriteColor);
+        g.fillRect(x, y, 2, 2);
     }
-    
+
     @Override
     public double getRadius() {
         return 2;
@@ -205,6 +205,19 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
+            SimplePosition pos = getPrecisePosition();
+            // Billigen Balken rendern
+            g.setColor(Color.black);
+            g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX) - 1, (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 11, 7, 7);
+            // Farbe bestimmen
+            double percent = 1.0 * getHitpoints() / getMaxhitpoints();
+            if (percent >= 0.3) {
+                g.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
+            } else {
+                g.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
+            }
+            g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX), (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 10, 5, 5);
+        }
     }
-    
 }
