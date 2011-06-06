@@ -131,10 +131,7 @@ public class GraphicsContent extends BasicGame {
     boolean useAntialising = false; // Kantenglättung, normalerweise AUS // NUR IM NORMALEN RENDERMODE
     public List<Sprite> allList;
     public boolean alwaysshowenergybars = false; // Energiebalken immer anzeigen, WC3 lässt grüßen.
-    boolean displayFrameRate = false;
     Date initRun;
-    public int realRuns = 0; // Für echte Framerateanzeige
-    public int lastFr = 0; // Auch frameRatezeug
     Dimension framePos = new Dimension(0, 0); // Editor-Rahmen
     public int epoche = 2; // Null ist keine Epoche, also kein Gescheites Grundbild..
     private ClientCore.InnerClient rgi;

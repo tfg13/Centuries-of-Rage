@@ -69,18 +69,11 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public int dSBX = 0;
     public int dSBY = 0;
     private HashMap<Integer, Unit> descAnimUnit;
-    // Das folgene nicht permanent (hier im Code) ändern!
-    // Wer das unbedingt Testen will kann im configfile die option
-    // benchmark=true
-    // einsetzen
-    private boolean nolimits = false; // Keine Framerate-Begrenzung/Nur Benchmark
     long starttime;             // Wann die Grafikengine gestartet wurde
     private boolean pauseMod = false;   // Für den Pausemodus
     private long pauseTime;           // Zeitpunkt des Pausierenes
     private boolean fowtrigger = false; // Trigger für flackerfreies-Fow-Updaten
-    boolean fullScreenMode;
     public boolean slickReady = false;
-    int framerate;
     long lastFowCalc;
     boolean seenPause = false;
     Thread slickGraphics;
@@ -536,14 +529,6 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         rgi.logger("[Graphics]: Importing bullets");
         importBullets();
         content.setFogofwar(true);
-        // Will der User etwa den total Verrückten Benchmark laufen lassen?
-        if ("true".equals(rgi.configs.get("rightKlickScrolling"))) {
-            // Vermerken
-            rgi.logger("[Graphics][Init]: Launching benchmark...");
-            // Jetzt setzen
-            this.setShowFPS(true);
-            nolimits = true;
-        }
         this.setLoadStatus(5);
         //readAnimations();
         rgi.logger("[Graphics]: RogGraphics is ready to rock! (init completed)");
