@@ -307,5 +307,9 @@ public class Bullet implements Pauseable, Sprite {
 	// Bullets werden nicht auf Minimapp gezeichnet
     }
 
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    }
+
 
 }

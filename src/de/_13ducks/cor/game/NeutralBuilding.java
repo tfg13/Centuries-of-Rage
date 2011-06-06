@@ -68,7 +68,7 @@ public class NeutralBuilding extends Building {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (int) (y - getGraphicsData().offsetY));
+        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (y - getGraphicsData().offsetY));
     }
 
     @Override
@@ -166,6 +166,10 @@ public class NeutralBuilding extends Building {
 	g.setLineWidth(2);
 	g.setColor(Color.gray);
 	g.drawRect(x, y, 5, 5);
+    }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
     }
 }
 

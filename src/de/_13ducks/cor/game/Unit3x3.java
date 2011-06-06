@@ -209,4 +209,8 @@ public class Unit3x3 extends Unit {
     public double getRadius() {
         return 3;
     }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    }
 }

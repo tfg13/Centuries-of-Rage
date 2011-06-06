@@ -202,5 +202,9 @@ public class Unit2x2 extends Unit {
     public double getRadius() {
         return 2;
     }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    }
     
 }

@@ -205,4 +205,8 @@ public class PlayersBuilding extends Building {
 	g.setColor(spriteColor);
 	g.fillRect(x, y, 8, 8);
     }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    }
 }

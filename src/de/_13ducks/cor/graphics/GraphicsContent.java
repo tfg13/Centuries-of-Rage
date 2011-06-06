@@ -130,7 +130,7 @@ public class GraphicsContent extends BasicGame {
     public boolean serverColMode = false;
     boolean useAntialising = false; // Kantenglättung, normalerweise AUS // NUR IM NORMALEN RENDERMODE
     public List<Sprite> allList;
-    public boolean alwaysshowenergybars = false; // Energiebalken immer anzeigen, WC3 lässt grüßen.
+    public static boolean alwaysshowenergybars = false; // Energiebalken immer anzeigen, WC3 lässt grüßen.
     Date initRun;
     Dimension framePos = new Dimension(0, 0); // Editor-Rahmen
     public int epoche = 2; // Null ist keine Epoche, also kein Gescheites Grundbild..
@@ -237,7 +237,7 @@ public class GraphicsContent extends BasicGame {
 //                    lastHovMouseY = mouseY;
 //                }
 
-                renderGroundEffects(g);
+                renderSpriteGroundEffects(g);
 
                 //@TODO: Einheitenziel als groundeffect rendern
                 if (unitDestMode != 0) {
@@ -251,7 +251,9 @@ public class GraphicsContent extends BasicGame {
                 //fireMan.renderFireEffects(buildingList, lastDelta, positionX, positionY);
 
 
-                // renderHealthBars(g);
+                renderSpriteSkyEffects(g);
+                
+                
                 // Fog of War rendern, falls aktiv
 //                if (renderFogOfWar) {
 //                    renderFogOfWar(g);
@@ -341,8 +343,10 @@ public class GraphicsContent extends BasicGame {
      */
     private void renderSprites(Graphics g) {
         // Sprites sortieren
+        //@TODO: Hier kann eine CucurrentModificationException auftreten.
         Collections.sort(allList, new Comparator<Sprite>() {
 
+            @Override
             public int compare(Sprite o1, Sprite o2) {
                 return o1.getSortPosition().getY() - o2.getSortPosition().getY();
             }
@@ -364,7 +368,7 @@ public class GraphicsContent extends BasicGame {
      * gemäß dem FOW gezeichnet werden sollen und sich nicht verstecken.
      * @param g
      */
-    private void renderGroundEffects(Graphics g) {
+    private void renderSpriteGroundEffects(Graphics g) {
         for (int i = 0; i < allList.size(); i++) {
             Sprite sprite = allList.get(i);
             if (spriteInSight(sprite)) {
@@ -372,6 +376,24 @@ public class GraphicsContent extends BasicGame {
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
                     sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Zeichnet alle SkyEffects aller Sprites auf den Bildschirm, falls diese derzeit im sichtbaren Bereich liegen,
+     * gemäß dem FOW gezeichnet werden sollen und sich nicht verstecken.
+     * @param g
+     */
+    private void renderSpriteSkyEffects(Graphics g) {
+        for (int i = 0; i < allList.size(); i++) {
+            Sprite sprite = allList.get(i);
+            if (spriteInSight(sprite)) {
+                //@TODO: FOW-Behandlung einbauen
+                if (sprite.renderInNullFog()) {
+                    Position mainPos = sprite.getMainPositionForRenderOrigin();
+                    sprite.renderSkyEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -923,9 +945,9 @@ public class GraphicsContent extends BasicGame {
         g2.setLineWidth(1);
         for (int i = 0; i < viewX * 2; i += 2) { // Doppelt so lang, das Bildverhältniss ist ja in der Regel nicht quadratisch
             // Linie von der Oberen Kante nach rechts unten
-            g2.drawLine((int) i * FIELD_HALF_X + 2, 0, viewX * FIELD_HALF_X + 20, (int) ((viewX - 1 - i) * FIELD_HALF_Y + 21));
+            g2.drawLine(i * FIELD_HALF_X + 2, 0, viewX * FIELD_HALF_X + 20, (int) ((viewX - 1 - i) * FIELD_HALF_Y + 21));
             // Linie von der Oberen Kante nach links unten
-            g2.drawLine((int) i * FIELD_HALF_X + 28, 0, 0, (int) (i * FIELD_HALF_Y + 21));
+            g2.drawLine(i * FIELD_HALF_X + 28, 0, 0, (int) (i * FIELD_HALF_Y + 21));
         }
 
         for (int i = 0; i < viewY; i += 2) {
@@ -1248,7 +1270,7 @@ public class GraphicsContent extends BasicGame {
         ArrayList<GraphicsImage> tList = new ArrayList<GraphicsImage>();
         tList.addAll(coloredImgMap.values());
         for (int i = 0; i < tList.size(); i++) {
-            Image im = (Image) tList.get(i).getImage();
+            Image im = tList.get(i).getImage();
             for (int playerId = 0; playerId < colors.length; playerId++) {
                 ImageBuffer preImg = new ImageBuffer(im.getWidth(), im.getHeight());
                 for (int x = 0; x < im.getWidth(); x++) {
@@ -1314,7 +1336,7 @@ public class GraphicsContent extends BasicGame {
         int x = (int) (b.getMainPosition().getX() + ((b.getZ1() + b.getZ2() - 2) * 1.0 / 2));
         int y = b.getMainPosition().getY();
         // Diese Position als Startfeld überhaupt zulässig?
-        if (((int) x + (int) y) % 2 == 1) {
+        if ((x + y) % 2 == 1) {
             y++;
         }
         // Dieses Feld selber auch ausschneiden

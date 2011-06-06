@@ -66,6 +66,20 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param spriteColor die (Team/Spieler) Farbe, mit der sich dieses Sprite zeichnen soll, falls benötigt.
      */
     public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor);
+    
+    /**
+     * Zeichnet die Skyeffects dieses Sprites.
+     * Skyeffects werden nach dem eigentlichen Zeichnen verarbeitet.
+     * x und y müssen die Zeichenkoordinaten des Zuordnungsfeldes sein.
+     * @param g Der Grafikkontext auf den gezeichnet werden kann. Man kann auch direkt auf den Screen zeichnen.
+     * @param x Die x-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
+     * @param y Die y-Zeichenkoordinate des Zuordnungsfeldes auf dem Bildschirm
+     * @param scrollX die Verschiebung des derzeitigen Bildausschnittes in Fließkomma-Koordinaten
+     * @param scrollY die Verschiebung des derzeitigen Bildausschnittes in Fließkomma-Koordinaten
+     * @param imgMap Die Map mit allen verfügbaren Texturen
+     * @param spriteColor die (Team/Spieler) Farbe, mit der sich dieses Sprite zeichnen soll, falls benötigt.
+     */
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor);
 
     /**
      * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.
