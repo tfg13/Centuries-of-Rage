@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import java.util.Iterator;
@@ -274,7 +275,19 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     private void shootIfReady() {
         if (System.currentTimeMillis() >= nextHit) {
             // FEUER!
-            System.out.println("FEUER!");
+            // Flugzeit berechnen:
+            int atkdelay = 0;
+            int damage = caster2.getDamage() * caster2.getDamageFactors()[target.getArmorType()] / 100;
+            if (caster2.getBulletspeed() > 0) {
+                atkdelay = (int) (caster2.getPrecisePosition().getDistance(target.getCentralPosition()) * 1000 / caster2.getBulletspeed());
+            }
+            if (atkdelay == 0) {
+                // Direkt schädigen:
+                target.dealDamage(damage);
+            } else {
+                Server.getInnerServer().atkMan.delayDamageTo(target, damage, atkdelay);
+            }
+            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 39, caster2.netID, target.netID, damage, atkdelay));
             nextHit += caster2.getAtkdelay();
         }
     }

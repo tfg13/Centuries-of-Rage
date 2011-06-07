@@ -66,10 +66,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      */
     public static final int LIFESTATUS_DEAD = 2;
     /**
-     * Agressive Bewegung zum Ziel. Ziele in Reichweite werden während der Bewegung angegriffen,
-     * das Objekt bliebt notfalls auch stehen.
-     * Default-Bewegungsmodus bei Rechtsklick auf den Boden.
-    /**
      * Leichte Infantrie
      */
     public static final int ARMORTYPE_LIGHTINF = 0;

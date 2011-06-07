@@ -42,9 +42,9 @@ public class C039_DEAL_DAMAGE extends ClientCommand {
         //Damage dealen, Bulletsystem.
         //Data: ATKID, VICID, DMG, DELAY (ms)
         //Attacker und Opfer suchen
-        Unit atck39 = (Unit) rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
+        Unit atck39 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
         if (atck39 != null) {
-            GameObject vic39 = (GameObject) rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 2));
+            GameObject vic39 = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 2));
             if (vic39 != null) {
                 int dmg = rgi.readInt(data, 3);
                 int delay = rgi.readInt(data, 4);

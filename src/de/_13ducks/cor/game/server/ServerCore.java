@@ -36,6 +36,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import de._13ducks.cor.game.Core;
 import de._13ducks.cor.game.NetPlayer;
+import de._13ducks.cor.game.server.movement.ServerAttackManager;
 
 /**
  * Der Server-Kern
@@ -293,6 +294,7 @@ public class ServerCore extends Core {
 	public ServerStatistics serverstats;
         String lastlog = "";
         public ServerMoveManager moveMan;
+        public ServerAttackManager atkMan;
 
         @Override
         public void initInner() {
@@ -306,6 +308,7 @@ public class ServerCore extends Core {
             game = gamectrl;
 	    serverstats = sstat;
             moveMan = smoveman;
+            atkMan = new ServerAttackManager();
         }
 
         @Override
