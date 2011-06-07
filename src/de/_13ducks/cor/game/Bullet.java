@@ -25,6 +25,8 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.server.movement.Vector;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -48,46 +50,107 @@ import de._13ducks.cor.graphics.Sprite;
  *
  * @author tfg
  */
-public class Bullet implements Pauseable, Sprite {
+public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
 
-    public Position sourcePos;
-    public GameObject attacker;
-    GameObject target;
-    Position targetPos;
-    boolean positionCanChange = false;
-    int damage;
-    int delay;
-    long pauseTime = 0;
-    boolean paused = false;
-    long startTime;
-    int lastDirection;
-    int lastX;
-    int lastY;
-    String texture;
+    private FloatingPointPosition sourcePos;
+    private GameObject target;
+    private GameObject attacker;
+    private int damage;
+    private int flytime;
+    private long pauseTime = 0;
+    private boolean paused = false;
+    private long startTime;
+    private int lastDirection;
+    private String texture;
+    
+    private SimplePosition currentPos;
 
     public Bullet(GameObject attacker, GameObject victim, int dmg, int dly) {
-        sourcePos = attacker.getMainPosition();
-        this.attacker = attacker;
+        super(null, victim, 2, 5, true);
+        sourcePos = new FloatingPointPosition(attacker.getMainPosition());
         target = victim;
         damage = dmg;
-        delay = dly;
+        flytime = dly;
         startTime = System.currentTimeMillis();
         texture = attacker.getBullettexture();
-        positionCanChange = true;
+        this.attacker = attacker;
+        attacker.addClientBehaviour(this);
     }
 
-    public Position getTargetPos() {
-        if (targetPos != null) {
-            return targetPos;
-        } else {
-            return target.getMainPosition();
-        }
+    @Override
+    public void pause() {
+        pauseTime = System.currentTimeMillis();
+        paused = true;
     }
 
-    /**
-     * Berechnet die genaue Renderposition des Bullets.
-     */
-    public int[] getRenderLocation(int offX, int offY) {
+    @Override
+    public void unpause() {
+        paused = false;
+    }
+
+    @Override
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        System.out.println("AddMe: Render Sprite.");
+    }
+
+    @Override
+    public Position[] getVisisbilityPositions() {
+        return new Position[]{new Position((int) currentPos.x(), (int) currentPos.y())};
+    }
+
+    @Override
+    public int compareTo(Sprite o) {
+        return this.getSortPosition().compareTo(o.getSortPosition());
+    }
+
+    @Override
+    public Position getSortPosition() {
+        return sourcePos;
+    }
+
+    @Override
+    public Position getMainPositionForRenderOrigin() {
+        // Der Aufruf kommt ohnehin nur zurück, und wir brauchen das nicht.
+        return new Position(0, 0);
+    }
+
+    @Override
+    public boolean renderInFullFog() {
+        return false;
+    }
+
+    @Override
+    public boolean renderInHalfFog() {
+        return false; // Im Halbschatten sieht man Geschosse nicht.
+    }
+
+    @Override
+    public boolean renderInNullFog() {
+        return true; // Geschosse sind grundsätzlich nicht unsichtbar.
+    }
+
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        // Bullets haben keine
+    }
+
+    @Override
+    public int getColorId() {
+        return 0;
+    }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+        // Bullets werden nicht auf Minimapp gezeichnet
+    }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        // Bullets haben keine
+    }
+
+    @Override
+    public void execute() {
         long now = System.currentTimeMillis();
         int passed = 0;
         if (!paused) {
@@ -103,72 +166,31 @@ public class Bullet implements Pauseable, Sprite {
             passed = (int) (pauseTime - startTime);
         }
         // Wie viel wurde bereits zurückgelegt?
-        float progress = (float) (passed * 1.0 / delay);
+        float progress = (float) (passed * 1.0 / flytime);
         if (progress > 1) {
-            // Schon fertig
-            return null;
+            // Fertig. Damage dealen und löschen
+            attacker.removeClientBehaviour(this);
+            target.dealDamage(damage);
         }
-        // Start und Ziel-Position in Pixel holen
-        int startX = (sourcePos.getX() - offX) * 20;
-        int startY = (sourcePos.getY() - offY) * 15;
-        int targetX = 0;
-        int targetY = 0;
-        if (positionCanChange) {
-            targetX = (target.getMainPosition().getX() - offX) * 20;
-            targetY = (target.getMainPosition().getY() - offY) * 15;
-        } else {
-            targetX = (targetPos.getX() - offX) * 20;
-            targetY = (targetPos.getY() - offY) * 15;
-        }
-        // Position der Bullets berechnen
-        int vecX = (int) ((targetX - startX) * progress);
-        int vecY = (int) ((targetY - startY) * progress);
-        // Position speichern:
-        lastX = (startX + vecX) / 20;
-        lastY = (startY + vecY) / 15;
-        // Richtung speichern (für schönere Effekte verwendet das Bulletsystem 16 Richtungen
-        calcDirection(targetX, targetY, startX, startY);
-        int[] ret = new int[2];
-        ret[0] = startX + vecX;
-        ret[1] = startY + vecY;
-        return ret;
-    }
-
-    /**
-     * Liefert die ungefähre Position in gültigen (x+y % 2 = 0) Feldern zurück
-     * Für FoW-Erkennung
-     * Benötigt Rechenergebnisse von getRenderLocation, muss also kurz danach aufgerufen werden
-     * @return
-     */
-    public Position getRoundedPosition(int posX, int posY) {
-        int rX = lastX + posX;
-        int rY = lastY + posY;
-        if ((rX + rY) % 2 == 1) {
-            rY++;
-        }
-        return new Position(rX, rY);
-    }
-
-    /**
-     * Liefert die Drehung des Bullets zurück.
-     * MUSS DIREKT NACH getRenderLocation aufgerufen werden, sonst ist das Ergebniss
-     * womöglich unpräzise
-     */
-    public int getDirection() {
-        return lastDirection;
-    }
-
-    private void calcDirection(int mx, int my, int bx, int by) {
-        if ((by - my) == 0) {
+        // Position des Bullets berechnen
+        FloatingPointPosition targetP = new FloatingPointPosition(target.getCentralPosition());
+        Vector vec = new Vector(targetP.x() - sourcePos.x(), targetP.y() - sourcePos.y());
+        
+        vec.multiplyMe(progress);
+        
+        currentPos = sourcePos.add(vec.toFPP());
+        
+        // Richtung berechnen:
+        if ((sourcePos.y() - targetP.y()) == 0) {
             // Division by zero
-            if ((mx - bx) > 0) {
+            if ((targetP.x() - sourcePos.x()) > 0) {
                 lastDirection = 4;
             } else {
                 lastDirection = 12;
             }
             return;
         }
-        float deg = (float) Math.atan((mx - bx) * 1.0 / (by - my));
+        float deg = (float) Math.atan((targetP.x() - sourcePos.x()) * 1.0 / (sourcePos.y() - targetP.y()));
         // Bogenmaß in Grad umrechnen (Bogenmaß ist böse (!))
         deg = (float) (deg * 1.0 / Math.PI * 180);
         // In 360Grad System umrechnen (falls negativ)
@@ -176,11 +198,11 @@ public class Bullet implements Pauseable, Sprite {
             deg = 180 + deg;
         }
         // Winkel sind kleinstmöglich, wir brauchen aber einen vollen 360°-Umlauf
-        if (mx > bx) {
+        if (targetP.x() > sourcePos.x()) {
             deg += 180;
         }
         if (deg == 0 || deg == -0) {
-            if (my < by) {
+            if (targetP.y() < sourcePos.y()) {
                 deg = 180;
             }
         }
@@ -222,94 +244,6 @@ public class Bullet implements Pauseable, Sprite {
     }
 
     @Override
-    public void pause() {
-        pauseTime = System.currentTimeMillis();
-        paused = true;
+    public void gotSignal(byte[] packet) {
     }
-
-    @Override
-    public void unpause() {
-        paused = false;
-    }
-
-    /**
-     * Liefert nur präzise Werte, von kurz vorher getRenderLocation lief.
-     * @return
-     */
-    public int getX() {
-        return lastX;
-    }
-
-    /**
-     * Liefert nur präzise Werte, von kurz vorher getRenderLocation lief.
-     * @return
-     */
-    public int getY() {
-        return lastY;
-    }
-
-    @Override
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap,  Color spriteColor) {
-        System.out.println("AddMe: Render Sprite.");
-    }
-
-    @Override
-    public Position[] getVisisbilityPositions() {
-        System.out.println("AddMe: Calc vis-pos (bullet)");
-        Position[] ret = new Position[1];
-        ret[0] = getRoundedPosition(lastX, lastY);
-        return ret;
-    }
-
-    @Override
-    public int compareTo(Sprite o) {
-        System.out.println("AddMe: Compare Sprite!");
-        return 1;
-    }
-
-    @Override
-    public Position getSortPosition() {
-        return sourcePos;
-    }
-
-    @Override
-    public Position getMainPositionForRenderOrigin() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean renderInFullFog() {
-        return false;
-    }
-
-    @Override
-    public boolean renderInHalfFog() {
-        return false; // Im Halbschatten sieht man Geschosse nicht.
-    }
-
-    @Override
-    public boolean renderInNullFog() {
-        return true; // Geschosse sind grundsätzlich nicht unsichtbar.
-    }
-
-    @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        // Bullets haben keine
-    }
-
-    @Override
-    public int getColorId() {
-        return 0;
-    }
-
-    @Override
-    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
-	// Bullets werden nicht auf Minimapp gezeichnet
-    }
-
-    @Override
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-    }
-
-
 }

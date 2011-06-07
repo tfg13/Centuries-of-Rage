@@ -35,7 +35,7 @@ import de._13ducks.cor.game.GameObject;
  * ID-Liste:
  *
  * 1 - Move - Bewegungsberechnung
- * 2
+ * 2 - Bullet - Ein auf dieses GO zufliegendes Bullet berechnen
  * 3
  * 4 - Idle - Angriffsziele suchen
  * 5 - Construct -Gebäude bauen
