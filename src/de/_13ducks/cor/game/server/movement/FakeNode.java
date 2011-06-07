@@ -55,7 +55,7 @@ public class FakeNode extends Node {
     }
     
     public void setReachableNodes(Node... nodes) {
-        fakeNeighbors = Arrays.asList(nodes);
+        fakeNeighbors = new LinkedList<Node>(Arrays.asList(nodes));
     }
 
     @Override

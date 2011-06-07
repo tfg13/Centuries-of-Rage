@@ -211,7 +211,7 @@ public class Node implements Comparable<Node>, SimplePosition {
     }
 
     public List<Node> getReachableNodes() {
-        LinkedList<Node> nodes = new LinkedList();
+        LinkedList<Node> nodes = new LinkedList<Node>();
         for (FreePolygon poly : myPolys) {
             List<Node> polynodes = poly.getNodes();
             for (Node n : polynodes) {
