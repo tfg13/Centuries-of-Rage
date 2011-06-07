@@ -23,7 +23,6 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.game;
 
 import de._13ducks.cor.game.server.movement.Node;
@@ -51,10 +50,11 @@ public class FloatingPointPosition extends Position implements SimplePosition {
      * @param y Die Y-Koordinate
      */
     public FloatingPointPosition(double x, double y) {
-	super((int) x, (int) y);
-	fX = x;
-	fY = y;
+        super((int) x, (int) y);
+        fX = x;
+        fY = y;
     }
+
     /**
      * Erzeugt eine neue Fließkommapositiona aus der übergebenen Position.
      * Die Position wird nur einmalig kopiert, nicht permanen gelinkt.
@@ -62,8 +62,14 @@ public class FloatingPointPosition extends Position implements SimplePosition {
      */
     public FloatingPointPosition(Position pos) {
         super(pos.getX(), pos.getY());
-        fX = pos.getX();
-        fY = pos.getY();
+        if (pos instanceof FloatingPointPosition) {
+            FloatingPointPosition fpos = (FloatingPointPosition) pos;
+            fX = fpos.x();
+            fY = fpos.y();
+        } else {
+            fX = pos.getX();
+            fY = pos.getY();
+        }
     }
 
     /**
@@ -72,7 +78,7 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     @Override
     public void setX(int X) {
         this.X = X;
-	fX = X;
+        fX = X;
     }
 
     /**
@@ -81,40 +87,40 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     @Override
     public void setY(int Y) {
         this.Y = Y;
-	fY = Y;
+        fY = Y;
     }
 
     /**
      * @return the fX
      */
     public double getfX() {
-	return fX;
+        return fX;
     }
 
     /**
      * @param fX the fX to set
      */
     public void setfX(double fX) {
-	this.fX = fX;
-	this.X = (int) fX;
+        this.fX = fX;
+        this.X = (int) fX;
     }
 
     /**
      * @return the fY
      */
     public double getfY() {
-	return fY;
+        return fY;
     }
 
     /**
      * @param fY the fY to set
      */
     public void setfY(double fY) {
-	this.fY = fY;
-	this.Y = (int) fY;
+        this.fY = fY;
+        this.Y = (int) fY;
     }
 
-     /**
+    /**
      * Substrahiert eine Position von dieser hier - präzise double-Version
      */
     public FloatingPointPosition subtract(FloatingPointPosition pos) {
@@ -127,16 +133,16 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     public FloatingPointPosition add(FloatingPointPosition pos) {
         return new FloatingPointPosition(this.fX + pos.fX, this.fY + pos.fY);
     }
-    
+
     public Vector toVector() {
         return new Vector(fX, fY);
     }
-    
+
     @Override
     public String toString() {
         return fX + "|" + fY + "(" + super.toString() + ")";
     }
-    
+
     @Override
     public double getDistance(Position pos) {
         // Das andere auch eine FPP?
@@ -162,7 +168,7 @@ public class FloatingPointPosition extends Position implements SimplePosition {
     public Node toNode() {
         return new Node(fX, fY);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof SimplePosition) {
@@ -188,5 +194,4 @@ public class FloatingPointPosition extends Position implements SimplePosition {
         hash = 47 * hash + (int) (Double.doubleToLongBits(this.fY) ^ (Double.doubleToLongBits(this.fY) >>> 32));
         return hash;
     }
-
 }
