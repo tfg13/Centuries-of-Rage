@@ -348,7 +348,11 @@ public class CoRInput implements Pauseable {
             public void mouseReleased(final int button, final int x, final int y) {
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
+                    try {
                     listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
+                    } catch (Exception ex) {
+                        System.out.println("[Graphics][Error]: Overlay " + listener + " crashed on Mouse-Input. Ignoring.");
+                    }
                 } else {
                     if (!graphics.content.pauseMode) {
                         if (rgi.rogGraphics.rightScrollingEnabled) {
