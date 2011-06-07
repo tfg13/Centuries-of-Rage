@@ -63,7 +63,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     private int lastDirection;
     private String texture;
     
-    private SimplePosition currentPos;
+    private SimplePosition currentPos = new FloatingPointPosition(0, 0);
 
     public Bullet(GameObject attacker, GameObject victim, int dmg, int dly) {
         super(null, victim, 2, 5, true);
@@ -75,6 +75,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         texture = attacker.getBullettexture();
         this.attacker = attacker;
         attacker.addClientBehaviour(this);
+        externalExecute();
     }
 
     @Override
@@ -90,6 +91,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
 
     @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+        externalExecute();
         System.out.println("AddMe: Render Sprite.");
     }
 
