@@ -91,6 +91,16 @@ public class ServerBehaviourMove extends ServerBehaviour {
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
+
+        // Echtzeitkollision:
+        for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+            if (m.getPrecisePosition().getDistance(this.caster2.getPrecisePosition()) < (m.getRadius() + this.caster2.getRadius())) {
+                this.stopImmediately();
+            }
+        }
+
+
+
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
@@ -106,7 +116,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 deactivate();
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
-                
+
                 SimplePosition newTar = target;
                 if (newTar instanceof Node && oldTar instanceof Node) {
                     // Nur in diesem Fall kommt ein Sektorwechsel in Frage
@@ -199,7 +209,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         stopUnit = true;
         trigger();
     }
-    
+
     /**
      * Findet einen Sektor, den beide Knoten gemeinsam haben
      * @param n1 Knoten 1
