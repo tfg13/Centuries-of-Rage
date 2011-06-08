@@ -300,7 +300,7 @@ public class MovementMap {
     public List<Moveable> moversAround(Moveable mover, double radius) {
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
         // Alle relevanten Sektoren herausfinden:
-        List<FreePolygon> relPolys = polysAround(mover.getPrecisePosition().getfX(), mover.getPrecisePosition().getfY(), radius);
+        List<FreePolygon> relPolys = polysAround(mover.getPrecisePosition().getfX(), mover.getPrecisePosition().getfY(), mover.getMyPoly(), radius);
         for (FreePolygon poly : relPolys) {
             // Alle Einheiten dieses Sektors analysieren
             List<Moveable> moversInSec = poly.getResidents();
@@ -326,15 +326,14 @@ public class MovementMap {
     }
 
     /**
-     * Findet alle Polygone, die einen Teil des Kreises mit Radius radius um x,y bilden.
+     * Findet alle Polygone, die einen Teil des Kreises mit Radius radius um x,y im Polyong poly bilden.
      * @param x x-punkt
      * @param y y-punkt
      * @param radius der suchradius
      * @return true, or false;
      */
-    private List<FreePolygon> polysAround(double x, double y, double radius) {
+    private List<FreePolygon> polysAround(double x, double y, FreePolygon owner, double radius) {
         LinkedList<FreePolygon> aPolys = new LinkedList<FreePolygon>();
-        FreePolygon owner = containingPoly(x, y);
         if (owner != null) {
             aPolys.add(owner);
         }
