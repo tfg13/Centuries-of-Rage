@@ -89,10 +89,10 @@ public class evasiontest {
 
         if (targetAngle > obstacleAngle) {
             return 1;
-            // --> links
+            // --> rechts ausweichen
         } else {
             return 2;
-            // --> rechts
+            // --> links ausweichen
         }
     }
 }
