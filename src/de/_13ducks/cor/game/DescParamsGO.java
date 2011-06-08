@@ -139,10 +139,12 @@ public class DescParamsGO {
 
     public DescParamsGO() {
         damageFactors = new int[7];
+        for (int i = 0; i < damageFactors.length; i++) {
+            damageFactors[i] = 100;
+        }
         abilitys = new ArrayList<Ability>();
         graphicsData = new GOGraphicsData();
     }
-
     /**
      * Ein dieses Objekt beschreibender String, bei allen Objekten dieses Typs gleich
      * z.B. "Bogenschütze"
