@@ -18,7 +18,7 @@ public class evasiontest {
 
     public evasiontest() {
 
-        System.out.println(getAngle(new FloatingPointPosition(2,0), new FloatingPointPosition(0,2)));
+        System.out.println(getEvasionDirection(new FloatingPointPosition(0, 0), new FloatingPointPosition(-1, 1), new FloatingPointPosition(5, 5)));
     }
 
     /**
@@ -39,7 +39,7 @@ public class evasiontest {
         double deltaAngle = Math.asin((gk / h));
 
         // Winkel zwischen {1,0} und dem Hindernis berechen:
-        double blockerVectorAngle = getAngle(blocker.subtract(own), new FloatingPointPosition(0,0));
+        double blockerVectorAngle = getAngle(blocker.subtract(own), new FloatingPointPosition(0, 0));
 
         // Die Winkel der Ausweichvektoren:
         double angle_1 = blockerVectorAngle + deltaAngle;
@@ -74,6 +74,26 @@ public class evasiontest {
         double angle = Math.acos((scalar / lenght));
 
         return angle;
+    }
+
+    /**
+     * Gibt an, auf welcher Seite dem Objekt besser ausgewichen werden kann
+     * (berücksichting nur, ob das Hinderniss auf der Rechten oder linken Seite vom Vektor zum Ziel steht)
+     * @param position - die eigene Position
+     * @param obstacle - die Position der Hindernisses
+     * @return 1 für links, 2 für rechts
+     */
+    public int getEvasionDirection(FloatingPointPosition position, FloatingPointPosition obstacle, FloatingPointPosition target) {
+        double targetAngle = getAngle(position.subtract(target), new FloatingPointPosition(1, 0));
+        double obstacleAngle = getAngle(position.subtract(obstacle), new FloatingPointPosition(1, 0));
+
+        if (targetAngle > obstacleAngle) {
+            return 1;
+            // --> links
+        } else {
+            return 2;
+            // --> rechts
+        }
     }
 }
 
