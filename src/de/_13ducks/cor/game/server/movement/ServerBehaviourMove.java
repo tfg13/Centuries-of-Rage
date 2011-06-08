@@ -94,7 +94,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         // Echtzeitkollision:
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
-            if (m.getPrecisePosition().getDistance(this.caster2.getPrecisePosition()) < (m.getRadius() + this.caster2.getRadius())) {
+            if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                 this.stopImmediately();
             }
         }
