@@ -99,8 +99,13 @@ public class ServerBehaviourMove extends ServerBehaviour {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
 
 
-                newpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
-
+                FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
+                if (nextnewpos.toVector().isValid()) {
+                    newpos = nextnewpos;
+                } else {
+                    newpos = oldPos.toFPP();
+                }
+                
                 this.stopImmediately();
 
             }
