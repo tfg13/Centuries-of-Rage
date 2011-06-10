@@ -304,6 +304,7 @@ public class ClientCore extends Core {
         }
 
         private InnerClient(String playername_t) {
+            Client.setInnerClient(this);
             playername = playername_t;
         }
 
