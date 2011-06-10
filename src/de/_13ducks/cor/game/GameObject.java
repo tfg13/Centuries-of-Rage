@@ -1080,7 +1080,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         hitpoints -= damage;
         if (hitpoints <= 0) {
             hitpoints = 0;
-            killS();
         }
     }
 
@@ -1088,11 +1087,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Lässt das GO sterben.
      */
     public abstract void killS();
-    
-    /**
-     * Lässt das GO sterben.
-     */
-    public abstract void killC();
 
     /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId

@@ -114,11 +114,6 @@ public class Unit3x3 extends Unit {
     public void killS() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    @Override
-    public void killC() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
