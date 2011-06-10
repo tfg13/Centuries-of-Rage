@@ -62,11 +62,6 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public void killS() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (y - getGraphicsData().offsetY));
     }

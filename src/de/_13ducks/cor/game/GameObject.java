@@ -1086,7 +1086,10 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     /**
      * Lässt das GO sterben.
      */
-    public abstract void killS();
+    public void killS() {
+        hitpoints = 0;
+        lifeStatus = LIFESTATUS_DEAD;
+    }
 
     /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId

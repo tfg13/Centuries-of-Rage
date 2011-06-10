@@ -31,6 +31,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
@@ -112,7 +113,8 @@ public class Unit3x3 extends Unit {
 
     @Override
     public void killS() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Server.getInnerServer().netmap.killUnit(this);
+        super.killS();
     }
 
     @Override

@@ -112,6 +112,7 @@ public class Unit2x2 extends Unit {
     @Override
     public void killS() {
         Server.getInnerServer().netmap.killUnit(this);
+        super.killS();
     }
 
     @Override
