@@ -52,20 +52,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private Vector lastVec;
     private MovementMap moveMap;
-    /**
-     * ist true, wenn die EInheit gerade einer anderen asuweicht, oder false im normalen laufmodus
-     */
-    private boolean evading;
-    /**
-     * Hier wird das eigentlicht Ziel wärend des Ausweichens gespeichert
-     */
-    private SimplePosition targetBackup;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
         this.moveMap = moveMap;
-        evading = false;
 
     }
 
@@ -125,32 +116,26 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (this.evading) {
 
-                // Ausweichpunkt erereicht, wieer zum ursprünglichen Ziel gehen:
-                this.evading = false;
-                this.target = this.targetBackup;
-
+            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
+                // Wenn das false gibt, gibts keine weiteren, dann hier halten.
+                target = null;
+                stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+                deactivate();
             } else {
-                if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
-                    // Wenn das false gibt, gibts keine weiteren, dann hier halten.
-                    target = null;
-                    stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-                    deactivate();
-                } else {
-                    // Herausfinden, ob der Sektor gewechselt wurde
+                // Herausfinden, ob der Sektor gewechselt wurde
 
-                    SimplePosition newTar = target;
-                    if (newTar instanceof Node && oldTar instanceof Node) {
-                        // Nur in diesem Fall kommt ein Sektorwechsel in Frage
-                        FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
-                        // Sektor geändert?
-                        if (!sector.equals(caster2.getMyPoly())) {
-                            caster2.setMyPoly(sector);
-                        }
+                SimplePosition newTar = target;
+                if (newTar instanceof Node && oldTar instanceof Node) {
+                    // Nur in diesem Fall kommt ein Sektorwechsel in Frage
+                    FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
+                    // Sektor geändert?
+                    if (!sector.equals(caster2.getMyPoly())) {
+                        caster2.setMyPoly(sector);
                     }
                 }
             }
+
         } else {
             // Sofort stoppen?
             if (stopUnit) {
