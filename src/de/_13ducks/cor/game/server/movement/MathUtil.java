@@ -5,6 +5,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import org.newdawn.slick.geom.Line;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  *
@@ -110,15 +112,14 @@ public class MathUtil {
      */
     public static FloatingPointPosition getIntersection(FloatingPointPosition p1, FloatingPointPosition p2, FloatingPointPosition p3, FloatingPointPosition p4) {
 
-        double d = (p1.getfX() - p2.getfX()) * (p3.getfY() - p4.getfY()) - (p1.getfY() - p2.getfY()) * (p3.getfX() - p4.getfX());
-        if (d == 0) {
-            return null;
-        }
+        Line l1 = new Line((float) p1.getfX(), (float) p1.getfY(), (float) p2.getfX(), (float) p2.getfY());
+        Line l2 = new Line((float) p3.getfX(), (float) p3.getfY(), (float) p4.getfX(), (float) p4.getfY());
 
-        double xi = ((p3.getfX() - p4.getfX()) * (p1.getfX() * p2.getfY() - p1.getfY() * p2.getfX()) - (p1.getfX() - p2.getfX()) * (p3.getfX() * p4.getfY() - p3.getfY() * p4.getfX())) / d;
-        double yi = ((p3.getfY() - p4.getfY()) * (p1.getfX() * p2.getfY() - p1.getfY() * p2.getfX()) - (p1.getfY() - p2.getfY()) * (p3.getfX() * p4.getfY() - p3.getfY() * p4.getfX())) / d;
 
-        return new FloatingPointPosition(xi, yi);
+        Vector2f intersect = l1.intersect(l2);
+
+
+        return new FloatingPointPosition(intersect.x, intersect.y);
 
     }
 }
