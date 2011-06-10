@@ -31,6 +31,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
+import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
@@ -71,6 +72,17 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @return den TopLevel-Manager dieses Objekts.
      */
     public ServerMoveManager getTopLevelManager();
+    
+    /**
+     * Liefert den Angriffsmanager dieses Objekts, falls einer exisitert.
+     * Ansonsten wird null geliefert.
+     * Die Existenz eines Angriffsmanagers bedeutet, dass die Einheit selber unter gewissen umständen
+     * andere angreiffen kann. Daraus kann NICHT geschlossen werden, dass die Einheit auch angegriffen
+     * werden kann. Nur isAttackableBy liefert hierüber informationen. Ebenso gibt es Objekte, die zwar selber
+     * niemanden angreiffen (das hier liefert null), aber sehr wohl angegriffen werden können.
+     * @return den Angriffsmanager des Objekts oder null, wenn die Einheit andere nicht angreiffen kann.
+     */
+    public ServerBehaviourAttack getAtkManager();
 
     /**
      * Bereitet die Einheit für das Server-Bewegungssystem vor.

@@ -101,6 +101,8 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Hinweis: Wird gelegentlich auch sofort getriggert.
      */
     private static final int SEARCH_INTERVAL = 500;
+    public static final int MOVEMODE_GOTO = 1;
+    public static final int MOVEMODE_RUNTO = 2;
     /**
      * Der derzeitige Modus
      */
@@ -137,7 +139,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
         switch (mode) {
             case FLEE:
                 // Ende, wenn Ziel erreicht
-                if (caster2.getLowLevelManager().isMoving()) {
+                if (!caster2.getLowLevelManager().isMoving()) {
                     mode = SEARCHENEMY;
                     trigger();
                 }
@@ -151,8 +153,15 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     if (!inRange(target)) {
                         // Dieses Ziel ist weg, wir dürfen es nicht verfolgen, also fallen lassen.
                         target = null;
+                    } else {
+                        if (alive(target)) {
+                            shootIfReady();
+                        } else {
+                            // Weitersuchen
+                            target = null;
+                            trigger();
+                        }
                     }
-                    shootIfReady();
                 } else {
                     // Einheit in Reichweite suchen
                     if (searchInRangeScheduled()) {
@@ -164,16 +173,14 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             case FOCUS:
                 // Keine alternativen Ziele suchen
                 // Ende des Modus, wenn Ziel zerstört
-                if (target == null || target.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
+                if (target == null || !alive(target)) {
                     mode = SEARCHENEMY;
                     trigger();
                 } else {
                     // In Range?
                     if (inRange(target)) {
                         // Bewegung stoppen, falls läuft
-                        if (caster2.getLowLevelManager().isMoving()) {
-                            caster2.getTopLevelManager().stopForFight(caster2);
-                        }
+                        stopForFight();
                         shootIfReady();
                     }
                 }
@@ -181,24 +188,36 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             case GOTO:
                 // Eigentliches Ziel erreicht?
                 if (inRange(target)) {
+                    // Stehenbleiben
+                    stopForFight();
                     // Auf Kämpfen umschalten
                     mode = FIGHTING;
                     trigger();
                 } else {
-                    // Besseres Ziel verfügbar
+                    // Besseres Ziel verfügbar?
                     if (searchInRangeScheduled()) {
                         mode = FIGHTING;
                         trigger();
                     } else {
-                        // Kein besseres Ziel. Weiterlaufen
+                        // Kein besseres Ziel. Weiter bzw. loslaufen:
+                        if (!caster2.getLowLevelManager().isMoving()) {
+                            System.out.println("START FOLLOW UNIT!");
+                        } // else: Weiterlaufen
                     }
                 }
                 break;
             case FIGHTING:
                 // Das derzeitige Ziel noch in Reichweite?
                 if (inRange(target)) {
-                    // Dann ist ja alles klar
-                    shootIfReady();
+                    if (alive(target)) {
+                        // Dann ist ja alles klar
+                        shootIfReady();
+                    } else {
+                        // Neues Ziel suchen
+                        target = null;
+                        mode = SEARCHENEMY;
+                        trigger();
+                    }
                 } else {
                     // Besseres Ziel in Reichweite? (Zwangs-Sofortsuche)
                     if (searchInRangeImmediately()) {
@@ -206,6 +225,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                     } else {
                         // Nein, wir verfolgen also besser das alte Ziel.
                         mode = GOTO;
+                        trigger();
                     }
                 }
                 break;
@@ -213,10 +233,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 // Die Einheit hat Kampftechnisch nichts zu tun, steht/läuft aber.
                 if (searchInRangeScheduled()) {
                     // Stehenbleiben
-                    if (caster2.getLowLevelManager().isMoving()) {
-                        caster2.getTopLevelManager().stopForFight(caster2);
-                    }
+                    stopForFight();
                     mode = FIGHTING;
+                    trigger(); // Sorort loskloppen
                 }
                 break;
         }
@@ -261,7 +280,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 it.remove();
             }
         }
-        
+
         if (minDistMoveable != null) {
             target = minDistMoveable.getAttackable();
             return true;
@@ -283,7 +302,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             }
             if (atkdelay == 0) {
                 // Direkt schädigen:
-                target.dealDamage(damage);
+                target.dealDamageS(damage);
             } else {
                 Server.getInnerServer().atkMan.delayDamageTo(target, damage, atkdelay);
             }
@@ -312,5 +331,29 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
     @Override
     public void unpause() {
+    }
+
+    synchronized void newMoveMode(int i) {
+        switch (i) {
+            case MOVEMODE_RUNTO:
+                // Angriffsziel fallen lassen:
+                target = null;
+                mode = FLEE;
+                break;
+            default: // MOVEMODE_GOTO
+                // Angriffsziel fallen lassen:
+                target = null;
+                mode = SEARCHENEMY;
+        }
+    }
+
+    private boolean alive(GameObject target) {
+        return target.getLifeStatus() != GameObject.LIFESTATUS_DEAD;
+    }
+
+    private void stopForFight() {
+        if (caster2.getLowLevelManager().isMoving()) {
+            caster2.getTopLevelManager().stopForFight(caster2);
+        }
     }
 }

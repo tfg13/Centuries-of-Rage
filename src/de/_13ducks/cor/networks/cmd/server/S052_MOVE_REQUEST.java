@@ -49,6 +49,13 @@ public class S052_MOVE_REQUEST extends ServerCommand {
             handler.temps052_1 = rgi.readFloatingPointPosition(data, 1);
             handler.temps052_2 = new ArrayList<Unit>();
             sindex = 3;
+            // Hack, negative X-Koordinate bedeuten Fluchtmodus
+            if (handler.temps052_1.getfX() < 0) {
+                handler.temps052_1.setfX(handler.temps052_1.getfX() * -1);
+                handler.temps052_movemode = true;
+            } else {
+                handler.temps052_movemode = false;
+            }
         }
         // Einheiten auslesen. Wenn keine mehr da sind, wars das letzte Packet, dann losschicken
         int id = 0;
@@ -65,7 +72,7 @@ public class S052_MOVE_REQUEST extends ServerCommand {
         // Kommt noch was?
         if (id == 0) {
             // Nein, fertig, bewegen
-            rgi.moveMan.moveRequest(handler.temps052_1, handler.temps052_2);
+            rgi.moveMan.moveRequest(handler.temps052_1, handler.temps052_2, handler.temps052_movemode);
             handler.temps052_1 = null;
         }
     }

@@ -90,11 +90,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void kill() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x + GraphicsContent.BASIC_FIELD_OFFSET_X - getGraphicsData().offsetX, (int) (y - 7.5 - getGraphicsData().offsetY));
     }

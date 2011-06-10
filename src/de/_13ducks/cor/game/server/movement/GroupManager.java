@@ -28,7 +28,6 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,14 +88,14 @@ public class GroupManager {
      * @param target
      */
     public synchronized void goTo(FloatingPointPosition target) {
-        // TODO: Ziele, Formation verwalten!
         // Route planen
         List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
         FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP()); // Der vektor vom vorletzten Wegpunkt zum Ziel, entspricht der Richtung die die Formation haben soll
 
         FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
 
-
+        // Niedrigste Geschwindigkeit suchen
+        double commonSpeed = lowestSpeed(myMovers);
 
 
         int i = 0;
@@ -107,12 +106,17 @@ public class GroupManager {
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
+                    // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
+                    if (member.getMover().getAtkManager() != null) {
+                        member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_GOTO);
+                    }
+                    
                     // Weg setzen
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
                     }
                     // Loslaufen lassen
-                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed);
                 }
             }
             i++;
@@ -127,7 +131,37 @@ public class GroupManager {
      * @param target
      */
     public synchronized void runTo(FloatingPointPosition target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Route planen
+        List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
+        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size()-2).toFPP());
+
+        FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
+
+        // Jeder rennt mit Fullspeed, suchen eines common-Speeds ist nicht erforderlich
+
+        int i = 0;
+
+        for (GroupMember member : myMovers) {
+            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
+            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
+            if (path != null) {
+                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                if (optiPath != null) {
+                    // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
+                    if (member.getMover().getAtkManager() != null) {
+                        member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_RUNTO);
+                    }
+                    
+                    // Weg setzen
+                    for (SimplePosition node : optiPath) {
+                        member.addWaypoint(node);
+                    }
+                    // Loslaufen lassen
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
+                }
+            }
+            i++;
+        }
     }
 
     /**
@@ -159,5 +193,16 @@ public class GroupManager {
             }
         }
         return null;
+    }
+
+    private double lowestSpeed(ArrayList<GroupMember> myMovers) {
+        double lowestSpeed = myMovers.get(0).getMover().getSpeed();
+        for (int i = 1; i < myMovers.size(); i++) {
+            double nextSpeed = myMovers.get(i).getMover().getSpeed();
+            if (nextSpeed < lowestSpeed) {
+                lowestSpeed = nextSpeed;
+            }
+        }
+        return lowestSpeed;
     }
 }

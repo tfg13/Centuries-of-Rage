@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.game.server;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.server.movement.Edge;
 import de._13ducks.cor.game.server.movement.FakeNode;
@@ -58,6 +57,12 @@ public final class ServerPathfinder {
         }
         
         FreePolygon targetSector = moveMap.containingPoly(target.x(), target.y());
+        
+        if (targetSector == null) {
+            // Ziel ungültig abbrechen
+            System.out.println("Irregular target. Aborting");
+            return null;
+        }
         FakeNode startNode = new FakeNode(start.x(), start.y(), startSector);
         Node targetNode = new FakeNode(target.x(), target.y(), targetSector);
         targetNode.addPolygon(moveMap.containingPoly(target.x(), target.y()));
@@ -135,14 +140,14 @@ public final class ServerPathfinder {
             return null;
         }
 
-        ArrayList<Node> pathrev = new ArrayList();   //Pfad aus parents erstellen, von Ziel nach Start
+        ArrayList<Node> pathrev = new ArrayList<Node>();   //Pfad aus parents erstellen, von Ziel nach Start
         while (!targetNode.equals(startNode)) {
             pathrev.add(targetNode);
             targetNode = targetNode.getParent();
         }
         pathrev.add(startNode);
 
-        ArrayList<Node> path = new ArrayList();	//Pfad umkehren, sodass er von Start nach Ziel ist
+        ArrayList<Node> path = new ArrayList<Node>();	//Pfad umkehren, sodass er von Start nach Ziel ist
         for (int k = pathrev.size() - 1; k >= 0; k--) {
             path.add(pathrev.get(k));
         }

@@ -208,8 +208,13 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
     @Override
     public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        // Hack, die X-Koorindate negativ übertragen, um flüchten zu signalisieren
+        if (doubleKlick) {
+            target = target.toFPP(); // Kopieren
+            target.setfX(target.getfX() * -1);
+        }
         // Befehl abschicken:
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, Float.floatToIntBits((float) target.getfX()),Float.floatToIntBits((float) target.getfY()), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, Float.floatToIntBits((float) target.getfX()), Float.floatToIntBits((float) target.getfY()), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
         // Hier sind unter umständen mehrere Packete nötig:
         if (repeaters.size() == 2) {
             // Nein, abbrechen
@@ -245,7 +250,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         if (sendEffect != null) {
             sendEffect.kill();
         }
-        sendEffect = new SendToEffect(target.getfX(), target.getfY(), SendToEffect.MODE_GOTO);
+        sendEffect = new SendToEffect(doubleKlick ? target.getfX() * -1 : target.getfX(), target.getfY(), doubleKlick ? SendToEffect.MODE_RUNTO : SendToEffect.MODE_GOTO);
         rgi.rogGraphics.content.skyEffects.add(sendEffect);
     }
 
@@ -281,7 +286,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             this.mainPosition = new FloatingPointPosition(mainPosition);
         }
     }
-    
+
     /**
      * Liefert den LowLevel-Manager dieser Einheit.
      * @return den Lowlevel-Manager dieser Einheit.
@@ -289,7 +294,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerBehaviourMove getLowLevelManager() {
         return lowLevelManager;
     }
-    
+
     /**
      * Liefert den MidLevel-Manager dieser Einheit.
      * @return den Midlevel-Manager dieser Einheit.
@@ -297,7 +302,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public GroupManager getMidLevelManager() {
         return midLevelManager;
     }
-    
+
     /**
      * Liefert den TopLevel-Manager dieser Einheit.
      * @return den TopLevel-Manager dieser Einheit.
@@ -305,7 +310,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerMoveManager getTopLevelManager() {
         return topLevelManager;
     }
-    
+
     /**
      * Bereitet die Einheit für das Server-Bewegungssystem vor.
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
@@ -319,7 +324,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         addServerBehaviour(atkManager);
         this.moveMap = moveMap;
     }
-    
+
     /**
      * Bereitet die Einheit für das Client-Bewegungssystem vor.
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
@@ -358,11 +363,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ClientBehaviourMove getClientManager() {
         return clientManager;
     }
-    
+
     public int getNetID() {
         return netID;
     }
-    
+
     public List<Moveable> moversAroundMe(double radius) {
         // Das macht die movementMap
         return moveMap.moversAround(this, radius);
@@ -393,12 +398,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
     }
-    
+
     @Override
     public Position getCentralPosition() {
         return mainPosition;
     }
-    
+
     @Override
     public boolean isAttackableBy(int playerID) {
         // TODO: Auf globales Server-Objekt zugreiffen

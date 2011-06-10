@@ -105,8 +105,6 @@ public class ServerGameController implements Runnable {
         // Allen Units das ServerBehaviourMove geben
         for (Unit unit : unitList) {
             unit.initServerMovementManagers(rgi, rgi.netmap.getMoveMap());
-            // Referenzen aller Einheiten eintragen
-            rgi.netmap.trackCollision(unit);
             // Bewegungssektor für jede Einheit suchen und setzten
             rgi.netmap.registerUnitMovements(unit);
         }
@@ -116,18 +114,15 @@ public class ServerGameController implements Runnable {
         }
         // Die die Gebäude haben auf "noch spielend" setzen
         for (Building b : rgi.netmap.buildingList) {
-            rgi.netmap.trackCollision(b);
             try {
                 playerList.get(b.getPlayerId()).setFinished(false);
             } catch (Exception ex) {
             }
         }
-        if (rgi.isInDebugMode()) {
-            rgi.netmap.sendInitialCollisionMap();
-        }
         this.startMainloop();
         Thread tr = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     while (true) {

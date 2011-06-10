@@ -331,8 +331,8 @@ public abstract class Building extends GameObject {
     }
 
     @Override
-    public void dealDamage(int damage) {
-        super.dealDamage(damage);
+    public void dealDamageS(int damage) {
+        super.dealDamageS(damage);
         if (getLifeStatus() == GameObject.LIFESTATUS_UNBORN) {
             this.damageWhileContruction += damage;
         }

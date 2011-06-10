@@ -1063,18 +1063,33 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Schadet diesem GO.
      * Das Objekt stibt normalerweise, wenn die Energie unter oder auf 0 fällt.
      */
-    public void dealDamage(int damage) {
+    public void dealDamageS(int damage) {
         hitpoints -= damage;
         if (hitpoints <= 0) {
             hitpoints = 0;
-            kill();
+            killS();
+        }
+    }
+    
+    /**
+     * Schadet diesem GO.
+     * Das Objekt stirbt normalerweise, wenn die Energie unter oder auf 0 fällt.
+     * @param damage 
+     */
+    public void dealDamageC(int damage) {
+        hitpoints -= damage;
+        if (hitpoints <= 0) {
+            hitpoints = 0;
         }
     }
 
     /**
      * Lässt das GO sterben.
      */
-    public abstract void kill();
+    public void killS() {
+        hitpoints = 0;
+        lifeStatus = LIFESTATUS_DEAD;
+    }
 
     /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId
@@ -1129,8 +1144,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @return Die Position, an der das Object gespawnt werden soll.
      */
     public Position getSpawnPosition(GameObject obj, ServerCore.InnerServer rgi) {
-        obj.setMainPosition(mainPosition); // Leichter Pfusch, aber aroundMePlus funktioniert nur mit vollständig initialisierten Einheiten
-        return mainPosition.aroundMePlus(null, obj, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, false, rgi);
+        return mainPosition.subtract(new Position(-5, -5));
     }
 
     /**

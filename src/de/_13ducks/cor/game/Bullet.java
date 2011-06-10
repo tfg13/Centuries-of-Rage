@@ -172,7 +172,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         if (progress > 1) {
             // Fertig. Damage dealen und löschen
             attacker.removeClientBehaviour(this);
-            target.dealDamage(damage);
+            target.dealDamageC(damage);
         }
         // Position des Bullets berechnen
         FloatingPointPosition targetP = new FloatingPointPosition(target.getCentralPosition());

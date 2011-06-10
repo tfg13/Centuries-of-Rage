@@ -980,55 +980,6 @@ public class GraphicsContent extends BasicGame {
         g2.drawString(walk, 5, 80);
     }
 
-    private void renderHealth(GameObject rO, Graphics g2, int dX, int dY) {
-//        try {
-//            Unit rU = (Unit) rO;
-//            // Billigen Balken rendern
-//            g2.setColor(Color.black);
-//            if (rU.selectionShadow == 1) {
-//                g2.fillRect(dX + 9, dY - 1, 7, 7);
-//            }
-//            // Farbe bestimmen
-//            double percent = 1.0 * rU.getHitpoints() / rU.getMaxhitpoints();
-//            if (percent >= 0.3) {
-//                g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
-//            } else {
-//                g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
-//            }
-//            g2.fillRect(dX + 10, dY, 5, 5);
-//        } catch (ClassCastException ex) {
-//            // Gebäude
-//            try {
-//                Building rB = (Building) rO;
-//                // Balken soll über der Mitte des Gebäudes schweben
-//                // Längenfaktor finden
-//                int lf = (rB.getZ1() + rB.getZ2()) * 20;
-//                // dX / dY ist der Zeichenursprung
-//                // X-Mitte finden (Durchschnitt aus z1 und z2)
-//                int cpX = lf / 2 - lf / 4;
-//                // Die Anzahl Y-Pixel nur von z1 ab
-//                int cpY = rB.getZ1() * 15 + 10;
-//                // Billigen Balken rendern
-//                g2.setColor(Color.black);
-//                g2.fillRect(dX + cpX, dY - cpY, (lf / 2) + 2, 5);
-//                // Farbe bestimmen
-//                double percent = 1.0 * rB.getHitpoints() / rB.getMaxhitpoints();
-//                if (percent >= 0.5) {
-//                    g2.setColor(new Color((int) (255 - (((percent - 0.5) * 2) * 255)), 255, 0));
-//                }
-//                if (percent < 0.5) {
-//                    g2.setColor(new Color(255, (int) ((percent * 2) * 255), 0));
-//                }
-//                percent *= 100;
-//                // Entsprechend viel füllen
-//                int fillperc = (int) (percent * (lf / 2) / 100);
-//                g2.fillRect(dX + cpX + 1, dY - cpY + 1, fillperc, 3);
-//            } catch (ClassCastException ex2) {
-//            }
-//
-//        }
-    }
-
     public void setFramePosition(Dimension td) {
         // Setzt die Position des Rahmens, inzwischen Editor&Game
         framePos = td;

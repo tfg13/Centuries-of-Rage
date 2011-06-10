@@ -57,7 +57,7 @@ public class ServerMoveManager {
      * @param target
      * @param movers 
      */
-    public void moveRequest(FloatingPointPosition target, ArrayList<Unit> movers) {
+    public void moveRequest(FloatingPointPosition target, ArrayList<Unit> movers, boolean run) {
         // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
         // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
         for (Unit unit : movers) {
@@ -73,7 +73,11 @@ public class ServerMoveManager {
             }
         }
         // Gruppe ans Ziel senden
-        man.goTo(target);
+        if (!run) {
+            man.goTo(target);
+        } else {
+            man.runTo(target);
+        }
     }
     // Add_some_content
 

@@ -34,7 +34,6 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade.upgradeaffects;
 import java.security.*;
 import jonelo.jacksum.*;
 import jonelo.jacksum.algorithm.*;
-import de._13ducks.cor.map.ServerMapElement;
 import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.DescParamsBuilding;
 import de._13ducks.cor.game.DescParamsUnit;
@@ -42,8 +41,6 @@ import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.map.CoRMap;
-import de._13ducks.cor.map.AbstractMapElement;
-import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit2x2;
 import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
@@ -764,87 +761,6 @@ public class ServerMapModule {
         return theMap.getMapSizeY();
     }
 
-    /**
-     * Findet heraus, ob die angegebene Position für Boden-GO's Kollision hat.
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundColliding(Position pos, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundTarget(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob die angegebene Position für Boden-GO's Kollision hat.
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundColliding(int x, int y, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[x][y].validGroundTarget(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob die angegebene Position für Boden'GO's als Wegposition (durchlaufen) Kollision hat.
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundCollidingMove(Position pos, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPath(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob die angegebene Position für Boden'GO's als Wegposition (durchlaufen) Kollision hat.
-     * @return true bedeutet, dass es besetzt ist
-     */
-    public boolean isGroundCollidingForMove(int x, int y, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[x][y].validGroundPath(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob die angegebene Position für Boden-GO's als Wegposition
-     * bei der Wegeplanung als Hinderniss betrachtet werden soll.
-     * Wenn nicht, dort aber was ist (groundcollidingformove), dann wird die Einheit normalerweise anhalten und kämpfen.
-     * @param pos die Position
-     * @param obj das objekt, das da laufen soll
-     * @return true, wenn hinderniss
-     */
-    public boolean isGroundCollidingForMovePlanning(Position pos, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[pos.getX()][pos.getY()].validGroundPathWhilePlanning(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
-    /**
-     * Findet heraus, ob die angegebene Position für Boden-GO's als Wegposition
-     * bei der Wegeplanung als Hinderniss betrachtet werden soll.
-     * Wenn nicht, dort aber was ist (groundcollidingformove), dann wird die Einheit normalerweise anhalten und kämpfen.
-     * @param x die x - koordinate
-     * @param y die y - koordinate
-     * @param obj das objekt, das da laufen soll
-     * @return true, wenn hinderniss
-     */
-    public boolean isGroundCollidingForMovePlanning(int x, int y, GameObject obj) {
-        try {
-            return !theMap.getVisMap()[x][y].validGroundPathWhilePlanning(obj);
-        } catch (Exception ex) {
-            return true;
-        }
-    }
-
     private void createIDList() {
         // Verlässt sich darauf, dass der MapEditor/RandomMapGenerator korrekte netIDs vergeben hat...
         netIDList.clear();
@@ -962,7 +878,7 @@ public class ServerMapModule {
      */
     public GameObject getGameObjectviaID(int netID) {
         try {
-            return (GameObject) netIDList.get(netID);
+            return netIDList.get(netID);
         } catch (Exception ex) {
             // Gibts net, falscher Typ etc...
             return null;
@@ -986,10 +902,6 @@ public class ServerMapModule {
             if (!rgi.game.playerList.get(b.getPlayerId()).bList.contains(b.getDescTypeId())) {
                 rgi.game.playerList.get(b.getPlayerId()).bList.add(b.getDescTypeId());
             }
-        }
-
-        for (Position pos : b.getPositions()) {
-            addPerm(pos, b);
         }
 
         // Broadcasten
@@ -1016,10 +928,6 @@ public class ServerMapModule {
         if (!rgi.game.playerList.get(u.getPlayerId()).uList.contains(u.getDescTypeId())) {
             rgi.game.playerList.get(u.getPlayerId()).uList.add(u.getDescTypeId());
         }
-
-        for (Position pos : u.getPositions()) {
-            addPerm(pos, u);
-        }
         
         registerUnitMovements(u);
 
@@ -1035,7 +943,6 @@ public class ServerMapModule {
      */
     public void killUnit(Unit u) {
         if (u != null && u.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-            u.kill();
             /* // Eventuelles Bauen abschalten
             ServerBehaviour b = u.getbehaviourS(5);
             if (b != null && b.active) {
@@ -1043,21 +950,6 @@ public class ServerMapModule {
             } */
             System.out.println("AddMe: Stop behaviours");
             // Behaviours sofort stoppen
-            // Kollision aufheben
-            System.out.println("Achtung: Kollisions-Problem!");
-            for (Position pos : u.getPositions()) {
-                removePerm(pos, u);
-            }
-            System.out.println("AddMe: Check for reserved fields.");
-            /*   if (!u.isMoving()) {
-            this.setCollision(u.position, collision.free);
-            } else {
-            rgi.netmap.deleteFieldReservation(u.movingtarget);
-            } */
-            // Unit-Referenz
-     /*       if (rgi.netmap.getUnitRef(u.position, u.getPlayerId()) == u) {
-            rgi.netmap.setUnitRef(u.position, null, u.getPlayerId());
-            } */
 
             // Allen mitteilen
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 28, u.netID, 0, 0, 0));
@@ -1083,15 +975,8 @@ public class ServerMapModule {
     public void killBuilding(Building u) {
         if (u != null && u.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
             // Behaviours sofort stoppen
-            u.kill();
             // Alle enthaltenen Einheiten rauslassen
             u.removeAll(rgi);
-
-            // Kollision aufheben
-            // Kollsion entfernen
-            for (Position pos : u.getPositions()) {
-                removePerm(pos, u);
-            }
 
             // Allen mitteilen
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 30, u.netID, 0, 0, 0));
@@ -1200,54 +1085,7 @@ public class ServerMapModule {
             }
         }
     }
-
-    /**
-     * Überprüft, ob ein Feld gerade reserviert ist.
-     *
-     * @param field
-     * @return
-     */
-    public boolean checkFieldReservation(Position field) {
-        return checkFieldReservation(field.getX(), field.getY());
-    }
-
-    /**
-     * Überprüft, ob ein Feld gerade reserviert ist.
-     *
-     * @param field
-     * @return
-     */
-    public boolean checkFieldReservation(int X, int Y) {
-        try {
-            return theMap.getVisMap()[X][Y].isReserved();
-        } catch (Exception ex) {
-            // Nicht-existente Felder sind besetzt
-            return true;
-        }
-    }
-
-    /* public Unit getEnemyUnitRef(int x, int y, int playerId) {
-    for (int i = 1; i < rgi.game.playerList.size(); i++) {
-    if (i == playerId || rgi.game.areAllies(rgi.game.getPlayer(i), rgi.game.getPlayer(playerId))) {
-    continue;
-    }
-    try {
-    Unit unit = theMap.getVisMap()[x][y].unitref[i];
-    if (unit != null) {
-    // Wartung
-    if (unit.getLifeStatus() == GameObject.LIFESTATUS_DEAD) {
-    // Referenz löschen, andere suchen
-    theMap.getVisMap()[x][y].unitref[i] = null;
-    continue;
-    }
-    return unit;
-    }
-    } catch (Exception ex) {
-    return null;
-    }
-    }
-    return null;
-    } */
+    
     /**
      * Verwaltet komplexere toDESC-Upgrades
      *
@@ -1308,169 +1146,6 @@ public class ServerMapModule {
                     }
 
                 }
-            }
-        }
-    }
-
-    /**
-     * Aufrufen, um die Position eines GO so zu ändern, dass es auch die Kollision & das Ref-System mitbekommt.
-     * @param obj Das GO zum Ändern
-     * @param newMain die neue Zurordnungposition
-     */
-    public void changePosition(GameObject obj, Position newMain) {
-        // Alte Kollision austragen:
-        Position[] oldpos = obj.getPositions();
-        for (Position pos : oldpos) {
-            removeTemp(pos, obj);
-        }
-        obj.setMainPosition(newMain);
-        Position[] newpos = obj.getPositions();
-        for (Position pos : newpos) {
-            addTemp(pos, obj);
-        }
-    }
-
-    /**
-     * Aufrufen, um die Position eines GO so zu setzen, dass es auch die Kollision & das Ref-System mitbekommt.
-     * @param caster2
-     * @param targetPos
-     */
-    public void setPosition(Unit obj, Position targetPos) {
-        // Eventuelle Temppos löschen
-        Position[] oldpos = obj.getPositions();
-        for (Position pos : oldpos) {
-            removeTemp(pos, obj);
-        }
-        obj.setMainPosition(targetPos);
-        Position[] newpos = obj.getPositions();
-        for (Position pos : newpos) {
-            addPerm(pos, obj);
-        }
-    }
-
-    /**
-     * Stellt die aktuellt Position der gegebene Einheit von
-     * @param obj
-     */
-    public void releasePosition(Unit obj) {
-        Position[] oldpos = obj.getPositions();
-        for (Position pos : oldpos) {
-            removePerm(pos, obj);
-            addTemp(pos, obj);
-        }
-    }
-
-    /**
-     * Registiert die angegebene Einheit als dauerhafte Kollisionsquelle bei dem angegebenen Feld.
-     * @param pos die Position
-     * @param obj die zu reg. Einheit
-     * @see ServerMapElement
-     */
-    private void addPerm(Position pos, GameObject obj) {
-        int result = theMap.getVisMap()[pos.getX()][pos.getY()].addPermanentObject(obj);
-        if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
-        }
-    }
-
-    /**
-     * Registriert die Einheit als tempöräre Kollisionsquelle bei dem angegebenen Feld.
-     * @param pos die Position
-     * @param obj die zu reg. Einheit
-     * @see ServerMapElement
-     */
-    private void addTemp(Position pos, GameObject obj) {
-        int result = theMap.getVisMap()[pos.getX()][pos.getY()].addTempObject(obj);
-        if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
-        }
-    }
-
-    /**
-     * Entfernt die Einheit vom angegebenen Feld.
-     * @param pos die Position
-     * @see ServerMapElement
-     */
-    private void removePerm(Position pos, GameObject obj) {
-        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removePermanentObject(obj);
-        if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
-        }
-    }
-
-    /**
-     * Entfernt die Einheit vom angegebene Feld.
-     * @param pos die Position
-     * @param obj die Einheit
-     * @see ServerMapElement
-     */
-    private void removeTemp(Position pos, GameObject obj) {
-        int result = theMap.getVisMap()[pos.getX()][pos.getY()].removeTempObject(obj);
-        if (rgi.isInDebugMode()) {
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, pos.getX(), pos.getY(), result, mapHash));
-        }
-    }
-
-    /**
-     * Nimmt dieses GO mit seiner derzeitigen Position ins Kollisionssystem auf.
-     * @param obj ein Object
-     */
-    public void trackCollision(GameObject obj) {
-        Position[] positions = obj.getPositions();
-        for (Position pos : positions) {
-            addPerm(pos, obj);
-        }
-    }
-
-    /**
-     * Sendet die start-Kollisionsmap an den Client.
-     * Wird nur im Debug-Mode aufgerufen
-     */
-    void sendInitialCollisionMap() {
-        AbstractMapElement[][] visMap = theMap.getVisMap();
-        for (int x = 0; x < visMap.length; x++) {
-            for (int y = 0; y < visMap[0].length; y++) {
-                if (x % 2 != y % 2) {
-                    continue; // Nur echte Felder
-                }
-                if (visMap[x][y].isUnreachable()) {
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 53, x, y, 1, 0));
-                }
-            }
-        }
-    }
-
-    /**
-     * Reserviert das angegebene Ziel (und alle dazugehörigen Felder großer Einheiten)
-     * Für die angegebene Zeit.
-     * @param unit die Unti für die reserviert wird
-     * @param until, Zeitpunkt, bis zu dem die Reservierung gültig ist.
-     * @param target das Ziel (Zuordnungsposition)
-     */
-    public void reserveMoveTarget(Unit unit, long until, Position target) {
-        until += 100;
-        Position diff = unit.getMainPosition().subtract(target);
-        for (Position pos : unit.getPositions()) {
-            pos = pos.subtract(diff);
-            theMap.getVisMap()[pos.getX()][pos.getY()].setReserved(until, unit);
-            if (rgi.isInDebugMode()) {
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), until));
-            }
-        }
-    }
-
-    /**
-     * Löscht die Reservierung des aktuellen Bewegungsziels dieser Einheit
-     * @param unit die Einheit
-     * @param oldTarget das alte Ziel der Einheit
-     */
-    public void deleteMoveTargetReservation(Unit unit, Position oldTarget) {
-       Position diff = unit.getMainPosition().subtract(oldTarget);
-        for (Position pos : unit.getPositions()) {
-            pos = pos.subtract(diff);
-            theMap.getVisMap()[pos.getX()][pos.getY()].deleteReservation();
-            if (rgi.isInDebugMode()) {
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 56, pos.getX(), pos.getY(), 0));
             }
         }
     }
