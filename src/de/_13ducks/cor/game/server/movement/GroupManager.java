@@ -28,7 +28,6 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +95,8 @@ public class GroupManager {
 
         FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
 
-
+        // Niedrigste Geschwindigkeit suchen
+        double commonSpeed = lowestSpeed(myMovers);
 
 
         int i = 0;
@@ -112,7 +112,7 @@ public class GroupManager {
                         member.addWaypoint(node);
                     }
                     // Loslaufen lassen
-                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed);
                 }
             }
             i++;
@@ -159,5 +159,16 @@ public class GroupManager {
             }
         }
         return null;
+    }
+
+    private double lowestSpeed(ArrayList<GroupMember> myMovers) {
+        double lowestSpeed = myMovers.get(0).getMover().getSpeed();
+        for (int i = 1; i < myMovers.size(); i++) {
+            double nextSpeed = myMovers.get(i).getMover().getSpeed();
+            if (nextSpeed < lowestSpeed) {
+                lowestSpeed = nextSpeed;
+            }
+        }
+        return lowestSpeed;
     }
 }
