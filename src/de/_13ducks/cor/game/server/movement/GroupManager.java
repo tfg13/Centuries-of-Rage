@@ -90,7 +90,7 @@ public class GroupManager {
     public synchronized void goTo(FloatingPointPosition target) {
         // Route planen
         List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
-        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size()-2).toFPP());
+        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP()); // Der vektor vom vorletzten Wegpunkt zum Ziel, entspricht der Richtung die die Formation haben soll
 
         FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
 

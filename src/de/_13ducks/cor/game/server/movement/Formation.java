@@ -43,6 +43,16 @@ public class Formation {
         // wenn true wird steps erhöt
         boolean increaseStepFlag = false;
 
+        // Die Position, auf die geklickt wurde:
+        if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(new FloatingPointPosition(0,0))) {
+                    formation[foundPositions] = new FloatingPointPosition(0,0);
+                    foundPositions++;
+                    if (foundPositions == unitCount) {
+                        return formation;
+                    }
+                }
+
+
         // endlosschleife, wenn genug positionen gefunden wurden wird sie abgebrochen
         while (true) {
             // X- und Y-Veränderung

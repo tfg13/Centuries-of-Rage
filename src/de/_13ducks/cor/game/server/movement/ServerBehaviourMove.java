@@ -57,6 +57,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
         this.moveMap = moveMap;
+
     }
 
     @Override
@@ -91,6 +92,22 @@ public class ServerBehaviourMove extends ServerBehaviour {
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
+
+        // Echtzeitkollision:
+        FloatingPointPosition newTarget = null;
+        for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+            if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+
+
+                newpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
+
+                this.stopImmediately();
+
+            }
+        }
+
+
+
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
@@ -99,14 +116,14 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
+		if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
             } else {
                 // Herausfinden, ob der Sektor gewechselt wurde
-                
+
                 SimplePosition newTar = target;
                 if (newTar instanceof Node && oldTar instanceof Node) {
                     // Nur in diesem Fall kommt ein Sektorwechsel in Frage
@@ -117,6 +134,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     }
                 }
             }
+
         } else {
             // Sofort stoppen?
             if (stopUnit) {
@@ -199,7 +217,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         stopUnit = true;
         trigger();
     }
-    
+
     /**
      * Findet einen Sektor, den beide Knoten gemeinsam haben
      * @param n1 Knoten 1
@@ -212,5 +230,24 @@ public class ServerBehaviourMove extends ServerBehaviour {
             }
         }
         return null;
+    }
+
+    /**
+     * Berechnet den Winkel zwischen zwei Vektoren
+     * @param vector_1
+     * @param vector_2
+     * @return
+     */
+    public double getAngle(FloatingPointPosition vector_1, FloatingPointPosition vector_2) {
+        double scalar = ((vector_1.getfX() * vector_2.getfX()) + (vector_1.getfY() * vector_2.getfY()));
+
+        double vector_1_lenght = Math.sqrt((vector_1.getfX() * vector_1.getfX()) + vector_2.getfY() * vector_1.getfY());
+        double vector_2_lenght = Math.sqrt((vector_2.getfX() * vector_2.getfX()) + vector_2.getfY() * vector_2.getfY());
+
+        double lenght = vector_1_lenght * vector_2_lenght;
+
+        double angle = Math.acos((scalar / lenght));
+
+        return angle;
     }
 }
