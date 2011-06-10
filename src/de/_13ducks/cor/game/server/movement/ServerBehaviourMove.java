@@ -107,6 +107,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
 
+
+                newpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
+
                 this.stopImmediately();
 
             }
