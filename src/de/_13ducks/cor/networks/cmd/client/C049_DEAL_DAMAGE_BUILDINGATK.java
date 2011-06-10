@@ -42,14 +42,14 @@ public class C049_DEAL_DAMAGE_BUILDINGATK extends ClientCommand {
         //Damage dealen als Gebäude
         //Data: ATKID, VICID, DMG, DELAY (ms)
         //Attacker und Opfer suchen
-        Building atck49 = (Building) rgi.mapModule.getBuildingviaID(rgi.readInt(data, 1));
+        Building atck49 = rgi.mapModule.getBuildingviaID(rgi.readInt(data, 1));
         if (atck49 != null) {
-            GameObject vic49 = (GameObject) rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 2));
+            GameObject vic49 = rgi.mapModule.getGameObjectviaID(rgi.readInt(data, 2));
             if (vic49 != null) {
                 int dmg = rgi.readInt(data, 3);
                 int delay = rgi.readInt(data, 4);
                 // Neues Bullet erzeugen
-                Bullet bullet = new Bullet(atck49, vic49, dmg, delay);
+                Bullet bullet = new Bullet(atck49, vic49, dmg, delay, rgi);
                 rgi.rogGraphics.addBulletB(bullet);
             } else {
                 System.out.println("FixMe: Victim ID mismatch (cmd49)");

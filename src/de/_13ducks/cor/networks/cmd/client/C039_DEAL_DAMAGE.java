@@ -49,7 +49,7 @@ public class C039_DEAL_DAMAGE extends ClientCommand {
                 int dmg = rgi.readInt(data, 3);
                 int delay = rgi.readInt(data, 4);
                 // Neues Bullet erzeugen
-                Bullet bullet = new Bullet(atck39, vic39, dmg, delay);
+                Bullet bullet = new Bullet(atck39, vic39, dmg, delay, rgi);
                 rgi.rogGraphics.addBullet(bullet);
             } else {
                 // Das ist kein Problem, diese Einheit ist halt schon tot.

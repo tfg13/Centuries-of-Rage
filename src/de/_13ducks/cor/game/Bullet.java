@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.Vector;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import java.util.Map;
@@ -62,10 +63,9 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     private long startTime;
     private int lastDirection;
     private String texture;
-    
     private SimplePosition currentPos = new FloatingPointPosition(0, 0);
 
-    public Bullet(GameObject attacker, GameObject victim, int dmg, int dly) {
+    public Bullet(GameObject attacker, GameObject victim, int dmg, int dly, ClientCore.InnerClient rgi) {
         super(null, victim, 2, 5, true);
         sourcePos = new FloatingPointPosition(attacker.getMainPosition());
         target = victim;
@@ -74,8 +74,8 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         startTime = System.currentTimeMillis();
         texture = attacker.getBullettexture();
         this.attacker = attacker;
-        attacker.addClientBehaviour(this);
-        externalExecute();
+        target.addClientBehaviour(this);
+        this.rgi = rgi;
     }
 
     @Override
@@ -171,17 +171,18 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         float progress = (float) (passed * 1.0 / flytime);
         if (progress > 1) {
             // Fertig. Damage dealen und löschen
-            attacker.removeClientBehaviour(this);
+            target.removeClientBehaviour(this);
+            rgi.rogGraphics.content.allList.remove(this);
             target.dealDamageC(damage);
         }
         // Position des Bullets berechnen
         FloatingPointPosition targetP = new FloatingPointPosition(target.getCentralPosition());
         Vector vec = new Vector(targetP.x() - sourcePos.x(), targetP.y() - sourcePos.y());
-        
+
         vec.multiplyMe(progress);
-        
+
         currentPos = sourcePos.add(vec.toFPP());
-        
+
         // Richtung berechnen:
         if ((sourcePos.y() - targetP.y()) == 0) {
             // Division by zero
