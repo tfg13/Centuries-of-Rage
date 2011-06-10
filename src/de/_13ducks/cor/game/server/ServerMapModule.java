@@ -1035,7 +1035,6 @@ public class ServerMapModule {
      */
     public void killUnit(Unit u) {
         if (u != null && u.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-            u.killS();
             /* // Eventuelles Bauen abschalten
             ServerBehaviour b = u.getbehaviourS(5);
             if (b != null && b.active) {
