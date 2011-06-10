@@ -147,6 +147,10 @@ public class CoRInput implements Pauseable {
      * Die Fähigkeitenanzeige des Huds.
      */
     private AbilityHud abHud;
+    /**
+     * Der Zeitpunkt des letzten Doppelklicks
+     */
+    private long lastRightKlick;
 
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
@@ -389,23 +393,13 @@ public class CoRInput implements Pauseable {
                                         }
                                     } else {
                                         // Kein Rahmen, normaler klick
-                                        CoRInput.this.mouseKlickedLeft(button, x, y, 1);
+                                        CoRInput.this.mouseKlickedLeft(button, x, y);
                                     }
                                     // Das auf jeden Fall machen:
                                     stopSelectionBox();
                                 }
-                                if (button == 1 && !rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200)) {
-                                    /*    if (x > graphics.content.hudX) {
-                                    // Auf Minimap?
-                                    if (x > (graphics.content.hudX + (graphics.content.hudSizeX * 0.1)) && x < graphics.content.hudX + graphics.content.hudSizeX - (graphics.content.hudSizeX * 0.1)) {
-                                    if (y > (graphics.content.realPixY / 7 * 1.4) && y < graphics.content.realPixY / 7 * 3) {
-                                    // Auf Minimap!
-                                    mouseKlickedRightMiniMap(button, x, y);
-                                    }
-                                    }
-                                    } else { */
+                                if (button == 1 && (!rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200))) {
                                     mouseKlickedRight(button, x, y, false);
-                                    //  }
                                 }
                             }
                         });
@@ -780,8 +774,7 @@ public class CoRInput implements Pauseable {
      * Wird bei Linksklick aufgerufen. Behandelt an/abwählen von Einheiten, Gebäuden.
      * @param e     MouseEvent, enthält Position, welcher Button, wie oft, welche Maus, etc..
      */
-    public void mouseKlickedLeft(final int button, final int x, final int y, int clickCount) {
-        System.out.println("AddMe: doubleklick on mKL-Input!");
+    public void mouseKlickedLeft(final int button, final int x, final int y) {
         final int myPlayer = rgi.game.getOwnPlayer().playerId;
         Position selField = graphics.content.translateCoordinatesToField(x, y);
         List<InteractableGameElement> elems = selMap.getIGEsAt(selField.getX(), selField.getY());
@@ -841,7 +834,11 @@ public class CoRInput implements Pauseable {
      * @param e: MouseEvent, enthält Position, welcher Button, wie oft, etc..
      */
     public void mouseKlickedRight(final int button, final int x, final int y, final boolean notranslation) {
-        System.out.println("AddMe: Check for double-klicks");
+        boolean doubleKlick = false;
+        if (System.currentTimeMillis() - lastRightKlick <= 250) {
+            doubleKlick = true;
+        }
+        lastRightKlick = System.currentTimeMillis();
 	Position selField = null;
 	if (!notranslation) { // Umrechnen ins Feldsystem notwendig?
 	    selField = graphics.content.translateCoordinatesToField(x, y);
@@ -854,11 +851,11 @@ public class CoRInput implements Pauseable {
             List<InteractableGameElement> targets = selMap.getIGEsAt(selField.getX(), selField.getY());
             if (!targets.isEmpty()) {
                 for (InteractableGameElement elem : selected) {
-                    elem.command(button, targets, false, rgi);
+                    elem.command(button, targets, doubleKlick, rgi);
                 }
             } else {
                 // Default = Move
-                selected.get(0).command(button, notranslation ? new FloatingPointPosition(x, y) : graphics.content.translateCoordinatesToFloatPos(x, y), Collections.unmodifiableList(selected), false, rgi);
+                selected.get(0).command(button, notranslation ? new FloatingPointPosition(x, y) : graphics.content.translateCoordinatesToFloatPos(x, y), Collections.unmodifiableList(selected), doubleKlick, rgi);
             }
         }
     }
