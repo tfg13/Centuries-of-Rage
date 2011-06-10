@@ -208,6 +208,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
     @Override
     public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        // Hack, die X-Koorindate negativ übertragen, um flüchten zu signalisieren
+        if (doubleKlick) {
+            target = target.toFPP(); // Kopieren
+            target.setfX(target.getfX() * -1);
+        }
         // Befehl abschicken:
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 52, Float.floatToIntBits((float) target.getfX()),Float.floatToIntBits((float) target.getfY()), repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
         // Hier sind unter umständen mehrere Packete nötig:
@@ -245,7 +250,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         if (sendEffect != null) {
             sendEffect.kill();
         }
-        sendEffect = new SendToEffect(target.getfX(), target.getfY(), SendToEffect.MODE_GOTO);
+        sendEffect = new SendToEffect(target.getfX(), target.getfY(), doubleKlick ? SendToEffect.MODE_RUNTO : SendToEffect.MODE_GOTO);
         rgi.rogGraphics.content.skyEffects.add(sendEffect);
     }
 

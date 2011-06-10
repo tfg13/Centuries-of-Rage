@@ -329,6 +329,7 @@ public class ServerNetController implements Runnable {
         public ArrayList<Unit> temp07;
         public FloatingPointPosition temps052_1;
         public ArrayList<Unit> temps052_2;
+        public boolean temps052_movemode;
         public int moveMode;
         public String stringb44 = "";
         public String receivebuffer = "";  // Empfangspuffer für receiveString()
