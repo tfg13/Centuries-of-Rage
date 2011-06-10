@@ -93,9 +93,40 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
 
         // Echtzeitkollision:
+        FloatingPointPosition newTarget = null;
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
-                this.stopImmediately();
+
+                int direction = MathUtil.getEvasionDirection(this.caster2.getPrecisePosition(), m.getPrecisePosition(), this.target.toFPP());
+
+
+                if (direction == MathUtil.evasion_left) {
+
+                    // von uns am Hinderniss vorbei:
+                    FloatingPointPosition ownVector = MathUtil.getEvasionVector(newpos, m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_left);
+
+                    // vom Ziel am Hinderniss Vorbei:
+                    FloatingPointPosition targetVector = MathUtil.getEvasionVector(this.target.toFPP(), m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_right);
+
+                    // Schnittpunkt:
+                    newTarget = MathUtil.getIntersection(newpos, newpos.add(ownVector), this.target.toFPP(), this.target.toFPP().add(targetVector));
+
+
+                } else {
+
+                    // von uns am Hinderniss vorbei:
+                    FloatingPointPosition ownVector = MathUtil.getEvasionVector(newpos, m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_right);
+
+                    // vom Ziel am Hinderniss Vorbei:
+                    FloatingPointPosition targetVector = MathUtil.getEvasionVector(this.target.toFPP(), m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_left);
+
+                    // Schnittpunkt:
+                    newTarget = MathUtil.getIntersection(newpos, newpos.add(ownVector), this.target.toFPP(), this.target.toFPP().add(targetVector));
+                }
+
+                this.setTargetVector(target.toFPP().subtract(newpos));
+
+
             }
         }
 
@@ -222,5 +253,24 @@ public class ServerBehaviourMove extends ServerBehaviour {
             }
         }
         return null;
+    }
+
+    /**
+     * Berechnet den Winkel zwischen zwei Vektoren
+     * @param vector_1
+     * @param vector_2
+     * @return
+     */
+    public double getAngle(FloatingPointPosition vector_1, FloatingPointPosition vector_2) {
+        double scalar = ((vector_1.getfX() * vector_2.getfX()) + (vector_1.getfY() * vector_2.getfY()));
+
+        double vector_1_lenght = Math.sqrt((vector_1.getfX() * vector_1.getfX()) + vector_2.getfY() * vector_1.getfY());
+        double vector_2_lenght = Math.sqrt((vector_2.getfX() * vector_2.getfX()) + vector_2.getfY() * vector_2.getfY());
+
+        double lenght = vector_1_lenght * vector_2_lenght;
+
+        double angle = Math.acos((scalar / lenght));
+
+        return angle;
     }
 }
