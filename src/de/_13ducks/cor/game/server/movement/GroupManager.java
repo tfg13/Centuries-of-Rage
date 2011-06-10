@@ -107,6 +107,11 @@ public class GroupManager {
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
+                    // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
+                    if (member.getMover().getAtkManager() != null) {
+                        member.getMover().getAtkManager().newMoveMode(1);
+                    }
+                    
                     // Weg setzen
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);

@@ -101,6 +101,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
      * Hinweis: Wird gelegentlich auch sofort getriggert.
      */
     private static final int SEARCH_INTERVAL = 500;
+    
+    public static final int MOVEMODE_GOTO = 1;
+    public static final int MOVEMODE_RUNTO = 2;
     /**
      * Der derzeitige Modus
      */
@@ -312,5 +315,20 @@ public class ServerBehaviourAttack extends ServerBehaviour {
 
     @Override
     public void unpause() {
+    }
+
+    
+    synchronized void newMoveMode(int i) {
+        switch (i) {
+            case MOVEMODE_RUNTO:
+                // Angriffsziel fallen lassen:
+                target = null;
+                mode = FLEE;
+                break;
+            default: // MOVEMODE_GOTO
+                // Angriffsziel fallen lassen:
+                target = null;
+                mode = SEARCHENEMY;
+        }
     }
 }
