@@ -84,7 +84,7 @@ public class AbilityHud extends Overlay {
     private int edge = EDGE_BOTTOM_LEFT;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public synchronized  void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
         if (iges != null && !iges.isEmpty()) {
             // Liste updaten?
             if (igesUpdated) {
@@ -156,7 +156,7 @@ public class AbilityHud extends Overlay {
      * Muss beim Rendern aufgerufen werden, damit der selections-layer immer mit dem sichtbaren layer übereinstimmt.
      * Nicht wirklich schön.
      */
-    private void updateCoords(int resX, int resY, List<Ability> abList) {
+    private synchronized void updateCoords(int resX, int resY, List<Ability> abList) {
         switch (edge) {
             case EDGE_TOP_LEFT:
                 coords[0] = 0;
@@ -185,7 +185,7 @@ public class AbilityHud extends Overlay {
         }
     }
 
-    public void setActiveObjects(List<InteractableGameElement> elems) {
+    public synchronized void setActiveObjects(List<InteractableGameElement> elems) {
         this.iges = elems;
         igesUpdated = true;
     }
