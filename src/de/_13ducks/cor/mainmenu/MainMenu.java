@@ -91,6 +91,9 @@ public class MainMenu extends Container {
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_F10) {
             System.exit(0);
+        } else {
+            // Tastendruck weiterleiten:
+            super.keyPressed(key, c);
         }
     }
 
