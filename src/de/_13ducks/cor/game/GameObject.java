@@ -1141,8 +1141,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @return Die Position, an der das Object gespawnt werden soll.
      */
     public Position getSpawnPosition(GameObject obj, ServerCore.InnerServer rgi) {
-        obj.setMainPosition(mainPosition); // Leichter Pfusch, aber aroundMePlus funktioniert nur mit vollständig initialisierten Einheiten
-        return mainPosition.aroundMePlus(null, obj, false, 0, Position.AROUNDME_CIRCMODE_FULL_CIRCLE, Position.AROUNDME_COLMODE_GROUNDTARGET, false, rgi);
+        return mainPosition.subtract(new Position(-5, -5));
     }
 
     /**
