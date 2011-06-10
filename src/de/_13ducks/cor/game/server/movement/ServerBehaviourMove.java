@@ -52,11 +52,21 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private Vector lastVec;
     private MovementMap moveMap;
+    /**
+     * ist true, wenn die EInheit gerade einer anderen asuweicht, oder false im normalen laufmodus
+     */
+    private boolean evading;
+    /**
+     * Hier wird das eigentlicht Ziel wärend des Ausweichens gespeichert
+     */
+    private SimplePosition targetBackup;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
         this.moveMap = moveMap;
+        evading = false;
+
     }
 
     @Override
@@ -97,35 +107,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
 
-                int direction = MathUtil.getEvasionDirection(this.caster2.getPrecisePosition(), m.getPrecisePosition(), this.target.toFPP());
-
-
-                if (direction == MathUtil.evasion_left) {
-
-                    // von uns am Hinderniss vorbei:
-                    FloatingPointPosition ownVector = MathUtil.getEvasionVector(newpos, m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_left);
-
-                    // vom Ziel am Hinderniss Vorbei:
-                    FloatingPointPosition targetVector = MathUtil.getEvasionVector(this.target.toFPP(), m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_right);
-
-                    // Schnittpunkt:
-                    newTarget = MathUtil.getIntersection(newpos, newpos.add(ownVector), this.target.toFPP(), this.target.toFPP().add(targetVector));
-
-
-                } else {
-
-                    // von uns am Hinderniss vorbei:
-                    FloatingPointPosition ownVector = MathUtil.getEvasionVector(newpos, m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_right);
-
-                    // vom Ziel am Hinderniss Vorbei:
-                    FloatingPointPosition targetVector = MathUtil.getEvasionVector(this.target.toFPP(), m.getPrecisePosition(), this.caster2.getRadius(), m.getRadius(), MathUtil.evasion_left);
-
-                    // Schnittpunkt:
-                    newTarget = MathUtil.getIntersection(newpos, newpos.add(ownVector), this.target.toFPP(), this.target.toFPP().add(targetVector));
-                }
-
-                this.setTargetVector(target.toFPP().subtract(newpos));
-
+                this.stopImmediately();
 
             }
         }
@@ -140,21 +122,29 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
-                // Wenn das false gibt, gibts keine weiteren, dann hier halten.
-                target = null;
-                stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-                deactivate();
-            } else {
-                // Herausfinden, ob der Sektor gewechselt wurde
+            if (this.evading) {
 
-                SimplePosition newTar = target;
-                if (newTar instanceof Node && oldTar instanceof Node) {
-                    // Nur in diesem Fall kommt ein Sektorwechsel in Frage
-                    FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
-                    // Sektor geändert?
-                    if (!sector.equals(caster2.getMyPoly())) {
-                        caster2.setMyPoly(sector);
+                // Ausweichpunkt erereicht, wieer zum ursprünglichen Ziel gehen:
+                this.evading = false;
+                this.target = this.targetBackup;
+
+            } else {
+                if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
+                    // Wenn das false gibt, gibts keine weiteren, dann hier halten.
+                    target = null;
+                    stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
+                    deactivate();
+                } else {
+                    // Herausfinden, ob der Sektor gewechselt wurde
+
+                    SimplePosition newTar = target;
+                    if (newTar instanceof Node && oldTar instanceof Node) {
+                        // Nur in diesem Fall kommt ein Sektorwechsel in Frage
+                        FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
+                        // Sektor geändert?
+                        if (!sector.equals(caster2.getMyPoly())) {
+                            caster2.setMyPoly(sector);
+                        }
                     }
                 }
             }
