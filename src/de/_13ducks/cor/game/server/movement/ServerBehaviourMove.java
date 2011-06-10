@@ -99,7 +99,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
+            if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
