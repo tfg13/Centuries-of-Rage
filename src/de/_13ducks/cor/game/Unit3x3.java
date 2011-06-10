@@ -111,7 +111,12 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public void kill() {
+    public void killS() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public void killC() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

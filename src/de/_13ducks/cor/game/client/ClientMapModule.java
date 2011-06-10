@@ -1319,7 +1319,7 @@ public class ClientMapModule {
      * @deprecated
      */
     public void dealDamage(GameObject victim, int damage) {
-        victim.dealDamage(damage);
+        victim.dealDamageS(damage);
     }
 
     /**
@@ -1343,7 +1343,7 @@ public class ClientMapModule {
      */
     public void buildingKilled(Building building) {
         if (building != null) {
-            building.kill();
+            building.killS();
             // Für eigene Gebäude den Sichtbereich auf erkundet setzen
             if (building.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                 rgi.rogGraphics.content.cutDieingBuildingSight(building);

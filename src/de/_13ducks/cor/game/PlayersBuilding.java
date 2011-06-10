@@ -90,7 +90,12 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void kill() {
+    public void killS() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public void killC() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

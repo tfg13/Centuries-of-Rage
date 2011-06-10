@@ -1063,18 +1063,36 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Schadet diesem GO.
      * Das Objekt stibt normalerweise, wenn die Energie unter oder auf 0 fällt.
      */
-    public void dealDamage(int damage) {
+    public void dealDamageS(int damage) {
         hitpoints -= damage;
         if (hitpoints <= 0) {
             hitpoints = 0;
-            kill();
+            killS();
+        }
+    }
+    
+    /**
+     * Schadet diesem GO.
+     * Das Objekt stirbt normalerweise, wenn die Energie unter oder auf 0 fällt.
+     * @param damage 
+     */
+    public void dealDamageC(int damage) {
+        hitpoints -= damage;
+        if (hitpoints <= 0) {
+            hitpoints = 0;
+            killS();
         }
     }
 
     /**
      * Lässt das GO sterben.
      */
-    public abstract void kill();
+    public abstract void killS();
+    
+    /**
+     * Lässt das GO sterben.
+     */
+    public abstract void killC();
 
     /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId

@@ -283,7 +283,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
             }
             if (atkdelay == 0) {
                 // Direkt schädigen:
-                target.dealDamage(damage);
+                target.dealDamageS(damage);
             } else {
                 Server.getInnerServer().atkMan.delayDamageTo(target, damage, atkdelay);
             }

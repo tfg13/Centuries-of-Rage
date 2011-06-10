@@ -68,7 +68,7 @@ public class ServerAttackManager {
 
         @Override
         public void run() {
-            go.dealDamage(damage);
+            go.dealDamageS(damage);
         }
         
     }
