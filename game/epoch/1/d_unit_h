@@ -5,7 +5,7 @@ armortype=lightinf
 defaultTexture=img/creeps/testhuman2.png
 hitpoints=100
 maxhitpoints=100
-range=2
+range=5
 idlerange=5
 damage=5
 cooldownmax=1000
@@ -19,13 +19,13 @@ limit=1
 }
 
 U 402 {
-speed=4
+speed=10
 name=Warrior
 armortype=heavyinf
 defaultTexture=img/creeps/testhuman1.png
 hitpoints=150
 maxhitpoints=150
-range=2
+range=5
 idlerange=5
 damage=7
 antikav=150
@@ -47,7 +47,7 @@ armortype=vehicle
 defaultTexture=img/creeps/testcatapult.png
 hitpoints=200
 maxhitpoints=200
-range=15
+range=30
 idlerange=8
 damage=40
 bulletspeed=15
