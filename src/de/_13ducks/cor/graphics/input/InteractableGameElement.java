@@ -146,4 +146,11 @@ public interface InteractableGameElement {
      * @return das Objekt, mit dem die perform()-Methoden der Abilitys aufgerufen werden sollen
      */
     public GameObject getAbilityCaster();
+    
+    /**
+     * Liefert das Objekt, das als Angriffsziel beim Rechtsklick auf dieses verwendet werden soll.
+     * Liefert null, wenn das Objekt nicht angegriffen werden kann.
+     * @return das Objekt, das als Angriffsziel verwendet werden soll.
+     */
+    public GameObject getTarget();
 }

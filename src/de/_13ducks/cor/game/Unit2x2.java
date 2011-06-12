@@ -30,12 +30,10 @@ import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
-import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.graphics.input.SelectionMarker;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 

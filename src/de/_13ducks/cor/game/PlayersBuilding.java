@@ -204,4 +204,9 @@ public class PlayersBuilding extends Building {
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
     }
+
+    @Override
+    public GameObject getTarget() {
+        return this;
+    }
 }
