@@ -92,26 +92,18 @@ public class ServerBehaviourMove extends ServerBehaviour {
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
-
         // Echtzeitkollision:
-        FloatingPointPosition newTarget = null;
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
-
-
                 FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
                 if (nextnewpos.toVector().isValid()) {
                     newpos = nextnewpos;
                 } else {
                     newpos = oldPos.toFPP();
                 }
-                
                 this.stopImmediately();
-
             }
         }
-
-
 
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
@@ -121,7 +113,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster2.setMainPosition(target.toFPP());
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-		if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
+            if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
