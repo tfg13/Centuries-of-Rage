@@ -37,7 +37,6 @@ import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
-import de._13ducks.cor.graphics.effects.SkyEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
@@ -145,6 +144,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * @return the speed
      */
+    @Override
     public double getSpeed() {
         return speed;
     }
@@ -253,7 +253,13 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         sendEffect = new SendToEffect(doubleKlick ? target.getfX() * -1 : target.getfX(), target.getfY(), doubleKlick ? SendToEffect.MODE_RUNTO : SendToEffect.MODE_GOTO);
         rgi.rogGraphics.content.skyEffects.add(sendEffect);
     }
+    
+    @Override
+    public void command(int button, InteractableGameElement target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        
+    }
 
+    @Override
     public FloatingPointPosition getPrecisePosition() {
         return (FloatingPointPosition) mainPosition;
     }
@@ -263,6 +269,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Falls hier gerade kein Platz ist, wird die Einheit zur nächstmöglichen Position laufen.
      * Nur Client!
      */
+    @Override
     public void stopMovement(ClientCore.InnerClient rgi) {
         if (moveStoppable()) {
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 54, this.netID, 0, 0, 0));
@@ -273,6 +280,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Findet heraus, ob die Einheit sich derzeit in einer Stoppbaren Bewegung befindet.
      * @return
      */
+    @Override
     public boolean moveStoppable() {
         return clientManager.isActive();
     }
@@ -291,6 +299,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Liefert den LowLevel-Manager dieser Einheit.
      * @return den Lowlevel-Manager dieser Einheit.
      */
+    @Override
     public ServerBehaviourMove getLowLevelManager() {
         return lowLevelManager;
     }
@@ -299,6 +308,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Liefert den MidLevel-Manager dieser Einheit.
      * @return den Midlevel-Manager dieser Einheit.
      */
+    @Override
     public GroupManager getMidLevelManager() {
         return midLevelManager;
     }
@@ -307,6 +317,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Liefert den TopLevel-Manager dieser Einheit.
      * @return den TopLevel-Manager dieser Einheit.
      */
+    @Override
     public ServerMoveManager getTopLevelManager() {
         return topLevelManager;
     }
@@ -316,6 +327,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
      * @param rgi der inner core
      */
+    @Override
     public void initServerMovementManagers(ServerCore.InnerServer rgi, MovementMap moveMap) {
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this, this, moveMap);
@@ -330,6 +342,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Muss aufgerufen werden, bevor Bewegungsbefehle an die Einheit gesendet werden.
      * @param rgi der inner core
      */
+    @Override
     public void initClientMovementManager(ClientCore.InnerClient rgi) {
         clientManager = new ClientBehaviourMove(rgi, this);
         addClientBehaviour(clientManager);
@@ -338,6 +351,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * Entfernt die Einheit aus ihrer aktuellen Gruppe, falls vorhanden.
      */
+    @Override
     public void removeFromCurrentGroup() {
         if (midLevelManager != null) {
             midLevelManager.remove(this);
@@ -350,6 +364,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Wenn eine da ist, wird diese nicht überschrieben!!!
      * @param man Die neue Gruppe
      */
+    @Override
     public void setCurrentGroup(GroupManager man) {
         if (midLevelManager == null) {
             midLevelManager = man;
@@ -360,14 +375,17 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * @return the clientManager
      */
+    @Override
     public ClientBehaviourMove getClientManager() {
         return clientManager;
     }
 
+    @Override
     public int getNetID() {
         return netID;
     }
 
+    @Override
     public List<Moveable> moversAroundMe(double radius) {
         // Das macht die movementMap
         return moveMap.moversAround(this, radius);
@@ -376,6 +394,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * @return the myPoly
      */
+    @Override
     public FreePolygon getMyPoly() {
         return myPoly;
     }
@@ -383,6 +402,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * @param myPoly the myPoly to set
      */
+    @Override
     public void setMyPoly(FreePolygon myPoly) {
         // Beim alten abmelden:
         if (this.myPoly != null) {
@@ -395,6 +415,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     /**
      * @return the atkManager
      */
+    @Override
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
     }

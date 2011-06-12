@@ -107,10 +107,11 @@ public interface InteractableGameElement {
      * Das IGE wird nun berechnen, ob mit den Zielen etwas anzufangen ist und gegebenenfalls in Aktion treten.
      * Anhand des Parameters doubleKlick kann das IGE herausfinden, ob es sich um den (2ten!!!) Klick eines Doppelklicks handelt.
      * @param button Mittlere oder Linke Maustaste. (2 oder 3) (Reihenfolge?)
-     * @param targets Eine Liste aller IGE's die sich auf der ZielPosition des Klicks befinden
+     * @param target Das angeklickte Ziel
+     * @param repeaters Alle weiteren, derzeit angewählten IGEs. (Der Befehl wird nur an eines geschickt)
      * @param doubleKlick ist dies der wiederholte klick eines Doppelklicks
      */
-    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi);
+    public void command(int button, InteractableGameElement target, List<InteractableGameElement> repeaters, boolean doubleKlick, ClientCore.InnerClient rgi);
 
     /**
      * Aufrufen, um einem selektierten IGE mitzuteilen, dass ein Befehl für es eingegangen ist.

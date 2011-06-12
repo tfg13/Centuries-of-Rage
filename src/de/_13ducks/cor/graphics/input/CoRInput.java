@@ -851,7 +851,7 @@ public class CoRInput implements Pauseable {
             List<InteractableGameElement> targets = selMap.getIGEsAt(selField.getX(), selField.getY());
             if (!targets.isEmpty()) {
                 for (InteractableGameElement elem : selected) {
-                    elem.command(button, targets, doubleKlick, rgi);
+                    elem.command(button, targets.get(0), Collections.unmodifiableList(selected), doubleKlick, rgi);
                 }
             } else {
                 // Default = Move

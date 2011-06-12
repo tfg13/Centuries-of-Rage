@@ -158,11 +158,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void command(int button, List<InteractableGameElement> targets, boolean doubleKlick, ClientCore.InnerClient rgi) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
