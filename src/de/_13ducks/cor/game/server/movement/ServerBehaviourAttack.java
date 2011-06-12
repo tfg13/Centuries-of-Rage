@@ -135,7 +135,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
     }
 
     @Override
-    public void execute() {
+    public synchronized void execute() {
         switch (mode) {
             case FLEE:
                 // Ende, wenn Ziel erreicht
@@ -355,5 +355,21 @@ public class ServerBehaviourAttack extends ServerBehaviour {
         if (caster2.getLowLevelManager().isMoving()) {
             caster2.getTopLevelManager().stopForFight(caster2);
         }
+    }
+
+    /**
+     * Setzt ein neues Angriffsziel.
+     * Überschreibt alte Befehle.
+     * @param target Das neue Ziel
+     * @param focusfire true, wenn Focus gewünscht
+     */
+    synchronized void setAttack(GameObject target, boolean focusfire) {
+        if (focusfire) {
+            mode = FIGHTING;
+        } else {
+            mode = FOCUS;
+        }
+        this.target = target;
+        trigger();
     }
 }

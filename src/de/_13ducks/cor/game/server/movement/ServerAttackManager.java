@@ -26,6 +26,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Unit;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -71,6 +73,26 @@ public class ServerAttackManager {
             go.dealDamageS(damage);
         }
         
+    }
+    
+    
+
+    /**
+     * Ein Client-Atkrequest geht ein.
+     * @param target Das gemeinsame Angriffsziel
+     * @param attackers Eine Liste mit allen angreifenden Einheiten
+     * @param focusfire true, wenn focusfire gewünscht ist.
+     */
+    public void atkRequest(GameObject target, ArrayList<Unit> attackers, boolean focusfire) {
+        // Erstmal alle anhalten
+        for (Unit unit : attackers) {
+            unit.getTopLevelManager().stopForFight(unit);
+        }
+        
+        // Jetzt bei allen das Ziel einstellen
+        for (Unit unit : attackers) {
+            unit.getAtkManager().setAttack(target, focusfire);
+        }
     }
     
 }

@@ -26,6 +26,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 
@@ -101,4 +102,5 @@ public class ServerMoveManager {
         // Erst mal trivial implementiert (wie ein Client-Befehl)
         stopRequest(unit);
     }
+
 }
