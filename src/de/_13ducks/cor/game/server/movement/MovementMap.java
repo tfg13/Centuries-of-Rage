@@ -315,6 +315,29 @@ public class MovementMap {
     }
 
     /**
+     * Sucht alle Einheiten im Umkreis um einne Punkt heraus.
+     * Sucht über Sektorgrenzen hinweg.
+     * @param mover der Mover um den gesucht wird.
+     * @param radius der radius
+     * @return eine List mit allen gefundenen Einheiten
+     */
+    public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius) {
+        LinkedList<Moveable> movers = new LinkedList<Moveable>();
+        // Alle relevanten Sektoren herausfinden:
+        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), this.containingPoly(position.getfX(), position.getfY()), radius);
+        for (FreePolygon poly : relPolys) {
+            // Alle Einheiten dieses Sektors analysieren
+            List<Moveable> moversInSec = poly.getResidents();
+            for (Moveable moverS : moversInSec) {
+                if (moverS.getPrecisePosition().getDistance(position) <= radius) {
+                    movers.add(moverS);
+                }
+            }
+        }
+        return movers;
+    }
+
+    /**
      * Gibt true zurück, wenn der angegebene Punkt begehbar ist, oder false wenn nicht.
      */
     public boolean isPositionWalkable(FloatingPointPosition position) {
@@ -379,5 +402,100 @@ public class MovementMap {
      */
     private Node nearestNode(FreePolygon poly, FloatingPointPosition pos) {
         return poly.closestNode(pos);
+    }
+
+    /**
+     * Findet eine Stelle, an der ein Objekt mit dem angegebenen Radius platziert werden kann
+     * @param position - Position, um die gesucht werden soll
+     * @param radius - Radius der freien fläche
+     * @return - duie Position, die genügend freie Fläche hat oder null wenns keine gibt
+     */
+    public FloatingPointPosition aroundMe(FloatingPointPosition position, double radius) {
+        /**
+         * Die Auflösucg, mit der nach gültigen Positionen gesucht wird
+         */
+        double distance = 1.0;
+        /**
+         * SuchRadius
+         */
+        double searchRadius = 30.0;
+
+        // Die Position, die gerde bearbeitet wird
+        FloatingPointPosition checkPosition = new FloatingPointPosition(0, 0);
+
+        // Wieviele Positionen wurden schon gefudnden?
+        int foundPositions = 0;
+
+        // Richtung (1=E, 2=N, 3=W, 4=S)
+        int direction = 1;
+
+        // Wie viele sSchritte gecheckt werden
+        int steps = 1;
+
+        // wenn true wird steps erhöt
+        boolean increaseStepFlag = false;
+        // endlosschleife, wenn genug positionen gefunden wurden wird sie abgebrochen
+        while (true) {
+            // X- und Y-Veränderung
+            double dx = 0, dy = 0;
+
+            // in welche Richtung wird gerade gesucht?
+            switch (direction) {
+                case 1:
+                    dx = distance;
+                    dy = 0;
+                    break;
+                case 2:
+                    dx = 0;
+                    dy = distance;
+                    break;
+                case 3:
+                    dx = -distance;
+                    dy = 0;
+                    break;
+                case 4:
+                    dx = 0;
+                    dy = -distance;
+                    break;
+            }
+
+            // (steps) Schritte in die aktuelle Richtung gehen und bei jedem Schritt die Position überprüfen:
+            for (int i = 0; i < steps; i++) {
+
+                // CheckPosition verschieben:
+                checkPosition.setfX(checkPosition.getfX() + dx);
+                checkPosition.setfY(checkPosition.getfY() + dy);
+
+                FloatingPointPosition finalPos = new FloatingPointPosition(checkPosition.getfX(), checkPosition.getfY()).add(position);
+
+                // Wenn finalPos gültig ist zur Liste hinzufügen:
+                boolean moverCollision = false;
+                for (Moveable m : this.moversAroundPoint(position, searchRadius)) {
+                    if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius)) {
+                        moverCollision = true;
+                        break;
+                    }
+                }
+                if (!moverCollision && this.isPositionWalkable(finalPos)) {
+                    return finalPos;
+                }
+            }
+
+            // Richtung ändern:
+            direction++;
+            if (direction > 4) {
+                direction = 1;
+            }
+
+            // Wenn die Flag schon gesetzt ist inkrementieren, sonst flag setzten
+            //(dadurch wird steps bei  jedem 2. Richtungswechsel inkrementiert, was in einer kreisbewegung resultiert)
+            if (increaseStepFlag == true) {
+                increaseStepFlag = false;
+                steps++;
+            } else {
+                increaseStepFlag = true;
+            }
+        }
+
     }
 }
