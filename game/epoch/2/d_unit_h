@@ -19,7 +19,7 @@ limit=2
 }
 
 U 404 {
-speed=4
+speed=20
 name=Archer
 armortype=lightinf
 defaultTexture=img/creeps/testhuman4.png

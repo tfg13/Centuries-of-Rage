@@ -14,11 +14,10 @@ type=recruit
 shownname=Recruit Archer
 reference=U404
 cooldown=0.0
-duration=10000
+duration=100
 e0tex=img/creeps/testhuman4.png
 cost1=80
 cost2=50
-locked=true
 }
 
 405 {
