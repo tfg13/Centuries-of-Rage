@@ -110,7 +110,7 @@ public class GroupManager {
                     if (member.getMover().getAtkManager() != null) {
                         member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_GOTO);
                     }
-                    
+
                     // Weg setzen
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
@@ -133,7 +133,7 @@ public class GroupManager {
     public synchronized void runTo(FloatingPointPosition target) {
         // Route planen
         List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
-        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size()-2).toFPP());
+        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP());
 
         FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
 
@@ -151,7 +151,7 @@ public class GroupManager {
                     if (member.getMover().getAtkManager() != null) {
                         member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_RUNTO);
                     }
-                    
+
                     // Weg setzen
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
@@ -179,6 +179,17 @@ public class GroupManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Ein LowLevelManager hat ein Hindernis auf seinem Weg und will wissen, was er tun soll
+     * Gibt true zurück, wenn der LowLevelManager warten soll, oder false wenn ein Ausweichziel gesetzt wurde
+     * @param mover - der LowLevelManager, der die Kollision festgestellt hat
+     * @param obstacle - Das Obnjekt, mit dem der LowlevelManager kollidiert
+     */
+    public boolean collisionDetected(Moveable mover, Moveable obstacle) {
+        // TODO asuweichziel berechnen oder wartebefehl geben
+        return true;
     }
 
     /**
