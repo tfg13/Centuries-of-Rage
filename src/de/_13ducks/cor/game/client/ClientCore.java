@@ -85,24 +85,24 @@ public class ClientCore extends Core {
     }
 
     /*public ClientCore(boolean debug, InetAddress connectTo, int port, String playername_t, DisplayMode mode, boolean fullScreen, HashMap newcfg) throws SlickException {
-
+    
     playername = playername_t;
     lobby = new Lobby();
     cfgvalues = newcfg;
-
-
+    
+    
     // Hier beginnt der Code richtig zu laufen
     // Einstellungen aus Startoptionen übernehmen
     debugmode = debug;
-
+    
     rgi = new ClientCore.InnerClient(playername, isAIClient);
-
+    
     gamectrl = new ClientGameController(rgi);
-
-
+    
+    
     //gamectrl = new ClientGameController(rgi);
-
-
+    
+    
     // Neues Logfile anlegen (altes Löschen)
     initLogger();
     rgi.logger("[Core] Init RoG-Core");
@@ -111,61 +111,61 @@ public class ClientCore extends Core {
     } else {
     rgi.logger("[Core] Debug-Mode off");
     }
-
+    
     //Module Laden
-
+    
     rgi.logger("[CoreInit] Loading Modules & SubModules");
-
+    
     rgi.logger("[CoreInit] Loading clientgamecontroller...");
-
-
+    
+    
     // gamecrtl wird weiter oben initialisiert
     //gamectrl = new ClientGameController(rgi);
-
+    
     rgi.logger("[CoreInit] Loading graphicsengine");
-
+    
     // Grafik initialisieren(und KI):
     rGraphics = new thirteenducks.cor.graphics.CoreGraphics(rgi, new Dimension(mode.getWidth(), mode.getHeight()), fullScreen);
-
-
-
+    
+    
+    
     rgi.logger("[CoreInit]: Loading lobby...");
     // Lobby initialisieren und anzeigen:
-
+    
     lobby.setVisible(true);
-
+    
     rgi.logger("[CoreInit]: Loading client-netcontroller");
-
+    
     netController = new ClientNetController(rgi, lobby);
-
-
+    
+    
     mapMod = new ClientMapModule(rgi);
-
+    
     cchat = new ClientChat(rgi);
     rGraphics.content.overlays.add(cchat);
-
+    
     cs = new ClientStatistics(rgi);
-
-
-
-
+    
+    
+    
+    
     rgi.initInner();
-
+    
     /*
-
+    
     mapMod.initModule();
-
+    
     rGraphics.initModule();
     rGraphics.initSubs();
-
+    
      */
 
     /*   rgi.logger("[Core]: Connecting to server...");
-
+    
     if (netController.connectTo(connectTo, port)) {
     lobby.initlobby(netController, rgi);
     Thread t = new Thread(new Runnable() {
-
+    
     @Override
     public void run() {
     soundM = new SoundModule();
@@ -175,7 +175,7 @@ public class ClientCore extends Core {
     }
     });
     t.start();
-
+    
     } else {
     // Das geht so nicht, das ging nicht
     // Alles wieder abschalten
@@ -183,8 +183,8 @@ public class ClientCore extends Core {
     rGraphics.destroy();
     throw new java.lang.RuntimeException("IP invalid/unreachable or server not running");
     }
-
-
+    
+    
     } */
     /**
      * Wird vom Hauptmenu aufgerufen, wenn zu einem Server connected werden soll.
@@ -217,17 +217,18 @@ public class ClientCore extends Core {
 
     @Override
     public void initLogger() {
-        // Erstellt ein neues Logfile
-        try {
-            FileWriter logcreator = new FileWriter("client_log.txt");
-            logcreator.close();
-        } catch (IOException ex) {
-            // Warscheinlich darf man das nicht, den Adminmodus emfehlen
-            JOptionPane.showMessageDialog(new JFrame(), "Cannot write to logfile. Please start CoR as Administrator", "admin required", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-            rgi.shutdown(2);
+        if (!Core.logOFF) {
+            // Erstellt ein neues Logfile
+            try {
+                FileWriter logcreator = new FileWriter("client_log.txt");
+                logcreator.close();
+            } catch (IOException ex) {
+                // Warscheinlich darf man das nicht, den Adminmodus emfehlen
+                JOptionPane.showMessageDialog(new JFrame(), "Cannot write to logfile. Please start CoR as Administrator", "admin required", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+                rgi.shutdown(2);
+            }
         }
-
     }
 
     public static void main(String[] args) {
@@ -324,48 +325,51 @@ public class ClientCore extends Core {
 
         @Override
         public void logger(String x) {
-            if (!lastlog.equals(x)) { // Nachrichten nicht mehrfach speichern
-                lastlog = x;
-                // Schreibt den Inhalt des Strings zusammen mit dem Zeitpunkt in die
-                // log-Datei
-                try {
-                    FileWriter logwriter = new FileWriter("client_log.txt", true);
-                    String temp = String.format("%tc", new Date()) + " - " + x + "\n";
-                    logwriter.append(temp);
-                    logwriter.flush();
-                    logwriter.close();
+            if (!logOFF) {
+                if (!lastlog.equals(x)) { // Nachrichten nicht mehrfach speichern
+                    lastlog = x;
+                    // Schreibt den Inhalt des Strings zusammen mit dem Zeitpunkt in die
+                    // log-Datei
+                    try {
+                        FileWriter logwriter = new FileWriter("client_log.txt", true);
+                        String temp = String.format("%tc", new Date()) + " - " + x + "\n";
+                        logwriter.append(temp);
+                        logwriter.flush();
+                        logwriter.close();
 
 
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    shutdown(2);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        shutdown(2);
+                    }
                 }
             }
         }
 
         @Override
         public void logger(Throwable t) {
-            // Nimmt Exceptions an und schreibt den Stacktrace ins
-            // logfile
-            try {
-                if (debugmode) {
-                    System.out.println("ERROR!!!! More info in logfile...");
+            if (!logOFF) {
+                // Nimmt Exceptions an und schreibt den Stacktrace ins
+                // logfile
+                try {
+                    if (debugmode) {
+                        System.out.println("ERROR!!!! More info in logfile...");
+                    }
+                    FileWriter logwriter = new FileWriter("client_log.txt", true);
+                    logwriter.append('\n' + String.format("%tc", new Date()) + " - ");
+                    logwriter.append("[JavaError]:   " + t.toString() + '\n');
+                    StackTraceElement[] errorArray;
+                    errorArray = t.getStackTrace();
+                    for (int i = 0; i < errorArray.length; i++) {
+                        logwriter.append("            " + errorArray[i].toString() + '\n');
+                    }
+                    logwriter.flush();
+                    logwriter.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    shutdown(2);
                 }
-                FileWriter logwriter = new FileWriter("client_log.txt", true);
-                logwriter.append('\n' + String.format("%tc", new Date()) + " - ");
-                logwriter.append("[JavaError]:   " + t.toString() + '\n');
-                StackTraceElement[] errorArray;
-                errorArray = t.getStackTrace();
-                for (int i = 0; i < errorArray.length; i++) {
-                    logwriter.append("            " + errorArray[i].toString() + '\n');
-                }
-                logwriter.flush();
-                logwriter.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                shutdown(2);
             }
-
         }
     }
 }

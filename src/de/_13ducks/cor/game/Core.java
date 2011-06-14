@@ -34,6 +34,7 @@ import java.util.*;
 public abstract class Core {
 
     public boolean debugmode;
+    public static final boolean logOFF = true; // Schmiert sonst dauernt ab.
     public HashMap<String, String> cfgvalues;
 
     /* public static void main(String args[]) {

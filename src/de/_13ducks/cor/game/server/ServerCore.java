@@ -58,7 +58,7 @@ public class ServerCore extends Core {
     public boolean ready;              // gibt an, ob das Spiel gestartet werden soll.
 
     public ServerCore(boolean debug, String Mapname) {
-        
+
         debugmode = debug;
 
         rgi = new ServerCore.InnerServer();
@@ -75,7 +75,7 @@ public class ServerCore extends Core {
         cfgvalues = new HashMap();
         File cfgFile = new File("server_cfg.txt");
         try {
-            
+
             FileReader cfgReader = new FileReader(cfgFile);
             BufferedReader reader = new BufferedReader(cfgReader);
             String zeile = null;
@@ -138,13 +138,13 @@ public class ServerCore extends Core {
 
         mapMod = new ServerMapModule(rgi);
 
-	rgi.logger("[CoreInit]: Loading serverStatistics");
-	
-	sstat = new ServerStatistics(rgi);
+        rgi.logger("[CoreInit]: Loading serverStatistics");
+
+        sstat = new ServerStatistics(rgi);
 
         rgi.logger("[CoreInit]: Loading serverMoveManager");
 
-	smoveman = new ServerMoveManager();
+        smoveman = new ServerMoveManager();
 
         // Alle Module geladen, starten
 
@@ -273,17 +273,18 @@ public class ServerCore extends Core {
 
     @Override
     public void initLogger() {
-        // Erstellt ein neues Logfile
-        try {
-            FileWriter logcreator = new FileWriter("server_log.txt");
-            logcreator.close();
-        } catch (IOException ex) {
-            // Warscheinlich darf man das nicht, den Adminmodus emfehlen
-            JOptionPane.showMessageDialog(new JFrame(), "Cannot write to logfile. Please start CoR as Administrator", "admin required", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-            rgi.shutdown(2);
+        if (!logOFF) {
+            // Erstellt ein neues Logfile
+            try {
+                FileWriter logcreator = new FileWriter("server_log.txt");
+                logcreator.close();
+            } catch (IOException ex) {
+                // Warscheinlich darf man das nicht, den Adminmodus emfehlen
+                JOptionPane.showMessageDialog(new JFrame(), "Cannot write to logfile. Please start CoR as Administrator", "admin required", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+                rgi.shutdown(2);
+            }
         }
-
     }
 
     public class InnerServer extends Core.CoreInner {
@@ -291,7 +292,7 @@ public class ServerCore extends Core {
         public ServerNetController netctrl;
         public ServerMapModule netmap;
         public ServerGameController game;
-	public ServerStatistics serverstats;
+        public ServerStatistics serverstats;
         String lastlog = "";
         public ServerMoveManager moveMan;
         public ServerAttackManager atkMan;
@@ -306,21 +307,49 @@ public class ServerCore extends Core {
             netctrl = servNet;
             netmap = mapMod;
             game = gamectrl;
-	    serverstats = sstat;
+            serverstats = sstat;
             moveMan = smoveman;
             atkMan = new ServerAttackManager();
         }
 
         @Override
         public void logger(String x) {
-            if (!lastlog.equals(x)) { // Nachrichten nicht mehrfach speichern
-                lastlog = x;
-                // Schreibt den Inhalt des Strings zusammen mit dem Zeitpunkt in die
-                // log-Datei
+            if (!logOFF) {
+                if (!lastlog.equals(x)) { // Nachrichten nicht mehrfach speichern
+                    lastlog = x;
+                    // Schreibt den Inhalt des Strings zusammen mit dem Zeitpunkt in die
+                    // log-Datei
+                    try {
+                        FileWriter logwriter = new FileWriter("server_log.txt", true);
+                        String temp = String.format("%tc", new Date()) + " - " + x + "\n";
+                        logwriter.append(temp);
+                        logwriter.flush();
+                        logwriter.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        shutdown(2);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void logger(Throwable t) {
+            if (!logOFF) {
+                // Nimmt Exceptions an und schreibt den Stacktrace ins
+                // logfile
                 try {
+                    if (debugmode) {
+                        System.out.println("ERROR!!!! More info in logfile...");
+                    }
                     FileWriter logwriter = new FileWriter("server_log.txt", true);
-                    String temp = String.format("%tc", new Date()) + " - " + x + "\n";
-                    logwriter.append(temp);
+                    logwriter.append('\n' + String.format("%tc", new Date()) + " - ");
+                    logwriter.append("[JavaError]:   " + t.toString() + '\n');
+                    StackTraceElement[] errorArray;
+                    errorArray = t.getStackTrace();
+                    for (int i = 0; i < errorArray.length; i++) {
+                        logwriter.append("            " + errorArray[i].toString() + '\n');
+                    }
                     logwriter.flush();
                     logwriter.close();
                 } catch (IOException ex) {
@@ -328,31 +357,6 @@ public class ServerCore extends Core {
                     shutdown(2);
                 }
             }
-        }
-
-        @Override
-        public void logger(Throwable t) {
-            // Nimmt Exceptions an und schreibt den Stacktrace ins
-            // logfile
-            try {
-                if (debugmode) {
-                    System.out.println("ERROR!!!! More info in logfile...");
-                }
-                FileWriter logwriter = new FileWriter("server_log.txt", true);
-                logwriter.append('\n' + String.format("%tc", new Date()) + " - ");
-                logwriter.append("[JavaError]:   " + t.toString() + '\n');
-                StackTraceElement[] errorArray;
-                errorArray = t.getStackTrace();
-                for (int i = 0; i < errorArray.length; i++) {
-                    logwriter.append("            " + errorArray[i].toString() + '\n');
-                }
-                logwriter.flush();
-                logwriter.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                shutdown(2);
-            }
-
         }
     }
 }
