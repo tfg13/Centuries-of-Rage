@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.game.client.ClientCore;
 import java.io.*;
 import java.util.*;
@@ -188,6 +189,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
     @Override
     public boolean isSelectableByPlayer(int playerId) {
+        // Im Debugmode is es erlaubt selectAll=true zu setzen, dann darf man alle selektieren und steuern
+        if (Client.getInnerClient().isInDebugMode() && "true".equals(Client.getInnerClient().configs.get("selectAll"))) {
+            return true;
+        }
         return playerId == this.getPlayerId();
     }
 

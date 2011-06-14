@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.client.Client;
 import java.util.List;
 import java.util.Map;
 import org.newdawn.slick.Color;
@@ -136,6 +137,10 @@ public class PlayersBuilding extends Building {
 
     @Override
     public boolean isSelectableByPlayer(int playerId) {
+        // Im Debugmode is es erlaubt selectAll=true zu setzen, dann darf man alle selektieren und steuern
+        if (Client.getInnerClient().isInDebugMode() && "true".equals(Client.getInnerClient().configs.get("selectAll"))) {
+            return true;
+        }
         return playerId == this.getPlayerId();
     }
 
