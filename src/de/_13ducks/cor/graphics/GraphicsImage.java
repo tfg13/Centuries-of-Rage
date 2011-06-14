@@ -28,6 +28,7 @@
 package de._13ducks.cor.graphics;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 
 
 
@@ -39,9 +40,14 @@ public class GraphicsImage {
 
     private String imgName; // Name des Bildes, zum wiederfinden
     private Image image;
+    private SpriteSheet tiledImage;
 
     public GraphicsImage(Image b) {
         image = b;
+    }
+    
+    public GraphicsImage(SpriteSheet tiled) {
+        tiledImage = tiled;
     }
 
     public String getImageName() {
@@ -54,6 +60,10 @@ public class GraphicsImage {
 
     public Image getImage() {
         return image;
+    }
+    
+    public SpriteSheet getTiledImage() {
+        return tiledImage;
     }
 
 }
