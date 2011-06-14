@@ -307,7 +307,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      */
     void initMainMenu() {
         mainmenu = new MainMenu(content.realPixX, content.realPixY, core, this.imgMap);
-       
+
     }
 
     /**
@@ -681,32 +681,11 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         });
         for (File bulletFile : bulletFiles) {
             try {
-                // Einlesen:
-                Image bullet = new Image(bulletFile.getPath());
-                // Größe checken:
-                if (bullet.getHeight() != 160 || bullet.getWidth() != 160) {
-                    // Ungültig
-                    System.out.println("Invalid bullet (wrong size): " + bulletFile);
-                    rgi.logger("[Graphics][Error]: Invalid bullet (wrong size): " + bulletFile);
-                    continue;
-                }
-                // 16 Einzelbilder rausschneiden
-                for (int i = 0; i < 16; i++) {
-                    Image frame = new Image(40, 40);
-                    Graphics g2 = frame.getGraphics();
-                    // Wir brauchen die aktuelle Reihe/Spalte
-                    int b = i;
-                    int s = 0;
-                    while (b > 3) {
-                        s++;
-                        b -= 4;
-                    }
-                    g2.drawImage(bullet, 0, 0, 39, 39, b * 40, s * 40, (b * 40) + 40, (s * 40) + 40);
-                    String key = bulletFile.getPath() + i;
-                    imgMap.put(key.replaceAll("\\\\", "/"), new GraphicsImage(frame));
-                    imgMap.put(key.replaceAll("/", "\\\\"), new GraphicsImage(frame));
-
-                }
+                SpriteSheet tilemap = new SpriteSheet(bulletFile.getPath(), 40, 40);
+                GraphicsImage img = new GraphicsImage(tilemap);
+                String key = bulletFile.getPath();
+                imgMap.put(key.replaceAll("\\\\", "/"), img);
+                imgMap.put(key.replaceAll("/", "\\\\"), img);
             } catch (SlickException ex) {
                 System.out.println("Error reading bullet: " + bulletFile);
                 rgi.logger("[Graphics][Error]: Error reading bullet: " + bulletFile);
@@ -2011,7 +1990,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
                     // Fenster
                     for (int i = 0; i < sorted.length; i++) {
                         CoRDisplayMode bbb = new CoRDisplayMode();
-			bbb.setdMode(new DisplayMode(tx, ty));
+                        bbb.setdMode(new DisplayMode(tx, ty));
                         bbb.setFullscreen(false);
                         return bbb;
                     }
@@ -2023,7 +2002,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         if (fullfilter.length > 0) {
             CoRDisplayMode bbb = new CoRDisplayMode();
             bbb.setdMode(fullfilter[0]);
-	    bbb.setFullscreen(true);
+            bbb.setFullscreen(true);
             return bbb;
         } else {
             CoRDisplayMode bbb = new CoRDisplayMode();
