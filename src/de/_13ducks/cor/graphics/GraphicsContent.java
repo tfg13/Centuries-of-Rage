@@ -42,6 +42,7 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.Node;
+import de._13ducks.cor.graphics.debug.GraphicsTimeAnalyser;
 import de._13ducks.cor.graphics.effects.SkyEffect;
 import org.newdawn.slick.geom.Polygon;
 
@@ -178,6 +179,8 @@ public class GraphicsContent extends BasicGame {
     public GraphicsFireManager fireMan;
     private Minimap minimap;
     private IngameMenu ingamemenu;
+    private boolean graphicsDebug = false;
+    private GraphicsTimeAnalyser analyser;
 
     public void paintComponent(Graphics g) {
         //Die echte, letzendlich gültige paint-Methode, sollte nicht direkt aufgerufen werden
@@ -195,6 +198,9 @@ public class GraphicsContent extends BasicGame {
             // Ladebildschirm (pre-Game)
             renderLoadScreen(g);
         } else if (modi == 3) {
+            if (graphicsDebug) {
+                analyser.startFrame();
+            }
             try {
                 if (pauseMode) {
                     // Pause für diesen Frame freischalten:
@@ -252,13 +258,13 @@ public class GraphicsContent extends BasicGame {
 
 
                 renderSpriteSkyEffects(g);
-                
-                
+
+
                 // Fog of War rendern, falls aktiv
 //                if (renderFogOfWar) {
 //                    renderFogOfWar(g);
 //                }
-                
+
                 renderSkyEffects(g);
 
                 if (renderPicCursor) {
@@ -313,9 +319,13 @@ public class GraphicsContent extends BasicGame {
             }
             // Pause zurücksetzten
             pause = 0;
+
+            if (graphicsDebug) {
+                analyser.endFrame();
+            }
         }
     }
-    
+
     /**
      * Zeichnet alle SkyEffects, die derzeit sichtbar sind.
      * Schmeißt SkyEffects raus, die fertig sind.
@@ -380,7 +390,7 @@ public class GraphicsContent extends BasicGame {
             }
         }
     }
-    
+
     /**
      * Zeichnet alle SkyEffects aller Sprites auf den Bildschirm, falls diese derzeit im sichtbaren Bereich liegen,
      * gemäß dem FOW gezeichnet werden sollen und sich nicht verstecken.
@@ -973,8 +983,7 @@ public class GraphicsContent extends BasicGame {
 
         // DEBUG - Begehbarkeit anzeigen:
         String walk = "free";
-        if(Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(precise))
-        {
+        if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(precise)) {
             walk = "blocked";
         }
         g2.drawString(walk, 5, 80);
@@ -1204,7 +1213,7 @@ public class GraphicsContent extends BasicGame {
     // Sicht auf Mitte davon setzen
     rgi.rogGraphics.jumpTo(tempD.width - (viewX / 2), tempD.height - (viewY / 2));
     }
-
+    
     public void klickedOnMiniMap(int x, int y) {
     // Koordinaten finden
     Dimension tempD = searchMiniMid(x, y);
@@ -1492,6 +1501,11 @@ public class GraphicsContent extends BasicGame {
             if (Boolean.TRUE.equals(rgi.configs.get("benchmark")) || "true".equals(rgi.configs.get("benchmark"))) {
                 // Keine Limits
                 parent.setTargetFrameRate(-1);
+                if ("true".equals(rgi.configs.get("graphicsDebug"))) {
+                    graphicsDebug = true;
+                    analyser = new GraphicsTimeAnalyser(35);
+                    overlays.add(analyser);
+                }
             } else {
                 int framerate;
                 try {
@@ -1501,6 +1515,11 @@ public class GraphicsContent extends BasicGame {
                     framerate = 35;
                 }
                 parent.setTargetFrameRate(framerate);
+                if ("true".equals(rgi.configs.get("graphicsDebug"))) {
+                    graphicsDebug = true;
+                    analyser = new GraphicsTimeAnalyser(framerate);
+                    overlays.add(analyser);
+                }
             }
             initState = 0;
             // LOAD abgeschlossen, dem Server mitteilen
@@ -1513,9 +1532,9 @@ public class GraphicsContent extends BasicGame {
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, getImgMap(), realPixX, realPixY, rgi);
             minimap.setAllList(allList);
-	    ingamemenu = new IngameMenu();
+            ingamemenu = new IngameMenu();
             overlays.add(minimap);
-	    overlays.add(ingamemenu);
+            overlays.add(ingamemenu);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 3, 0, 0, 0, 0));
