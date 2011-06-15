@@ -411,6 +411,7 @@ public class MovementMap {
      * @return - duie Position, die genügend freie Fläche hat oder null wenns keine gibt
      */
     public FloatingPointPosition aroundMe(FloatingPointPosition position, double radius) {
+        double time = System.currentTimeMillis();
         /**
          * Die Auflösucg, mit der nach gültigen Positionen gesucht wird
          */
@@ -418,7 +419,7 @@ public class MovementMap {
         /**
          * SuchRadius
          */
-        double searchRadius = 30.0;
+        double searchRadius = 4.0;
 
         // Die Position, die gerde bearbeitet wird
         FloatingPointPosition checkPosition = new FloatingPointPosition(0, 0);
@@ -470,13 +471,14 @@ public class MovementMap {
 
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
                 boolean moverCollision = false;
-                for (Moveable m : this.moversAroundPoint(position, searchRadius)) {
+                for (Moveable m : this.moversAroundPoint(finalPos, searchRadius)) {
                     if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius)) {
                         moverCollision = true;
                         break;
                     }
                 }
                 if (!moverCollision && this.isPositionWalkable(finalPos)) {
+                    System.out.println("TIME NEEDED: "+(System.currentTimeMillis() - time));
                     return finalPos;
                 }
             }
