@@ -105,7 +105,7 @@ public class Minimap extends Overlay {
 	map.draw(dx, dy, sizeX, sizeY);
 	for (int i = 0; i < allList.size(); i++) {
 	    Sprite sprite = allList.get(i);
-	    sprite.renderMinimapMarker(g, dx + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getX() / (map.getWidth() / 2) * sizeX), dy + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getY() / (map.getHeight() / 2) * sizeY), rgi.game.getPlayer(sprite.getColorId()).color);
+	    sprite.renderMinimapMarker(g, dx + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getX() / map.getWidth() * sizeX), dy + (int) (1.0 * sprite.getMainPositionForRenderOrigin().getY() / map.getHeight() * sizeY), rgi.game.getPlayer(sprite.getColorId()).color);
 	}
 	g.setColor(Color.lightGray);
 	g.setLineWidth(1);
