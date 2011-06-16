@@ -28,7 +28,9 @@ package de._13ducks.cor.game.networks.behaviour.impl;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,36 +90,38 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                 Unit unit = rgi.netmap.getDescUnit(caster.getPlayerId(), loop.get(0));
                 if (unit != null) {
                     unit.setPlayerId(caster.getPlayerId());
-		    rgi.serverstats.trackUnitrecruit(unit.getPlayerId());
+                    rgi.serverstats.trackUnitrecruit(unit.getPlayerId());
                     // Auf der Richtigen Seite vom Gebäude spawnen
-                    unit.setMainPosition(caster.getSpawnPosition(unit, rgi));
-                /*    if (caster.waypoint != null) {
-                        try {
-                            Building b = (Building) caster;
-                            unit.position = b.getNextFreeField(caster.waypoint, rgi);
-                        } catch (ClassCastException ex) {
-                        }
+                    Position spawnPosition = caster.getSpawnPosition(unit, rgi);
+                    FloatingPointPosition precisePosition = new FloatingPointPosition(spawnPosition);
+                    unit.setMainPosition(this.rgi.netmap.getMoveMap().aroundMe(precisePosition, unit.getRadius()));
+                    /*    if (caster.waypoint != null) {
+                    try {
+                    Building b = (Building) caster;
+                    unit.position = b.getNextFreeField(caster.waypoint, rgi);
+                    } catch (ClassCastException ex) {
+                    }
                     } else {
-                        unit.position = caster.position.aroundMe(1, rgi);
+                    unit.position = caster.position.aroundMe(1, rgi);
                     } */
                     rgi.netmap.addUnit(unit);
                     if (caster.getWaypoint() != null) {
                         System.out.println("Try move GO to waypoint!");
                     }
-                  /*  if (caster.waypoint != null) {
-                        // Ham wir was besseres zu tun als auf ein leeres Feld rennen (z.B. Ressource oder Gebäude)?
-                        if (caster.wayRessource != null) {
-                            // Diese Ressource oder eine gleichen Typs abernten
-                            // Das soll der Client machen, nur der hat ResRefs
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 43, unit.netID, caster.wayRessource.netID, caster.waypoint.X, caster.waypoint.Y));
-                        } else if (caster.wayBuilding != null) {
-                            // In dieses Erntegebäude oder in eines gleichen Typs gehen
-                            // Soll der Client machen
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 43, unit.netID, caster.wayBuilding.netID, caster.waypoint.X, caster.waypoint.Y));
-                        } else {
-                            // Da hin rennen
-                            rgi.moveMan.humanSingleMove(unit, caster.waypoint.aroundMe(0, rgi), true);
-                        }
+                    /*  if (caster.waypoint != null) {
+                    // Ham wir was besseres zu tun als auf ein leeres Feld rennen (z.B. Ressource oder Gebäude)?
+                    if (caster.wayRessource != null) {
+                    // Diese Ressource oder eine gleichen Typs abernten
+                    // Das soll der Client machen, nur der hat ResRefs
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 43, unit.netID, caster.wayRessource.netID, caster.waypoint.X, caster.waypoint.Y));
+                    } else if (caster.wayBuilding != null) {
+                    // In dieses Erntegebäude oder in eines gleichen Typs gehen
+                    // Soll der Client machen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 43, unit.netID, caster.wayBuilding.netID, caster.waypoint.X, caster.waypoint.Y));
+                    } else {
+                    // Da hin rennen
+                    rgi.moveMan.humanSingleMove(unit, caster.waypoint.aroundMe(0, rgi), true);
+                    }
                     } */
                 }
                 // Dieses Löschen
@@ -128,8 +132,8 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
         } else {
             // Wenn Gebäude, dann auf nicht Arbeiten setzen
            /* try {
-                Building b = (Building) caster;
-                b.isWorking = false;
+            Building b = (Building) caster;
+            b.isWorking = false;
             } catch (ClassCastException ex) {
             } */
             System.out.println("AddMe: Check for W-Status (Server-Recruit-Loop)");

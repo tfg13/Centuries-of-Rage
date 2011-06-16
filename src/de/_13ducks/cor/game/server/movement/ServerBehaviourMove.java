@@ -42,6 +42,9 @@ import de._13ducks.cor.game.server.ServerCore;
  * Hat exklusive Kontrolle über die Einheitenposition.
  * Weigert sich, sich schneller als die maximale Einheitengeschwindigkeit zu bewegen.
  * Dadurch werden Sprünge verhindert.
+ *
+ * Wenn eine Kollision festgestellt wird, wird der überliegende GroupManager gefragt was zu tun ist.
+ * Der GroupManager entscheidet dann über die Ausweichroute oder lässt uns warten.
  */
 public class ServerBehaviourMove extends ServerBehaviour {
 
@@ -52,6 +55,19 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private Vector lastVec;
     private MovementMap moveMap;
+    /**
+     * Die Systemzeit zu dem Zeitpunkt, an dem mit dem Warten begonnen wurde
+     */
+    private long waitStartTime;
+    /**
+     * Gibt an, ob gerade gewartet wird
+     * (z.B. wenn etwas im WEg steht und man wartet bis es den WEg freimacht)
+     */
+    private boolean wait;
+    /**
+     * Die Zeit, die gewartet wird
+     */
+    private static long waitTime = 1000;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -78,6 +94,19 @@ public class ServerBehaviourMove extends ServerBehaviour {
             deactivate();
             return;
         }
+
+        // Abbrechen, wenn im Warten-Modus:
+        if (wait) {
+            if (System.currentTimeMillis() - waitStartTime < waitTime) {
+                return;
+            } else {
+                wait = false;
+            }
+        }
+
+
+
+
         // Wir laufen also.
         // Aktuelle Position berechnen:
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
@@ -95,6 +124,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Echtzeitkollision:
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
+                waitStartTime = System.currentTimeMillis();
                 FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
                 if (nextnewpos.toVector().isValid()) {
                     newpos = nextnewpos;
