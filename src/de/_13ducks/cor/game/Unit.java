@@ -471,7 +471,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
             this.myPoly.removeMoveable(this);
         }
         this.myPoly = myPoly;
-        this.myPoly.addMoveable(this);
+        // Beim neuen anmelden:
+        if (this.myPoly != null) {
+            this.myPoly.addMoveable(this);
+        }
     }
 
     @Override
