@@ -1253,4 +1253,20 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public Position getSortPosition() {
         return this.getMainPosition();
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GameObject) {
+            GameObject g = (GameObject) o;
+            return g.netID == this.netID;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + this.netID;
+        return hash;
+    }
 }
