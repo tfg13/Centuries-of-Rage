@@ -26,7 +26,6 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
-import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 
@@ -59,25 +58,29 @@ public class ServerMoveManager {
      * @param movers 
      */
     public void moveRequest(FloatingPointPosition target, ArrayList<Unit> movers, boolean run) {
-        // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
-        // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
-        for (Unit unit : movers) {
-            synchronized (unit) {
-                unit.removeFromCurrentGroup();
+        if (!movers.isEmpty()) {
+            // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
+            // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
+            for (Unit unit : movers) {
+                synchronized (unit) {
+                    unit.removeFromCurrentGroup();
+                }
             }
-        }
-        // Neue Gruppe aufmachen und alle hinzufügen
-        GroupManager man = new GroupManager(moveMap);
-        for (Unit unit : movers) {
-            synchronized (unit) {
-                unit.setCurrentGroup(man);
+            // Neue Gruppe aufmachen und alle hinzufügen
+            GroupManager man = new GroupManager(moveMap);
+            for (Unit unit : movers) {
+                synchronized (unit) {
+                    unit.setCurrentGroup(man);
+                }
             }
-        }
-        // Gruppe ans Ziel senden
-        if (!run) {
-            man.goTo(target);
+            // Gruppe ans Ziel senden
+            if (!run) {
+                man.goTo(target);
+            } else {
+                man.runTo(target);
+            }
         } else {
-            man.runTo(target);
+            throw new RuntimeException("Cannot send zero units!");
         }
     }
     // Add_some_content
@@ -102,5 +105,4 @@ public class ServerMoveManager {
         // Erst mal trivial implementiert (wie ein Client-Befehl)
         stopRequest(unit);
     }
-
 }
