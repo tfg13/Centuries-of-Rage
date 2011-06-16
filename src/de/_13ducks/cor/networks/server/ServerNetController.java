@@ -403,7 +403,7 @@ public class ServerNetController implements Runnable {
 
                 temp07 = new ArrayList<Unit>();
 
-                cmdMap = new ServerCommand[55];
+                cmdMap = new ServerCommand[56];
 
                 initCmdArr();
                 t = new Thread(this);
@@ -449,6 +449,7 @@ public class ServerNetController implements Runnable {
             cmdMap[51] = new de._13ducks.cor.networks.cmd.server.S051_SET_TEAMS();
             cmdMap[52] = new de._13ducks.cor.networks.cmd.server.S052_MOVE_REQUEST();
             cmdMap[54] = new de._13ducks.cor.networks.cmd.server.S054_STOP_REQUEST();
+            cmdMap[55] = new de._13ducks.cor.networks.cmd.server.S055_ATK_REQUEST();
         }
 
         /*void sendACK(byte command) {
