@@ -157,7 +157,7 @@ public class Minimap extends Overlay {
 	Minimap minimap = new Minimap(fullResX, fullResY, rgi);
 	try {
 	    // Erstellt einen neue Basis-Minimap
-	    minimap.map = new Image(visMap.length * 2, visMap[0].length * 2);
+	    minimap.map = new Image(visMap.length, visMap[0].length);
 	    Graphics tempGra = minimap.map.getGraphics();
 	    // Skalierungsfaktor berechnen
 	    for (int x = 0; x < visMap.length; x++) {
@@ -170,7 +170,7 @@ public class Minimap extends Overlay {
 			    if (tex != null) {
 				Color pcol = tex.getImage().getColor(20, 20);
 				tempGra.setColor(pcol);
-				tempGra.fillRect(x * 2, y * 2, 4, 4);
+				tempGra.fillRect(x, y, 2, 2);
 			    }
 			} catch (Exception ex) {
 			    ex.printStackTrace();

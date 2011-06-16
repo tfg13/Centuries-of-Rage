@@ -28,7 +28,6 @@ package de._13ducks.cor.graphics;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
-import de._13ducks.cor.game.GameObject;
 import java.awt.Dimension;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
