@@ -112,7 +112,7 @@ public class Edge {
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
         // Gibts einen Schnittpunkt?
         Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
-        if (intersection != null) {
+        if (intersection != null && intersection.isValid()) {
             // Liegt dieser Schnittpunkt auf beiden Kante?
             if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
                 if (intersection.getX() >= Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() <= Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() >= Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() <= Math.max(edge.start.getY(), edge.end.getY())) {
@@ -140,7 +140,7 @@ public class Edge {
         Vector other = new Vector(edge.end.getX() - edge.start.getX(), edge.end.getY() - edge.start.getY());
         // Gibts einen Schnittpunkt?
         Vector intersection = me.intersectionWith(start.toVector(), edge.start.toVector(), other);
-        if (intersection != null) {
+        if (intersection != null && intersection.isValid()) {
             // Liegt dieser Schnittpunkt auf beiden Kante?
             if (intersection.getX() >= Math.min(start.getX(), end.getX()) && intersection.getX() <= Math.max(start.getX(), end.getX()) && intersection.getY() >= Math.min(start.getY(), end.getY()) && intersection.getY() <= Math.max(start.getY(), end.getY())) {
                 if (intersection.getX() >= Math.min(edge.start.getX(), edge.end.getX()) && intersection.getX() <= Math.max(edge.start.getX(), edge.end.getX()) && intersection.getY() >= Math.min(edge.start.getY(), edge.end.getY()) && intersection.getY() <= Math.max(edge.start.getY(), edge.end.getY())) {

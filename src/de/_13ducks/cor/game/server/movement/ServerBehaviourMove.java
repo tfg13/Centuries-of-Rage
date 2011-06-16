@@ -175,6 +175,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (pos == null) {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
         }
+        if (!pos.toVector().isValid()) {
+            throw new IllegalArgumentException("Cannot send " + caster2 + " to invalid position");
+        }
         target = pos;
         lastTick = System.currentTimeMillis();
         lastVec = Vector.ZERO;
