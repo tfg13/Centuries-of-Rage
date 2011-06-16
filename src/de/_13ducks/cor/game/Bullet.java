@@ -27,6 +27,7 @@ package de._13ducks.cor.game;
 
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.Vector;
+import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import java.util.Map;
 import org.newdawn.slick.Color;
@@ -55,13 +56,13 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
 
     private FloatingPointPosition sourcePos;
     private GameObject target;
-    private GameObject attacker;
     private int damage;
     private int flytime;
     private long pauseTime = 0;
     private boolean paused = false;
     private long startTime;
-    private int lastDirection;
+    private int lastDirectionX;
+    private int lastDirectionY;
     private String texture;
     private SimplePosition currentPos = new FloatingPointPosition(0, 0);
 
@@ -73,7 +74,6 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         flytime = dly;
         startTime = System.currentTimeMillis();
         texture = attacker.getBullettexture();
-        this.attacker = attacker;
         target.addClientBehaviour(this);
         this.rgi = rgi;
     }
@@ -92,7 +92,9 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         externalExecute();
-        System.out.println("AddMe: Render Sprite.");
+        double rx = currentPos.x() * GraphicsContent.FIELD_HALF_X - scrollX;
+        double ry = currentPos.y() * GraphicsContent.FIELD_HALF_Y - scrollY;
+        imgMap.get(texture).getTiledImage().getSprite(lastDirectionX, lastDirectionY).drawCentered((float) rx,(float) ry);
     }
 
     @Override
@@ -187,9 +189,11 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         if ((sourcePos.y() - targetP.y()) == 0) {
             // Division by zero
             if ((targetP.x() - sourcePos.x()) > 0) {
-                lastDirection = 4;
+                lastDirectionX = 0;
+                lastDirectionY = 1;
             } else {
-                lastDirection = 12;
+                lastDirectionX = 0;
+                lastDirectionY = 3;
             }
             return;
         }
@@ -210,39 +214,56 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
             }
         }
         if (deg < 11.25) {
-            lastDirection = 8;
+            lastDirectionX = 0;
+            lastDirectionY = 2;
         } else if (deg < 33.75) {
-            lastDirection = 9;
+            lastDirectionX = 1;
+            lastDirectionY = 2;
         } else if (deg < 56.25) {
-            lastDirection = 10;
+            lastDirectionX = 2;
+            lastDirectionY = 2;
         } else if (deg < 78.25) {
-            lastDirection = 11;
+            lastDirectionX = 3;
+            lastDirectionY = 2;
         } else if (deg < 101.25) {
-            lastDirection = 12;
+            lastDirectionX = 0;
+            lastDirectionY = 3;
         } else if (deg < 123.75) {
-            lastDirection = 13;
+            lastDirectionX = 1;
+            lastDirectionY = 3;
         } else if (deg < 146.25) {
-            lastDirection = 14;
+            lastDirectionX = 2;
+            lastDirectionY = 3;
         } else if (deg < 168.75) {
-            lastDirection = 15;
+            lastDirectionX = 3;
+            lastDirectionY = 3;
         } else if (deg < 191.25) {
-            lastDirection = 0;
+            lastDirectionX = 0;
+            lastDirectionY = 0;
         } else if (deg < 213.75) {
-            lastDirection = 1;
+            lastDirectionX = 1;
+            lastDirectionY = 0;
         } else if (deg < 236.25) {
-            lastDirection = 2;
+            lastDirectionX = 2;
+            lastDirectionY = 0;
         } else if (deg < 258.75) {
-            lastDirection = 3;
+            lastDirectionX = 3;
+            lastDirectionY = 0;
         } else if (deg < 281.25) {
-            lastDirection = 4;
+            lastDirectionX = 0;
+            lastDirectionY = 1;
         } else if (deg < 303.75) {
-            lastDirection = 5;
+            lastDirectionX = 1;
+            lastDirectionY = 1;
         } else if (deg < 326.25) {
-            lastDirection = 6;
+            lastDirectionX = 2;
+            lastDirectionY = 1;
         } else if (deg < 348.75) {
-            lastDirection = 7;
+            lastDirectionX = 3;
+            lastDirectionY = 1;
         } else {
-            lastDirection = 8;
+            lastDirectionX = 0;
+            lastDirectionY = 2;
         }
     }
 
