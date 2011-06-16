@@ -140,5 +140,6 @@ public class ClientBehaviourMove extends ClientBehaviour {
      */
     public void stopAt(FloatingPointPosition pos) {
         stopPos = pos;
+        trigger();
     }
 }
