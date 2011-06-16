@@ -272,6 +272,19 @@ public class MovementMap {
             }
         }
     }
+    
+    /**
+     * Entfernt die Einheit aus dem Server-Bewegungssystem
+     * @param moveable 
+     */
+    public void removeMoveable(Moveable moveable) {
+        int index = managedMovers.indexOf(moveable);
+        if (index != -1) { //contains==true
+            moveable.getMyPoly().removeMoveable(moveable);
+            moveable.setMyPoly(null);
+            managedMovers.remove(index);
+        }
+    }
 
     /**
      * Sucht den Polygon, der diesen Punkt enthält.

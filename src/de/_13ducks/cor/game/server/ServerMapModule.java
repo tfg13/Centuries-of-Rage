@@ -943,14 +943,6 @@ public class ServerMapModule {
      */
     public void killUnit(Unit u) {
         if (u != null && u.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-            /* // Eventuelles Bauen abschalten
-            ServerBehaviour b = u.getbehaviourS(5);
-            if (b != null && b.active) {
-            b.deactivate();
-            } */
-            System.out.println("AddMe: Stop behaviours");
-            // Behaviours sofort stoppen
-
             // Allen mitteilen
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 28, u.netID, 0, 0, 0));
 
@@ -958,6 +950,8 @@ public class ServerMapModule {
             this.unitList.remove(u);
             this.netIDList.remove(u.netID);
             rgi.game.removeGO(u);
+            
+            moveMap.removeMoveable(u);
         }
     }
 

@@ -112,12 +112,6 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public void killS() {
-        Server.getInnerServer().netmap.killUnit(this);
-        super.killS();
-    }
-
-    @Override
     public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
         GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();

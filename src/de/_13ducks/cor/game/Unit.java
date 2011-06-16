@@ -30,6 +30,7 @@ import de._13ducks.cor.game.client.ClientCore;
 import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.server.movement.FreePolygon;
@@ -493,5 +494,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     @Override
     public GameObject getTarget() {
         return this;
+    }
+
+    @Override
+    public void killS() {
+        Server.getInnerServer().netmap.killUnit(this);
+        super.killS();
     }
 }
