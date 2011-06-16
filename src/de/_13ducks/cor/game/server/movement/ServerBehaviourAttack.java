@@ -186,8 +186,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 }
                 break;
             case GOTO:
-                // Eigentliches Ziel erreicht?
-                if (inRange(target)) {
+                // Eigentliches Ziel erreicht und lebt noch?
+                if (inRange(target) && alive(target)) {
+                    // Lebts noch?
                     // Stehenbleiben
                     stopForFight();
                     // Auf Kämpfen umschalten
@@ -199,10 +200,17 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                         mode = FIGHTING;
                         trigger();
                     } else {
-                        // Kein besseres Ziel. Weiter bzw. loslaufen:
-                        if (!caster2.getLowLevelManager().isMoving()) {
-                            System.out.println("START FOLLOW UNIT!");
-                        } // else: Weiterlaufen
+                        // Das alte Ziel behalten?
+                        if (alive(target)) {
+                            // Kein besseres Ziel. Weiter bzw. loslaufen:
+                            if (!caster2.getLowLevelManager().isMoving()) {
+                                System.out.println("START FOLLOW UNIT!");
+                            } // else: Weiterlaufen
+                        } else {
+                            stopForFight();
+                            target = null;
+                            mode = SEARCHENEMY;
+                        }
                     }
                 }
                 break;
