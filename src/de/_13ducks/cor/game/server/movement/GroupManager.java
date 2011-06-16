@@ -205,4 +205,27 @@ public class GroupManager {
         }
         return lowestSpeed;
     }
+
+    void followTo(FloatingPointPosition target) {
+        
+        int i = 0;
+
+        for (GroupMember member : myMovers) {
+            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
+            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
+            if (path != null) {
+                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                if (optiPath != null) {
+                    
+                    // Weg setzen
+                    for (SimplePosition node : optiPath) {
+                        member.addWaypoint(node);
+                    }
+                    // Loslaufen lassen
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint());
+                }
+            }
+            i++;
+        }
+    }
 }

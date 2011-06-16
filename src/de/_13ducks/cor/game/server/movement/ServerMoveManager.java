@@ -83,7 +83,22 @@ public class ServerMoveManager {
             throw new RuntimeException("Cannot send zero units!");
         }
     }
-    // Add_some_content
+
+    /**
+     * Ein MoveRequest, intern vom Followsystem
+     * @param precisePosition
+     * @param run 
+     */
+    void followMove(FloatingPointPosition precisePosition, Unit follower) {
+        // TODO: Vernünftige (nicht-triviale) Gruppen-Verwaltung
+        // trivial: Alle Einheiten aus ihrer alten Gruppe löschen und in eine neue einteilen
+        synchronized (follower) {
+            follower.removeFromCurrentGroup();
+            GroupManager man = new GroupManager(moveMap);
+            follower.setCurrentGroup(man);
+            man.followTo(precisePosition);
+        }
+    }
 
     /**
      * Ein Client-Stoprequest geht ein.
@@ -102,6 +117,14 @@ public class ServerMoveManager {
      * Einheit soll anhalten, der Befehl kommt nicht vom Client, sondern intern vom Kampfsystem.
      */
     void stopForFight(Unit unit) {
+        // Erst mal trivial implementiert (wie ein Client-Befehl)
+        stopRequest(unit);
+    }
+
+    /**
+     * Einheit soll anhalten, der Befehl kommt nicht vom Client, sondern intern vom Verfolgungssystem
+     */
+    void stopForFollow(Unit unit) {
         // Erst mal trivial implementiert (wie ein Client-Befehl)
         stopRequest(unit);
     }

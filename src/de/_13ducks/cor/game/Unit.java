@@ -37,6 +37,7 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
+import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
@@ -85,6 +86,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der Angriffsmanager dieser Einheit.
      */
     private ServerBehaviourAttack atkManager;
+    /**
+     * Der Verfolgungsmanager dieser Einheit.
+     */
+    private ServerBehaviourFollow followManager;
     /**
      * Der Client-Movemanager dieser Einheit.
      */
@@ -387,8 +392,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         topLevelManager = rgi.moveMan;
         lowLevelManager = new ServerBehaviourMove(rgi, this, this, moveMap);
         atkManager = new ServerBehaviourAttack(this, rgi, moveMap);
+        followManager = new ServerBehaviourFollow(this, rgi);
         addServerBehaviour(lowLevelManager);
         addServerBehaviour(atkManager);
+        addServerBehaviour(followManager);
         this.moveMap = moveMap;
     }
 
@@ -467,12 +474,14 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         this.myPoly.addMoveable(this);
     }
 
-    /**
-     * @return the atkManager
-     */
     @Override
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
+    }
+    
+    @Override
+    public ServerBehaviourFollow getFollowManager() {
+        return followManager;
     }
 
     @Override

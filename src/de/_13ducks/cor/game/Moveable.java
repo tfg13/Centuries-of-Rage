@@ -32,6 +32,7 @@ import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
+import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
@@ -83,6 +84,11 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @return den Angriffsmanager des Objekts oder null, wenn die Einheit andere nicht angreiffen kann.
      */
     public ServerBehaviourAttack getAtkManager();
+    /**
+     * Liefert den Verfolgungsmanager dieses Objekts.
+     * @return den Verfolgungsmanager dieses Objekts.
+     */
+    public ServerBehaviourFollow getFollowManager();
 
     /**
      * Bereitet die Einheit für das Server-Bewegungssystem vor.

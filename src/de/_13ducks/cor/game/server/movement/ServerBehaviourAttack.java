@@ -182,6 +182,13 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                         // Bewegung stoppen, falls läuft
                         stopForFight();
                         shootIfReady();
+                    } else {
+                        // Verfolgen?
+                        if (!caster2.getLowLevelManager().isMoving()) {
+                            if (target instanceof Moveable) {
+                                caster2.getFollowManager().setTarget((Moveable) target);
+                            }
+                        } // else: Weiterlaufen
                     }
                 }
                 break;
@@ -204,7 +211,9 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                         if (alive(target)) {
                             // Kein besseres Ziel. Weiter bzw. loslaufen:
                             if (!caster2.getLowLevelManager().isMoving()) {
-                                System.out.println("START FOLLOW UNIT!");
+                                if (target instanceof Moveable) {
+                                    caster2.getFollowManager().setTarget((Moveable) target);
+                                }
                             } // else: Weiterlaufen
                         } else {
                             stopForFight();
@@ -379,5 +388,14 @@ public class ServerBehaviourAttack extends ServerBehaviour {
         }
         this.target = target;
         trigger();
+    }
+
+    /**
+     * Das derzeitige Angriffsziel.
+     * Kann sich jederzeit ändern, darf nicht aus dem movementsystem rausgegeben werden.
+     * @return 
+     */
+    GameObject getCurrentTarget() {
+        return target;
     }
 }

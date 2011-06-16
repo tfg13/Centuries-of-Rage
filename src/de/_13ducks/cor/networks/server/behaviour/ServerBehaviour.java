@@ -36,7 +36,7 @@ import de._13ducks.cor.game.GameObject;
  *
  * 1 - Move - Einheitenbewegung
  * 2 - Attack - Grundsätzliche Angriffe
- * 3
+ * 3 - Follow - Bewegliches Ziel verfolgen
  * 4
  * 5 - Construct - Gebäude bauen
  * 6 - Recruit - Einheiten ausbilden
