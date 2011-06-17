@@ -53,7 +53,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
-    private Vector lastVec;
+    private SimplePosition clientTarget;
     private MovementMap moveMap;
     /**
      * Die Systemzeit zu dem Zeitpunkt, an dem mit dem Warten begonnen wurde
@@ -136,10 +136,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
             }
         }
 
-        if (!vec.equals(lastVec) && !stopUnit) {
+        if (!target.equals(clientTarget) && !stopUnit) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
-            lastVec = new Vector(vec.getX(), vec.getY());
+            clientTarget = target.toFPP();
         }
 
         if (!stopUnit) {
@@ -246,7 +246,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         target = pos;
         lastTick = System.currentTimeMillis();
-        lastVec = Vector.ZERO;
+        clientTarget = Vector.ZERO;
         activate();
     }
 
