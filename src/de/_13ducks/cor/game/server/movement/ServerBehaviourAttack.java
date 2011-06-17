@@ -324,7 +324,7 @@ public class ServerBehaviourAttack extends ServerBehaviour {
                 Server.getInnerServer().atkMan.delayDamageTo(target, damage, atkdelay);
             }
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 39, caster2.netID, target.netID, damage, atkdelay));
-            nextHit += caster2.getAtkdelay();
+            nextHit = System.currentTimeMillis() + caster2.getAtkdelay();
         }
     }
 
