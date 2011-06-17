@@ -55,7 +55,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private Vector lastVec;
     private MovementMap moveMap;
-    private long waitTickDelta;
     /**
      * Die Systemzeit zu dem Zeitpunkt, an dem mit dem Warten begonnen wurde
      */
@@ -130,48 +129,50 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Nichtmehr weiter warten - Bewegung wieder starten
                 wait = false;
                 // Ticktime manipulieren.
-                lastTick = System.currentTimeMillis() - waitTickDelta;
+                lastTick = System.currentTimeMillis();
                 trigger();
                 return;
             }
         }
-        
-        if (!vec.equals(lastVec)) {
+
+        if (!vec.equals(lastVec) && !stopUnit) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
             lastVec = new Vector(vec.getX(), vec.getY());
         }
 
-        // Echtzeitkollision:
-        for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
-            if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
-                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
-                FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
-                if (nextnewpos.toVector().isValid()) {
-                    newpos = nextnewpos;
-                } else {
-                    newpos = oldPos.toFPP();
+        if (!stopUnit) {
+            // Echtzeitkollision:
+            for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+                    wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
+                    FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
+                    if (nextnewpos.toVector().isValid()) {
+                        newpos = nextnewpos;
+                    } else {
+                        System.out.println("WARNING: Ugly back-stop!");
+                        newpos = oldPos.toFPP();
+                    }
+                    if (wait) {
+                        waitStartTime = System.currentTimeMillis();
+                        // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
+                        // Der Client muss das auch mitbekommen
+                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                        caster2.setMainPosition(newpos);
+                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
+                        return; // Nicht weiter ausführen!
+                    } else {
+                        // Bricht die Bewegung vollständig ab.
+                        System.out.println("STOP-COLLISION " + caster2 + " with " + m);
+                        stopUnit = true;
+                    }
+                    break;
                 }
-                if (wait) {
-                    waitStartTime = System.currentTimeMillis();
-                    waitTickDelta = lastTick - waitStartTime;
-                    // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
-                    // Der Client muss das auch mitbekommen
-                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
-                    caster2.setMainPosition(newpos);
-                    System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
-                } else {
-                    // Bricht die Bewegung vollständig ab.
-                    System.out.println("STOP-COLLISION " + caster2 + " with " + m);
-                    stopUnit = true;
-                }
-                break;
             }
         }
-
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
-        if (vec.isOpposite(nextVec)) {
+        if (vec.isOpposite(nextVec) && !stopUnit) {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
