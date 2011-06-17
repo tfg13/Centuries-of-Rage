@@ -55,11 +55,11 @@ public class SelectionMap {
      * @param ige das IGE, das eingetragen werden soll
      */
     public synchronized void addIGE(int x, int y, InteractableGameElement ige) {
-        if (x < 0 || x > map.length) {
+        if (x < 0 || x >= map.length) {
             System.out.println("WARN: Setting IGE for invalid Field! (X=" + x + ")");
             return;
         }
-        if (y < 0 || y > map[0].length) {
+        if (y < 0 || y >= map[0].length) {
             System.out.println("WARN: Setting IGE for invalid Field! (Y=" + y + ")");
             return;
         }
@@ -80,11 +80,11 @@ public class SelectionMap {
      * @param ige das IGE, das entfernt werden soll.
      */
     public synchronized void removeIGE(int x, int y, InteractableGameElement ige) {
-        if (x < 0 || x > map.length) {
+        if (x < 0 || x >= map.length) {
             System.out.println("WARN: Removing IGE for invalid Field! (X=" + x + ")");
             return;
         }
-        if (y < 0 || y > map[0].length) {
+        if (y < 0 || y >= map[0].length) {
             System.out.println("WARN: Removing IGE for invalid Field! (Y=" + y + ")");
             return;
         }
@@ -102,11 +102,11 @@ public class SelectionMap {
      * @return alle IGE's an der angegebenen Stelle, die vom angegebenen Team sind.
      */
     public synchronized List<InteractableGameElement> getIGEsWithTeamAt(int cx, int cy, int playerId) {
-        if (cx < 0 || cx > map.length) {
+        if (cx < 0 || cx >= map.length) {
             System.out.println("WARN: Getting all IGEs (team) for invalid Field! (X=" + cx + ")");
             return null;
         }
-        if (cy < 0 || cy > map[0].length) {
+        if (cy < 0 || cy >= map[0].length) {
             System.out.println("WARN: Getting all IGEs (team) for invalid Field! (Y=" + cy + ")");
             return null;
         }
@@ -130,11 +130,11 @@ public class SelectionMap {
      * @return Eine Liste mit allen Elementen aller teams, die an dieser Stelle eingetragen sind.
      */
     public synchronized List<InteractableGameElement> getIGEsAt(int cx, int cy) {
-        if (cx < 0 || cx > map.length) {
+        if (cx < 0 || cx >= map.length) {
             System.out.println("WARN: Getting IGEs for invalid Field! (X=" + cx + ")");
             return null;
         }
-        if (cy < 0 || cy > map[0].length) {
+        if (cy < 0 || cy >= map[0].length) {
             System.out.println("WARN: Getting IGEs for invalid Field! (Y=" + cy + ")");
             return null;
         }
