@@ -37,6 +37,7 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Position;
+import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.map.CoRMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -420,24 +421,30 @@ public class MovementMap {
     /**
      * Findet eine Stelle, an der ein Objekt mit dem angegebenen Radius platziert werden kann
      * @param position - Position, um die gesucht werden soll
-     * @param radius - Radius der freien fläche
+     * @param radius - Radius der frei sein muss
      * @return - duie Position, die genügend freie Fläche hat oder null wenns keine gibt
      */
     public FloatingPointPosition aroundMe(FloatingPointPosition position, double radius) {
+        double time = System.currentTimeMillis();
         /**
          * Die Auflösucg, mit der nach gültigen Positionen gesucht wird
          */
         double distance = 1.0;
+
         /**
-         * SuchRadius
+         * In diesem Radius wird nache EInheiten gesucht, um Kollisionen festzustellen.
          */
-        double searchRadius = 30.0;
+        double unitSearchDistance = 10.0f;
+        /**
+         * Diese Einheiten werden in die Kollisionsberechnung miteinbezogen
+         * Wenn innerhalb dieses Radiuses alles besetzt ist, muss diese Liste um die Einheiten erweitert werden, die weiter weg sind
+         */
+        List<Moveable> unitsAround = this.moversAroundPoint(position, unitSearchDistance);
 
         // Die Position, die gerde bearbeitet wird
         FloatingPointPosition checkPosition = new FloatingPointPosition(0, 0);
 
-        // Wieviele Positionen wurden schon gefudnden?
-        int foundPositions = 0;
+
 
         // Richtung (1=E, 2=N, 3=W, 4=S)
         int direction = 1;
@@ -448,6 +455,7 @@ public class MovementMap {
         // wenn true wird steps erhöt
         boolean increaseStepFlag = false;
         // endlosschleife, wenn genug positionen gefunden wurden wird sie abgebrochen
+        int circles = 0; // im wiedvielten kreis sind wir? (wird pro kreis 2 mal inkrementiert)
         while (true) {
             // X- und Y-Veränderung
             double dx = 0, dy = 0;
@@ -472,24 +480,33 @@ public class MovementMap {
                     break;
             }
 
+
             // (steps) Schritte in die aktuelle Richtung gehen und bei jedem Schritt die Position überprüfen:
             for (int i = 0; i < steps; i++) {
+
 
                 // CheckPosition verschieben:
                 checkPosition.setfX(checkPosition.getfX() + dx);
                 checkPosition.setfY(checkPosition.getfY() + dy);
 
+
                 FloatingPointPosition finalPos = new FloatingPointPosition(checkPosition.getfX(), checkPosition.getfY()).add(position);
 
+                // wenn wir schon weit vom Startpunkt entfernt suchen:
+                if (position.getDistance(finalPos) > unitSearchDistance) {
+                    unitSearchDistance += 10.0f;
+                    unitsAround = this.moversAroundPoint(position, unitSearchDistance);
+                }
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
                 boolean moverCollision = false;
-                for (Moveable m : this.moversAroundPoint(position, searchRadius)) {
+                for (Moveable m : unitsAround) {
                     if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius)) {
                         moverCollision = true;
                         break;
                     }
                 }
                 if (!moverCollision && this.isPositionWalkable(finalPos)) {
+                    System.out.println("TIME NEEDED: " + (System.currentTimeMillis() - time));
                     return finalPos;
                 }
             }
@@ -503,6 +520,7 @@ public class MovementMap {
             // Wenn die Flag schon gesetzt ist inkrementieren, sonst flag setzten
             //(dadurch wird steps bei  jedem 2. Richtungswechsel inkrementiert, was in einer kreisbewegung resultiert)
             if (increaseStepFlag == true) {
+                circles++;
                 increaseStepFlag = false;
                 steps++;
             } else {
