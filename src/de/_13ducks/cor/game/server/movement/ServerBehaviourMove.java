@@ -55,6 +55,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private Vector lastVec;
     private MovementMap moveMap;
+    private long waitTickDelta;
     /**
      * Die Systemzeit zu dem Zeitpunkt, an dem mit dem Warten begonnen wurde
      */
@@ -95,44 +96,76 @@ public class ServerBehaviourMove extends ServerBehaviour {
             return;
         }
 
-        // Abbrechen, wenn im Warten-Modus:
-        if (wait) {
-            if (System.currentTimeMillis() - waitStartTime < waitTime) {
-                return;
-            } else {
-                wait = false;
-            }
-        }
-
-
-
-
         // Wir laufen also.
         // Aktuelle Position berechnen:
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
         Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
+        long ticktime = System.currentTimeMillis();
+        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
+        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+
+        // Wir sind im Warten-Modus. Jetzt also testen, ob wir zur nächsten Position können
+        if (wait) {
+            // Testen, ob wir schon weiterlaufen können:
+            // Echtzeitkollision:
+            boolean stillColliding = false;
+            for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+                    stillColliding = true;
+                    break;
+                }
+            }
+            if (stillColliding) {
+                // Immer noch Kollision
+                if (System.currentTimeMillis() - waitStartTime < waitTime) {
+                    // Das ist ok, einfach weiter warten
+                    return;
+                } else {
+                    wait = false;
+                    // Diese Bewegung richtig abbrechen
+                    stopUnit = true;
+                }
+            } else {
+                // Nichtmehr weiter warten - Bewegung wieder starten
+                wait = false;
+                // Ticktime manipulieren.
+                lastTick = System.currentTimeMillis() - waitTickDelta;
+                trigger();
+                return;
+            }
+        }
+        
         if (!vec.equals(lastVec)) {
             // An Client senden
             rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
             lastVec = new Vector(vec.getX(), vec.getY());
         }
-        long ticktime = System.currentTimeMillis();
-        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
-        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
         // Echtzeitkollision:
         for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
             if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                 wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
-                waitStartTime = System.currentTimeMillis();
                 FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
                 if (nextnewpos.toVector().isValid()) {
                     newpos = nextnewpos;
                 } else {
                     newpos = oldPos.toFPP();
                 }
-                this.stopImmediately();
+                if (wait) {
+                    waitStartTime = System.currentTimeMillis();
+                    waitTickDelta = lastTick - waitStartTime;
+                    // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
+                    // Der Client muss das auch mitbekommen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                    caster2.setMainPosition(newpos);
+                    System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
+                } else {
+                    // Bricht die Bewegung vollständig ab.
+                    System.out.println("STOP-COLLISION " + caster2 + " with " + m);
+                    stopUnit = true;
+                }
+                break;
             }
         }
 
