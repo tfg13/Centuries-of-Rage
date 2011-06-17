@@ -1,5 +1,5 @@
 U 406 {
-speed=3.5
+speed=8
 name=Legionnaire
 armortype=heavyinf
 defaultTexture=img/creeps/testhuman7.png
@@ -19,7 +19,7 @@ limit=1
 }
 
 U 407 {
-speed=3.5
+speed=8
 name=Spear Legionnaire
 armortype=heavyinf
 defaultTexture=img/creeps/testhuman8.png
@@ -39,7 +39,7 @@ limit=1
 }
 
 U 408 {
-speed=5.5
+speed=18
 name=Cavalry Archer
 armortype=kav
 defaultTexture=img/creeps/testhuman9.png
@@ -62,7 +62,7 @@ limit=2
 }
 
 U 409 {
-speed=5.5
+speed=18
 name=Knight
 armortype=kav
 defaultTexture=img/creeps/testhuman10.png
@@ -78,5 +78,29 @@ Gpro=Light Infantry
 Gcon=Heavy Infantry
 Gimg=img/creeps/testhuman10.png
 visrange=6
+limit=3
+}
+
+U 410 {
+size=3x3
+speed=7
+name=Catapult
+armortype=vehicle
+defaultTexture=img/creeps/testcatapult.png
+hitpoints=200
+maxhitpoints=200
+range=30
+idlerange=8
+damage=40
+bulletspeed=15
+bullettexture=img/bullets/catapult_stone.png
+antilightinf=200
+antibuilding=250
+antikav=60
+cooldownmax=2500
+Gdesc=Artillery
+Gpro=Light Infantry, Buildings
+Gcon=Cavalry
+Gimg=img/creeps/testcatapult.png
 limit=3
 }

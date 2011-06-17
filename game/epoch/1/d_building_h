@@ -22,8 +22,17 @@ z1=12
 z2=12
 ability=401 #Recruit scout
 ability=402 #Recruit warrior
-ability=410 #Catapult (testing)
+ability=403 #(testing)
 ability=404 #Archer (testing)
+ability=405 #(testing)
+ability=406 #(testing)
+ability=407 #(testing)
+ability=408 #(testing)
+ability=409 #(testing)
+ability=410 #Catapult (testing)
+ability=411 #(testing)
+ability=412 #(testing)
+ability=413 #(testing)
 }
 
 B 7712 {
