@@ -1,5 +1,5 @@
 U 411 {
-speed=3.5
+speed=8
 name=Swordman
 armortype=heavyinf
 defaultTexture=img/creeps/h_swordman.png
@@ -19,7 +19,7 @@ limit=1
 }
 
 U 412 {
-speed=4.5
+speed=12
 name=Pikeman
 armortype=heavyinf
 defaultTexture=img/creeps/h_pike.png
@@ -39,7 +39,7 @@ limit=1
 }
 
 U 413 {
-speed=4
+speed=11
 name=Crossbowman
 armortype=lightinf
 defaultTexture=img/creeps/h_xbow.png

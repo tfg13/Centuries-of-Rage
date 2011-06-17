@@ -178,6 +178,7 @@ public class GraphicsContent extends BasicGame {
     public GraphicsFireManager fireMan;
     private Minimap minimap;
     private IngameMenu ingamemenu;
+    private ResourceCounter resourcecounter;
     private boolean graphicsDebug = false;
     private GraphicsTimeAnalyser analyser;
 
@@ -1532,8 +1533,10 @@ public class GraphicsContent extends BasicGame {
             minimap = Minimap.createMinimap(visMap, getImgMap(), realPixX, realPixY, rgi);
             minimap.setAllList(allList);
             ingamemenu = new IngameMenu();
+            resourcecounter = new ResourceCounter();
             overlays.add(minimap);
             overlays.add(ingamemenu);
+            overlays.add(resourcecounter);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();
             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 3, 0, 0, 0, 0));

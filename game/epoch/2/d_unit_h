@@ -1,5 +1,5 @@
 U 403 {
-speed=6
+speed=20
 name=Horseman
 armortype=kav
 defaultTexture=img/creeps/testhuman6.png
@@ -19,7 +19,7 @@ limit=2
 }
 
 U 404 {
-speed=20
+speed=15
 name=Archer
 armortype=lightinf
 defaultTexture=img/creeps/testhuman4.png
@@ -41,7 +41,7 @@ limit=1
 }
 
 U 405 {
-speed=4.5
+speed=12
 name=Spear Fighter
 armortype=heavyinf
 defaultTexture=img/creeps/testhuman5.png
