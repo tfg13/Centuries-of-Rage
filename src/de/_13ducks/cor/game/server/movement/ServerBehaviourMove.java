@@ -31,6 +31,7 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
+import java.awt.geom.Ellipse2D;
 
 /**
  * Lowlevel-Movemanagement
@@ -147,7 +148,26 @@ public class ServerBehaviourMove extends ServerBehaviour {
             for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
-                    FloatingPointPosition nextnewpos = m.getPrecisePosition().add(m.getPrecisePosition().subtract(this.caster2.getPrecisePosition()).toVector().normalize().getInverted().multiply(this.caster2.getRadius() + m.getRadius()).toFPP());
+
+                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius();
+
+
+                    Vector origin = new Vector(-vec.getY(), vec.getX());
+
+                    Edge edge = new Edge(m.getPrecisePosition().toNode(), m.getPrecisePosition().add(origin.toFPP()).toNode());
+
+                    Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(vec.toFPP()).toNode());
+
+                    SimplePosition p = edge.endlessIntersection(edge2);
+
+                    double distance = m.getPrecisePosition().getDistance(p.toFPP());
+
+                    double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
+
+                    FloatingPointPosition nextnewpos = p.toVector().add(vec.getInverted().normalize().multiply(b)).toFPP();
+
+
+
                     if (nextnewpos.toVector().isValid()) {
                         newpos = nextnewpos;
                     } else {
