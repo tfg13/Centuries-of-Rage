@@ -119,6 +119,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Immer noch Kollision
                 if (System.currentTimeMillis() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
+                    lastTick = System.currentTimeMillis();
                     return;
                 } else {
                     wait = false;
