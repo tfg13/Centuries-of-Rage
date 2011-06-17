@@ -160,6 +160,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         // Der Client muss das auch mitbekommen
                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                         caster2.setMainPosition(newpos);
+                        clientTarget = null;
                         System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
                         return; // Nicht weiter ausführen!
                     } else {
