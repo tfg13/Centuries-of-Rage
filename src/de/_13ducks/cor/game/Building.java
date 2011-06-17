@@ -77,7 +77,6 @@ public abstract class Building extends GameObject {
     private List<Unit> intraUnits;
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @deprecated
      */
     private int harvests = 0;
     /**
@@ -148,6 +147,8 @@ public abstract class Building extends GameObject {
         this.maxIntra = copyFrom.maxIntra;
         this.z1 = copyFrom.z1;
         this.z2 = copyFrom.z2;
+        this.harvRate = copyFrom.harvRate;
+        this.harvests = copyFrom.harvests;
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
         visPositions = new Position[4];
