@@ -67,7 +67,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     /**
      * Die Zeit, die gewartet wird
      */
-    private static long waitTime = 1000;
+    private static final long waitTime = 1000;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
