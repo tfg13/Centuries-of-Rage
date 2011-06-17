@@ -5,8 +5,7 @@ reference=U403
 cooldown=0.0
 duration=100
 e0tex=img/creeps/testhuman6.png
-cost1=100
-cost3=100
+cost1=200
 }
 
 404 {
@@ -16,8 +15,7 @@ reference=U404
 cooldown=0.0
 duration=100
 e0tex=img/creeps/testhuman4.png
-cost1=80
-cost2=50
+cost1=130
 }
 
 405 {
@@ -27,6 +25,5 @@ reference=U405
 cooldown=0.0
 duration=100
 e0tex=img/creeps/testhuman5.png
-cost1=90
-cost3=40
+cost1=130
 }

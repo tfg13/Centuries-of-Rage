@@ -5,8 +5,7 @@ reference=U406
 cooldown=0.0
 duration=100
 e0tex=img/creeps/testhuman7.png
-cost1=100
-cost4=60
+cost1=160
 }
 
 407 {
@@ -16,8 +15,7 @@ reference=U407
 cooldown=0.0
 duration=100
 e0tex=img/creeps/testhuman8.png
-cost1=100
-cost3=60
+cost1=160
 }
 
 408 {
@@ -28,9 +26,7 @@ cooldown=0.0
 duration=100
 depends=B8
 e0tex=img/creeps/testhuman9.png
-cost1=60
-cost2=50
-cost3=100
+cost1=210
 }
 
 409 {
@@ -41,9 +37,7 @@ cooldown=0.0
 duration=100
 depends=B8
 e0tex=img/creeps/testhuman10.png
-cost1=120
-cost3=120
-cost4=120
+cost1=360
 }
 
 410 {
@@ -54,7 +48,5 @@ cooldown=0.0
 duration=100
 depends=B8
 e0tex=img/creeps/testcatapult.png
-cost2=100
-cost3=200
-cost4=100
+cost1=400
 }

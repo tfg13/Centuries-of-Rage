@@ -50,7 +50,6 @@ public class DescParamsBuilding extends DescParamsGO {
     private int z2 = 2;
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @deprecated
      */
     private int harvests = 0;
     /**
@@ -104,7 +103,6 @@ public class DescParamsBuilding extends DescParamsGO {
 
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @deprecated
      * @return the harvests
      */
     public int getHarvests() {
@@ -113,7 +111,6 @@ public class DescParamsBuilding extends DescParamsGO {
 
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @deprecated
      * @param harvests the harvests to set
      */
     public void setHarvests(int harvests) {

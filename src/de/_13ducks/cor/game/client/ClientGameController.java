@@ -41,6 +41,7 @@ import java.util.TimerTask;
 import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.Ability;
+import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 
 /**
  *
@@ -159,13 +160,17 @@ public class ClientGameController implements Runnable {
 
         System.out.println("AddMe: Add intramanager for Buildings");
         /*for (Building building : buildingList) {
-            AbilityIntraManager intram = new AbilityIntraManager(building, rgi);
-            building.addAbility(intram);
+        AbilityIntraManager intram = new AbilityIntraManager(building, rgi);
+        building.addAbility(intram);
         }*/
 
+        for (Building building : this.rgi.mapModule.buildingList) {
+            ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
+            building.addClientBehaviour(prod);
+        }
+
         // Dem Spieler Startressourcen geben
-        myself.res1 = 200;
-        myself.res2 = 100;
+        myself.res1 = 300;
 
         rgi.clientstats.createStatArrays(numberOfPlayers);
 
@@ -420,7 +425,7 @@ public class ClientGameController implements Runnable {
         }
 
         Timer timer = new Timer();
-        timer.schedule(new TimerTask()  {
+        timer.schedule(new TimerTask() {
 
             public void run() {
                 rgi.rogGraphics.showstatistics();
@@ -436,6 +441,7 @@ public class ClientGameController implements Runnable {
     public void addGO(GameObject go) {
         allList.add(go);
     }
+
     /**
      * Löscht ein GO.
      * Die Behaviours dieses GO's werden nichtmehr ausgeführt.

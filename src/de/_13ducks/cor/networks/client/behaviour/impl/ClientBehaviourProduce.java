@@ -33,7 +33,6 @@ import de._13ducks.cor.game.Building;
  *
  *
  * @author tfg
- * @deprecated
  */
 public class ClientBehaviourProduce extends ClientBehaviour {
 
@@ -49,14 +48,10 @@ public class ClientBehaviourProduce extends ClientBehaviour {
     @Override
     public void execute() {
         // Überhaupt was tun?
-        if (caster2.getHarvRate() > 0 && caster2.getHarvests() > 0 && caster2.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
-            // Ernten oder warten?
-            if (caster2.currentIntra() > 0) {
+        if (caster2.getHarvRate() > 0 && caster2.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
                 // Ernten
-                int number = caster2.currentIntra();
-                // Mal (Rohstoffe/Sekunde)
-                double add = number * caster2.getHarvRate() + diff; //exakt
-                number = (int) ((number * caster2.getHarvRate()) + diff); // ungefähr
+                double add = caster2.getHarvRate() + diff; //exakt
+                int number = (int) (caster2.getHarvRate() + diff); // ungefähr
                 // Unterschied zwischen Soll und tatsächlichem Wert berechnen:
                 diff = add - number; // Diff wird bei den nächsten iteration berücksichtigt
                 // Ernten
@@ -78,7 +73,7 @@ public class ClientBehaviourProduce extends ClientBehaviour {
                         rgi.game.getOwnPlayer().res5 += number;
                         break;
                 }
-            }
+            
 
         } else {
             // Abschalten
