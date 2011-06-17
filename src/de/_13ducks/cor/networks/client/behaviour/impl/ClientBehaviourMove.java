@@ -81,6 +81,13 @@ public class ClientBehaviourMove extends ClientBehaviour {
         vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
         
+        if (!newpos.toVector().isValid()) {
+            // Das geht so nicht, abbrechen und gleich nochmal!
+            System.out.println("CLIENT-Move: Invalid position, will try again next tick");
+            trigger();
+            return;
+        }
+        
         // Ziel schon erreicht?
         Vector nextVec = target.subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
