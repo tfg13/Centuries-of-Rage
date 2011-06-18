@@ -28,7 +28,6 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.server.ServerPathfinder;
 import java.util.ArrayList;
 import java.util.List;
 
