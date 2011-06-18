@@ -147,6 +147,57 @@ public final class ServerPathfinder {
             path.add(pathrev.get(k));
         }
 
+        /**
+         * An dieser Stelle muss der Weg nocheinmal überarbeitet werden.
+         * Es kann nämlich durch neue Tweaks sein, dass dies die Knoten nicht direkt
+         * verbunden sind (also keinen gemeinsamen Polygon haben)
+         * Das tritt z.B. bei der Start- und Zieleinsprungpunkt-Variierung auf.
+         */
+        for (int i = 0; i < path.size() - 1; i++) {
+            Node n1 = path.get(i);
+            Node n2 = path.get(i + 1);
+            FreePolygon commonSector = commonSector(n1, n2);
+            if (commonSector != null) {
+                // Das hier ist der interessante Fall, die beiden Knoten sind nicht direkt verbunden, es muss ein Zwischenknoten eingefügt werden:
+                // Dessen Punkt suchen
+                Edge direct = new Edge(n1, n2);
+                Node newNode = null;
+                // Die Polygone von n1 durchprobieren
+                for (FreePolygon currentPoly : n1.getPolygons()) {
+                    List<Edge> edges = currentPoly.calcEdges();
+                    for (Edge testedge : edges) {
+                        // Gibts da einen Schnitt?
+                        SimplePosition intersection = direct.intersectionWithEndsNotAllowed(testedge);
+                        if (intersection != null) {
+                            // Kandidat für den nächsten Polygon
+                            FreePolygon nextPoly = null;
+                            // Kante gefunden
+                            // Von dieser Kante die Enden suchen
+                            nextPoly = getOtherPoly(testedge.getStart(), testedge.getEnd(), currentPoly);
+
+                            newNode = intersection.toNode();
+                            newNode.addPolygon(currentPoly);
+                            newNode.addPolygon(nextPoly);
+                            break;
+                        }
+                    }
+                    if (newNode != null) {
+                        break;
+                    }
+                }
+
+                if (newNode == null) {
+                    // Das dürfte nicht passieren, der Weg ist legal gefunden worden, muss also eigentlich existieren
+                    System.out.println("[Pathfinder][ERROR]: Cannot insert Nodes into route, aborting!");
+                    return null;
+                } else {
+                    path.add(i + 1, newNode);
+                }
+            }
+        }
+
+
+
         return path;					//Pfad zurückgeben
     }
 
@@ -260,8 +311,6 @@ public final class ServerPathfinder {
                 }
             }
         }
-
-
         return result.toArray(new Node[0]);
     }
 
