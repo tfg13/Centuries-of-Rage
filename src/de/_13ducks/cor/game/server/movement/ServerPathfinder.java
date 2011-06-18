@@ -26,13 +26,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.server.movement.Edge;
-import de._13ducks.cor.game.server.movement.FakeNode;
-import de._13ducks.cor.game.server.movement.FreePolygon;
-import de._13ducks.cor.game.server.movement.MovementMap;
 import java.util.*;
 import org.apache.commons.collections.buffer.PriorityBuffer;
-import de._13ducks.cor.game.server.movement.Node;
 
 /**
  * Der Serverpathfinder.
@@ -49,15 +44,15 @@ public final class ServerPathfinder {
     private ServerPathfinder() {
     }
 
-    public static synchronized List<Node> findPath(SimplePosition start, SimplePosition target, FreePolygon startSector,MovementMap moveMap) {
+    public static synchronized List<Node> findPath(SimplePosition start, SimplePosition target, FreePolygon startSector, MovementMap moveMap) {
 
         if (start == null || target == null) {
             System.out.println("FixMe: SPathfinder, irregular call: " + start + "-->" + target);
             return null;
         }
-        
+
         FreePolygon targetSector = moveMap.containingPoly(target.x(), target.y());
-        
+
         if (targetSector == null) {
             // Ziel ungültig abbrechen
             System.out.println("Irregular target. Aborting");
@@ -65,13 +60,13 @@ public final class ServerPathfinder {
         }
         FakeNode startNode = new FakeNode(start.x(), start.y(), startSector);
         Node targetNode = new FakeNode(target.x(), target.y(), targetSector);
-        targetNode.addPolygon(moveMap.containingPoly(target.x(), target.y()));
-        
+        targetNode.addPolygon(targetSector);
+
         // Der Startknoten muss die Member seines Polys kennen
-        startNode.setReachableNodes(startSector.getNodes().toArray(new Node[0]));
+        startNode.setReachableNodes(computeDirectReachable(startNode, startSector));
         // Der Zielknoten muss den Membern seines Polys bekannt sein
         // Die Movement-Map darf aber nicht verändert werden. Des halb müssen einige Aufrufe intern abgefangen werden und das reingedoktert werden.
-        List<Node> preTargetNodes = targetSector.getNodes();
+        List<Node> preTargetNodes = Arrays.asList(computeDirectReachable(targetNode, targetSector));
 
         PriorityBuffer open = new PriorityBuffer();      // Liste für entdeckte Knoten
         LinkedHashSet<Node> containopen = new LinkedHashSet<Node>();  // Auch für entdeckte Knoten, hiermit kann viel schneller festgestellt werden, ob ein bestimmter Knoten schon enthalten ist.
@@ -154,7 +149,122 @@ public final class ServerPathfinder {
 
         return path;					//Pfad zurückgeben
     }
-    
+
+    /**
+     * Der Start und Zielknoten sind von weit mehr als nur den Knoten ihres Polygons erreichbar.
+     * Dies muss bereits während der Basic-Berechnung beachtet werden, das kann die Pfadoptimierung nachträglich nichtmehr leisten.
+     * Also alle Nodes suchen, die ohne Hinderniss direkt erreichbar sind
+     * @param from alle vollständig im Mesh liegenden Kanten von hier zu Nachbarknoten suchen
+     * @param basicPolygon Der Polygon, in dem der Node drinliegt.
+     * @return alle direkt erreichbaren Knoten (natürlich sind die des basicPolygons auch dabei)
+     */
+    private static Node[] computeDirectReachable(Node from, FreePolygon basicPolygon) {
+        // Das ist eine modifizierte Breitensuche:
+        LinkedList<FreePolygon> open = new LinkedList<FreePolygon>(); // Queue für zu untersuchende Polygone
+        LinkedHashSet<FreePolygon> openContains = new LinkedHashSet<FreePolygon>(); // Welche Elemente die open enthält (schnellerer Test)
+        LinkedHashSet<FreePolygon> closed = new LinkedHashSet<FreePolygon>();
+        LinkedHashSet<Node> testedNodes = new LinkedHashSet<Node>();
+        LinkedList<Node> result = new LinkedList<Node>();
+        open.offer(basicPolygon); // Start-Polygon
+        openContains.add(basicPolygon);
+
+        while (!open.isEmpty()) {
+            // Diesen hier bearbeiten wir jetzt
+            FreePolygon poly = open.poll();
+            openContains.remove(poly);
+            closed.add(poly);
+
+            boolean containsreachableNodes = false;
+            // Alle Nodes dieses Knotens untersuchen
+            for (Node node : poly.getNodes()) {
+                // Schon bekannt?
+                if (result.contains(node)) {
+                    // Bekannt und ok
+                    containsreachableNodes = true;
+                } else {
+                    if (testedNodes.contains(node)) {
+                        // Der geht nicht
+                    } else {
+                        // Testen!
+                        FreePolygon currentPoly = basicPolygon;
+                        // Testweise Kante zwischen from und node erstellen
+                        Edge edge = new Edge(from, node);
+                        // Im Folgenden wird untersucht, ob der neue Weg "edge" passierbar ist.
+                        // Damit wir beim Dreieckwechsel nicht wieder zurück gehen:
+                        Node lastNode = null;
+
+                        boolean routeAllowed = true;
+
+                        // Jetzt so lange weiter laufen, bis wir im Ziel-Polygon sind
+                        while (!node.getPolygons().contains(currentPoly)) {
+                            // Untersuchen, ob es eine Seite des currentPolygons gibt, die sich mit der alternativRoute schneidet
+                            List<Edge> edges = currentPoly.calcEdges();
+                            Edge intersecting = null;
+                            for (Edge testedge : edges) {
+                                // Gibts da einen Schnitt?
+                                SimplePosition intersection = edge.intersectionWithEndsNotAllowed(testedge);
+                                if (intersection != null && !intersection.equals(lastNode)) {
+                                    intersecting = testedge;
+                                    break;
+                                }
+                            }
+                            // Kandidat für den nächsten Polygon
+                            FreePolygon nextPoly = null;
+                            // Kante gefunden
+                            if (intersecting != null) {
+                                // Von dieser Kante die Enden suchen
+                                nextPoly = getOtherPoly(intersecting.getStart(), intersecting.getEnd(), currentPoly);
+                            }
+                            if (intersecting != null && nextPoly != null) {
+                                // Wir haben einen Schnittpunkt und eine Kante gefunden, sind jetzt also in einem neuen Polygon
+                                // Extra Node benötigt
+                                Node extraNode = intersecting.intersectionWithEndsNotAllowed(edge).toNode();
+
+                                extraNode.addPolygon(nextPoly);
+                                extraNode.addPolygon(currentPoly);
+                                lastNode = extraNode;
+                                currentPoly = nextPoly;
+                                // Der nächste Schleifendurchlauf wird den nächsten Polygon untersuchen
+                            } else {
+                                // Es gab leider keinen betretbaren Polygon hier.
+                                // Das bedeutet, dass wir die Suche abbrechen können, es gibt hier keinen direkten Weg
+                                routeAllowed = false;
+                                break;
+                            }
+
+                        }
+
+                        // Wenn der neue Weg gültig war, einbauen. Sonst weiter mit dem nächsten Knoten
+                        if (routeAllowed) {
+                            // In die erlaubt-Liste:
+                            result.add(node);
+                            testedNodes.add(node);
+                            containsreachableNodes = true;
+                        } else {
+                            testedNodes.add(node);
+                        }
+                    }
+                }
+            }
+
+            // Nur weiter in die Tiefe gehen, wenn mindestens einer erreichbar war
+            if (containsreachableNodes) {
+                // Alle Nachbarn untersuchen:
+                for (FreePolygon n : poly.getNeighbors()) {
+                    // Schon bekannt/bearbeitet?
+                    if (!openContains.contains(n) && !closed.contains(n)) {
+                        // Nein, also auch zur Bearbeitung vorsehen
+                        open.add(n);
+                        openContains.add(n);
+                    }
+                }
+            }
+        }
+
+
+        return result.toArray(new Node[0]);
+    }
+
     private static List<Node> computeNeighbors(Node current, Node target, List<Node> preTargetNodes) {
         List<Node> originalNodes = current.getReachableNodes();
         if (preTargetNodes.contains(current)) {
