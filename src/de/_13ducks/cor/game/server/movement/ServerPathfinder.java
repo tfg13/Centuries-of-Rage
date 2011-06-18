@@ -146,6 +146,10 @@ public final class ServerPathfinder {
         for (int k = pathrev.size() - 1; k >= 0; k--) {
             path.add(pathrev.get(k));
         }
+        
+        // Der folgende Algorithmus braucht Polygon-Infos, diese also hier einfügen
+        startNode.addPolygon(startSector);
+        targetNode.addPolygon(targetSector);
 
         /**
          * An dieser Stelle muss der Weg nocheinmal überarbeitet werden.
@@ -157,7 +161,7 @@ public final class ServerPathfinder {
             Node n1 = path.get(i);
             Node n2 = path.get(i + 1);
             FreePolygon commonSector = commonSector(n1, n2);
-            if (commonSector != null) {
+            if (commonSector == null) {
                 // Das hier ist der interessante Fall, die beiden Knoten sind nicht direkt verbunden, es muss ein Zwischenknoten eingefügt werden:
                 // Dessen Punkt suchen
                 Edge direct = new Edge(n1, n2);
