@@ -66,7 +66,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     }
 
     @Override
-    public void execute() {
+    public synchronized void execute() {
         // Auto-Ende:
         if (target == null || speed <= 0) {
             deactivate();
@@ -122,7 +122,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     public void unpause() {
     }
     
-    public void newMoveVec(double speed, FloatingPointPosition target) {
+    public synchronized void newMoveVec(double speed, FloatingPointPosition target) {
         this.speed = speed;
         this.target = target;
         lastTick = System.nanoTime();
@@ -145,7 +145,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
      * (innerhalb eines Ticks)
      * @param pos 
      */
-    public void stopAt(FloatingPointPosition pos) {
+    public synchronized void stopAt(FloatingPointPosition pos) {
         stopPos = pos;
         trigger();
     }
