@@ -55,7 +55,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
      */
     private FloatingPointPosition stopPos = null;
     /**
-     * Wann wurde die Bewegung zuletzt berechnet?
+     * Wann wurde die Bewegung zuletzt berechnet? (in nanosekunden)
      */
     private long lastTick;
     
@@ -77,8 +77,8 @@ public class ClientBehaviourMove extends ClientBehaviour {
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
         Vector vec = target.subtract(oldPos).toVector();
         vec.normalizeMe();
-        long ticktime = System.currentTimeMillis();
-        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
+        long ticktime = System.nanoTime();
+        vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
         
         if (!newpos.toVector().isValid()) {
@@ -107,7 +107,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
             }
         }
     }
@@ -125,7 +125,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     public void newMoveVec(double speed, FloatingPointPosition target) {
         this.speed = speed;
         this.target = target;
-        lastTick = System.currentTimeMillis();
+        lastTick = System.nanoTime();
         activate();
     }
     
