@@ -167,7 +167,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
 
 
-                    if (nextnewpos.toVector().isValid()) {
+                    if (nextnewpos.toVector().isValid() && checkPosition(nextnewpos)) {
                         newpos = nextnewpos;
                     } else {
                         System.out.println("WARNING: Ugly back-stop!");
@@ -180,7 +180,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                         caster2.setMainPosition(newpos);
                         clientTarget = null;
-                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
+                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m + " stop at " + newpos);
                         return; // Nicht weiter ausführen!
                     } else {
                         // Bricht die Bewegung vollständig ab.
@@ -335,5 +335,19 @@ public class ServerBehaviourMove extends ServerBehaviour {
         double angle = Math.acos((scalar / lenght));
 
         return angle;
+    }
+
+    /**
+     * Überprüft auf RTC mit Zielposition
+     * @param pos die zu testende Position
+     * @return true, wenn frei
+     */
+    private boolean checkPosition(FloatingPointPosition pos) {
+        for (Moveable m : moveMap.moversAroundPoint(pos, caster2.getRadius())) {
+            if (m.getPrecisePosition().getDistance(pos) < (m.getRadius() + caster2.getRadius())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
