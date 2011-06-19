@@ -116,9 +116,11 @@ public class ClientBehaviourMove extends ClientBehaviour {
     public void gotSignal(byte[] packet) {
     }
 
+    @Override
     public void pause() {
     }
 
+    @Override
     public void unpause() {
     }
     
