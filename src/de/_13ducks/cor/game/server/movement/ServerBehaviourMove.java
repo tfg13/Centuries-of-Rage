@@ -31,7 +31,6 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import java.awt.geom.Ellipse2D;
 
 /**
  * Lowlevel-Movemanagement
@@ -66,9 +65,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private boolean wait;
     /**
-     * Die Zeit, die gewartet wird
+     * Die Zeit, die gewartet wird (in Nanosekunden) (eine milliarde ist eine sekunde)
      */
-    private static final long waitTime = 1000;
+    private static final long waitTime = 1000000000;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -101,8 +100,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
         Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
-        long ticktime = System.currentTimeMillis();
-        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
+        long ticktime = System.nanoTime();
+        vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
         // Wir sind im Warten-Modus. Jetzt also testen, ob wir zur nächsten Position können
@@ -118,9 +117,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
             }
             if (stillColliding) {
                 // Immer noch Kollision
-                if (System.currentTimeMillis() - waitStartTime < waitTime) {
+                if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
-                    lastTick = System.currentTimeMillis();
+                    lastTick = System.nanoTime();
                     return;
                 } else {
                     wait = false;
@@ -131,7 +130,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Nichtmehr weiter warten - Bewegung wieder starten
                 wait = false;
                 // Ticktime manipulieren.
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
                 trigger();
                 return;
             }
@@ -175,7 +174,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         newpos = oldPos.toFPP();
                     }
                     if (wait) {
-                        waitStartTime = System.currentTimeMillis();
+                        waitStartTime = System.nanoTime();
                         // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
                         // Der Client muss das auch mitbekommen
                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
@@ -231,7 +230,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
             }
         }
 
@@ -266,7 +265,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to invalid position");
         }
         target = pos;
-        lastTick = System.currentTimeMillis();
+        lastTick = System.nanoTime();
         clientTarget = Vector.ZERO;
         activate();
     }
