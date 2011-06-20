@@ -74,6 +74,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
      */
     private static final double maxRadius = 4;
+    /**
+     * Eine minimale Distanz, die Einheiten beim Aufstellen wegen einer Kollision berücksichtigen. 
+     * Damit wird verhindert, dass aufgrund von Rundungsfehlern Kolision auf ursprünlich als frei
+     * eingestuften Flächen berechnet wird.
+     */
+    private static final double minDistance = 0.1;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -154,7 +160,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
-                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius();
+                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius() + (float) minDistance;
 
 
                     Vector origin = new Vector(-vec.getY(), vec.getX());
