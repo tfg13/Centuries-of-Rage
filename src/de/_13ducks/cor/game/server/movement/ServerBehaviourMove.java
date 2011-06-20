@@ -31,6 +31,7 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
+import java.util.List;
 
 /**
  * Lowlevel-Movemanagement
@@ -343,7 +344,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @return true, wenn frei
      */
     private boolean checkPosition(FloatingPointPosition pos) {
-        for (Moveable m : moveMap.moversAroundPoint(pos, caster2.getRadius())) {
+        List<Moveable> movers = moveMap.moversAroundPoint(pos, caster2.getRadius() * 2);
+        movers.remove(caster2);
+        for (Moveable m : movers) {
             if (m.getPrecisePosition().getDistance(pos) < (m.getRadius() + caster2.getRadius())) {
                 return false;
             }
