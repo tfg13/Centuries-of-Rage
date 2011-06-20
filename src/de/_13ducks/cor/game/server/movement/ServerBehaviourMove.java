@@ -69,6 +69,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Die Zeit, die gewartet wird (in Nanosekunden) (eine milliarde ist eine sekunde)
      */
     private static final long waitTime = 1000000000;
+    
+    /**
+     * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
+     */
+    private static final double maxRadius = 4;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -145,7 +150,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         if (!stopUnit) {
             // Echtzeitkollision:
-            for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+            for (Moveable m : this.caster2.moversAroundMe(this.caster2.getRadius() + maxRadius)) {
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
@@ -344,7 +349,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @return true, wenn frei
      */
     private boolean checkPosition(FloatingPointPosition pos) {
-        List<Moveable> movers = moveMap.moversAroundPoint(pos, caster2.getRadius() * 2);
+        List<Moveable> movers = moveMap.moversAroundPoint(pos, caster2.getRadius() + maxRadius);
         movers.remove(caster2);
         for (Moveable m : movers) {
             if (m.getPrecisePosition().getDistance(pos) < (m.getRadius() + caster2.getRadius())) {
