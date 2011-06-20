@@ -79,7 +79,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Damit wird verhindert, dass aufgrund von Rundungsfehlern Kolision auf ursprünlich als frei
      * eingestuften Flächen berechnet wird.
      */
-    private static final double minDistance = 0.1;
+    public static final double MIN_DISTANCE = 0.1;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -135,8 +135,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     return;
                 } else {
                     wait = false;
-                    // Diese Bewegung richtig abbrechen
-                    stopUnit = true;
+                    // Wir stehen schon, der Client auch --> nichts weiter zu tun.
+                    target = null;
+                    deactivate();
+                    return;
                 }
             } else {
                 // Nichtmehr weiter warten - Bewegung wieder starten
@@ -160,7 +162,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
-                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius() + (float) minDistance;
+                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius() + (float) MIN_DISTANCE;
 
 
                     Vector origin = new Vector(-vec.getY(), vec.getX());

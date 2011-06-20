@@ -27,7 +27,6 @@ package de._13ducks.cor.game.networks.behaviour.impl;
 
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Position;

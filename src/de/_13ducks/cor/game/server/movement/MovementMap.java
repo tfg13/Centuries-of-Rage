@@ -426,7 +426,7 @@ public class MovementMap {
     public FloatingPointPosition aroundMe(FloatingPointPosition position, double radius) {
         double time = System.currentTimeMillis();
         /**
-         * Die Auflösucg, mit der nach gültigen Positionen gesucht wird
+         * Die Auflösung, mit der nach gültigen Positionen gesucht wird
          */
         double distance = 1.0;
 
@@ -499,7 +499,7 @@ public class MovementMap {
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
                 boolean moverCollision = false;
                 for (Moveable m : unitsAround) {
-                    if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius)) {
+                    if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius + ServerBehaviourMove.MIN_DISTANCE)) {
                         moverCollision = true;
                         break;
                     }
