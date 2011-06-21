@@ -159,6 +159,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (!stopUnit) {
             // Echtzeitkollision:
             for (Moveable m : moveMap.moversAroundPoint(newpos, this.caster2.getRadius() + maxRadius, caster2.getMyPoly())) {
+                if (m.equals(caster2)) {
+                    continue;
+                }
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
