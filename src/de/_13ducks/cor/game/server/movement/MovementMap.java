@@ -328,16 +328,28 @@ public class MovementMap {
     }
 
     /**
-     * Sucht alle Einheiten im Umkreis um einne Punkt heraus.
+     * Sucht alle Einheiten im Umkreis um einen Punkt heraus.
      * Sucht über Sektorgrenzen hinweg.
      * @param mover der Mover um den gesucht wird.
      * @param radius der radius
      * @return eine List mit allen gefundenen Einheiten
      */
     public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius) {
+        return moversAroundPoint(position, radius, containingPoly(position.getfX(), position.getfY()));
+    }
+    
+    /**
+     * Sucht alle Einheiten im Umkreis um einen Punkt heraus.
+     * Sucht über Sektorgrenzen hinweg.
+     * @param mover der Mover um den gesucht wird.
+     * @param radius der radius
+     * @param startPoly der Polygon, von dem aus gesucht wird
+     * @return eine List mit allen gefundenen Einheiten
+     */
+    public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius, FreePolygon startPoly) {
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
         // Alle relevanten Sektoren herausfinden:
-        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), this.containingPoly(position.getfX(), position.getfY()), radius);
+        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), startPoly, radius);
         for (FreePolygon poly : relPolys) {
             // Alle Einheiten dieses Sektors analysieren
             List<Moveable> moversInSec = poly.getResidents();
