@@ -255,9 +255,10 @@ public final class ServerPathfinder {
                             // Untersuchen, ob es eine Seite des currentPolygons gibt, die sich mit der alternativRoute schneidet
                             List<Edge> edges = currentPoly.calcEdges();
                             Edge intersecting = null;
+                            SimplePosition intersection = null;
                             for (Edge testedge : edges) {
                                 // Gibts da einen Schnitt?
-                                SimplePosition intersection = edge.intersectionWithEndsNotAllowed(testedge);
+                                intersection = edge.intersectionWithEndsNotAllowed(testedge);
                                 if (intersection != null && !intersection.equals(lastNode)) {
                                     intersecting = testedge;
                                     break;
@@ -273,7 +274,7 @@ public final class ServerPathfinder {
                             if (intersecting != null && nextPoly != null) {
                                 // Wir haben einen Schnittpunkt und eine Kante gefunden, sind jetzt also in einem neuen Polygon
                                 // Extra Node benötigt
-                                Node extraNode = intersecting.intersectionWithEndsNotAllowed(edge).toNode();
+                                Node extraNode = intersection.toNode();
 
                                 extraNode.addPolygon(nextPoly);
                                 extraNode.addPolygon(currentPoly);
