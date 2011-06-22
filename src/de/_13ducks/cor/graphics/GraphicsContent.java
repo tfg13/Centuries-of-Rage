@@ -473,7 +473,7 @@ public class GraphicsContent extends BasicGame {
         // Zeichnet alle Overlays.
         for (int i = 0; i < overlays.size(); i++) {
             try {
-                overlays.get(i).renderOverlay(g2, realPixX, realPixY, getImgMap());
+                overlays.get(i).renderOverlay(g2, realPixX, realPixY);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -27,7 +27,6 @@ package de._13ducks.cor.graphics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.ability.Ability;
@@ -84,7 +83,7 @@ public class AbilityHud extends Overlay {
     private int edge = EDGE_BOTTOM_LEFT;
 
     @Override
-    public synchronized  void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
         if (iges != null && !iges.isEmpty()) {
             // Liste updaten?
             if (igesUpdated) {
@@ -113,7 +112,6 @@ public class AbilityHud extends Overlay {
                             tex = ab.symbols[1];
                         }
                         if (tex != null) {
-                            GraphicsImage img = imgMap.get(tex);
                             boolean available = false;
                             // Fähigkeit ist anklickbar, wenns nur bei einem einzigen Verfügbar ist.
                             for (InteractableGameElement elem : iges) {
@@ -123,21 +121,19 @@ public class AbilityHud extends Overlay {
                                     break;
                                 }
                             }
-                            if (img != null) {
-                                switch (edge) {
-                                    case EDGE_TOP_LEFT:
-                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                        break;
-                                    case EDGE_TOP_RIGHT:
-                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                        break;
-                                    case EDGE_BOTTOM_LEFT:
-                                        img.getImage().draw(visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                        break;
-                                    case EDGE_BOTTOM_RIGHT:
-                                        img.getImage().draw(fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                        break;
-                                }
+                            switch (edge) {
+                                case EDGE_TOP_LEFT:
+                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                    break;
+                                case EDGE_TOP_RIGHT:
+                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                    break;
+                                case EDGE_BOTTOM_LEFT:
+                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                    break;
+                                case EDGE_BOTTOM_RIGHT:
+                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                                    break;
                             }
                         }
                     }

@@ -260,7 +260,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public void loadPreMain() {
         BufferedReader reader = null;
         try {
-            imgMap = new HashMap();
+            imgMap = new HashMap<String, GraphicsImage>();
+            de._13ducks.cor.graphics.Renderer.init(imgMap);
             reader = new BufferedReader(new FileReader(new File("img/preload")));
             String read = null;
             while ((read = reader.readLine()) != null) {

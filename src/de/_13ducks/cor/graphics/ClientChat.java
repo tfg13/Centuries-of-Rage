@@ -26,9 +26,7 @@
 package de._13ducks.cor.graphics;
 
 import de._13ducks.cor.game.client.ClientCore;
-import de._13ducks.cor.graphics.Overlay;
 import java.util.ArrayList;
-import java.util.Map;
 import org.newdawn.slick.*;
 
 /**
@@ -519,7 +517,7 @@ public class ClientChat  extends Overlay {
     }
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         renderChat(g, 10, (int) (0.65 * fullResY));
     }
 

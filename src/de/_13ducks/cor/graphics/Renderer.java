@@ -176,4 +176,8 @@ public class Renderer {
         }
         return false;
     }
+
+    static void init(HashMap<String, GraphicsImage> imgMap) {
+        Renderer.imgMap = imgMap;
+    }
 }
