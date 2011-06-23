@@ -5,7 +5,6 @@
 package de._13ducks.cor.map.fastfinfgrid;
 
 import de._13ducks.cor.game.FloatingPointPosition;
-import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 
 /**
@@ -16,14 +15,55 @@ import java.util.ArrayList;
 public class FastFindGrid {
 
     /**
+     * Das Rastah!
+     */
+    public Cell grid[][];
+    /**
+     * Die Größe einer Zelle
+     */
+    private double cellSize;
+
+    /**
      * Konstruktor, initialisiert das Raster
      * @param mapSizeX - Breite der Karte
-     * @param mapSizeY - Hähe der Karte
+     * @param mapSizeY - Höhe der Karte
      * @param cellSize - Die Größe der einzelnen Zellen
      *                   sollte dem maximalen Suchradius entsprechen oder leicht Größer sein
      * 
      */
     public FastFindGrid(int mapSizeX, int mapSizeY, double cellSize) {
+
+        this.cellSize = cellSize;
+
+        // Rastergröße bestimmen:
+        int gridX = (int) (mapSizeX / cellSize);
+        int gridY = (int) (mapSizeY / cellSize);
+
+        // Raster erstellen:
+        grid = new Cell[gridX][gridY];
+
+        // Zellen erstellen:
+        for (int x = 0; x < gridX; x++) {
+            for (int y = 0; y < gridY; y++) {
+                grid[x][y] = new Cell();
+            }
+        }
+
+        // Nachbarzellen eintragen:
+        for (int x = 0; x < gridX; x++) {
+            for (int y = 0; y < gridY; y++) {
+                for (int nx = -1; nx < 2; nx++) {
+                    for (int ny = -1; ny < 2; ny++) {
+                        try {
+                            grid[x][y].addNeighbor(grid[nx][ny]);
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     /**
@@ -31,8 +71,13 @@ public class FastFindGrid {
      * @param position - die Position, um die gesucht wird
      * @return         - Eine Liste der Einheiten um diese Position
      */
-    public ArrayList<Unit> getUnitsAroundPoint(FloatingPointPosition position) {
-        return null;
+    public ArrayList<Traceable> getTraceablesAroundPoint(FloatingPointPosition position) {
+
+        // Welche Zelle enthält die Position?
+        Cell theCell = getCellByPosition(position);
+
+
+        return theCell.getAdjacentTraceables();
     }
 
     /**
@@ -42,13 +87,18 @@ public class FastFindGrid {
      * @return       - die Zelle, in der das Objekt steht
      */
     public Cell addObject(Traceable object) {
-        return null;
+        Cell theCell = getCellByPosition(object.getPosition());
+
+        theCell.addInhabitant(object);
+
+        return theCell;
     }
 
     /**
      * Entfernt ein Objekt aus dem Raster, etwa wenn es zerstört wurde
      */
     public void removeObject(Traceable object) {
+        object.getCell().removeInhabitant(object);
     }
 
     /**
@@ -58,6 +108,27 @@ public class FastFindGrid {
      * @return            - die Zelle, in der das Objekt jetzt steht
      */
     public Cell getNewCell(Traceable movedObject) {
-        return null;
+
+        Cell theCell = getCellByPosition(movedObject.getPosition());
+
+        // ist das Traceable jetzt in einer anderen Zelle?
+        if (theCell != movedObject.getCell()) {
+            movedObject.getCell().removeInhabitant(movedObject);
+            theCell.addInhabitant(movedObject);
+        }
+        return theCell;
+    }
+
+    /**
+     * Gibt die Zelle zurück, die die angegebene Position enthält
+     * @param position - Die Positione deren Zelle gesucht wird
+     * @return         - die Zelle die die angegebene Position enthält
+     */
+    private Cell getCellByPosition(FloatingPointPosition position) {
+
+        int xCell = (int) (position.getfX() / cellSize);
+        int yCell = (int) (position.getfY() / cellSize);
+
+        return grid[xCell][yCell];
     }
 }

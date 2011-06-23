@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de._13ducks.cor.map.fastfinfgrid;
+
+import de._13ducks.cor.game.FloatingPointPosition;
 
 /**
  * Objekte, die im Schnellfinderaster (fastfindgrid) eingetragen werden, müssen dieses Interface implementieren.
@@ -20,4 +21,9 @@ public interface Traceable {
      */
     public abstract Cell getCell();
 
+    /**
+     * Gibt die Position des Objekts zurück
+     * @return - die Position des Objekts
+     */
+    public abstract FloatingPointPosition getPosition();
 }
