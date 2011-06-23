@@ -60,7 +60,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x1, double y1, double x2, double y2, double srcx, double srcy, double srcx2, double srcy2, Color colorFilter) {
         if (prepareImage(imgPath)) {
-            currentImage.draw((float) x1, (float) y1, (float) x2, (float) y2, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2, colorFilter);
+            currentImage.drawEmbedded((float) x1, (float) y1, (float) x2, (float) y2, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2, colorFilter);
         }
     }
 
@@ -94,7 +94,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x1, double y1, double srcx, double srcy, double srcx2, double srcy2) {
         if (prepareImage(imgPath)) {
-            currentImage.draw((float) x1, (float) y1, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2);
+            drawImage(imgPath, x1, y1, x1 + currentImage.getWidth(), currentImage.getHeight(), srcx, srcy, srcx2, srcy2);
         }
     }
 
@@ -109,7 +109,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x, double y, double width, double height, Color filter) {
         if (prepareImage(imgPath)) {
-            currentImage.draw((float) x, (float) y, (float) width, (float) height, filter);
+            drawImage(imgPath, x, y, x + width, y + width, 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
         }
     }
 
@@ -134,7 +134,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x, double y, double scale) {
         if (prepareImage(imgPath)) {
-            currentImage.draw((float) x, (float) y, (float) scale, Color.white);
+            drawImage(imgPath, x, y, currentImage.getWidth() * scale, currentImage.getHeight() * scale);
         }
     }
 
@@ -147,7 +147,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x, double y, Color filter) {
         if (prepareImage(imgPath)) {
-            currentImage.draw((float) x, (float) y, filter);
+            drawImage(imgPath, x, y, x + currentImage.getWidth(), currentImage.getHeight(), 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
         }
     }
 
@@ -160,7 +160,7 @@ public class Renderer {
     public static void drawImage(String imgPath, double x, double y) {
         drawImage(imgPath, x, y, Color.white);
     }
-    
+
     /**
      * Zeichnet ein Sprite aus einem Sheet auf den Bildschrim
      * Wird gecached, mehrere Aufrufe auf das gleiche Spritesheet sind performant.
@@ -172,14 +172,14 @@ public class Renderer {
      */
     public static void drawSprite(int sheetX, int sheetY, String spriteSheet, double x, double y) {
         if (prepareImage(spriteSheet)) {
-            currentImage.draw((float) x, (float) y, 
-                    sheetX * currentGraphicsImage.getTileX(), 
-                    sheetY * currentGraphicsImage.getTileY(), 
-                    sheetX * (currentGraphicsImage.getTileX() + 1), 
+            drawImage(spriteSheet, (float) x, (float) y,
+                    sheetX * currentGraphicsImage.getTileX(),
+                    sheetY * currentGraphicsImage.getTileY(),
+                    sheetX * (currentGraphicsImage.getTileX() + 1),
                     sheetY * (currentGraphicsImage.getTileY() + 1));
         }
     }
-    
+
     public static void drawSpriteCentered(int sheetX, int sheetY, String spriteSheet, double x, double y) {
         if (prepareImage(spriteSheet)) {
             drawSprite(sheetX, sheetY, spriteSheet, x - currentGraphicsImage.getTileX() / 2.0, y - currentGraphicsImage.getTileX() / 2.0);
@@ -205,9 +205,13 @@ public class Renderer {
         }
         GraphicsImage img = imgMap.get(path);
         if (path != null) {
+            if (currentImage != null) {
+                currentImage.endUse();
+            }
             currentGraphicsImage = img;
             currentImage = img.getImage();
             currentImageIdentifier = path;
+            currentImage.startUse();
             return true;
         }
         return false;
