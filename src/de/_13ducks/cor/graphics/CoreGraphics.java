@@ -113,6 +113,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.realPixY = myMode.getdMode().getHeight();
         Thread t = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     CoreGraphics.super.start();
@@ -330,60 +331,76 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     void initInput() {
         input.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseWheelMoved(int i) {
                 getMainmenu().mouseWheelMoved(i);
             }
 
+            @Override
             public void mouseClicked(int i, int i1, int i2, int i3) {
                 getMainmenu().mouseClicked(i, i1, i2, i3);
             }
 
+            @Override
             public void mousePressed(int i, int i1, int i2) {
             }
 
+            @Override
             public void mouseReleased(int i, int i1, int i2) {
             }
 
+            @Override
             public void mouseMoved(int i, int i1, int i2, int i3) {
                 getMainmenu().mouseMoved(i2, i3);
             }
 
+            @Override
             public void mouseDragged(int i, int i1, int i2, int i3) {
             }
 
+            @Override
             public void setInput(Input input) {
             }
 
+            @Override
             public boolean isAcceptingInput() {
                 return true;
             }
 
+            @Override
             public void inputEnded() {
             }
 
+            @Override
             public void inputStarted() {
             }
         });
 
         input.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(int i, char c) {
                 getMainmenu().keyPressed(i, c);
             }
 
+            @Override
             public void keyReleased(int i, char c) {
             }
 
+            @Override
             public void setInput(Input input) {
             }
 
+            @Override
             public boolean isAcceptingInput() {
                 return true;
             }
 
+            @Override
             public void inputEnded() {
             }
 
+            @Override
             public void inputStarted() {
             }
         });
