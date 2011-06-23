@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.networks.cmd.client;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
@@ -42,9 +41,10 @@ public class C023_MOVE_UNIT extends ClientCommand {
         Unit unit23 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
         if (unit23 != null) {
             // Geschwindigkeit und Ziel rausbasteln
-            float speed = Float.intBitsToFloat(rgi.readInt(data, 2));
-            FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(data, 3)), Float.intBitsToFloat(rgi.readInt(data, 4)));
-            unit23.getClientManager().newMoveVec(speed, pos);
+//            float speed = Float.intBitsToFloat(rgi.readInt(data, 2));
+//            FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(data, 3)), Float.intBitsToFloat(rgi.readInt(data, 4)));
+//            unit23.getClientManager().newMoveVec(speed, pos);
+            unit23.getClientManager().gotSignal(data);
         } else {
             System.out.println("Unit id mismatch (cmd 23)");
         }

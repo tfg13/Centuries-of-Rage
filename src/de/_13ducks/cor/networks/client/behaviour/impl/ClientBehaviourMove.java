@@ -30,6 +30,7 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.Vector;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Der Clientmover bewegt die Einheiten gemäß den Befehlen des Servers auf dem Client.
@@ -37,7 +38,7 @@ import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
  * 
  */
 public class ClientBehaviourMove extends ClientBehaviour {
-    
+
     /**
      * Das derzeitige Bewegungsziel der Einheit.
      */
@@ -58,15 +59,24 @@ public class ClientBehaviourMove extends ClientBehaviour {
      * Wann wurde die Bewegung zuletzt berechnet? (in nanosekunden)
      */
     private long lastTick;
-    
-    
+    private ConcurrentLinkedQueue<MoveTask> queue;
+
     public ClientBehaviourMove(ClientCore.InnerClient rgi, Unit caster2) {
         super(rgi, caster2, 1, 5, false);
         this.caster2 = caster2;
+        queue = new ConcurrentLinkedQueue<MoveTask>();
     }
 
     @Override
     public synchronized void execute() {
+        // Eingehende Signale verarbeiten:
+        if (!queue.isEmpty()) {
+            queue.remove().perform();
+            if (!queue.isEmpty()) {
+                // Noch mehr da? Dann gleich nochmal:
+                trigger();
+            }
+        }
         // Auto-Ende:
         if (target == null || speed <= 0) {
             deactivate();
@@ -80,14 +90,14 @@ public class ClientBehaviourMove extends ClientBehaviour {
         long ticktime = System.nanoTime();
         vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
-        
+
         if (!newpos.toVector().isValid()) {
             // Das geht so nicht, abbrechen und gleich nochmal!
             System.out.println("CLIENT-Move: Invalid position, will try again next tick");
             trigger();
             return;
         }
-        
+
         // Ziel schon erreicht?
         Vector nextVec = target.subtract(newpos).toVector();
         if (vec.isOpposite(nextVec)) {
@@ -114,6 +124,20 @@ public class ClientBehaviourMove extends ClientBehaviour {
 
     @Override
     public void gotSignal(byte[] packet) {
+        if (packet[0] == 24) {
+            // Stop
+            FloatingPointPosition pos = rgi.readFloatingPointPosition(packet, 2);
+            MoveTask task = new MoveTask(0, pos, 0);
+            queue.add(task);
+        } else if (packet[0] == 23) {
+            // Move
+            float moveSpeed = Float.intBitsToFloat(rgi.readInt(packet, 2));
+            FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 3)), Float.intBitsToFloat(rgi.readInt(packet, 4)));
+            MoveTask task = new MoveTask(1, pos, moveSpeed);
+            queue.add(task);
+        }
+        // Schnell verarbeiten
+        activate();
     }
 
     @Override
@@ -123,20 +147,19 @@ public class ClientBehaviourMove extends ClientBehaviour {
     @Override
     public void unpause() {
     }
-    
-    public synchronized void newMoveVec(double speed, FloatingPointPosition target) {
+
+    private synchronized void newMoveVec(double speed, FloatingPointPosition target) {
         this.speed = speed;
         this.target = target;
         lastTick = System.nanoTime();
-        activate();
     }
-    
+
     @Override
     public void activate() {
         active = true;
         trigger();
     }
-    
+
     @Override
     public void deactivate() {
         active = false;
@@ -147,8 +170,33 @@ public class ClientBehaviourMove extends ClientBehaviour {
      * (innerhalb eines Ticks)
      * @param pos 
      */
-    public synchronized void stopAt(FloatingPointPosition pos) {
+    private synchronized void stopAt(FloatingPointPosition pos) {
         stopPos = pos;
-        trigger();
+    }
+
+    /**
+     * Jedes Signal vom Server wird in ein solches Objekt gesteckt.
+     * Der Client verarbeitet diese Aufaben der Reihe nach.
+     */
+    private class MoveTask {
+
+        int mode;
+        FloatingPointPosition pos;
+        double speed;
+
+        public MoveTask(int mode, FloatingPointPosition pos, double speed) {
+            this.mode = mode;
+            this.pos = pos;
+            this.speed = speed;
+        }
+
+        void perform() {
+            if (mode == 0) {
+                // STOP
+                stopAt(pos);
+            } else if (mode == 1) {
+                newMoveVec(speed, pos);
+            }
+        }
     }
 }

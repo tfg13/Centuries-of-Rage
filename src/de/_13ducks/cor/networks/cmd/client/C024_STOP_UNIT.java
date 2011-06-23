@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.networks.cmd.client;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
@@ -41,8 +40,9 @@ public class C024_STOP_UNIT extends ClientCommand {
         // Suchen
         Unit unit24 = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
         if (unit24 != null) {
-            FloatingPointPosition pos = rgi.readFloatingPointPosition(data, 2);
-            unit24.getClientManager().stopAt(pos);
+//            FloatingPointPosition pos = rgi.readFloatingPointPosition(data, 2);
+//            unit24.getClientManager().stopAt(pos);
+            unit24.getClientManager().gotSignal(data);
         } else {
             System.out.println("Unit id mismatch. (cmd24c)");
         }
