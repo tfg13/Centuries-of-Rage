@@ -27,7 +27,7 @@ public class CoordinateView extends Component {
      * @param m - Hauptmenü-Refrernz
      */
     public CoordinateView(MainMenu m) {
-        super(m, 5, 5, 10, 10);
+        super(m, 5, 25, 10, 10);
         this.m = m;
     }
 
@@ -44,6 +44,6 @@ public class CoordinateView extends Component {
         rx = ((float) x / m.getWidth());
         ry = ((float) y / m.getHeight());
 
-        g.drawString(rx + "|" + ry, 5, 5);
+        g.drawString(rx + "|" + ry, 5, 25);
     }
 }

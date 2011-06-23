@@ -1405,8 +1405,7 @@ public class GraphicsContent extends BasicGame {
         parent.loadSplash();
         parent.slickReady = true;
         parent.setAlwaysRender(true);
-        parent.setVerbose(true);
-        parent.setVSync(true);
+        parent.setVerbose(false);
     }
 
     @Override
@@ -1460,15 +1459,8 @@ public class GraphicsContent extends BasicGame {
             } catch (Exception ex) {
                 rgi.logger("Can't load particle img/particles/simple.tga");
             }
-            if (Boolean.TRUE.equals(rgi.configs.get("benchmark")) || "true".equals(rgi.configs.get("benchmark"))) {
-                // Keine Limits
-                parent.setTargetFrameRate(-1);
-                if ("true".equals(rgi.configs.get("graphicsDebug"))) {
-                    graphicsDebug = true;
-                    analyser = new GraphicsTimeAnalyser(35);
-                    overlays.add(analyser);
-                }
-            } else {
+            if ("true".equals(rgi.configs.get("graphicsDebug"))) {
+                graphicsDebug = true;
                 int framerate;
                 try {
                     framerate = Integer.parseInt((String) rgi.configs.get("framerate"));
@@ -1476,12 +1468,8 @@ public class GraphicsContent extends BasicGame {
                     // Nicht da, default von 35 nehmen
                     framerate = 35;
                 }
-                parent.setTargetFrameRate(framerate);
-                if ("true".equals(rgi.configs.get("graphicsDebug"))) {
-                    graphicsDebug = true;
-                    analyser = new GraphicsTimeAnalyser(framerate);
-                    overlays.add(analyser);
-                }
+                analyser = new GraphicsTimeAnalyser(framerate);
+                overlays.add(analyser);
             }
             initState = 0;
             // LOAD abgeschlossen, dem Server mitteilen
