@@ -34,7 +34,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.lwjgl.opengl.Display;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.opengl.renderer.Renderer;
 import de._13ducks.cor.map.AbstractMapElement;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
@@ -293,25 +292,6 @@ public class GraphicsContent extends BasicGame {
 
                 // Overlays rendern:
                 renderOverlays(g);
-
-                if (gameDone != 0) {
-                    if (gameDone == 3) {
-                        // DEFEATED einblenden - ne Weile groß in der Mitte, dann kleiner - man kann nämlich noch spec sein
-                        if (System.currentTimeMillis() - endTime < 5000) {
-                            g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_defeat_spec.png").getImage() : getImgMap().get("img/game/finish_defeat_spec.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
-                        } else {
-                            g.setColor(Color.black);
-                            g.setFont(FontManager.getFont0());
-                            g.drawString("DEFEAT", 10, realPixY - 40);
-                        }
-                    } else if (gameDone == 2) {
-                        // DEFEATED einblenden - bis der Spieler das Spiel beendet
-                        g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_defeat_gameover.png").getImage() : getImgMap().get("img/game/finish_defeat_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
-                    } else if (gameDone == 1) {
-                        // VICTORY
-                        g.drawImage(realPixX >= 800 ? getImgMap().get("img/game/finish_victory_gameover.png").getImage() : getImgMap().get("img/game/finish_victory_gameover.png").getImage().getScaledCopy(realPixX, (int) ((1.0 * realPixX / 800) * 600)), realPixX >= 800 ? (realPixX / 2) - 400 : 0, realPixX >= 800 ? (realPixY / 2) - 300 : (realPixY / 2) - ((int) ((1.0 * realPixX / 800) * 600)) / 2);
-                    }
-                }
 
             } catch (Exception ex) {
                 System.out.println("Error while rendering frame, dropping.");
@@ -852,14 +832,7 @@ public class GraphicsContent extends BasicGame {
                         }
                         // Was da?
                         if (ground != null) {
-                            // Bild suchen und einfügen
-                            GraphicsImage tempImage = getImgMap().get(ground);
-
-                            if (tempImage != null) {
-                                g3.drawImage(tempImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
-                            } else {
-                                System.out.println("[RME][ERROR]: Image \"" + ground + "\" not found!");
-                            }
+                            Renderer.drawImage(ground, x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
                         }
                     }
                 }
@@ -876,19 +849,8 @@ public class GraphicsContent extends BasicGame {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                         }
                         if (fix != null) {
-                            // Bild suchen und einfügen
-                            GraphicsImage fixImage = getImgMap().get(fix);
-
-                            if (fixImage != null) {
-                                g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
-                            } else {
-                                System.out.println("[RME][ERROR]: Image \"" + fix + "\" not found!");
-                            }
-
+                            Renderer.drawImage(fix, x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
                         }
-
-
-                        //  System.out.println(x + " " + y);
                     }
                 }
 
@@ -968,7 +930,7 @@ public class GraphicsContent extends BasicGame {
         Position mouse = translateCoordinatesToField(mouseX, mouseY);
         FloatingPointPosition precise = translateCoordinatesToFloatPos(mouseX, mouseY);
         // Position markieren:
-        getImgMap().get("img/game/highlight_blue.png").getImage().draw((mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
+        Renderer.drawImage("img/game/highlight_blue.png", (mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();
@@ -1255,7 +1217,7 @@ public class GraphicsContent extends BasicGame {
                 // Bild berechnet, einfügen
                 GraphicsImage newImg = new GraphicsImage(preImg.getImage());
                 newImg.setImageName(tList.get(i).getImageName());
-                getImgMap().put(newImg.getImageName() + playerId, newImg);
+                imgMap.put(newImg.getImageName() + playerId, newImg);
             }
 
         }
@@ -1487,7 +1449,7 @@ public class GraphicsContent extends BasicGame {
             }
             // Einmal vorrendern
             this.paintComponent(g);
-            Renderer.get().flush();
+            org.newdawn.slick.opengl.renderer.Renderer.get().flush();
             Display.update();
             parent.initModule();
             rgi.chat.init((int) (0.5 * realPixX), (int) (0.3 * realPixY));
@@ -1530,7 +1492,7 @@ public class GraphicsContent extends BasicGame {
         } else if (initState == 4) {
             // FinalPrepare
             parent.finalPrepare();
-            minimap = Minimap.createMinimap(visMap, getImgMap(), realPixX, realPixY, rgi);
+            minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
             minimap.setAllList(allList);
             ingamemenu = new IngameMenu();
             resourcecounter = new ResourceCounter();
@@ -1567,13 +1529,5 @@ public class GraphicsContent extends BasicGame {
     //@Override
     @Override
     public void inputStarted() {
-    }
-
-    /**
-     * Stellt die ImageMap anderen Modulen zur Verfügung
-     * @return - die ImageMap
-     */
-    private HashMap<String, GraphicsImage> getImgMap() {
-        return imgMap;
     }
 }
