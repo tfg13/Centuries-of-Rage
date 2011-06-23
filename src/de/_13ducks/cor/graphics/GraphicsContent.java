@@ -341,7 +341,7 @@ public class GraphicsContent extends BasicGame {
                 continue;
             }
             if (sky.isVisible(positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, realPixX, realPixY)) {
-                sky.renderSkyEffect(g, positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, imgMap);
+                sky.renderSkyEffect(g, positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y);
             }
         }
     }
@@ -367,7 +367,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSprite(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -385,7 +385,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderGroundEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }
@@ -403,7 +403,7 @@ public class GraphicsContent extends BasicGame {
                 //@TODO: FOW-Behandlung einbauen
                 if (sprite.renderInNullFog()) {
                     Position mainPos = sprite.getMainPositionForRenderOrigin();
-                    sprite.renderSkyEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, getImgMap(), rgi.game.getPlayer(sprite.getColorId()).color);
+                    sprite.renderSkyEffect(g, (mainPos.getX() - positionX) * FIELD_HALF_X, (int) ((mainPos.getY() - positionY) * FIELD_HALF_Y), positionX * FIELD_HALF_X, positionY * FIELD_HALF_Y, rgi.game.getPlayer(sprite.getColorId()).color);
                 }
             }
         }

@@ -40,6 +40,7 @@ import org.newdawn.slick.Image;
 public class Renderer {
 
     private static HashMap<String, GraphicsImage> imgMap;
+    private static GraphicsImage currentGraphicsImage;
     private static Image currentImage;
     private static String currentImageIdentifier;
 
@@ -58,7 +59,7 @@ public class Renderer {
      * @param colorFilter The colour filter to apply when drawing
      */
     public static void drawImage(String imgPath, double x1, double y1, double x2, double y2, double srcx, double srcy, double srcx2, double srcy2, Color colorFilter) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.draw((float) x1, (float) y1, (float) x2, (float) y2, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2, colorFilter);
         }
     }
@@ -92,7 +93,7 @@ public class Renderer {
      * @param srcy2 The t position of the bottom right cornder of rectangle to draw from this image (i.e. relative to this image)
      */
     public static void drawImage(String imgPath, double x1, double y1, double srcx, double srcy, double srcx2, double srcy2) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.draw((float) x1, (float) y1, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2);
         }
     }
@@ -107,7 +108,7 @@ public class Renderer {
      * @param filter The color to filter with while drawing
      */
     public static void drawImage(String imgPath, double x, double y, double width, double height, Color filter) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.draw((float) x, (float) y, (float) width, (float) height, filter);
         }
     }
@@ -132,7 +133,7 @@ public class Renderer {
      * @param scale The scale factor
      */
     public static void drawImage(String imgPath, double x, double y, double scale) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.draw((float) x, (float) y, (float) scale, Color.white);
         }
     }
@@ -145,7 +146,7 @@ public class Renderer {
      * @param filter The color to filter with when drawing
      */
     public static void drawImage(String imgPath, double x, double y, Color filter) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.draw((float) x, (float) y, filter);
         }
     }
@@ -159,9 +160,34 @@ public class Renderer {
     public static void drawImage(String imgPath, double x, double y) {
         drawImage(imgPath, x, y, Color.white);
     }
+    
+    /**
+     * Zeichnet ein Sprite aus einem Sheet auf den Bildschrim
+     * Wird gecached, mehrere Aufrufe auf das gleiche Spritesheet sind performant.
+     * @param sheetX Tilenummer (0-basiert) Richtung X.
+     * @param sheetY Tilenummer (0-basiert) Richtung Y.
+     * @param spriteSheet pfad des Spritesheets
+     * @param x Zielkoordinate
+     * @param y Zielkoordinate
+     */
+    public static void drawSprite(int sheetX, int sheetY, String spriteSheet, double x, double y) {
+        if (prepareImage(spriteSheet)) {
+            currentImage.draw((float) x, (float) y, 
+                    sheetX * currentGraphicsImage.getTileX(), 
+                    sheetY * currentGraphicsImage.getTileY(), 
+                    sheetX * (currentGraphicsImage.getTileX() + 1), 
+                    sheetY * (currentGraphicsImage.getTileY() + 1));
+        }
+    }
+    
+    public static void drawSpriteCentered(int sheetX, int sheetY, String spriteSheet, double x, double y) {
+        if (prepareImage(spriteSheet)) {
+            drawSprite(sheetX, sheetY, spriteSheet, x - currentGraphicsImage.getTileX() / 2.0, y - currentGraphicsImage.getTileX() / 2.0);
+        }
+    }
 
     public static void setImageRotation(String imgPath, double angle) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             currentImage.rotate((float) angle);
         }
 
@@ -172,13 +198,14 @@ public class Renderer {
      * @param path = null;
      * @return 
      */
-    private static boolean prepareImage(String path, boolean tiled) {
+    private static boolean prepareImage(String path) {
         if (path.equals(currentImageIdentifier)) {
             // Schon geladen!
             return true;
         }
         GraphicsImage img = imgMap.get(path);
         if (path != null) {
+            currentGraphicsImage = img;
             currentImage = img.getImage();
             currentImageIdentifier = path;
             return true;
@@ -220,7 +247,7 @@ public class Renderer {
      * @param offY y-offset
      */
     public static void fillRectTiled(Graphics g, String imgPath, double x, double y, double width, double height, double offX, double offY) {
-        if (prepareImage(imgPath, false)) {
+        if (prepareImage(imgPath)) {
             g.fillRect((float) x, (float) y, (float) width, (float) height, currentImage, (float) offX, (float) offY);
         }
     }

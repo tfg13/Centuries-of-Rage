@@ -6,12 +6,11 @@
 package de._13ducks.cor.game;
 
 import java.util.List;
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
-import de._13ducks.cor.graphics.GraphicsImage;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
@@ -62,8 +61,8 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x - getGraphicsData().offsetX, (y - getGraphicsData().offsetY));
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        Renderer.drawImage(getGraphicsData().defaultTexture, x - getGraphicsData().offsetX, (y - getGraphicsData().offsetY));
     }
 
     @Override
@@ -143,7 +142,7 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
     }
 
     @Override
@@ -164,7 +163,7 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
     }
 
     @Override

@@ -40,14 +40,17 @@ public class GraphicsImage {
 
     private String imgName; // Name des Bildes, zum wiederfinden
     private Image image;
-    private SpriteSheet tiledImage;
+    private int tileX; // X-Größe der Sprites
+    private int tileY; // Y-Größe der Sprites
 
     public GraphicsImage(Image b) {
-        image = b;
+        this(b, 0, 0);
     }
     
-    public GraphicsImage(SpriteSheet tiled) {
-        tiledImage = tiled;
+    public GraphicsImage(Image b, int tX, int tY) {
+        image = b;
+        tileX = tX;
+        tileY = tY;
     }
 
     public String getImageName() {
@@ -61,9 +64,33 @@ public class GraphicsImage {
     public Image getImage() {
         return image;
     }
-    
-    public SpriteSheet getTiledImage() {
-        return tiledImage;
+
+    /**
+     * @return the tileX
+     */
+    public int getTileX() {
+        return tileX;
+    }
+
+    /**
+     * @param tileX the tileX to set
+     */
+    public void setTileX(int tileX) {
+        this.tileX = tileX;
+    }
+
+    /**
+     * @return the tileY
+     */
+    public int getTileY() {
+        return tileY;
+    }
+
+    /**
+     * @param tileY the tileY to set
+     */
+    public void setTileY(int tileY) {
+        this.tileY = tileY;
     }
 
 }
