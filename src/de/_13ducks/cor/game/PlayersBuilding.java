@@ -44,7 +44,6 @@ import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
  */
 public class PlayersBuilding extends Building {
 
-
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
      * Default-Konstruktor, erzeugt im Spiel vollständig nutzbare Gebäude
@@ -176,17 +175,18 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
-            x += GraphicsContent.BASIC_FIELD_OFFSET_X;
-            y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
-            // Linien ziehen
-            g.setLineWidth(4);
-            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g.setColor(isSelected() ? Color.white : spriteColor);
-            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
-            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
-            g.drawLine((x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.setLineWidth(4);
+        Renderer.stopCaching();
+        x += GraphicsContent.BASIC_FIELD_OFFSET_X;
+        y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
+        // Linien ziehen
+        g.setLineWidth(4);
+        //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+        g.setColor(isSelected() ? Color.white : spriteColor);
+        g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
+        g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
+        g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+        g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+        g.setLineWidth(4);
     }
 
     @Override
@@ -201,8 +201,8 @@ public class PlayersBuilding extends Building {
 
     @Override
     public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
-	g.setColor(spriteColor);
-	g.fillRect(x, y, 8, 8);
+        g.setColor(spriteColor);
+        g.fillRect(x, y, 8, 8);
     }
 
     @Override

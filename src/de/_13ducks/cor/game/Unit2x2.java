@@ -187,6 +187,7 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        Renderer.stopCaching();
         if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
             SimplePosition pos = getPrecisePosition();
             // Billigen Balken rendern

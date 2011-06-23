@@ -97,6 +97,7 @@ public class Minimap extends Overlay {
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
+        Renderer.stopCaching();
 	int dx = pos[0];
 	int dy = pos[1];
 	// Rahmen
