@@ -60,7 +60,6 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x1, double y1, double x2, double y2, double srcx, double srcy, double srcx2, double srcy2, Color colorFilter) {
         if (prepareImage(imgPath)) {
-            System.out.println("DRAW " + currentImageIdentifier);
             currentImage.drawEmbedded((float) x1, (float) y1, (float) x2, (float) y2, (float) srcx, (float) srcy, (float) srcx2, (float) srcy2, colorFilter);
         }
     }
@@ -110,7 +109,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x, double y, double width, double height, Color filter) {
         if (prepareImage(imgPath)) {
-            drawImage(imgPath, x, y, x + width, y + width, 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
+            drawImage(imgPath, x, y, x + width, y + height, 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
         }
     }
 
@@ -148,7 +147,7 @@ public class Renderer {
      */
     public static void drawImage(String imgPath, double x, double y, Color filter) {
         if (prepareImage(imgPath)) {
-            drawImage(imgPath, x, y, x + currentImage.getWidth(), currentImage.getHeight(), 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
+            drawImage(imgPath, x, y, x + currentImage.getWidth(), y + currentImage.getHeight(), 0, 0, currentImage.getWidth(), currentImage.getHeight(), filter);
         }
     }
 
@@ -208,13 +207,11 @@ public class Renderer {
         GraphicsImage img = imgMap.get(path);
         if (path != null) {
             if (currentImage != null) {
-                System.out.println("END " + currentImageIdentifier);
                 currentImage.endUse();
             }
             currentGraphicsImage = img;
             currentImage = img.getImage();
             currentImageIdentifier = path;
-            System.out.println("START " + currentImageIdentifier);
             currentImage.startUse();
             return true;
         }
@@ -225,9 +222,8 @@ public class Renderer {
      * Aufrufen, um die Verwendung des aktuellen Bilds zu beenden.
      * Muss vor allen anderen Grafikaufrufen gemacht werden!!!
      */
-    private static void stopCaching() {
+    public static void stopCaching() {
         if (currentImage != null) {
-            System.out.println("END " + currentImageIdentifier);
             currentImage.endUse();
             currentImage = null;
             currentImageIdentifier = null;
@@ -268,9 +264,10 @@ public class Renderer {
      * @param offY y-offset
      */
     public static void fillRectTiled(Graphics g, String imgPath, double x, double y, double width, double height, double offX, double offY) {
-        if (prepareImage(imgPath)) {
-            stopCaching();
-            g.fillRect((float) x, (float) y, (float) width, (float) height, currentImage, (float) offX, (float) offY);
+        stopCaching();
+        GraphicsImage img = imgMap.get(imgPath);
+        if (img != null) {
+            g.fillRect((float) x, (float) y, (float) width, (float) height, img.getImage(), (float) offX, (float) offY);
         }
     }
 }

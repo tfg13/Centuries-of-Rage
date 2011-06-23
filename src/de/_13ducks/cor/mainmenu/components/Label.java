@@ -28,6 +28,7 @@ package de._13ducks.cor.mainmenu.components;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.graphics.FontManager;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 
 /**
@@ -66,6 +67,7 @@ public class Label extends Component {
    
     @Override
     public void render(Graphics g) {
+        Renderer.stopCaching();
 
         g.setColor(color);
         g.setFont(FontManager.getFont0());

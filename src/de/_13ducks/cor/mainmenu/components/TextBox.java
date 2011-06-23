@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
@@ -64,6 +65,7 @@ public class TextBox extends Component {
 
     @Override
     public void render(Graphics g) {
+        Renderer.stopCaching();
         // Kasten mit Hintergrundfarbe füllen:
         if (this.active) {
             g.setColor(Color.lightGray);

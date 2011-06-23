@@ -213,6 +213,7 @@ public class GraphicsContent extends BasicGame {
                 g.setAntiAlias(useAntialising);
 
                 // Alles löschen
+                Renderer.stopCaching();
                 g.setColor(Color.white);
                 g.fillRect(0, 0, realPixX, realPixY);
 
@@ -230,17 +231,6 @@ public class GraphicsContent extends BasicGame {
                         allListLock.unlock();
                     }
                 }
-
-                // @TODO: buildingwaypoint als groundeffect rendern
-                renderBuildingWaypoint();
-
-                // Input-Modul-Hover holen
-//                if (mouseX != lastHovMouseX || mouseY != lastHovMouseY) {
-//                    // Wenn sichs geändert hat neu suchen
-//                  //  hoveredUnit = identifyUnit(mouseX, mouseY);
-//                    lastHovMouseX = mouseX;
-//                    lastHovMouseY = mouseY;
-//                }
 
                 renderSpriteGroundEffects(g);
 
@@ -279,6 +269,7 @@ public class GraphicsContent extends BasicGame {
                 if (pauseMode) {
                     renderPause(g);
                 }
+                Renderer.stopCaching();
                 g.setColor(Color.darkGray);
                 g.setFont(FontManager.getFont0());
                 //g3.setFont(new UnicodeFont(java.awt.Font.decode("8")));
@@ -575,6 +566,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderLoadScreen(Graphics g2) {
+        Renderer.stopCaching();
         // Löschen
         if (loadStatus < 10) {
             g2.setBackground(Color.white);
@@ -678,22 +670,6 @@ public class GraphicsContent extends BasicGame {
         }
     }
 
-    private void renderBuildingWaypoint() {
-//        // Gebäude-Sammelpunkt zeichnen
-//        if (!rgi.rogGraphics.inputM.selected.isEmpty() && rgi.rogGraphics.inputM.selected.get(0).getClass().equals(Building.class)) {
-//            Building b = (Building) rgi.rogGraphics.inputM.selected.get(0);
-//            if (b.waypoint != null) {
-//                // Dahin rendern
-//                GraphicsImage image = coloredImgMap.get("img/game/building_defaulttarget.png" + b.getPlayerId());
-//                if (image != null) {
-//                    image.getImage().draw(((b.waypoint.getX() - positionX) * 20) - 40, ((b.waypoint.getY() - positionY) * 15) - 40);
-//                } else {
-//                    System.out.println("ERROR: Textures missing (34124)");
-//                }
-//            }
-//        }
-    }
-
     private void renderFogOfWar(Graphics g) {
 //        // Rendert den Fog of War. Liest ihn dazu einfach aus der fowmap aus.
 //        // Das Festlegen der fog-Map wird anderswo erledigt...
@@ -746,6 +722,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderPause(Graphics g2) {
+        Renderer.stopCaching();
         // PAUSE - Overlay rendern
         g2.setColor(Color.lightGray);
         g2.fillRect(realPixX / 3, realPixY / 3, realPixX / 3, realPixY / 5);
@@ -811,6 +788,7 @@ public class GraphicsContent extends BasicGame {
                 if (renderBackground == null) {
                     renderBackground = new Image(realPixX, realPixY);
                 }
+                Renderer.stopCaching();
                 Graphics g3 = renderBackground.getGraphics();
                 rBvX = positionX;
                 rBvY = positionY;
@@ -912,6 +890,7 @@ public class GraphicsContent extends BasicGame {
     }
 
     private void renderCoords(Graphics g2) {
+        Renderer.stopCaching();
         // Gitter rendern
         g2.setColor(Color.black);
         g2.setLineWidth(1);
@@ -931,6 +910,7 @@ public class GraphicsContent extends BasicGame {
         FloatingPointPosition precise = translateCoordinatesToFloatPos(mouseX, mouseY);
         // Position markieren:
         Renderer.drawImage("img/game/highlight_blue.png", (mouse.getX() - positionX) * FIELD_HALF_X, (int) ((mouse.getY() - positionY) * FIELD_HALF_Y));
+        Renderer.stopCaching();
         // Position anzeigen
         g2.setColor(Color.white);
         Font font = rgi.chat.getFont();

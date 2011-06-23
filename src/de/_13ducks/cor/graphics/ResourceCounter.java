@@ -17,11 +17,13 @@ public class ResourceCounter extends Overlay {
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
+        Renderer.stopCaching();
         g.setColor(Color.lightGray);
         g.fillRect((int) (fullResX * 0.59), (int) (fullResY * 0.00), (int) (fullResX * 0.11), (int) (fullResY * 0.04));
         g.setColor(Color.black);
         g.drawRect((int) (fullResX * 0.59), (int) (fullResY * 0.00), (int) (fullResX * 0.11), (int) (fullResY * 0.04));
         Renderer.drawImage("img/sym/res1.png", (int) (fullResX * 0.6), (int) (fullResY * 0.01), (int) (fullResX * 0.02), (int) (fullResY * 0.02));
+        Renderer.stopCaching();
         g.setFont(FontManager.getFont0());
         g.drawString(String.valueOf(Client.getInnerClient().game.getOwnPlayer().res1), (int) (fullResX * 0.63), (int) (fullResY * 0.01));
 

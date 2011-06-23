@@ -4,6 +4,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.mainmenu.MainMenu;
 
@@ -44,6 +45,7 @@ public class CoordinateView extends Component {
         rx = ((float) x / m.getWidth());
         ry = ((float) y / m.getHeight());
 
+        Renderer.stopCaching();
         g.drawString(rx + "|" + ry, 5, 25);
     }
 }

@@ -257,6 +257,7 @@ public class ClientChat  extends Overlay {
      * @param chatY Y-Koordinate des Chatfensters (das nicht immer gezeinet wird)
      */
     private void renderChat(Graphics g2, int chatX, int chatY) {
+        Renderer.stopCaching();
         // Der Chat zeigt immer die letzen paar Zeilen an, egal in welchem Modus.
         // Daher muss erst der eventuell vorhandene Hintergrund gezeichnet werden, und dann der Text
         if (mode == ClientChat.ENTER_MODE) {

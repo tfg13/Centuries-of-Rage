@@ -29,6 +29,7 @@ import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.graphics.input.CoRInputMode;
 import de._13ducks.cor.graphics.Overlay;
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
@@ -87,6 +88,7 @@ public class TeamSelector extends Overlay {
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         if (active) {
+            Renderer.stopCaching();
             // Einmalig die Spielerzahl berechnen
             if (players == 0) {
                 for (int i = 1; i < rgi.game.playerList.size(); i++) {

@@ -23,22 +23,19 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.mainmenu.components;
 
-import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.newdawn.slick.Graphics;
 
 /**
  * Zeichnet den Hintergrund für das Hauptmenü
  * @author Johannes
  */
-
 public class MenuBackground extends Component {
+
     long starttime;
     long nextspawntime; // Wann wird ein neues BackgroundObj gespawnt?
     int resx; // Auflösung X

@@ -4,6 +4,7 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
@@ -47,7 +48,7 @@ public class ChatWindow extends Component {
      */
     @Override
     public void render(Graphics g) {
-
+        Renderer.stopCaching();
         for(int i=1; i<5; i++)
         {
             g.setColor(Color.black);

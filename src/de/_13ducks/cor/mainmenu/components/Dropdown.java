@@ -26,6 +26,7 @@
 package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.graphics.FontManager;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
 import org.newdawn.slick.Color;
@@ -99,6 +100,7 @@ public abstract class Dropdown extends Component {
 
     @Override
     public void render(Graphics g) {
+        Renderer.stopCaching();
         if (showMenu) {
             // Dropdown-Menü anzeigen:
 

@@ -140,6 +140,7 @@ public class MenuSlogans extends Component {
                 }
             }
 
+            Renderer.stopCaching();
             g.setFont(FontManager.getSloganFont());
             g.setColor(Color.black);
 
@@ -154,7 +155,7 @@ public class MenuSlogans extends Component {
 
         // Räder zeichnen
         final int wheelheight = 46;
-        Renderer.setImageRotation(currentSlogan.getWheelpic(), (-50 * sloganspeed));
+        //Renderer.setImageRotation(currentSlogan.getWheelpic(), (-50 * sloganspeed));
         for (int i = 0; i < wheelsX.size(); i++) {
             Renderer.drawImage(currentSlogan.getWheelpic(), wheelsX.get(i), (float) (0.86 * resy - lkwheight + wheelheight));
         }
