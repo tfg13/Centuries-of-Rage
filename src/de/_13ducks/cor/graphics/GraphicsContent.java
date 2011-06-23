@@ -794,6 +794,8 @@ public class GraphicsContent extends BasicGame {
                 rBvY = positionY;
                 g3.setColor(Color.white);
                 g3.fillRect(0, 0, renderBackground.getWidth(), renderBackground.getHeight());
+                Graphics.setCurrent(g3);
+
 
                 for (int x = 0; x < sizeX && x < viewX; x += 1) {
                     for (int y = 0; y < sizeY && y < viewY; y += 1) {
@@ -810,10 +812,8 @@ public class GraphicsContent extends BasicGame {
                         }
                         // Was da?
                         if (ground != null) {
-                            GraphicsImage groundImage = imgMap.get(ground);
-                            if (groundImage != null) {
-                                g3.drawImage(groundImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
-                            }
+                            Renderer.drawImage(ground, x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
+
                         }
                     }
                 }
@@ -830,15 +830,14 @@ public class GraphicsContent extends BasicGame {
                             // Kann beim Scrollein vorkommen - Einfach nichts zeichnen, denn da ist die Map zu Ende...
                         }
                         if (fix != null) {
-                            GraphicsImage fixImage = imgMap.get(fix);
-                            if (fixImage != null) {
-                                g3.drawImage(fixImage.getImage(), x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
-                            }
+                            Renderer.drawImage(fix, x * FIELD_HALF_X + OFFSET_1x1_X, (int) (y * FIELD_HALF_Y) + OFFSET_1x1_Y);
+
                         }
                     }
                 }
-
+                Renderer.stopCaching();
                 g3.flush();
+                Graphics.setCurrent(parent.getGraphics());
                 renderBackground.draw(0, 0);
             } catch (org.newdawn.slick.SlickException ex) {
             }
