@@ -1573,7 +1573,7 @@ public class GraphicsContent extends BasicGame {
      * Stellt die ImageMap anderen Modulen zur Verfügung
      * @return - die ImageMap
      */
-    public HashMap<String, GraphicsImage> getImgMap() {
+    private HashMap<String, GraphicsImage> getImgMap() {
         return imgMap;
     }
 }

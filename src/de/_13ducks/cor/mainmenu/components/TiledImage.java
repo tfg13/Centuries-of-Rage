@@ -25,9 +25,10 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import de._13ducks.cor.mainmenu.MainMenu;
+import org.lwjgl.util.Dimension;
 
 /**
  * Ein gekacheltes Bild
@@ -37,10 +38,6 @@ import de._13ducks.cor.mainmenu.MainMenu;
  */
 public class TiledImage extends Component {
 
-    /**
-     * Das Bild, das gerendert wird
-     */
-    private Image image;
     /**
      * Pfad des zu ladenden Bilds
      */
@@ -60,16 +57,10 @@ public class TiledImage extends Component {
         super(mainMenuReference, x, y, width, height);
 
         imagePath = imagepath;
-
-        image = getMainMenu().getImgMap().get(imagepath).getImage();
     }
-
-   
 
     @Override
     public void render(Graphics g) {
-        g.fillRect(this.getX1(), this.getY1(), this.getWidth(), this.getHeight(), image, 0, 0);
+        Renderer.fillRectTiled(g, imagePath, getX1(), getY1(), getWidth(), getHeight(), 0, 0);
     }
-
-  
 }

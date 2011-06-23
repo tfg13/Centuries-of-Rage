@@ -25,8 +25,8 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import de._13ducks.cor.mainmenu.MainMenu;
 
 /**
@@ -39,19 +39,11 @@ public abstract class CheckBox extends Component {
     /**
      * Der Pfad des "normal"-Bildes
      */
-    String normalImagePath;
+    private String normalImagePath;
     /**
      * Der Pfad des "aktiv"-Bildes
      */
-    String activeImagePath;
-    /**
-     * Das Bild im Normalzustand
-     */
-    Image normalImage;
-    /**
-     * Das Bild im aktiven Zustand
-     */
-    Image activeImage;
+    private String activeImagePath;
     /**
      * Ist die checkbox aktiv?
      */
@@ -71,28 +63,14 @@ public abstract class CheckBox extends Component {
         activeImagePath = activeimagepath;
         checked = false;
 
-        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
-        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
-
-
         // Die Maße an das Bild anpassen:
-        this.setX2(getX1() + normalImage.getWidth());
-        this.setY2(getY1() + normalImage.getHeight());
+        this.setX2(getX1() + Renderer.getImageInfo(normalImagePath).getWidth());
+        this.setY2(getY1() + Renderer.getImageInfo(normalImagePath).getHeight());
     }
 
     public CheckBox(MainMenu mainMenuReference, double x, double y) {
-        super(mainMenuReference, x, y, 1, 1);
-        normalImagePath = "img/mainmenu/nrdy.png";
-        activeImagePath = "img/mainmenu/rdy.png";
-        checked = false;
-
-        normalImage = getMainMenu().getImgMap().get(normalImagePath).getImage();
-        activeImage = getMainMenu().getImgMap().get(activeImagePath).getImage();
-
-
-        // Die Maße an das Bild anpassen:
-        this.setX2(getX1() + normalImage.getWidth());
-        this.setY2(getY1() + normalImage.getHeight());
+        // Einfach mit Defaultwerten weiterleiten
+        this(mainMenuReference, x, y, "img/mainmenu/nrdy.png", "img/mainmenu/rdy.png");
     }
 
    
@@ -101,9 +79,9 @@ public abstract class CheckBox extends Component {
     public void render(Graphics g) {
         // @TODO: hervorhebung bei mousehover
         if (checked) {
-            g.drawImage(activeImage, getX1(), getY1());
+            Renderer.drawImage(activeImagePath, getX1(), getY1());
         } else {
-            g.drawImage(normalImage, getX1(), getY1());
+            Renderer.drawImage(normalImagePath, getX1(), getY1());
         }
     }
 

@@ -26,7 +26,7 @@
 package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.graphics.FontManager;
-import de._13ducks.cor.graphics.GraphicsImage;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,11 +34,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 /**
  * Hat was mit den Sprüchen im Nauptmenü zu tun: rendert
@@ -46,7 +44,6 @@ import org.newdawn.slick.Image;
  */
 public class MenuSlogans extends Component {
 
-    HashMap<String, GraphicsImage> imgMap;
     long starttime;
     long nextspawntime; // Wann wird ein neues BackgroundObj gespawnt?
     int resx; // Auflösung X
@@ -62,9 +59,8 @@ public class MenuSlogans extends Component {
     long sloganspawntime; // Wann der aktuelle Slogan gestartet ist
     ArrayList<String> Slogans = new ArrayList<String>(); // Eine ArrayList mit den Slogans
 
-    public MenuSlogans(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
+    public MenuSlogans(MainMenu m, double relX, double relY, double relWidth, double relHeigth) {
         super(m, relX, relY, relWidth, relHeigth);
-        this.imgMap = imgMap;
         starttime = System.currentTimeMillis();
         nextspawntime = 0;
         sloganspawntime = 1000;
@@ -72,7 +68,7 @@ public class MenuSlogans extends Component {
         resy = m.getResY();
         tilex = (int) Math.ceil(resx / 512) + 2;
         tiley = (int) Math.ceil(resy / 512);
-        BackgroundObj.add(new MenuBackgroundObject((int) (resx * 3 / 4), (int) (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
+        BackgroundObj.add(new MenuBackgroundObject((resx * 3 / 4), (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
 
         // Zufällige Bodentextur wählen:
         int random = (int) (Math.random() * 3);
@@ -120,14 +116,12 @@ public class MenuSlogans extends Component {
 
         // Slogan-Lkw zeichnen
 
-        Image LkwImg = imgMap.get(currentSlogan.getLkwpic()).getImage();
-        Image WagonImg = imgMap.get(currentSlogan.getWagonpic()).getImage();
-        Image BarImg = imgMap.get(currentSlogan.getBarpic()).getImage();
+        int lkwheight = Renderer.getImageInfo(currentSlogan.getLkwpic()).getHeight();
 
         float lkwX = (float) (resx - (sloganspeed * (time - currentSlogan.getStarttime())));
 
-        LkwImg.draw(lkwX, (float) (0.86 * resy - LkwImg.getHeight()));
-        BarImg.draw(lkwX + 210, (float) (0.86 * resy - LkwImg.getHeight() + 55));
+        Renderer.drawImage(currentSlogan.getLkwpic(), lkwX, 0.86 * resy - lkwheight);
+        Renderer.drawImage(currentSlogan.getBarpic(), lkwX + 210, (float) (0.86 * resy - lkwheight + 55));
 
         ArrayList<Float> wheelsX = new ArrayList<Float>(); // Positionen der Lkw-Räder
         wheelsX.add(lkwX);
@@ -136,11 +130,11 @@ public class MenuSlogans extends Component {
         // Einzelne Worte zeichnen
         for (int i = 0; i < currentSlogan.getWords().size(); i++) {
             float wagonX = lkwX + currentSlogan.getWords().get(i).getWagonX();
-            BarImg.draw(wagonX - 33, (float) (0.86 * resy - LkwImg.getHeight() + 55));
+            Renderer.drawImage(currentSlogan.getBarpic(), wagonX - 33, (float) (0.86 * resy - lkwheight + 55));
             for (int j = 0; j < currentSlogan.getWords().get(i).getNumberofpics(); j++) {
                 float xpos = wagonX + j * 59;
-                float ypos = (float) 0.86 * resy - LkwImg.getHeight() + 44;
-                WagonImg.draw(xpos, ypos);
+                float ypos = (float) 0.86 * resy - lkwheight + 44;
+                Renderer.drawImage(currentSlogan.getWagonpic(), xpos, ypos);
                 if (j == 0 || j == currentSlogan.getWords().get(i).getNumberofpics() - 1) {
                     wheelsX.add(xpos + 6);
                 }
@@ -155,15 +149,14 @@ public class MenuSlogans extends Component {
             Font bla = FontManager.getSloganFont();
             int wordlength = bla.getWidth(currentSlogan.getWords().get(i).getWord());
 
-            g.drawString(currentSlogan.getWords().get(i).getWord(), middleofwagons - (wordlength / 2), (float) 0.86 * resy + 44 - LkwImg.getHeight() - FontManager.getSloganFont().getAscent());
+            g.drawString(currentSlogan.getWords().get(i).getWord(), middleofwagons - (wordlength / 2), (float) 0.86 * resy + 44 - lkwheight - FontManager.getSloganFont().getAscent());
         }
 
         // Räder zeichnen
         final int wheelheight = 46;
-        Image WheelImg = imgMap.get(currentSlogan.getWheelpic()).getImage();
-        WheelImg.rotate((float) (-50 * sloganspeed));
+        Renderer.setImageRotation(currentSlogan.getWheelpic(), (-50 * sloganspeed));
         for (int i = 0; i < wheelsX.size(); i++) {
-            WheelImg.draw(wheelsX.get(i), (float) (0.86 * resy - LkwImg.getHeight() + wheelheight));
+            Renderer.drawImage(currentSlogan.getWheelpic(), wheelsX.get(i), (float) (0.86 * resy - lkwheight + wheelheight));
         }
 
         // Slogan außerhalb des Bildes? -> Neuer Slogan

@@ -26,7 +26,9 @@
 package de._13ducks.cor.graphics;
 
 import java.util.HashMap;
+import org.lwjgl.util.Dimension;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 /**
@@ -158,6 +160,13 @@ public class Renderer {
         drawImage(imgPath, x, y, Color.white);
     }
 
+    public static void setImageRotation(String imgPath, double angle) {
+        if (prepareImage(imgPath, false)) {
+            currentImage.rotate((float) angle);
+        }
+
+    }
+
     /**
      * Sucht das Bild aus der Imagemap und trifft notwendige Vorbereitungen.
      * @param path = null;
@@ -179,5 +188,40 @@ public class Renderer {
 
     static void init(HashMap<String, GraphicsImage> imgMap) {
         Renderer.imgMap = imgMap;
+    }
+
+    /**
+     * Liefert die Größe des gefragten Bildes zurück.
+     * Liefert -1,-1, wenn das Bild nicht gefunden wurde.
+     * @param imgPath
+     * @return die größe des gesuchten Bildes
+     */
+    public static Dimension getImageInfo(String imgPath) {
+        GraphicsImage img = imgMap.get(imgPath);
+        if (img != null) {
+            return new Dimension(img.getImage().getWidth(), img.getImage().getHeight());
+        } else {
+            return new Dimension(-1, -1);
+        }
+    }
+
+    /**
+     * Füllt eine Fläche mit einem Bild durch mehrfaches Kacheln
+     * 
+     * Achtung: Dieser Renderaufruf ist möglicherweise nicht voll gecached!
+     * 
+     * @param g der aktuelle Grafikkontext
+     * @param imgPath das Bild
+     * @param x Koordinate der Fläche
+     * @param y Koordinate der Fläche
+     * @param width Breite der Fläche
+     * @param height Höhe der Fläche
+     * @param offX x-offset
+     * @param offY y-offset
+     */
+    public static void fillRectTiled(Graphics g, String imgPath, double x, double y, double width, double height, double offX, double offY) {
+        if (prepareImage(imgPath, false)) {
+            g.fillRect((float) x, (float) y, (float) width, (float) height, currentImage, (float) offX, (float) offY);
+        }
     }
 }

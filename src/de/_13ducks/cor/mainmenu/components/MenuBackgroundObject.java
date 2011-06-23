@@ -23,7 +23,6 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.mainmenu.components;
 
 /**
@@ -31,6 +30,7 @@ package de._13ducks.cor.mainmenu.components;
  * @author Johannes
  */
 public class MenuBackgroundObject {
+
     private int x;
     private int y;
     private int width; // Breite des Objekts
@@ -42,93 +42,93 @@ public class MenuBackgroundObject {
     public MenuBackgroundObject(int x1, int y1, int width1, int height1, String pic1, long starttime1) {
         x = x1;
         y = y1;
-	width = width1;
-	height = height1;
-	pic = pic1;
-	starttime = starttime1;
+        width = width1;
+        height = height1;
+        pic = pic1;
+        starttime = starttime1;
     }
 
     /**
      * @return the x
      */
     public int getX() {
-	return x;
+        return x;
     }
 
     /**
      * @param x the x to set
      */
     public void setX(int x) {
-	this.x = x;
+        this.x = x;
     }
 
     /**
      * @return the y
      */
     public int getY() {
-	return y;
+        return y;
     }
 
     /**
      * @param y the y to set
      */
     public void setY(int y) {
-	this.y = y;
+        this.y = y;
     }
 
     /**
      * @return the pic
      */
     public String getPic() {
-	return pic;
+        return pic;
     }
 
     /**
      * @param pic the pic to set
      */
     public void setPic(String pic) {
-	this.pic = pic;
+        this.pic = pic;
     }
 
     /**
      * @return the starttime
      */
     public long getStarttime() {
-	return starttime;
+        return starttime;
     }
 
     /**
      * @param starttime the starttime to set
      */
     public void setStarttime(long starttime) {
-	this.starttime = starttime;
+        this.starttime = starttime;
     }
 
     /**
      * @return the width
      */
     public int getWidth() {
-	return width;
+        return width;
     }
 
     /**
      * @param width the width to set
      */
     public void setWidth(int width) {
-	this.width = width;
+        this.width = width;
     }
 
     /**
      * @return the height
      */
     public int getHeight() {
-	return height;
+        return height;
     }
 
     /**
      * @param height the height to set
      */
     public void setHeight(int height) {
-	this.height = height;
+        this.height = height;
     }
 }

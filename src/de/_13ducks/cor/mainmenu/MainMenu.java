@@ -29,7 +29,6 @@ import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.mainmenu.components.*;
 import java.util.HashMap;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.graphics.GraphicsImage;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.newdawn.slick.Input;
@@ -61,18 +60,13 @@ public class MainMenu extends Container {
      * Lobby-Referenz
      */
     private LobbyScreen lobbyScreen;
-    /**
-     * Referenz auf die ImageMap
-     */
-    private HashMap<String, GraphicsImage> imgMap;
 
     /**
      * Konstruktor
      */
-    public MainMenu(int resX, int resY, ClientCore clientcore, HashMap<String, GraphicsImage> imgMap) {
+    public MainMenu(int resX, int resY, ClientCore clientcore) {
         super(null, 0, 0, (double) resX, (double) resY);
 
-        this.imgMap = imgMap;
         super.setMainMenuReference(this);
 
         this.resX = resX;
@@ -107,14 +101,14 @@ public class MainMenu extends Container {
          * Hintergrund:
          *
          *********************************************************************/
-        MenuBackground background = new MenuBackground(this, 0, 0, 100, 100, imgMap);
+        MenuBackground background = new MenuBackground(this, 0, 0, 100, 100);
         super.addComponent(background);
 
         /**********************************************************************
          * Menüs:
          *********************************************************************/
         // Hauptmenü:
-        Container startScreen = new StartScreen(this, imgMap);
+        Container startScreen = new StartScreen(this);
         menus.put("startscreen", startScreen);
         super.addComponent(startScreen);
         startScreen.activate();
@@ -186,6 +180,7 @@ public class MainMenu extends Container {
 
         Thread serverThread = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 new ServerCore(debug, map);
             }
@@ -253,13 +248,5 @@ public class MainMenu extends Container {
             c.deactivate();
         }
         lobbyScreen.activate();
-    }
-
-    /**
-     * Getter für ImageMAp
-     * @return die imgMap
-     */
-    public HashMap<String, GraphicsImage> getImgMap() {
-        return imgMap;
     }
 }
