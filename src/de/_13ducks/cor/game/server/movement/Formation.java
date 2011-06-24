@@ -89,6 +89,7 @@ public class Formation {
                 double lenght = Math.sqrt((vector.getX() * vector.getX()) + (vector.getY() * vector.getY()));
                 double skalar = vector.getY();
                 double cosrot = skalar / lenght;
+                if(cosrot == Double.NaN){cosrot = 0.001;}
                 double rotation = Math.acos(cosrot);
                 double x = checkPosition.getfX();
                 double y = checkPosition.getfY();
