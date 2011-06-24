@@ -89,6 +89,7 @@ public class Formation {
                 double lenght = Math.sqrt((vector.getX() * vector.getX()) + (vector.getY() * vector.getY()));
                 double skalar = vector.getY();
                 double cosrot = skalar / lenght;
+                if(cosrot == Double.NaN){cosrot = 0.001;}
                 double rotation = Math.acos(cosrot);
                 double x = checkPosition.getfX();
                 double y = checkPosition.getfY();
@@ -99,11 +100,16 @@ public class Formation {
                 FloatingPointPosition finalPos = new FloatingPointPosition(x, y);
 
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
-                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
-                    formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
-                    foundPositions++;
-                    if (foundPositions == unitCount) {
-                        return formation;
+
+
+                // Wenn die Position gültig ist (also kein NaN oder infinite enthält), wird überprüft ob Einheiten dort stehen können:
+                if (finalPos.add(target).valid()) {
+                    if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
+                        formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
+                        foundPositions++;
+                        if (foundPositions == unitCount) {
+                            return formation;
+                        }
                     }
                 }
             }
