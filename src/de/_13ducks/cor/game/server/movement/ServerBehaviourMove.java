@@ -68,7 +68,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     /**
      * Die Zeit, die gewartet wird (in Nanosekunden) (eine milliarde ist eine sekunde)
      */
-    private static final long waitTime = 1000000000;
+    private static final long waitTime = 3000000000l;
     
     /**
      * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
