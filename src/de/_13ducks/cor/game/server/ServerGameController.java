@@ -107,6 +107,8 @@ public class ServerGameController implements Runnable {
             unit.initServerMovementManagers(rgi, rgi.netmap.getMoveMap());
             // Bewegungssektor für jede Einheit suchen und setzten
             rgi.netmap.registerUnitMovements(unit);
+            // Einheit im Schnellsuchraster eintragen:
+            rgi.netmap.getFastFindGrid().addObject(unit);
         }
         // Alle auf fertig setzen
         for (NetPlayer player : playerList) {

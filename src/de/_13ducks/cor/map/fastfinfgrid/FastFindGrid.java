@@ -17,7 +17,7 @@ public class FastFindGrid {
     /**
      * Das Rastah!
      */
-    public Cell grid[][];
+    private Cell grid[][];
     /**
      * Die Größe einer Zelle
      */
@@ -77,7 +77,7 @@ public class FastFindGrid {
         Cell theCell = getCellByPosition(position);
 
 
-        return theCell.getAdjacentTraceables();
+        return theCell.getTraceablesAroundMe();
     }
 
     /**

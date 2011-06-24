@@ -46,6 +46,7 @@ import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.map.MapIO;
+import de._13ducks.cor.map.fastfinfgrid.FastFindGrid;
 
 /**
  * Das MapModul auf der Server-Seite
@@ -72,6 +73,10 @@ public class ServerMapModule {
     public byte[] descBuffer;
     public byte[] mapBuffer;
     private MovementMap moveMap;
+    /**
+     * Das Schnellsuchraster, für schnelle aroundme-Einheitensuche
+     */
+    private FastFindGrid fastFindGrid;
 
     ServerMapModule(ServerCore.InnerServer in) {
         rgi = in;
@@ -706,6 +711,7 @@ public class ServerMapModule {
             createAllLists();
             rgi.game.registerUnitList(unitList);
             moveMap = MovementMap.createMovementMap(theMap, buildingList);
+            fastFindGrid = new FastFindGrid(theMap.getMapSizeX(), theMap.getMapSizeY(), 10.0);
             rgi.moveMan.initMoveManager(moveMap);
             rgi.logger("[MapModul] Map \"" + mapName + "\" loaded");
             // Maphash bekannt, jetzt Name + Hash an andere Clients übertragen
@@ -928,8 +934,11 @@ public class ServerMapModule {
         if (!rgi.game.playerList.get(u.getPlayerId()).uList.contains(u.getDescTypeId())) {
             rgi.game.playerList.get(u.getPlayerId()).uList.add(u.getDescTypeId());
         }
-        
+
         registerUnitMovements(u);
+
+        // Einheit im Schnellsuchraster eintragen:
+        fastFindGrid.addObject(u);
 
         // Broadcasten
 
@@ -950,7 +959,7 @@ public class ServerMapModule {
             this.unitList.remove(u);
             this.netIDList.remove(u.netID);
             rgi.game.removeGO(u);
-            
+
             moveMap.removeMoveable(u);
         }
     }
@@ -991,7 +1000,7 @@ public class ServerMapModule {
             killBuilding(b);
         }
     }
-    
+
     /**
      * Initialisiert diese Einheit für das neue Server-Bewegunssystem
      * @param unit 
@@ -1079,7 +1088,7 @@ public class ServerMapModule {
             }
         }
     }
-    
+
     /**
      * Verwaltet komplexere toDESC-Upgrades
      *
@@ -1143,11 +1152,18 @@ public class ServerMapModule {
             }
         }
     }
-    
+
     /**
      * Getter für die MoveMap
      */
     public MovementMap getMoveMap() {
         return moveMap;
+    }
+
+    /**
+     * Getter für den Schnellsuchraster
+     */
+    FastFindGrid getFastFindGrid() {
+        return fastFindGrid;
     }
 }

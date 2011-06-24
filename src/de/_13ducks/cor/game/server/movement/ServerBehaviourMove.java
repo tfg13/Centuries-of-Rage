@@ -206,7 +206,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
             } else {
-                // Herausfinden, ob der Sektor gewechselt wurde
+                // Herausfinden, ob der Sektor gewechselt wurde (Movemap)
 
                 SimplePosition newTar = target;
                 if (newTar instanceof Node && oldTar instanceof Node) {
@@ -217,6 +217,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         caster2.setMyPoly(sector);
                     }
                 }
+
+                // Herausfinden, ob der Sektor gewechselt wurde (FastFindGrid)
+
             }
 
         } else {

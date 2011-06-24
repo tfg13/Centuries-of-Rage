@@ -15,7 +15,7 @@ public class Cell {
     /**
      * Die Traceables, die in dieser Zelle sind
      */
-    public ArrayList<Traceable> inhabitants;
+    private ArrayList<Traceable> inhabitants;
     /**
      * Die Nachbarzellen dieser Zelle *und* diese Zelle selber
      * (Diese Zelle ist auch in der Liste)
@@ -55,7 +55,7 @@ public class Cell {
      * Gibt eine Liste mit allen Traceables in dieser und den Nachbarzellen zurück
      * @return - s.o.
      */
-    public ArrayList<Traceable> getAdjacentTraceables() {
+    public ArrayList<Traceable> getTraceablesAroundMe() {
         // Die RückgabeListe:
         ArrayList<Traceable> ret = new ArrayList<Traceable>();
 

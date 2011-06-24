@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.map.fastfinfgrid.Cell;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,10 @@ public class Unit2x2 extends Unit {
      * Speichert die zuletzt an das Inputmodul übergebene Position.
      */
     private Position[] lastPositions;
+    /**
+     * Die Zelle des Schnellsuchrasters, in der sich die Einheit befindet
+     */
+    Cell myCell;
 
     public Unit2x2(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -208,5 +213,21 @@ public class Unit2x2 extends Unit {
             }
             g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX), (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 10, 5, 5);
         }
+    }
+
+    /**
+     * Gibt die Zelle zurück, in de die Einheit steht, für das Schnellsuchraster
+     * @return
+     */
+    public Cell getCell() {
+        return myCell;
+    }
+
+    /**
+     * Gibt die eigene Position zurück, für das Schnellsuchraster
+     * @return
+     */
+    public FloatingPointPosition getPosition() {
+        return this.getPrecisePosition();
     }
 }
