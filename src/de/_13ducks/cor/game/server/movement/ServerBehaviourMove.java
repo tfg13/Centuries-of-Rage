@@ -122,6 +122,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Echtzeitkollision:
             boolean stillColliding = false;
             for (Moveable m : moveMap.moversAroundPoint(newpos, caster2.getRadius() + maxRadius, caster2.getMyPoly())) {
+                if (m.equals(caster2)) {
+                    continue;
+                }
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     stillColliding = true;
                     break;
