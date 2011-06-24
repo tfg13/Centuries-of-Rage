@@ -29,8 +29,10 @@ import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
+import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.map.fastfinfgrid.Traceable;
 import java.awt.geom.Ellipse2D;
 
 /**
@@ -50,6 +52,7 @@ import java.awt.geom.Ellipse2D;
 public class ServerBehaviourMove extends ServerBehaviour {
 
     private Moveable caster2;
+    private Traceable caster3;
     private SimplePosition target;
     private double speed;
     private boolean stopUnit = false;
@@ -70,9 +73,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private static final long waitTime = 1000;
 
-    public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, MovementMap moveMap) {
+    public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, Traceable caster3, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
         this.caster2 = caster2;
+        this.caster3 = caster3;
         this.moveMap = moveMap;
 
     }
@@ -110,7 +114,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Testen, ob wir schon weiterlaufen können:
             // Echtzeitkollision:
             boolean stillColliding = false;
-            for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+            for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
+                Unit m = t.getUnit();
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     stillColliding = true;
                     break;
@@ -145,7 +150,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         if (!stopUnit) {
             // Echtzeitkollision:
-            for (Moveable m : this.caster2.moversAroundMe(4 * this.caster2.getRadius())) {
+            for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
+                Unit m = t.getUnit();
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 

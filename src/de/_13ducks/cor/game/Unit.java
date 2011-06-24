@@ -396,7 +396,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     @Override
     public void initServerMovementManagers(ServerCore.InnerServer rgi, MovementMap moveMap) {
         topLevelManager = rgi.moveMan;
-        lowLevelManager = new ServerBehaviourMove(rgi, this, this, moveMap);
+        lowLevelManager = new ServerBehaviourMove(rgi, this, this, this, moveMap);
         atkManager = new ServerBehaviourAttack(this, rgi, moveMap);
         followManager = new ServerBehaviourFollow(this, rgi);
         addServerBehaviour(lowLevelManager);
