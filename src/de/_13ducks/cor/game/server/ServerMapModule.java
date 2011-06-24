@@ -924,6 +924,7 @@ public class ServerMapModule {
     public void addUnit(Unit u) {
         // Diese Einheit für das Bewegungssystem fit machen
         u.initServerMovementManagers(rgi, moveMap);
+        registerUnitMovements(u);
 
         this.unitList.add(u);
 
@@ -934,8 +935,6 @@ public class ServerMapModule {
         if (!rgi.game.playerList.get(u.getPlayerId()).uList.contains(u.getDescTypeId())) {
             rgi.game.playerList.get(u.getPlayerId()).uList.add(u.getDescTypeId());
         }
-
-        registerUnitMovements(u);
 
         // Einheit im Schnellsuchraster eintragen und ihre Zelle setzen:
         u.setCell(fastFindGrid.addObject(u));

@@ -37,7 +37,6 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Position;
-import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.map.CoRMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -295,6 +294,9 @@ public class MovementMap {
      * @return der gefundene Polygon oder null
      */
     public FreePolygon containingPoly(double x, double y) {
+        if (!new Vector(x, y).isValid()) {
+            throw new RuntimeException("Someone searching for ILLEGAL POSITION!!!");
+        }
         for (FreePolygon poly : polys) {
             if (poly.contains(x, y)) {
                 return poly;
@@ -329,16 +331,28 @@ public class MovementMap {
     }
 
     /**
-     * Sucht alle Einheiten im Umkreis um einne Punkt heraus.
+     * Sucht alle Einheiten im Umkreis um einen Punkt heraus.
      * Sucht über Sektorgrenzen hinweg.
      * @param mover der Mover um den gesucht wird.
      * @param radius der radius
      * @return eine List mit allen gefundenen Einheiten
      */
     public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius) {
+        return moversAroundPoint(position, radius, containingPoly(position.getfX(), position.getfY()));
+    }
+    
+    /**
+     * Sucht alle Einheiten im Umkreis um einen Punkt heraus.
+     * Sucht über Sektorgrenzen hinweg.
+     * @param mover der Mover um den gesucht wird.
+     * @param radius der radius
+     * @param startPoly der Polygon, von dem aus gesucht wird
+     * @return eine List mit allen gefundenen Einheiten
+     */
+    public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius, FreePolygon startPoly) {
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
         // Alle relevanten Sektoren herausfinden:
-        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), this.containingPoly(position.getfX(), position.getfY()), radius);
+        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), startPoly, radius);
         for (FreePolygon poly : relPolys) {
             // Alle Einheiten dieses Sektors analysieren
             List<Moveable> moversInSec = poly.getResidents();
@@ -427,7 +441,7 @@ public class MovementMap {
     public FloatingPointPosition aroundMe(FloatingPointPosition position, double radius) {
         double time = System.currentTimeMillis();
         /**
-         * Die Auflösucg, mit der nach gültigen Positionen gesucht wird
+         * Die Auflösung, mit der nach gültigen Positionen gesucht wird
          */
         double distance = 1.0;
 
@@ -500,7 +514,7 @@ public class MovementMap {
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
                 boolean moverCollision = false;
                 for (Moveable m : unitsAround) {
-                    if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius)) {
+                    if (m.getPrecisePosition().getDistance(finalPos) < (m.getRadius() + radius + ServerBehaviourMove.MIN_DISTANCE)) {
                         moverCollision = true;
                         break;
                     }

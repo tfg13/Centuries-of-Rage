@@ -25,8 +25,6 @@
  */
 package de._13ducks.cor.graphics.effects;
 
-import de._13ducks.cor.graphics.GraphicsImage;
-import java.util.Map;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -41,7 +39,7 @@ public abstract class SkyEffect {
      * @param scrollY Die Y-Verschiebung des derzeitigen Bildschrimausschnittes in Fließkommakoordinaten
      * @param imgMap Map mit allen verfügbaren Bildern
      */
-    public abstract void renderSkyEffect(Graphics g, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap);
+    public abstract void renderSkyEffect(Graphics g, double scrollX, double scrollY);
     
     /**
      * Findet heraus, ob der Effekt derzeit in Sichtweite ist, also gezeichnet werden soll.

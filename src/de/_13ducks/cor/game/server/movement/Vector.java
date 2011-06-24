@@ -80,6 +80,7 @@ public class Vector implements SimplePosition {
      * Wandelt den Vektor in eine FPP um.
      * @return der Vektor als FPP.
      */
+    @Override
     public FloatingPointPosition toFPP() {
         return new FloatingPointPosition(x, y);
     }
@@ -239,18 +240,22 @@ public class Vector implements SimplePosition {
         return "v:" + x + "|" + y;
     }
 
+    @Override
     public double x() {
         return x;
     }
 
+    @Override
     public double y() {
         return y;
     }
 
+    @Override
     public Vector toVector() {
         return new Vector(x, y);
     }
 
+    @Override
     public Node toNode() {
         return new Node(x, y);
     }

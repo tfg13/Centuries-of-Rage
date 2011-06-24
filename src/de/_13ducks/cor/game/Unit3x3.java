@@ -28,14 +28,10 @@ package de._13ducks.cor.game;
 import de._13ducks.cor.map.fastfinfgrid.Cell;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import de._13ducks.cor.game.client.ClientCore.InnerClient;
-import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.graphics.GraphicsContent;
-import de._13ducks.cor.graphics.GraphicsImage;
-import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.input.SelectionMarker;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -91,7 +87,7 @@ public class Unit3x3 extends Unit {
         int counter = 0;
         for (int z1c = 0; z1c < 3; z1c++) {
             for (int z2c = 0; z2c < 3; z2c++) {
-                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c,(int) mainPosition.getY() - z1c + z2c);
+                positions[counter++] = new Position(mainPosition.getX() + z1c + z2c,mainPosition.getY() - z1c + z2c);
             }
         }
     }
@@ -117,29 +113,24 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        GraphicsImage img = imgMap.get(getGraphicsData().defaultTexture);
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
-        if (img != null) {
-            img.getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
-        } else {
-            System.out.println("RENDER: Can't paint unit, texture <" + getGraphicsData().defaultTexture + "> not found!");
-        }
+        Renderer.drawImage(getGraphicsData().defaultTexture, (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         clientManager.externalExecute();
         //Einheit gehört zu / Selektiert
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (isSelected()) {
             // Weiße Bodenmarkierung
-            imgMap.get("img/game/sel_s3.png0").getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            Renderer.drawImage("img/game/sel_s3.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
             // Spielerfarbe
-            imgMap.get("img/game/sel_s3.png" + getPlayerId()).getImage().draw((float) (rx * GraphicsContent.FIELD_HALF_X+ GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X+ GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
     }
 
@@ -207,7 +198,7 @@ public class Unit3x3 extends Unit {
     }
 
     @Override
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
             SimplePosition pos = getPrecisePosition();
             // Billigen Balken rendern

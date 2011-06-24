@@ -94,17 +94,12 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     private DisplayMode[] sorted;
     private DisplayMode[] fullfilter;
     private MainMenu mainmenu;
-
-    private CoreGraphics(ClientCore.InnerClient inner, Dimension size, boolean fullScreen) throws SlickException {
-        super(new GraphicsContent(), size.width, size.height, fullScreen);
-        content = (GraphicsContent) super.game;
-        rgi = inner; // Die Innere Klasse übernehmen
-        displaySize = size;
-        newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
-    }
+    
+    private HashMap<String, String> earlyConfig;
 
     public CoreGraphics(HashMap<String, String> cfgvalues, ClientCore core) throws SlickException, LWJGLException {
         super(new GraphicsContent());
+        earlyConfig = cfgvalues;
         content = (GraphicsContent) super.game;
         this.core = core;
         newBullets = Collections.synchronizedList(new ArrayList<Bullet>());
@@ -118,6 +113,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         content.realPixY = myMode.getdMode().getHeight();
         Thread t = new Thread(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     CoreGraphics.super.start();
@@ -260,7 +256,8 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     public void loadPreMain() {
         BufferedReader reader = null;
         try {
-            imgMap = new HashMap();
+            imgMap = new HashMap<String, GraphicsImage>();
+            de._13ducks.cor.graphics.Renderer.init(imgMap);
             reader = new BufferedReader(new FileReader(new File("img/preload")));
             String read = null;
             while ((read = reader.readLine()) != null) {
@@ -306,8 +303,20 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
      * Initialisiert das Hauptmenu
      */
     void initMainMenu() {
-        mainmenu = new MainMenu(content.realPixX, content.realPixY, core, this.imgMap);
-        setTargetFrameRate(60);
+        mainmenu = new MainMenu(content.realPixX, content.realPixY, core);
+        if ("true".equals(earlyConfig.get("benchmark"))) {
+            // Keine Limits
+            setTargetFrameRate(-1);
+        } else {
+            int framerate;
+            try {
+                framerate = Integer.parseInt(earlyConfig.get("framerate"));
+            } catch (NumberFormatException ex) {
+                // Nicht da, default von 35 nehmen
+                framerate = 35;
+            }
+            setTargetFrameRate(framerate);
+        }
     }
 
     /**
@@ -322,60 +331,76 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
     void initInput() {
         input.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseWheelMoved(int i) {
                 getMainmenu().mouseWheelMoved(i);
             }
 
+            @Override
             public void mouseClicked(int i, int i1, int i2, int i3) {
                 getMainmenu().mouseClicked(i, i1, i2, i3);
             }
 
+            @Override
             public void mousePressed(int i, int i1, int i2) {
             }
 
+            @Override
             public void mouseReleased(int i, int i1, int i2) {
             }
 
+            @Override
             public void mouseMoved(int i, int i1, int i2, int i3) {
                 getMainmenu().mouseMoved(i2, i3);
             }
 
+            @Override
             public void mouseDragged(int i, int i1, int i2, int i3) {
             }
 
+            @Override
             public void setInput(Input input) {
             }
 
+            @Override
             public boolean isAcceptingInput() {
                 return true;
             }
 
+            @Override
             public void inputEnded() {
             }
 
+            @Override
             public void inputStarted() {
             }
         });
 
         input.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(int i, char c) {
                 getMainmenu().keyPressed(i, c);
             }
 
+            @Override
             public void keyReleased(int i, char c) {
             }
 
+            @Override
             public void setInput(Input input) {
             }
 
+            @Override
             public boolean isAcceptingInput() {
                 return true;
             }
 
+            @Override
             public void inputEnded() {
             }
 
+            @Override
             public void inputStarted() {
             }
         });

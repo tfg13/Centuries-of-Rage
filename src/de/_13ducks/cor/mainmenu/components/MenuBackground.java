@@ -27,6 +27,7 @@
 package de._13ducks.cor.mainmenu.components;
 
 import de._13ducks.cor.graphics.GraphicsImage;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.mainmenu.MainMenu;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ import org.newdawn.slick.Graphics;
  */
 
 public class MenuBackground extends Component {
-    HashMap<String, GraphicsImage> imgMap;
     long starttime;
     long nextspawntime; // Wann wird ein neues BackgroundObj gespawnt?
     int resx; // Auflösung X
@@ -50,16 +50,15 @@ public class MenuBackground extends Component {
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
     final static int maxspawndelay = 10000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
 
-    public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth, HashMap<String, GraphicsImage> imgMap) {
+    public MenuBackground(MainMenu m, double relX, double relY, double relWidth, double relHeigth) {
         super(m, relX, relY, relWidth, relHeigth);
-        this.imgMap = imgMap;
         starttime = System.currentTimeMillis();
         nextspawntime = 0;
         resx = m.getResX();
         resy = m.getResY();
         tilex = (int) Math.ceil(resx / 512) + 2;
         tiley = (int) Math.ceil(resy / 512);
-        BackgroundObj.add(new MenuBackgroundObject((int) (resx * 3 / 4), (int) (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
+        BackgroundObj.add(new MenuBackgroundObject((resx * 3 / 4), (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
 
         // Zufällige Bodentextur wählen:
         int random = (int) (Math.random() * 3);
@@ -79,7 +78,7 @@ public class MenuBackground extends Component {
         // Bodentexturen zeichnen
         for (int i = 0; i <= tilex; i++) {
             for (int j = 0; j <= tiley; j++) {
-                imgMap.get(groundtex).getImage().draw((float) (i * 512 - (time % (512 / speed)) * speed), (float) j * 512);
+                Renderer.drawImage(groundtex, (float) (i * 512 - (time % (512 / speed)) * speed), (float) j * 512);
             }
         }
 
@@ -91,7 +90,7 @@ public class MenuBackground extends Component {
                 i--;
             } else {
                 // Zeichnen
-                imgMap.get(BackgroundObj.get(i).getPic()).getImage().draw((float) (resx - (speed * (time - BackgroundObj.get(i).getStarttime()))), BackgroundObj.get(i).getY());
+                Renderer.drawImage(BackgroundObj.get(i).getPic(), (float) (resx - (speed * (time - BackgroundObj.get(i).getStarttime()))), BackgroundObj.get(i).getY());
             }
         }
 
@@ -120,8 +119,8 @@ public class MenuBackground extends Component {
         // zufällig y-Position auswählen
         int y = (int) (Math.random() * resy);
 
-        int height = imgMap.get(picturepath).getImage().getHeight(); // Höhe vom Hintergrund-Objekt
-        int width = imgMap.get(picturepath).getImage().getWidth(); // s.o.
+        int height = Renderer.getImageInfo(picturepath).getHeight(); // Höhe vom Hintergrund-Objekt
+        int width = Renderer.getImageInfo(picturepath).getWidth(); // s.o.
 
         // Überschneidet es sich mit anderen Bildern? -> Wird nicht erzeugt
         boolean everythingfine = true;

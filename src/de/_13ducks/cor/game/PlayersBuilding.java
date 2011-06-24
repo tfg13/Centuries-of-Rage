@@ -27,13 +27,12 @@ package de._13ducks.cor.game;
 
 import de._13ducks.cor.game.client.Client;
 import java.util.List;
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.graphics.GraphicsContent;
-import de._13ducks.cor.graphics.GraphicsImage;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
@@ -91,8 +90,8 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
-        imgMap.get(getGraphicsData().defaultTexture).getImage().draw(x + GraphicsContent.BASIC_FIELD_OFFSET_X - getGraphicsData().offsetX, (int) (y - 7.5 - getGraphicsData().offsetY));
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        Renderer.drawImage(getGraphicsData().defaultTexture, x + GraphicsContent.BASIC_FIELD_OFFSET_X - getGraphicsData().offsetX, (int) (y - 7.5 - getGraphicsData().offsetY));
     }
 
     @Override
@@ -176,7 +175,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
             x += GraphicsContent.BASIC_FIELD_OFFSET_X;
             y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
             // Linien ziehen
@@ -185,8 +184,8 @@ public class PlayersBuilding extends Building {
             g.setColor(isSelected() ? Color.white : spriteColor);
             g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
             g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
-            g.drawLine((int) (x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)),(int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.drawLine((int) (x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (int) (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ1() * 10)),(int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)),(int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
             g.setLineWidth(4);
     }
 
@@ -207,7 +206,7 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
     }
 
     @Override

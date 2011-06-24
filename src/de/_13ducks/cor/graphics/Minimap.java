@@ -96,7 +96,7 @@ public class Minimap extends Overlay {
     private ClientCore.InnerClient rgi;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
 	int dx = pos[0];
 	int dy = pos[1];
 	// Rahmen
@@ -124,6 +124,7 @@ public class Minimap extends Overlay {
 		pos[1] = 0;
 		pos[2] = sizeX;
 		pos[3] = sizeY;
+                break;
 	    case EDGE_TOP_RIGHT:
 		pos[0] = resX - sizeX;
 		pos[1] = 0;

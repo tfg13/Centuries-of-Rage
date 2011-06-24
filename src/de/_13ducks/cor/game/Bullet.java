@@ -33,6 +33,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.graphics.GraphicsImage;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.Sprite;
 
 /**
@@ -90,11 +91,12 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         externalExecute();
         double rx = currentPos.x() * GraphicsContent.FIELD_HALF_X - scrollX;
         double ry = currentPos.y() * GraphicsContent.FIELD_HALF_Y - scrollY;
-        imgMap.get(texture).getTiledImage().getSprite(lastDirectionX, lastDirectionY).drawCentered((float) rx,(float) ry);
+        
+        Renderer.drawSpriteCentered(lastDirectionX, lastDirectionY, texture, rx, ry);
     }
 
     @Override
@@ -134,7 +136,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         // Bullets haben keine
     }
 
@@ -149,7 +151,7 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
     }
 
     @Override
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor) {
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         // Bullets haben keine
     }
 

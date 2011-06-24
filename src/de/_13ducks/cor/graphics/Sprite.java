@@ -26,7 +26,6 @@
 
 package de._13ducks.cor.graphics;
 
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.game.Hideable;
@@ -51,7 +50,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param imgMap Die Map mit allen verfügbaren Texturen
      * @Color spriteColor die (Team/Spieler) Farbe, mit der sich dieses Sprite zeichnen soll, falls benötigt.
      */
-    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor);
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor);
 
     /**
      * Zeichnet die Bodeneffekte dieses Sprites.
@@ -65,7 +64,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param imgMap Die Map mit allen verfügbaren Texturen
      * @param spriteColor die (Team/Spieler) Farbe, mit der sich dieses Sprite zeichnen soll, falls benötigt.
      */
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor);
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor);
     
     /**
      * Zeichnet die Skyeffects dieses Sprites.
@@ -79,7 +78,7 @@ public interface Sprite extends Comparable<Sprite>, Pauseable, Hideable {
      * @param imgMap Die Map mit allen verfügbaren Texturen
      * @param spriteColor die (Team/Spieler) Farbe, mit der sich dieses Sprite zeichnen soll, falls benötigt.
      */
-    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap, Color spriteColor);
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor);
 
     /**
      * Liefert die Position, mit derer die scroll-Rechnung durchgeführt werden kann.

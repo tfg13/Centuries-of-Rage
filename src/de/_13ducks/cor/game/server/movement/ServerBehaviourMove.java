@@ -35,6 +35,7 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.map.fastfinfgrid.Traceable;
 import java.awt.geom.Ellipse2D;
+import java.util.List;
 
 /**
  * Lowlevel-Movemanagement
@@ -70,9 +71,20 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private boolean wait;
     /**
-     * Die Zeit, die gewartet wird
+     * Die Zeit, die gewartet wird (in Nanosekunden) (eine milliarde ist eine sekunde)
      */
-    private static final long waitTime = 1000;
+    private static final long waitTime = 3000000000l;
+    
+    /**
+     * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
+     */
+    private static final double maxRadius = 4;
+    /**
+     * Eine minimale Distanz, die Einheiten beim Aufstellen wegen einer Kollision berücksichtigen. 
+     * Damit wird verhindert, dass aufgrund von Rundungsfehlern Kolision auf ursprünlich als frei
+     * eingestuften Flächen berechnet wird.
+     */
+    public static final double MIN_DISTANCE = 0.1;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, Traceable caster3, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -106,8 +118,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
         Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
-        long ticktime = System.currentTimeMillis();
-        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
+        long ticktime = System.nanoTime();
+        vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
         // Wir sind im Warten-Modus. Jetzt also testen, ob wir zur nächsten Position können
@@ -124,20 +136,22 @@ public class ServerBehaviourMove extends ServerBehaviour {
             }
             if (stillColliding) {
                 // Immer noch Kollision
-                if (System.currentTimeMillis() - waitStartTime < waitTime) {
+                if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
-                    lastTick = System.currentTimeMillis();
+                    lastTick = System.nanoTime();
                     return;
                 } else {
                     wait = false;
-                    // Diese Bewegung richtig abbrechen
-                    stopUnit = true;
+                    // Wir stehen schon, der Client auch --> nichts weiter zu tun.
+                    target = null;
+                    deactivate();
+                    return;
                 }
             } else {
                 // Nichtmehr weiter warten - Bewegung wieder starten
                 wait = false;
                 // Ticktime manipulieren.
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
                 trigger();
                 return;
             }
@@ -156,7 +170,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius()) && m != this.caster) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
-                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius();
+                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius() + (float) MIN_DISTANCE;
 
 
                     Vector origin = new Vector(-vec.getY(), vec.getX());
@@ -175,20 +189,20 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
 
 
-                    if (nextnewpos.toVector().isValid()) {
+                    if (nextnewpos.toVector().isValid() && checkPosition(nextnewpos)) {
                         newpos = nextnewpos;
                     } else {
                         System.out.println("WARNING: Ugly back-stop!");
                         newpos = oldPos.toFPP();
                     }
                     if (wait) {
-                        waitStartTime = System.currentTimeMillis();
+                        waitStartTime = System.nanoTime();
                         // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
                         // Der Client muss das auch mitbekommen
                         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                         caster2.setMainPosition(newpos);
                         clientTarget = null;
-                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m);
+                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m + " stop at " + newpos);
                         return; // Nicht weiter ausführen!
                     } else {
                         // Bricht die Bewegung vollständig ab.
@@ -242,7 +256,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
             }
         }
 
@@ -277,7 +291,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             throw new IllegalArgumentException("Cannot send " + caster2 + " to invalid position");
         }
         target = pos;
-        lastTick = System.currentTimeMillis();
+        lastTick = System.nanoTime();
         clientTarget = Vector.ZERO;
         activate();
     }
@@ -347,5 +361,21 @@ public class ServerBehaviourMove extends ServerBehaviour {
         double angle = Math.acos((scalar / lenght));
 
         return angle;
+    }
+
+    /**
+     * Überprüft auf RTC mit Zielposition
+     * @param pos die zu testende Position
+     * @return true, wenn frei
+     */
+    private boolean checkPosition(FloatingPointPosition pos) {
+        List<Moveable> movers = moveMap.moversAroundPoint(pos, caster2.getRadius() + maxRadius);
+        movers.remove(caster2);
+        for (Moveable m : movers) {
+            if (m.getPrecisePosition().getDistance(pos) < (m.getRadius() + caster2.getRadius())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

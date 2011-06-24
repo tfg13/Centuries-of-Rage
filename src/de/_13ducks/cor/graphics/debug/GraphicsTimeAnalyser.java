@@ -4,9 +4,7 @@
  */
 package de._13ducks.cor.graphics.debug;
 
-import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.graphics.Overlay;
-import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -52,7 +50,7 @@ public class GraphicsTimeAnalyser extends Overlay {
     }
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         g.setLineWidth(1);
         g.setColor(Color.darkGray);
         g.fillRect(fullResX - entries, fullResY - targetLinePixel, entries, targetLinePixel);

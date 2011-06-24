@@ -20,7 +20,7 @@ public class MathUtil {
     static int evasion_left = 0, evasion_right = 1;
 
     public static void main(String args[]) {
-        new MathUtil();
+        MathUtil util = new MathUtil();
     }
 
     public MathUtil() {

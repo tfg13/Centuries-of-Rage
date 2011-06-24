@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.graphics;
 
-import java.util.Map;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -64,6 +63,6 @@ public abstract class Overlay {
      * @param fullResY
      * @param hudX
      */
-    public abstract void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap);
+    public abstract void renderOverlay(Graphics g, int fullResX, int fullResY);
 
 }

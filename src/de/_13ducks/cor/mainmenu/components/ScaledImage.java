@@ -25,9 +25,9 @@
  */
 package de._13ducks.cor.mainmenu.components;
 
+import de._13ducks.cor.graphics.Renderer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import de._13ducks.cor.mainmenu.MainMenu;
 
 /**
@@ -38,10 +38,6 @@ import de._13ducks.cor.mainmenu.MainMenu;
  */
 public class ScaledImage extends Component {
 
-    /**
-     * Das Bild, das gerendert wird
-     */
-    Image image;
     /**
      * Pfad des zu ladenden Bilds
      */
@@ -55,9 +51,6 @@ public class ScaledImage extends Component {
         super(mainMenuReference, x, y, width, height);
 
         imagePath = imagepath;
-        
-        image = getMainMenu().getImgMap().get(imagePath).getImage();
-        image = image.getScaledCopy(getWidth(), getHeight());
     }
 
   
@@ -65,9 +58,9 @@ public class ScaledImage extends Component {
     @Override
     public void render(Graphics g) {
         if (color != null) {
-            g.drawImage(image, this.getX1(), this.getY1(), color);
+            Renderer.drawImage(imagePath, getX1(), getY1(), getWidth(), getHeight(), color);
         } else {
-            g.drawImage(image, this.getX1(), this.getY1());
+            Renderer.drawImage(imagePath, getX1(), getY1(), getWidth(), getHeight());
         }
     }
 

@@ -25,14 +25,12 @@
  */
 package de._13ducks.cor.mainmenu;
 
-import de._13ducks.cor.graphics.GraphicsImage;
 import de._13ducks.cor.mainmenu.components.Container;
 import de._13ducks.cor.mainmenu.components.ImageButton;
 import de._13ducks.cor.mainmenu.components.MenuSlogans;
 import de._13ducks.cor.mainmenu.components.ScaledImage;
 import de._13ducks.cor.mainmenu.components.TiledImage;
 import de._13ducks.cor.tools.randommapbuilder.RandomMapBuilder;
-import java.util.HashMap;
 
 /**
  * Der Startbildschirm, der als erstes angezeigt wird
@@ -51,7 +49,7 @@ public class StartScreen extends Container {
      *
      * @param m     Referenz auf das Hauptmenü
      */
-    public StartScreen(MainMenu m, HashMap<String, GraphicsImage> imgMap) {
+    public StartScreen(MainMenu m) {
         super(m, 15, 85, 80, 8);
 
         mainMenu = m;
@@ -60,7 +58,7 @@ public class StartScreen extends Container {
          * Slogans:
          *
          *********************************************************************/
-        MenuSlogans slogans = new MenuSlogans(mainMenu, 0, 0, 100, 100, imgMap);
+        MenuSlogans slogans = new MenuSlogans(mainMenu, 0, 0, 100, 100);
         super.addComponent(slogans);
 
         // Hintergrund:

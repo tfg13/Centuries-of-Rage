@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.graphics.impl;
 
-import java.util.Map;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.graphics.input.CoRInputMode;
@@ -34,7 +33,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Polygon;
-import de._13ducks.cor.graphics.GraphicsImage;
 
 /**
  * Der Team-Selektor.
@@ -87,7 +85,7 @@ public class TeamSelector extends Overlay {
     int players = 0;
 
     @Override
-    public void renderOverlay(Graphics g, int fullResX, int fullResY, Map<String, GraphicsImage> imgMap) {
+    public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         if (active) {
             // Einmalig die Spielerzahl berechnen
             if (players == 0) {
@@ -235,7 +233,7 @@ public class TeamSelector extends Overlay {
                 int y2ally = (int) (y1ally + (0.8f * seqY));
                 // Vis-Kasten?
                 int x1vis = (int) (oriX + gap + contentSizeX - (0.1f * seqY) - (0.8 * seqY));
-                int y1vis = (int) ((int) ((index - 1) * seqY) + oriY + seqY + 2 * gap + (0.1f * seqY));
+                int y1vis = (int) ((index - 1) * seqY + oriY + seqY + 2 * gap + (0.1f * seqY));
                 int x2vis = (int) (x1vis + (0.8f * seqY));
                 int y2vis = (int) (y1vis + (0.8f * seqY));
 

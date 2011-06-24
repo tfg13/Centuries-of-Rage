@@ -30,6 +30,7 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.Vector;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Der Clientmover bewegt die Einheiten gemäß den Befehlen des Servers auf dem Client.
@@ -37,7 +38,7 @@ import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
  * 
  */
 public class ClientBehaviourMove extends ClientBehaviour {
-    
+
     /**
      * Das derzeitige Bewegungsziel der Einheit.
      */
@@ -55,86 +56,109 @@ public class ClientBehaviourMove extends ClientBehaviour {
      */
     private FloatingPointPosition stopPos = null;
     /**
-     * Wann wurde die Bewegung zuletzt berechnet?
+     * Wann wurde die Bewegung zuletzt berechnet? (in nanosekunden)
      */
     private long lastTick;
-    
-    
+    private ConcurrentLinkedQueue<MoveTask> queue;
+
     public ClientBehaviourMove(ClientCore.InnerClient rgi, Unit caster2) {
         super(rgi, caster2, 1, 5, false);
         this.caster2 = caster2;
+        queue = new ConcurrentLinkedQueue<MoveTask>();
     }
 
     @Override
-    public void execute() {
+    public synchronized void execute() {
+        // Eingehende Signale verarbeiten:
+        if (!queue.isEmpty()) {
+            queue.remove().perform();
+            if (!queue.isEmpty()) {
+                // Noch mehr da? Dann gleich nochmal:
+                trigger();
+            }
+        }
         // Auto-Ende:
         if (target == null || speed <= 0) {
             deactivate();
             return;
         }
-        // Wir laufen also.
-        // Aktuelle Position berechnen:
-        FloatingPointPosition oldPos = caster2.getPrecisePosition();
-        Vector vec = target.subtract(oldPos).toVector();
-        vec.normalizeMe();
-        long ticktime = System.currentTimeMillis();
-        vec.multiplyMe((ticktime - lastTick) / 1000.0 * speed);
-        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
-        
-        if (!newpos.toVector().isValid()) {
-            // Das geht so nicht, abbrechen und gleich nochmal!
-            System.out.println("CLIENT-Move: Invalid position, will try again next tick");
-            trigger();
-            return;
-        }
-        
-        // Ziel schon erreicht?
-        Vector nextVec = target.subtract(newpos).toVector();
-        if (vec.isOpposite(nextVec)) {
-            // ZIEL!
-            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            caster2.setMainPosition(target);
-            target = null;
-            stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-            deactivate();
-        } else {
-            // Sofort stoppen?
-            if (stopPos != null) {
-                caster2.setMainPosition(stopPos);
+        if (stopPos == null) {
+            // Wir laufen also.
+            // Aktuelle Position berechnen:
+            FloatingPointPosition oldPos = caster2.getPrecisePosition();
+            Vector vec = target.subtract(oldPos).toVector();
+            vec.normalizeMe();
+            long ticktime = System.nanoTime();
+            vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
+            FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+
+            if (!newpos.toVector().isValid()) {
+                // Das geht so nicht, abbrechen und gleich nochmal!
+                System.out.println("CLIENT-Move: Evil params: " + caster2 + " " + oldPos + " " + target + " " + vec + " " + ticktime + " " + lastTick + "-->" + newpos);
+                trigger();
+                return;
+            }
+
+            // Ziel schon erreicht?
+            Vector nextVec = target.subtract(newpos).toVector();
+            if (vec.isOpposite(nextVec)) {
+                // ZIEL!
+                // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+                caster2.setMainPosition(target);
                 target = null;
-                stopPos = null;
+                stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
-                lastTick = System.currentTimeMillis();
+                lastTick = System.nanoTime();
             }
+        } else {
+            caster2.setMainPosition(stopPos);
+            target = null;
+            stopPos = null;
+            deactivate();
         }
     }
 
     @Override
     public void gotSignal(byte[] packet) {
+        if (packet[0] == 24) {
+            // Stop
+            FloatingPointPosition pos = rgi.readFloatingPointPosition(packet, 2);
+            MoveTask task = new MoveTask(0, pos, 0);
+            queue.add(task);
+        } else if (packet[0] == 23) {
+            // Move
+            float moveSpeed = Float.intBitsToFloat(rgi.readInt(packet, 2));
+            FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 3)), Float.intBitsToFloat(rgi.readInt(packet, 4)));
+            MoveTask task = new MoveTask(1, pos, moveSpeed);
+            queue.add(task);
+        }
+        // Schnell verarbeiten
+        activate();
     }
 
+    @Override
     public void pause() {
     }
 
+    @Override
     public void unpause() {
     }
-    
-    public void newMoveVec(double speed, FloatingPointPosition target) {
+
+    private synchronized void newMoveVec(double speed, FloatingPointPosition target) {
         this.speed = speed;
         this.target = target;
-        lastTick = System.currentTimeMillis();
-        activate();
+        lastTick = System.nanoTime();
     }
-    
+
     @Override
     public void activate() {
         active = true;
         trigger();
     }
-    
+
     @Override
     public void deactivate() {
         active = false;
@@ -145,8 +169,34 @@ public class ClientBehaviourMove extends ClientBehaviour {
      * (innerhalb eines Ticks)
      * @param pos 
      */
-    public void stopAt(FloatingPointPosition pos) {
+    private synchronized void stopAt(FloatingPointPosition pos) {
         stopPos = pos;
-        trigger();
+    }
+
+    /**
+     * Jedes Signal vom Server wird in ein solches Objekt gesteckt.
+     * Der Client verarbeitet diese Aufaben der Reihe nach.
+     */
+    private class MoveTask {
+
+        int mode;
+        FloatingPointPosition pos;
+        double speed;
+
+        public MoveTask(int mode, FloatingPointPosition pos, double speed) {
+            this.mode = mode;
+            this.pos = pos;
+            this.speed = speed;
+        }
+
+        void perform() {
+            System.out.println("QUEUE-TASK: " + caster2 + " " + mode + " " + pos + " " + speed);
+            if (mode == 0) {
+                // STOP
+                stopAt(pos);
+            } else if (mode == 1) {
+                newMoveVec(speed, pos);
+            }
+        }
     }
 }

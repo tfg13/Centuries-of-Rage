@@ -26,11 +26,10 @@
 package de._13ducks.cor.graphics.effects;
 
 import de._13ducks.cor.graphics.GraphicsContent;
-import de._13ducks.cor.graphics.GraphicsImage;
-import java.util.Map;
+import de._13ducks.cor.graphics.Renderer;
+import org.lwjgl.util.Dimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 /**
  * Der Effekt, der angezeigt wird, wenn mit selektierten Einheiten auf den Boden rechtsgeklickt wird.
@@ -108,19 +107,19 @@ public class SendToEffect extends SkyEffect {
     }
 
     @Override
-    public void renderSkyEffect(Graphics g, double scrollX, double scrollY, Map<String, GraphicsImage> imgMap) {
+    public void renderSkyEffect(Graphics g, double scrollX, double scrollY) {
         g.setColor(color);
         g.setLineWidth(2);
         g.fillOval((float) (x - scrollX) - 5, (float) (y - scrollY) - 3, 10, 6);
 
         // Pfeil&Kreis sind nur kurz sichtbar
         if (System.currentTimeMillis() < (start + DURATION)) {
-            Image img = imgMap.get("img/game/send.png").getImage();
             int animPixel = (int) (((1.0 * System.currentTimeMillis() - start) / DURATION) * 32);
             float rX = (float) (x - scrollX) + OFFSET_X;
             float rY = (float) (y - scrollY) + OFFSET_Y;
             g.drawOval((float) (x - scrollX) - 5 - ((32 - animPixel) / 1.5f), (float) (y - scrollY) - 3 - ((32 - animPixel) / 2), 10 + ((32 - animPixel) / 0.75f), 6 + ((32 - animPixel)));
-            img.draw(rX + (animPixel / 2), rY + animPixel, rX + (img.getWidth() / 4) - (animPixel / 2), rY + img.getHeight(), imgX, 0, imgX + (img.getWidth() / 4), 32 - animPixel);
+            Dimension size = Renderer.getImageInfo("img/game/send.png");
+            Renderer.drawImage("img/game/send.png", rX + (animPixel / 2), rY + animPixel, rX + (size.getWidth() / 4) - (animPixel / 2), rY + size.getHeight(), imgX, 0, imgX + (size.getWidth() / 4), 32 - animPixel);
         }
     }
 

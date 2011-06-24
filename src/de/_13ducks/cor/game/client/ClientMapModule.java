@@ -1267,6 +1267,14 @@ public class ClientMapModule {
      * @param b
      */
     public void addUnit(Unit u) {
+        u.initClientMovementManager(rgi);
+        u.addAbility(new AbilityStop(u, rgi));
+        rgi.game.addGO(u);
+        rgi.rogGraphics.inputM.addGO(u);
+        if (netIDList.containsKey(u.netID)) {
+            throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
+        }
+        this.netIDList.put(u.netID, u);
         try {
             rgi.rogGraphics.content.allListLock.lock();
             this.allList.add(u);
@@ -1275,22 +1283,12 @@ public class ClientMapModule {
         }
         this.unitList.add(u);
 
-        rgi.game.addGO(u);
-        rgi.rogGraphics.inputM.addGO(u);
-
-        if (netIDList.containsKey(u.netID)) {
-            throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
-        }
-        this.netIDList.put(u.netID, u);
-
         // In Abhängigkeitsliste einfügen
         if (u.getPlayerId() == rgi.game.getOwnPlayer().playerId) {
             if (!rgi.game.getOwnPlayer().uList.contains(u.getDescTypeId())) {
                 rgi.game.getOwnPlayer().uList.add(u.getDescTypeId());
             }
         }
-        u.initClientMovementManager(rgi);
-        u.addAbility(new AbilityStop(u, rgi));
     }
 
     /**
