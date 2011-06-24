@@ -294,6 +294,9 @@ public class MovementMap {
      * @return der gefundene Polygon oder null
      */
     public FreePolygon containingPoly(double x, double y) {
+        if (!new Vector(x, y).isValid()) {
+            throw new RuntimeException("Someone searching for ILLEGAL POSITION!!!");
+        }
         for (FreePolygon poly : polys) {
             if (poly.contains(x, y)) {
                 return poly;
