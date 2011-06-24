@@ -89,36 +89,38 @@ public class GroupManager {
     public synchronized void goTo(FloatingPointPosition target) {
         // Route planen
         List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
-        FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP()); // Der vektor vom vorletzten Wegpunkt zum Ziel, entspricht der Richtung die die Formation haben soll
+        if (tmpPath != null) {
+            FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP()); // Der vektor vom vorletzten Wegpunkt zum Ziel, entspricht der Richtung die die Formation haben soll
 
-        FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
+            FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
 
-        // Niedrigste Geschwindigkeit suchen
-        double commonSpeed = lowestSpeed(myMovers);
+            // Niedrigste Geschwindigkeit suchen
+            double commonSpeed = lowestSpeed(myMovers);
 
 
-        int i = 0;
+            int i = 0;
 
-        for (GroupMember member : myMovers) {
-            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
-            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
-            if (path != null) {
-                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
-                if (optiPath != null) {
-                    // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
-                    if (member.getMover().getAtkManager() != null) {
-                        member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_GOTO);
+            for (GroupMember member : myMovers) {
+                System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
+                List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
+                if (path != null) {
+                    List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                    if (optiPath != null) {
+                        // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
+                        if (member.getMover().getAtkManager() != null) {
+                            member.getMover().getAtkManager().newMoveMode(ServerBehaviourAttack.MOVEMODE_GOTO);
+                        }
+
+                        // Weg setzen
+                        for (SimplePosition node : optiPath) {
+                            member.addWaypoint(node);
+                        }
+                        // Loslaufen lassen
+                        member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed);
                     }
-
-                    // Weg setzen
-                    for (SimplePosition node : optiPath) {
-                        member.addWaypoint(node);
-                    }
-                    // Loslaufen lassen
-                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed);
                 }
+                i++;
             }
-            i++;
         }
     }
 
@@ -217,7 +219,7 @@ public class GroupManager {
     }
 
     void followTo(FloatingPointPosition target) {
-        
+
         int i = 0;
 
         for (GroupMember member : myMovers) {
@@ -226,7 +228,7 @@ public class GroupManager {
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
-                    
+
                     // Weg setzen
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
