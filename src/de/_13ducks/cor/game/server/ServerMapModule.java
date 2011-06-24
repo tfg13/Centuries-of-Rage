@@ -918,6 +918,7 @@ public class ServerMapModule {
     public void addUnit(Unit u) {
         // Diese Einheit für das Bewegungssystem fit machen
         u.initServerMovementManagers(rgi, moveMap);
+        registerUnitMovements(u);
 
         this.unitList.add(u);
 
@@ -928,8 +929,6 @@ public class ServerMapModule {
         if (!rgi.game.playerList.get(u.getPlayerId()).uList.contains(u.getDescTypeId())) {
             rgi.game.playerList.get(u.getPlayerId()).uList.add(u.getDescTypeId());
         }
-        
-        registerUnitMovements(u);
 
         // Broadcasten
 
@@ -950,7 +949,7 @@ public class ServerMapModule {
             this.unitList.remove(u);
             this.netIDList.remove(u.netID);
             rgi.game.removeGO(u);
-            
+
             moveMap.removeMoveable(u);
         }
     }
@@ -991,7 +990,7 @@ public class ServerMapModule {
             killBuilding(b);
         }
     }
-    
+
     /**
      * Initialisiert diese Einheit für das neue Server-Bewegunssystem
      * @param unit 
@@ -1079,7 +1078,7 @@ public class ServerMapModule {
             }
         }
     }
-    
+
     /**
      * Verwaltet komplexere toDESC-Upgrades
      *
@@ -1143,7 +1142,7 @@ public class ServerMapModule {
             }
         }
     }
-    
+
     /**
      * Getter für die MoveMap
      */
