@@ -711,7 +711,7 @@ public class ServerMapModule {
             createAllLists();
             rgi.game.registerUnitList(unitList);
             moveMap = MovementMap.createMovementMap(theMap, buildingList);
-            fastFindGrid = new FastFindGrid(theMap.getMapSizeX(), theMap.getMapSizeY(), 10.0);
+            fastFindGrid = new FastFindGrid(theMap.getMapSizeX(), theMap.getMapSizeY(), 20.0);
             rgi.moveMan.initMoveManager(moveMap);
             rgi.logger("[MapModul] Map \"" + mapName + "\" loaded");
             // Maphash bekannt, jetzt Name + Hash an andere Clients übertragen
@@ -937,8 +937,8 @@ public class ServerMapModule {
 
         registerUnitMovements(u);
 
-        // Einheit im Schnellsuchraster eintragen:
-        fastFindGrid.addObject(u);
+        // Einheit im Schnellsuchraster eintragen und ihre Zelle setzen:
+        u.setCell(fastFindGrid.addObject(u));
 
         // Broadcasten
 
@@ -1163,7 +1163,7 @@ public class ServerMapModule {
     /**
      * Getter für den Schnellsuchraster
      */
-    FastFindGrid getFastFindGrid() {
+    public FastFindGrid getFastFindGrid() {
         return fastFindGrid;
     }
 }

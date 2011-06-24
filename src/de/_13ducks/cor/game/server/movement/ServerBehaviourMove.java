@@ -30,6 +30,7 @@ import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.map.fastfinfgrid.Traceable;
@@ -152,7 +153,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Echtzeitkollision:
             for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
                 Unit m = t.getUnit();
-                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius()) && m != this.caster) {
                     wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
 
                     double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius();
@@ -204,6 +205,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
+            caster3.setCell(Server.getInnerServer().netmap.getFastFindGrid().getNewCell(caster3));
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
             if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {

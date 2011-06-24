@@ -543,4 +543,13 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public Unit getUnit() {
         return this;
     }
+
+    /**
+     * Setzt die Zelle (Schnellsuchraster) dieser Einheit
+     * @param theCell - die Zelle des Schnellsuchrasters, auf der die EInheit steht
+     */
+    public void setCell(Cell theCell)
+    {
+        myCell = theCell;
+    }
 }
