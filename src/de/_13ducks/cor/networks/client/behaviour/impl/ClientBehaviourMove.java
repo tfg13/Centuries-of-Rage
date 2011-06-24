@@ -82,43 +82,42 @@ public class ClientBehaviourMove extends ClientBehaviour {
             deactivate();
             return;
         }
-        // Wir laufen also.
-        // Aktuelle Position berechnen:
-        FloatingPointPosition oldPos = caster2.getPrecisePosition();
-        Vector vec = target.subtract(oldPos).toVector();
-        vec.normalizeMe();
-        long ticktime = System.nanoTime();
-        vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
-        FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+        if (stopPos == null) {
+            // Wir laufen also.
+            // Aktuelle Position berechnen:
+            FloatingPointPosition oldPos = caster2.getPrecisePosition();
+            Vector vec = target.subtract(oldPos).toVector();
+            vec.normalizeMe();
+            long ticktime = System.nanoTime();
+            vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
+            FloatingPointPosition newpos = vec.toFPP().add(oldPos);
 
-        if (!newpos.toVector().isValid()) {
-            // Das geht so nicht, abbrechen und gleich nochmal!
-            System.out.println("CLIENT-Move: Invalid position, will try again next tick");
-            trigger();
-            return;
-        }
+            if (!newpos.toVector().isValid()) {
+                // Das geht so nicht, abbrechen und gleich nochmal!
+                System.out.println("CLIENT-Move: Evil params: " + caster2 + " " + oldPos + " " + target + " " + vec + " " + ticktime + " " + lastTick + "-->" + newpos);
+                trigger();
+                return;
+            }
 
-        // Ziel schon erreicht?
-        Vector nextVec = target.subtract(newpos).toVector();
-        if (vec.isOpposite(nextVec)) {
-            // ZIEL!
-            // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            caster2.setMainPosition(target);
-            target = null;
-            stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-            deactivate();
-        } else {
-            // Sofort stoppen?
-            if (stopPos != null) {
-                caster2.setMainPosition(stopPos);
+            // Ziel schon erreicht?
+            Vector nextVec = target.subtract(newpos).toVector();
+            if (vec.isOpposite(nextVec)) {
+                // ZIEL!
+                // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
+                caster2.setMainPosition(target);
                 target = null;
-                stopPos = null;
+                stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
                 lastTick = System.nanoTime();
             }
+        } else {
+            caster2.setMainPosition(stopPos);
+            target = null;
+            stopPos = null;
+            deactivate();
         }
     }
 
@@ -191,6 +190,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
         }
 
         void perform() {
+            System.out.println("QUEUE-TASK: " + caster2 + " " + mode + " " + pos + " " + speed);
             if (mode == 0) {
                 // STOP
                 stopAt(pos);
