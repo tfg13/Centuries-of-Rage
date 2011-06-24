@@ -215,19 +215,5 @@ public class Unit2x2 extends Unit {
         }
     }
 
-    /**
-     * Gibt die Zelle zurück, in de die Einheit steht, für das Schnellsuchraster
-     * @return
-     */
-    public Cell getCell() {
-        return myCell;
-    }
-
-    /**
-     * Gibt die eigene Position zurück, für das Schnellsuchraster
-     * @return
-     */
-    public FloatingPointPosition getPosition() {
-        return this.getPrecisePosition();
-    }
+    
 }

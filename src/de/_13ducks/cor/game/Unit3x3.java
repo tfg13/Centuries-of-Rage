@@ -224,18 +224,5 @@ public class Unit3x3 extends Unit {
         }
     }
 
-    /**
-     * Gibt die Zelle zurück, für das Schnellsuchraster
-     * @return
-     */
-    public Cell getCell() {
-        return myCell;
-    }
-
-    /**
-     * Gibt die eigene Position zurück, für das Schnellsuchraster
-     * @return
-     */
-    public FloatingPointPosition getPosition() {
-return this.getPrecisePosition();    }
+    
 }

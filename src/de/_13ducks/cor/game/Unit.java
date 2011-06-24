@@ -41,6 +41,7 @@ import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.map.fastfinfgrid.Cell;
 import de._13ducks.cor.map.fastfinfgrid.Traceable;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
@@ -108,6 +109,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Der kleine Pfeil, der erscheint, wenn man die Einheit irgendwo hin schickt
      */
     private SendToEffect sendEffect;
+    /**
+     * Die Zelle im Schnellsuchraster, in der die Einheit steht
+     */
+    private Cell myCell;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -482,7 +487,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
     }
-    
+
     @Override
     public ServerBehaviourFollow getFollowManager() {
         return followManager;
@@ -513,5 +518,21 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public void killS() {
         Server.getInnerServer().netmap.killUnit(this);
         super.killS();
+    }
+
+    /**
+     * Gibt die Zelle zurück, in de die Einheit steht, für das Schnellsuchraster
+     * @return
+     */
+    public Cell getCell() {
+        return myCell;
+    }
+
+    /**
+     * Gibt die eigene Position zurück, für das Schnellsuchraster
+     * @return
+     */
+    public FloatingPointPosition getPosition() {
+        return this.getPrecisePosition();
     }
 }
