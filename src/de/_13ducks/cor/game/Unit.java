@@ -41,8 +41,8 @@ import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
-import de._13ducks.cor.map.fastfinfgrid.Cell;
-import de._13ducks.cor.map.fastfinfgrid.Traceable;
+import de._13ducks.cor.map.fastfindgrid.Cell;
+import de._13ducks.cor.map.fastfindgrid.Traceable;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
 
 /**

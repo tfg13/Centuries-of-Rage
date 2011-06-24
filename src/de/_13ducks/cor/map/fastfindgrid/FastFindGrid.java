@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.map.fastfinfgrid;
+package de._13ducks.cor.map.fastfindgrid;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import java.util.ArrayList;

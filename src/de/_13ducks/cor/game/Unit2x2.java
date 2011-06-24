@@ -25,7 +25,7 @@
  */
 package de._13ducks.cor.game;
 
-import de._13ducks.cor.map.fastfinfgrid.Cell;
+import de._13ducks.cor.map.fastfindgrid.Cell;
 import java.util.Arrays;
 import java.util.List;
 import org.newdawn.slick.Color;

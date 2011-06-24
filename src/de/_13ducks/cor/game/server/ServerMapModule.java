@@ -46,7 +46,7 @@ import de._13ducks.cor.game.Unit3x3;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.map.MapIO;
-import de._13ducks.cor.map.fastfinfgrid.FastFindGrid;
+import de._13ducks.cor.map.fastfindgrid.FastFindGrid;
 
 /**
  * Das MapModul auf der Server-Seite

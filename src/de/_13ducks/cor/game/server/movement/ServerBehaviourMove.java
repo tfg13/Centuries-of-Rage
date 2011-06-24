@@ -33,7 +33,7 @@ import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.map.fastfinfgrid.Traceable;
+import de._13ducks.cor.map.fastfindgrid.Traceable;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
 
