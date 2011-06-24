@@ -99,11 +99,16 @@ public class Formation {
                 FloatingPointPosition finalPos = new FloatingPointPosition(x, y);
 
                 // Wenn finalPos gültig ist zur Liste hinzufügen:
-                if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
-                    formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
-                    foundPositions++;
-                    if (foundPositions == unitCount) {
-                        return formation;
+
+
+                // Wenn die Position gültig ist (also kein NaN oder infinite enthält), wird überprüft ob Einheiten dort stehen können:
+                if (finalPos.add(target).valid()) {
+                    if (Server.getInnerServer().netmap.getMoveMap().isPositionWalkable(finalPos.add(target))) {
+                        formation[foundPositions] = new FloatingPointPosition(finalPos.getfX(), finalPos.getfY());
+                        foundPositions++;
+                        if (foundPositions == unitCount) {
+                            return formation;
+                        }
                     }
                 }
             }
