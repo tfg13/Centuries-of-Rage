@@ -129,7 +129,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             boolean stillColliding = false;
             for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
                 Unit m = t.getUnit();
-                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius())) {
+                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius()) && m != this.caster) {
                     stillColliding = true;
                     break;
                 }
