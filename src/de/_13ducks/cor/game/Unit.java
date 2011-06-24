@@ -535,4 +535,12 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public FloatingPointPosition getPosition() {
         return this.getPrecisePosition();
     }
+
+    /**
+     * Gibt diese Einheit zurück, damit man vom Traceable-Interface auch mit der einheit was machen kann
+     * @return
+     */
+    public Unit getUnit() {
+        return this;
+    }
 }

@@ -5,6 +5,7 @@
 package de._13ducks.cor.map.fastfinfgrid;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.Unit;
 
 /**
  * Objekte, die im Schnellfinderaster (fastfindgrid) eingetragen werden, müssen dieses Interface implementieren.
@@ -26,4 +27,10 @@ public interface Traceable {
      * @return - die Position des Objekts
      */
     public abstract FloatingPointPosition getPosition();
+
+    /**
+     * Gibt die Einheit zurück, die diesem Traceable zugeordnet ist
+     * @return - die zugehörige Einheit
+     */
+    public abstract Unit getUnit();
 }
