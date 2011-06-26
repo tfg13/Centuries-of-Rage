@@ -48,37 +48,19 @@ public class MenuSlogans extends Component {
     long nextspawntime; // Wann wird ein neues BackgroundObj gespawnt?
     int resx; // Auflösung X
     int resy; // Auflösung Y
-    int tilex; // Anzahl notwendiger Bodentexturkacheln X
-    int tiley; // Anzahl notwendiger Bodentexturkacheln Y
-    String groundtex; // Gras / Sand / Wüste bei Bodentexturen
-    ArrayList<MenuBackgroundObject> BackgroundObj = new ArrayList<MenuBackgroundObject>();
     final static double speed = 0.04; // Geschwindikeit des Hintergrunds
     final static double sloganspeed = 0.3; // Geschwindikeit des Slogans
-    final static int maxspawndelay = 10000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
+    final static int maxspawndelay = 8000; // In welchen Zeitabständen Hintergrundobjekte erzeugt werden
     Slogan currentSlogan; // Der aktuelle Slogan
-    long sloganspawntime; // Wann der aktuelle Slogan gestartet ist
     ArrayList<String> Slogans = new ArrayList<String>(); // Eine ArrayList mit den Slogans
 
     public MenuSlogans(MainMenu m, double relX, double relY, double relWidth, double relHeigth) {
         super(m, relX, relY, relWidth, relHeigth);
         starttime = System.currentTimeMillis();
         nextspawntime = 0;
-        sloganspawntime = 1000;
         resx = m.getResX();
         resy = m.getResY();
-        tilex = (int) Math.ceil(resx / 512) + 2;
-        tiley = (int) Math.ceil(resy / 512);
-        BackgroundObj.add(new MenuBackgroundObject((resx * 3 / 4), (resy / 2), 200, 160, "img/buildings/human_baracks_e1.png", (long) (-resx / 4 / speed)));
-
-        // Zufällige Bodentextur wählen:
-        int random = (int) (Math.random() * 3);
-        if (random == 0) {
-            groundtex = "img/ground/menuground.png";
-        } else if (random == 1) {
-            groundtex = "img/ground/menuground2.png";
-        } else {
-            groundtex = "img/ground/menuground3.png";
-        }
+       
 
         // Slogans einlesen
         File sloganFile = null;
@@ -115,7 +97,6 @@ public class MenuSlogans extends Component {
         long time = System.currentTimeMillis() - starttime; // Berechnet Zeit seit Start in Millisekunden
 
         // Slogan-Lkw zeichnen
-
         int lkwheight = Renderer.getImageInfo(currentSlogan.getLkwpic()).getHeight();
 
         float lkwX = (float) (resx - (sloganspeed * (time - currentSlogan.getStarttime())));
@@ -154,14 +135,20 @@ public class MenuSlogans extends Component {
 
         // Räder zeichnen
         final int wheelheight = 46;
-        Renderer.setImageRotation(currentSlogan.getWheelpic(), (-50 * sloganspeed));
+        double rotate = -(time % (120 / sloganspeed)) * 360 / (120 / sloganspeed);    
+        
+        // Radbild drehen
+        Renderer.setImageRotation(currentSlogan.getWheelpic(), rotate);        
         for (int i = 0; i < wheelsX.size(); i++) {
+            // Rad zeichnen
             Renderer.drawImage(currentSlogan.getWheelpic(), wheelsX.get(i), (float) (0.86 * resy - lkwheight + wheelheight));
         }
+        // Radbild
+        Renderer.setImageRotation(currentSlogan.getWheelpic(), -rotate);
 
         // Slogan außerhalb des Bildes? -> Neuer Slogan
         if (lkwX + currentSlogan.getEndofslogan() < 0) {
-            currentSlogan = new Slogan(time + sloganspawntime, Slogans.get((int) (Math.random() * Slogans.size())));
+            currentSlogan = new Slogan(time + (int) (maxspawndelay * Math.random()), Slogans.get((int) (Math.random() * Slogans.size())));
         }
     }
 }
