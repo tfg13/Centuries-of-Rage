@@ -216,6 +216,14 @@ public class Edge {
         Edge direct = new Edge(pos1.toNode(), pos2.toNode());
         // Schnittpunkt suchen
         return intersectsWithEndsAllowed(direct);
-
+    }
+    
+    /**
+     * Liefert eine verschobenen Strecke zurück.
+     * Diese hat keine Informationen über registrierte Polygone oder ähnliches.
+     * @param vec Dieser Vektor wird an Start- und Zielknoten angehängt.
+     */
+    Edge move(Vector vec) {
+        return new Edge(start.toVector().add(vec).toNode(), end.toVector().add(vec).toNode());
     }
 }
