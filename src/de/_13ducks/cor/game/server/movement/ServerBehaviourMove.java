@@ -29,13 +29,13 @@ import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.map.fastfindgrid.Traceable;
-import java.awt.geom.Ellipse2D;
-import java.util.List;
+import java.util.ArrayList;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Polygon;
 
 /**
  * Lowlevel-Movemanagement
@@ -74,7 +74,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Die Zeit, die gewartet wird (in Nanosekunden) (eine milliarde ist eine sekunde)
      */
     private static final long waitTime = 3000000000l;
-    
     /**
      * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
      */
@@ -85,6 +84,14 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * eingestuften Flächen berechnet wird.
      */
     public static final double MIN_DISTANCE = 0.1;
+    /**
+     * Ein simples Flag, das nach dem Kollisionstest gesetzt ist.
+     */
+    private boolean colliding = false;
+    /**
+     * Zeigt nach dem Kollisionstest auf das letzte (kollidierende) Objekt.
+     */
+    private Moveable lastObstacle;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, Traceable caster3, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -121,26 +128,23 @@ public class ServerBehaviourMove extends ServerBehaviour {
         long ticktime = System.nanoTime();
         vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+        
+        // Ob die Kollision später noch geprüft werden muss. Kann durch ein Weiterlaufen nach warten überschrieben werden.
+        boolean checkCollision = true;
 
         // Wir sind im Warten-Modus. Jetzt also testen, ob wir zur nächsten Position können
         if (wait) {
             // Testen, ob wir schon weiterlaufen können:
             // Echtzeitkollision:
-            boolean stillColliding = false;
-            for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
-                Unit m = t.getUnit();
-                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius()) && m != this.caster) {
-                    stillColliding = true;
-                    break;
-                }
-            }
-            if (stillColliding) {
+            newpos = checkAndMaxMove(oldPos, newpos);
+            if (colliding) {
                 // Immer noch Kollision
                 if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
                     lastTick = System.nanoTime();
                     return;
                 } else {
+                    // Wartezeit abgelaufen
                     wait = false;
                     // Wir stehen schon, der Client auch --> nichts weiter zu tun.
                     target = null;
@@ -150,10 +154,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             } else {
                 // Nichtmehr weiter warten - Bewegung wieder starten
                 wait = false;
-                // Ticktime manipulieren.
-                lastTick = System.nanoTime();
-                trigger();
-                return;
+                checkCollision = false;
             }
         }
 
@@ -163,53 +164,27 @@ public class ServerBehaviourMove extends ServerBehaviour {
             clientTarget = target.toFPP();
         }
 
-        if (!stopUnit) {
-            // Echtzeitkollision:
-            for (Traceable t : this.caster3.getCell().getTraceablesAroundMe()) {
-                Unit m = t.getUnit();
-                if (m.getPrecisePosition().getDistance(newpos) < (m.getRadius() + this.caster2.getRadius()) && m != this.caster) {
-                    wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, m);
+        if (!stopUnit && checkCollision) {
+            // Zu laufenden Weg auf Kollision prüfen
+            newpos = checkAndMaxMove(oldPos, newpos);
 
-                    double distanceToObstacle = (float) this.caster2.getRadius() + (float) m.getRadius() + (float) MIN_DISTANCE;
+            if (colliding) {
+                // Kollision. Gruppenmanager muss entscheiden, ob wir warten oder ne Alternativroute suchen.
+                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle);
 
-
-                    Vector origin = new Vector(-vec.getY(), vec.getX());
-
-                    Edge edge = new Edge(m.getPrecisePosition().toNode(), m.getPrecisePosition().add(origin.toFPP()).toNode());
-
-                    Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(vec.toFPP()).toNode());
-
-                    SimplePosition p = edge.endlessIntersection(edge2);
-
-                    double distance = m.getPrecisePosition().getDistance(p.toFPP());
-
-                    double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
-
-                    FloatingPointPosition nextnewpos = p.toVector().add(vec.getInverted().normalize().multiply(b)).toFPP();
-
-
-
-                    if (nextnewpos.toVector().isValid() && checkPosition(nextnewpos)) {
-                        newpos = nextnewpos;
-                    } else {
-                        System.out.println("WARNING: Ugly back-stop!");
-                        newpos = oldPos.toFPP();
-                    }
-                    if (wait) {
-                        waitStartTime = System.nanoTime();
-                        // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
-                        // Der Client muss das auch mitbekommen
-                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
-                        caster2.setMainPosition(newpos);
-                        clientTarget = null;
-                        System.out.println("WAIT-COLLISION " + caster2 + " with " + m + " stop at " + newpos);
-                        return; // Nicht weiter ausführen!
-                    } else {
-                        // Bricht die Bewegung vollständig ab.
-                        System.out.println("STOP-COLLISION " + caster2 + " with " + m);
-                        stopUnit = true;
-                    }
-                    break;
+                if (wait) {
+                    waitStartTime = System.nanoTime();
+                    // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
+                    // Der Client muss das auch mitbekommen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                    caster2.setMainPosition(newpos);
+                    clientTarget = null;
+                    System.out.println("WAIT-COLLISION " + caster2 + " with " + lastObstacle + " stop at " + newpos);
+                    return; // Nicht weiter ausführen!
+                } else {
+                    // Bricht die Bewegung vollständig ab.
+                    System.out.println("STOP-COLLISION " + caster2 + " with " + lastObstacle);
+                    stopUnit = true;
                 }
             }
         }
@@ -239,9 +214,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         caster2.setMyPoly(sector);
                     }
                 }
-
-                // Herausfinden, ob der Sektor gewechselt wurde (FastFindGrid)
-
             }
 
         } else {
@@ -364,18 +336,79 @@ public class ServerBehaviourMove extends ServerBehaviour {
     }
 
     /**
-     * Überprüft auf RTC mit Zielposition
-     * @param pos die zu testende Position
-     * @return true, wenn frei
+     * Untersucht die gegebene Route auf Echtzeitkollision.
+     * Sollte alles frei sein, wird to zurückgegeben.
+     * Ansonsten gibts eine neue Position, bis zu der problemlos gelaufen werden kann.
+     * Im schlimmsten Fall ist dies die from-Position, die frei sein MUSS!
+     * @param from von wo wir uns losbewegen
+     * @param to wohin wir laufen
+     * @return FloatingPointPosition bis wohin man laufen kann.
      */
-    private boolean checkPosition(FloatingPointPosition pos) {
-        List<Moveable> movers = moveMap.moversAroundPoint(pos, caster2.getRadius() + maxRadius);
-        movers.remove(caster2);
-        for (Moveable m : movers) {
-            if (m.getPrecisePosition().getDistance(pos) < (m.getRadius() + caster2.getRadius())) {
-                return false;
+    private FloatingPointPosition checkAndMaxMove(FloatingPointPosition from, FloatingPointPosition to) {
+        // Zurücksetzen
+        lastObstacle = null;
+        colliding = false;
+        ArrayList<Traceable> possibleCollisions = caster3.getCell().getTraceablesAroundMe();
+        // Uns selber ignorieren
+        possibleCollisions.remove(caster3);
+        // Freies Gebiet markieren:
+        Vector ortho = new Vector(to.getfY() - from.getfY(), from.getfX() - to.getfX()); // 90 Grad verdreht (y, -x)
+        ortho.normalizeMe();
+        ortho.multiplyMe(caster2.getRadius() + MIN_DISTANCE);
+        Vector fromv = from.toVector();
+        Vector tov = to.toVector();
+        Polygon poly = new Polygon();
+        poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+        poly.addPoint((float) fromv.add(ortho.getInverted()).x(), (float) fromv.add(ortho.getInverted()).y());
+        poly.addPoint((float) tov.add(ortho.getInverted()).x(), (float) tov.add(ortho.getInverted()).y());
+        poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
+        poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+
+        for (Traceable t : possibleCollisions) {
+            float radius = (float) t.getUnit().getRadius();
+            Circle c = new Circle((float) t.getPosition().x(), (float) t.getPosition().y(), radius); //Das getUnit ist ugly!
+            // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
+            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPosition()) < caster2.getRadius() + radius + MIN_DISTANCE) {
+                // Kollision!
+                // Jetzt muss poly verkleinert werden.
+                // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
+                // Notwendiger Abstand zur gefundenen Kollision t
+                float distanceToObstacle = (float) this.caster2.getRadius() + radius + (float) MIN_DISTANCE;
+                // Vector, der vom start zum Ziel der Bewegung zeigt.
+                Vector dirVec = new Vector(to.getfX() - from.getfX(), to.getfY() - from.getfY());
+                // 90 Grad dazu
+                Vector origin = new Vector(-dirVec.getY(), dirVec.getX());
+                // Strecke vom Hinderniss in 90-Grad-Richtung
+                Edge edge = new Edge(t.getPosition().toNode(), t.getPosition().add(origin.toFPP()).toNode());
+                // Strecke zwischen start und ziel
+                Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(dirVec.toFPP()).toNode());
+                // Schnittpunkt
+                SimplePosition p = edge.endlessIntersection(edge2);
+                // Abstand vom Hinderniss zur Strecke edge2
+                double distance = t.getPosition().getDistance(p.toFPP());
+                // Abstand vom Punkt auf edge2 zu freigegebenem Punkt
+                double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
+                // Auf der Strecke weit genug zurück gehen:
+                FloatingPointPosition nextnewpos = p.toVector().add(dirVec.getInverted().normalize().multiply(b)).toFPP();
+
+                // Hier gibt es keine Kollision mehr.
+                // poly neu bauen:
+                to = nextnewpos;
+                tov = nextnewpos.toVector();
+                poly = new Polygon();
+                poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+                poly.addPoint((float) fromv.add(ortho.getInverted()).x(), (float) fromv.add(ortho.getInverted()).y());
+                poly.addPoint((float) tov.add(ortho.getInverted()).x(), (float) tov.add(ortho.getInverted()).y());
+                poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
+                poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+
+                colliding = true;
+                lastObstacle = t.getUnit();
             }
         }
-        return true;
+
+        // Jetzt wurde alles oft genug verschoben um definitiv keine Kollision mehr zu haben.
+        // Bis hierhin die Route also freigeben:
+        return to;
     }
 }
