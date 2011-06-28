@@ -35,7 +35,6 @@ import de._13ducks.cor.graphics.ClientChat;
 import de._13ducks.cor.game.Core;
 import de._13ducks.cor.graphics.CoreGraphics;
 import de._13ducks.cor.mainmenu.LobbyScreen;
-import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.sound.SoundModule;
 import java.net.InetAddress;
 
