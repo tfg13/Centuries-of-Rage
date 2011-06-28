@@ -75,9 +75,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private static final long waitTime = 3000000000l;
     /**
-     * Wird für die Abstandssuche benötigt. Falls jemals eine Einheit größer ist, MUSS dieser Wert auch erhöht werden.
+     * Die Strecke, die wir nach einem Warten mindestens weiter laufen können müssen, damit es sich lohnt, die Bewegung neu zu starten.
      */
-    private static final double maxRadius = 4;
+    private static final double minMoveDistForStopWait = 0.1;
     /**
      * Eine minimale Distanz, die Einheiten beim Aufstellen wegen einer Kollision berücksichtigen. 
      * Damit wird verhindert, dass aufgrund von Rundungsfehlern Kolision auf ursprünlich als frei
@@ -137,7 +137,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Testen, ob wir schon weiterlaufen können:
             // Echtzeitkollision:
             newpos = checkAndMaxMove(oldPos, newpos);
-            if (colliding) {
+            if (newpos.getDistance(oldPos) < minMoveDistForStopWait) { // Können wir weiter laufen?
                 // Immer noch Kollision
                 if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
@@ -149,10 +149,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     // Wir stehen schon, der Client auch --> nichts weiter zu tun.
                     target = null;
                     deactivate();
+                    System.out.println("STOP waiting: " + caster2);
                     return;
                 }
             } else {
                 // Nichtmehr weiter warten - Bewegung wieder starten
+                System.out.println("GO! Weiter mit " + caster2 + " " + newpos);
                 wait = false;
                 checkCollision = false;
             }
@@ -384,6 +386,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(dirVec.toFPP()).toNode());
                 // Schnittpunkt
                 SimplePosition p = edge.endlessIntersection(edge2);
+                if (p == null) {
+                    System.out.println("ERROR: " + caster2 + " " + edge + " " + edge2 + " " + t.getPosition() + " " + origin + " " + dirVec + " " + distanceToObstacle);
+                }
                 // Abstand vom Hinderniss zur Strecke edge2
                 double distance = t.getPosition().getDistance(p.toFPP());
                 // Abstand vom Punkt auf edge2 zu freigegebenem Punkt
@@ -404,6 +409,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                 colliding = true;
                 lastObstacle = t.getUnit();
+                
+                // Falls wir so weit zurück mussten, dass es gar netmehr weiter geht:
+                if (from.equals(to)) {
+                    return from;
+                }
             }
         }
 
