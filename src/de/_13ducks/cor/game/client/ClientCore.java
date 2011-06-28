@@ -35,7 +35,6 @@ import de._13ducks.cor.graphics.ClientChat;
 import de._13ducks.cor.game.Core;
 import de._13ducks.cor.graphics.CoreGraphics;
 import de._13ducks.cor.mainmenu.LobbyScreen;
-import de._13ducks.cor.networks.lobby.Lobby;
 import de._13ducks.cor.sound.SoundModule;
 import java.net.InetAddress;
 
@@ -196,8 +195,6 @@ public class ClientCore extends Core {
         rgi = new InnerClient(playername);
         gamectrl = new ClientGameController(rgi);
         initLogger();
-        //lobby.setVisible(true);
-        this.rGraphics.getMainmenu().showlobby();
         netController = new ClientNetController(rgi, lobby);
         mapMod = new ClientMapModule(rgi);
         cchat = new ClientChat(rgi);
@@ -208,6 +205,7 @@ public class ClientCore extends Core {
         if (netController.connectTo(adr, port)) {
             // Namenswunsch an den Serve senden:
             lobby.send('N' + this.playername);
+            this.rGraphics.getMainmenu().showlobby();
             return true;
         } else {
             //lobby.dispose();
