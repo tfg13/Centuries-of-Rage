@@ -356,7 +356,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Freies Gebiet markieren:
         Vector ortho = new Vector(to.getfY() - from.getfY(), from.getfX() - to.getfX()); // 90 Grad verdreht (y, -x)
         ortho.normalizeMe();
-        ortho.multiplyMe(caster2.getRadius() + MIN_DISTANCE);
+        ortho.multiplyMe(caster2.getRadius());
         Vector fromv = from.toVector();
         Vector tov = to.toVector();
         Polygon poly = new Polygon();
@@ -370,7 +370,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             float radius = (float) t.getUnit().getRadius();
             Circle c = new Circle((float) t.getPosition().x(), (float) t.getPosition().y(), radius); //Das getUnit ist ugly!
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
-            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPosition()) < caster2.getRadius() + radius + MIN_DISTANCE) {
+            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPosition()) < caster2.getRadius() + radius) {
                 // Kollision!
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
