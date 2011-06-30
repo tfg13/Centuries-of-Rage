@@ -396,6 +396,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Auf der Strecke weit genug zurück gehen:
                 FloatingPointPosition nextnewpos = p.toVector().add(dirVec.getInverted().normalize().multiply(b)).toFPP();
 
+                // Zurückgegangenes Stück analysieren
+                if (new Vector(nextnewpos.getfX() - fromv.x(), nextnewpos.getfY() - fromv.y()).isOpposite(dirVec)) {
+                    System.out.println("DIAG: " + caster2 + " from " + from + " to " + to + " calced " + nextnewpos + " origdir" + dirVec + " with " + t + " at " + t.getPosition());
+                    throw new RuntimeException("ALERT!BUG!");
+                }
+
                 // Hier gibt es keine Kollision mehr.
                 // poly neu bauen:
                 to = nextnewpos;
