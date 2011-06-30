@@ -25,6 +25,8 @@
  */
 package de._13ducks.cor.game.client;
 
+import de._13ducks.cor.debug.UDBOverlay;
+import de._13ducks.cor.debug.UltimateDebug;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
@@ -41,6 +43,7 @@ import java.util.TimerTask;
 import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.Ability;
+import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 
 /**
@@ -55,6 +58,8 @@ public class ClientGameController implements Runnable {
     private boolean pause = false;              // Pause-Modus
     public List<NetPlayer> playerList;                 // Alle Spieler (vor allem die desc-Types dieser Spieler)
     private List<BehaviourProcessor> allList;
+    public static ServerCore.InnerServer udbServer;
+    public static boolean udbEnabled = false;
 
     public ClientGameController(ClientCore.InnerClient newinner) {
         rgi = newinner;
@@ -80,6 +85,15 @@ public class ClientGameController implements Runnable {
      */
     public void prepareStart(int numberOfPlayers) {
         rgi.rogGraphics.setLoadStatus(9);
+        
+        if ("true".equals(rgi.configs.get("ultimateDebug"))) {
+            UltimateDebug udb = UltimateDebug.getInstance();
+            if (udb.connect()) {
+                udbServer = udb.getInnerServer();
+                udbEnabled = true;
+                rgi.rogGraphics.content.overlays.add(new UDBOverlay());
+            }
+        }
 
         // Spielerliste herstellen:
         // Jeder Spieler muss an der Stelle stehen die seiner playerId entspricht

@@ -30,6 +30,7 @@ import de._13ducks.cor.game.client.ClientCore;
 import java.io.*;
 import java.util.*;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.game.client.ClientGameController;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
@@ -44,6 +45,7 @@ import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.fastfindgrid.Cell;
 import de._13ducks.cor.map.fastfindgrid.Traceable;
 import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
+import de._13ducks.cor.networks.client.behaviour.impl.UDBClientBehaviourMove;
 
 /**
  * Superklasse für Einheiten
@@ -412,7 +414,11 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     @Override
     public void initClientMovementManager(ClientCore.InnerClient rgi) {
-        clientManager = new ClientBehaviourMove(rgi, this);
+        if (!ClientGameController.udbEnabled) {
+            clientManager = new ClientBehaviourMove(rgi, this);
+        } else {
+            clientManager = new UDBClientBehaviourMove(rgi, this);
+        }
         addClientBehaviour(clientManager);
     }
 
@@ -548,8 +554,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Setzt die Zelle (Schnellsuchraster) dieser Einheit
      * @param theCell - die Zelle des Schnellsuchrasters, auf der die EInheit steht
      */
-    public void setCell(Cell theCell)
-    {
+    public void setCell(Cell theCell) {
         myCell = theCell;
     }
 }

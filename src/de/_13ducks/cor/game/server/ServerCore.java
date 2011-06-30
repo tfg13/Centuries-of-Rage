@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.server;
 
+import de._13ducks.cor.debug.UltimateDebug;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.networks.server.ServerNetController;
 import de._13ducks.cor.game.Building;
@@ -114,6 +115,11 @@ public class ServerCore extends Core {
             e2.printStackTrace();
             rgi.logger("[Core-ERROR] Critical I/O Error");
             rgi.shutdown(1);
+        }
+
+        if ("true".equals(cfgvalues.get("ultimateDebug"))) {
+            UltimateDebug udb = UltimateDebug.getInstance();
+            udb.authorizeDebug(this, rgi);
         }
 
         // Läuft als Server

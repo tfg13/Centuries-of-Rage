@@ -46,7 +46,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
     /**
      * Die Einheit, die von diesem Behaviour verwaltet wird
      */
-    private Unit caster2;
+    protected Unit caster2;
     /**
      * Die derzeitige Bewegungsgeschwindigkeit
      */
