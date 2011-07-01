@@ -434,6 +434,8 @@ public abstract class Building extends GameObject {
     
     @Override
     public Position getCentralPosition() {
-        return mainPosition;
+        //return mainPosition;
+        FloatingPointPosition Pos = new FloatingPointPosition(mainPosition.getX() + (z1 - 1), mainPosition.getY());
+        return Pos;
     }
 }

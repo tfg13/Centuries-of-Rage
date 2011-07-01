@@ -60,7 +60,7 @@ public class ServerBehaviourHeal extends ServerBehaviour {
     public void execute() {
 
         // Gebäudemitte suchen
-        Position Mitte1 = caster2.getMainPosition();
+        Position Mitte1 = caster2.getCentralPosition();
         FloatingPointPosition MitteFP = new FloatingPointPosition(Mitte1);
 
         int kreis = 2;
@@ -79,7 +79,7 @@ public class ServerBehaviourHeal extends ServerBehaviour {
             double dx = Unit1.getPosition().getfX() - MitteFP.getfX();
             double dy = Unit1.getPosition().getfY() - MitteFP.getfY();
             // Einheit im Radius?
-            if (Math.sqrt(dx * dx + dy * dy) < 10) {
+            if (Math.sqrt(dx * dx + dy * dy) < 30) {
                 // Eigener Spieler?
                 if (caster2.getPlayerId() == Unit1.getPlayerId()) {
                     // Überhaupt richtig existierend?
@@ -95,57 +95,6 @@ public class ServerBehaviourHeal extends ServerBehaviour {
                 }
             }
         }
-
-        // Jetzt im Kreis herum gehen
-	/*for (int k = 0; true; k++) {
-        // Es gibt vier Schritte, welcher ist als nächster dran?
-        if (k == 0) {
-        // Zum allerersten Feld springen
-        kreismember.setY(kreismember.getY() - 2);
-        } else if (k <= (kreis)) {
-        // Der nach links unten
-        kreismember.setX(kreismember.getX() - 1);
-        kreismember.setY(kreismember.getY() + 1);
-        } else if (k <= (kreis * 2)) {
-        // rechts unten
-        kreismember.setX(kreismember.getX() + 1);
-        kreismember.setY(kreismember.getY() + 1);
-        } else if (k <= (kreis * 3)) {
-        // rechts oben
-        kreismember.setX(kreismember.getX() + 1);
-        kreismember.setY(kreismember.getY() - 1);
-        } else if (k <= ((kreis * 4) - 1)) {
-        // links oben
-        kreismember.setX(kreismember.getX() - 1);
-        kreismember.setY(kreismember.getY() - 1);
-        } else {
-        // Sprung in den nächsten Kreis
-        kreismember.setX(kreismember.getX() - 1);
-        kreismember.setY(kreismember.getY() - 3);
-        k = 0;
-        kreis += 2;
-        // Suchende Erreicht?
-        if (kreis > 8) {
-        break;
-        }
-        }
-        // Ist dieses Feld NICHT geeignet?
-        try {
-        Unit Unit1 = rgi.netmap.getUnitRef(kreismember, caster2.getPlayerId());
-        if (Unit1 == null || Unit1.getLifeStatus() != GameObject.LIFESTATUS_ALIVE) {
-        } else {
-        if (Unit1.getHitpoints() + caster2.getHealRate() <= Unit1.getMaxhitpoints()) {
-        Unit1.healTo(Unit1.getHitpoints() + Unit1.getHealRate());
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Unit1.netID, Unit1.getPlayerId(), Unit1.getHitpoints(), 0));
-        } else if (Unit1.getHitpoints() < Unit1.getMaxhitpoints()){
-        Unit1.healTo(Unit1.getMaxhitpoints());
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Unit1.netID, Unit1.getPlayerId(), Unit1.getHitpoints(), 0));
-        }
-        }
-        } catch (Exception ex) {
-        }
-        } */
-
     }
 
     @Override
