@@ -367,7 +367,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
         for (Traceable t : possibleCollisions) {
-            float radius = (float) t.getUnit().getRadius();
+            float radius = (float) (t.getUnit().getRadius() + MIN_DISTANCE);
             Circle c = new Circle((float) t.getPosition().x(), (float) t.getPosition().y(), radius); //Das getUnit ist ugly!
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
             if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPosition()) < caster2.getRadius() + radius) {
@@ -375,7 +375,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
                 // Notwendiger Abstand zur gefundenen Kollision t
-                float distanceToObstacle = (float) this.caster2.getRadius() + radius + (float) MIN_DISTANCE;
+                float distanceToObstacle = (float) (this.caster2.getRadius() + radius + MIN_DISTANCE);
                 // Vector, der vom start zum Ziel der Bewegung zeigt.
                 Vector dirVec = new Vector(to.getfX() - from.getfX(), to.getfY() - from.getfY());
                 // 90 Grad dazu
@@ -398,8 +398,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                 // Zurückgegangenes Stück analysieren
                 if (new Vector(nextnewpos.getfX() - fromv.x(), nextnewpos.getfY() - fromv.y()).isOpposite(dirVec)) {
-                    System.out.println("DIAG: " + caster2 + " from " + from + " to " + to + " calced " + nextnewpos + " origdir" + dirVec + " with " + t + " at " + t.getPosition());
-                    throw new RuntimeException("ALERT!BUG!");
+                    // Ganz zurück setzen. Dann muss man nicht weiter suchen, die ganze Route ist hoffnungslos blockiert
+                    return from;
                 }
 
                 // Hier gibt es keine Kollision mehr.
