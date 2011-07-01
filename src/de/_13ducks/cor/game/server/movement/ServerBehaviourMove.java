@@ -33,7 +33,7 @@ import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.map.fastfindgrid.Traceable;
-import java.util.ArrayList;
+import java.util.List;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Polygon;
 
@@ -350,9 +350,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Zurücksetzen
         lastObstacle = null;
         colliding = false;
-        ArrayList<Traceable> possibleCollisions = caster3.getCell().getTraceablesAroundMe();
+        List<Moveable> possibleCollisions = moveMap.moversAroundPoint(caster2.getPrecisePosition(), caster2.getRadius() + 10, caster2.getMyPoly());
         // Uns selber ignorieren
-        possibleCollisions.remove(caster3);
+        possibleCollisions.remove(caster2);
         // Freies Gebiet markieren:
         Vector ortho = new Vector(to.getfY() - from.getfY(), from.getfX() - to.getfX()); // 90 Grad verdreht (y, -x)
         ortho.normalizeMe();
@@ -366,11 +366,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
         poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
-        for (Traceable t : possibleCollisions) {
-            float radius = (float) (t.getUnit().getRadius() + MIN_DISTANCE);
-            Circle c = new Circle((float) t.getPosition().x(), (float) t.getPosition().y(), radius); //Das getUnit ist ugly!
+        for (Moveable t : possibleCollisions) {
+            float radius = (float) (t.getRadius() + MIN_DISTANCE);
+            Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), radius); //Das getUnit ist ugly!
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
-            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPosition()) < caster2.getRadius() + radius) {
+            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
                 // Kollision!
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
@@ -381,16 +381,16 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // 90 Grad dazu
                 Vector origin = new Vector(-dirVec.getY(), dirVec.getX());
                 // Strecke vom Hinderniss in 90-Grad-Richtung
-                Edge edge = new Edge(t.getPosition().toNode(), t.getPosition().add(origin.toFPP()).toNode());
+                Edge edge = new Edge(t.getPrecisePosition().toNode(), t.getPrecisePosition().add(origin.toFPP()).toNode());
                 // Strecke zwischen start und ziel
                 Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(dirVec.toFPP()).toNode());
                 // Schnittpunkt
                 SimplePosition p = edge.endlessIntersection(edge2);
                 if (p == null) {
-                    System.out.println("ERROR: " + caster2 + " " + edge + " " + edge2 + " " + t.getPosition() + " " + origin + " " + dirVec + " " + distanceToObstacle);
+                    System.out.println("ERROR: " + caster2 + " " + edge + " " + edge2 + " " + t.getPrecisePosition() + " " + origin + " " + dirVec + " " + distanceToObstacle);
                 }
                 // Abstand vom Hinderniss zur Strecke edge2
-                double distance = t.getPosition().getDistance(p.toFPP());
+                double distance = t.getPrecisePosition().getDistance(p.toFPP());
                 // Abstand vom Punkt auf edge2 zu freigegebenem Punkt
                 double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
                 // Auf der Strecke weit genug zurück gehen:
@@ -414,7 +414,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
                 colliding = true;
-                lastObstacle = t.getUnit();
+                lastObstacle = t;
                 
                 // Falls wir so weit zurück mussten, dass es gar netmehr weiter geht:
                 if (from.equals(to)) {
