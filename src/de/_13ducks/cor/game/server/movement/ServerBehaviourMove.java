@@ -166,11 +166,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
             clientTarget = target.toFPP();
         }
 
-        if (!stopUnit && checkCollision) {
+        if (checkCollision) {
             // Zu laufenden Weg auf Kollision prüfen
             newpos = checkAndMaxMove(oldPos, newpos);
 
-            if (colliding) {
+            if (!stopUnit && colliding) {
                 // Kollision. Gruppenmanager muss entscheiden, ob wir warten oder ne Alternativroute suchen.
                 wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle);
 
