@@ -25,6 +25,7 @@
  */
 package de._13ducks.cor.game.networks.behaviour.impl;
 
+import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.Building;

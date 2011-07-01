@@ -918,6 +918,9 @@ public class DescIO {
 					rB.setBullettexture(v2);
 				    } else if (v1.equals("atkdelay")) {
 					rB.setAtkdelay(saveStrtoInt(v2, zeile, line));
+				    } else if (v1.equals("healrate")) {
+					rB.setHealRate(saveStrtoInt(v2, zeile, line));
+                                        System.out.println("heal");
 				    } else if (v1.equals("antiair")) {
 					int[] damageFactors = rB.getDamageFactors();
 					damageFactors[GameObject.ARMORTYPE_AIR] = saveStrtoInt(v2, zeile, line);

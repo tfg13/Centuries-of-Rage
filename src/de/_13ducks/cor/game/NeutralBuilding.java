@@ -51,11 +51,6 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public Position getCentralPosition() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public GameObject getCopy(int newNetId) {
         return new NeutralBuilding(newNetId, this);
     }

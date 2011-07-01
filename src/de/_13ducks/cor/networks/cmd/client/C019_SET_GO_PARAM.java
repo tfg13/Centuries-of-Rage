@@ -50,8 +50,7 @@ public class C019_SET_GO_PARAM extends ClientCommand {
                 o.performUpgrade(rgi, o.getDescTypeId());
                 System.out.println("AddMe: BuildingsChanged may be required + manage sight-distance");
             }
-            System.out.println("AddMe: Set GO Hitpoints!");
-            //o.hitpoints = rgi.readInt(data, 3);
+            o.setHitpoints(rgi.readInt(data, 3));
         } else {
             System.out.println("FixMe: Invalid ID (cmd19)");
         }

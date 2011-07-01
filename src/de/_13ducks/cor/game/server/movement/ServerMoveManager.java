@@ -42,7 +42,7 @@ public class ServerMoveManager {
     /**
      * Die aktuelle MovementMap
      */
-    private MovementMap moveMap;
+    MovementMap moveMap;
 
     /**
      * Initialisiert den Server-Bewegungsmanager.

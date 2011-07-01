@@ -80,11 +80,6 @@ public class PlayersBuilding extends Building {
     }
 
     @Override
-    public Position getCentralPosition() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public GameObject getCopy(int newNetId) {
         return new PlayersBuilding(newNetId, this);
     }
