@@ -96,7 +96,9 @@ public class Bullet extends ClientBehaviour implements Pauseable, Sprite {
         double rx = currentPos.x() * GraphicsContent.FIELD_HALF_X - scrollX;
         double ry = currentPos.y() * GraphicsContent.FIELD_HALF_Y - scrollY;
         
-        Renderer.drawSpriteCentered(lastDirectionX, lastDirectionY, texture, rx, ry);
+        if (texture != null) {
+            Renderer.drawSpriteCentered(lastDirectionX, lastDirectionY, texture, rx, ry);
+        }
     }
 
     @Override
