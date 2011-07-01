@@ -35,6 +35,7 @@ ability=412 #(testing)
 ability=413 #(testing)
 harvRate=10
 harvests=1
+healrate=10
 }
 
 B 7712 {

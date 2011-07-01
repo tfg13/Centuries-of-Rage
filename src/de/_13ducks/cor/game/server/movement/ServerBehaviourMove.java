@@ -353,6 +353,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
         ArrayList<Traceable> possibleCollisions = caster3.getCell().getTraceablesAroundMe();
         // Uns selber ignorieren
         possibleCollisions.remove(caster3);
+        if (possibleCollisions.contains(caster3)) {
+            System.out.println("omfgomfg");
+        }
         // Freies Gebiet markieren:
         Vector ortho = new Vector(to.getfY() - from.getfY(), from.getfX() - to.getfX()); // 90 Grad verdreht (y, -x)
         ortho.normalizeMe();
