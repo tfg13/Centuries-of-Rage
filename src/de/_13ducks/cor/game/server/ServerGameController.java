@@ -37,7 +37,7 @@ import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourHeal;
+import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
 
 /**
  * Die Server-Mainloop und GameLogic

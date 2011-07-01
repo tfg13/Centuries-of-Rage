@@ -39,7 +39,7 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
-import de._13ducks.cor.game.networks.behaviour.impl.ServerBehaviourHeal;
+import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
 import de._13ducks.cor.graphics.GOGraphicsData;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;

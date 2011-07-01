@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.game.networks.behaviour.impl;
+package de._13ducks.cor.game.server.movement;
 
 // Heilende Gebäude
 import de._13ducks.cor.game.FloatingPointPosition;
@@ -31,10 +31,12 @@ import de._13ducks.cor.game.Position;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.map.fastfindgrid.Traceable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ServerBehaviourHeal extends ServerBehaviour {
 
@@ -72,24 +74,24 @@ public class ServerBehaviourHeal extends ServerBehaviour {
         }
 
         // Unit1en in Umgebung suchen
-        ArrayList<Traceable> Traceables = Server.getInnerServer().netmap.getFastFindGrid().getTraceablesAroundPoint(MitteFP);
+        List<Moveable> movables = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(MitteFP, 30);
 
-        for (int i = 0; i < Traceables.size(); i++) {
-            Unit Unit1 = Traceables.get(i).getUnit();
-            double dx = Unit1.getPosition().getfX() - MitteFP.getfX();
-            double dy = Unit1.getPosition().getfY() - MitteFP.getfY();
-            // Einheit im Radius?
-            if (Math.sqrt(dx * dx + dy * dy) < 30) {
+        for (int i = 0; i < movables.size(); i++) {
+            GameObject go = movables.get(i).getAttackable();
+            if (go instanceof Unit) {
+                Unit unit = (Unit) go;
+                double dx = unit.getPrecisePosition().getfX() - MitteFP.getfX();
+                double dy = unit.getPosition().getfY() - MitteFP.getfY();
                 // Eigener Spieler?
-                if (caster2.getPlayerId() == Unit1.getPlayerId()) {
+                if (caster2.getPlayerId() == unit.getPlayerId()) {
                     // Überhaupt richtig existierend?
-                    if (Unit1 != null && Unit1.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
-                        if (Unit1.getHitpoints() + caster2.getHealRate() <= Unit1.getMaxhitpoints()) {
-                            Unit1.healTo(Unit1.getHitpoints() + caster2.getHealRate());
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Unit1.netID, Unit1.getPlayerId(), Unit1.getHitpoints(), 0));
-                        } else if (Unit1.getHitpoints() < Unit1.getMaxhitpoints()) {
-                            Unit1.healTo(Unit1.getMaxhitpoints());
-                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, Unit1.netID, Unit1.getPlayerId(), Unit1.getHitpoints(), 0));
+                    if (unit != null && unit.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
+                        if (unit.getHitpoints() + caster2.getHealRate() <= unit.getMaxhitpoints()) {
+                            unit.healTo(unit.getHitpoints() + caster2.getHealRate());
+                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, unit.netID, unit.getPlayerId(), unit.getHitpoints(), 0));
+                        } else if (unit.getHitpoints() < unit.getMaxhitpoints()) {
+                            unit.healTo(unit.getMaxhitpoints());
+                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, unit.netID, unit.getPlayerId(), unit.getHitpoints(), 0));
                         }
                     }
                 }
