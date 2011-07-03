@@ -101,7 +101,7 @@ public class GroupManager {
             int i = 0;
 
             for (GroupMember member : myMovers) {
-                System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
+                System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target.add(targetFormation[i]));
                 List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
                 if (path != null) {
                     List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
@@ -143,7 +143,7 @@ public class GroupManager {
         int i = 0;
 
         for (GroupMember member : myMovers) {
-            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
+            System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target.add(targetFormation[i]));
             List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
             if (path != null) {
                 List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
