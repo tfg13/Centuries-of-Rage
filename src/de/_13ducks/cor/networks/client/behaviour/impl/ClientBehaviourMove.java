@@ -40,6 +40,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ClientBehaviourMove extends ClientBehaviour {
 
     /**
+     * Um wieviele Millisekunden das Clientbehaviour eingehende Bewegungs-
+     * befehle absichtlich verzögert, um flakern beim Stoppen zu verhindern.
+     */
+    private int CLIENT_DELAY = 100;
+    /**
      * Das derzeitige Bewegungsziel der Einheit.
      */
     private FloatingPointPosition target;
@@ -71,9 +76,15 @@ public class ClientBehaviourMove extends ClientBehaviour {
     public synchronized void execute() {
         // Eingehende Signale verarbeiten:
         if (!queue.isEmpty()) {
-            queue.remove().perform();
-            if (!queue.isEmpty()) {
-                // Noch mehr da? Dann gleich nochmal:
+            MoveTask task = queue.peek();
+            if (System.currentTimeMillis() >= task.execTime) {
+                queue.remove().perform();
+                if (!queue.isEmpty()) {
+                    // Noch mehr da? Dann gleich nochmal:
+                    trigger();
+                }
+            } else {
+                // Es ist was da, aber wir müssen noch etwas warten.
                 trigger();
             }
         }
@@ -122,12 +133,25 @@ public class ClientBehaviourMove extends ClientBehaviour {
     }
 
     @Override
-    public void gotSignal(byte[] packet) {
+    public synchronized void gotSignal(byte[] packet) {
         if (packet[0] == 24) {
-            // Stop
-            FloatingPointPosition pos = rgi.readFloatingPointPosition(packet, 2);
-            MoveTask task = new MoveTask(0, pos, 0);
-            queue.add(task);
+            // Anhalten ist normalerweise kein neuer Task, sondern das Ziel des vorhergehenden wird geändert.
+            if (!queue.isEmpty()) {
+                MoveTask task = queue.peek();
+                task.pos = rgi.readFloatingPointPosition(packet, 2);
+            } else {
+                // Es läuft schon, live ändern
+                if (target != null) {
+                    target = rgi.readFloatingPointPosition(packet, 2);
+                } else {
+                    // Wir laufen gar nicht und werden auch in Zukunft nicht loslaufen
+                    // Dann als normalen Task adden, damit die Position mit Gewalt
+                    // gesetzt wird. Ist zwar hässlich, verhindert aber asyncs.
+                    FloatingPointPosition pos = rgi.readFloatingPointPosition(packet, 2);
+                    MoveTask task = new MoveTask(0, pos, 0);
+                    queue.add(task);
+                }
+            }
         } else if (packet[0] == 23) {
             // Move
             float moveSpeed = Float.intBitsToFloat(rgi.readInt(packet, 2));
@@ -182,11 +206,13 @@ public class ClientBehaviourMove extends ClientBehaviour {
         int mode;
         FloatingPointPosition pos;
         double speed;
+        long execTime;
 
         public MoveTask(int mode, FloatingPointPosition pos, double speed) {
             this.mode = mode;
             this.pos = pos;
             this.speed = speed;
+            execTime = System.currentTimeMillis() + CLIENT_DELAY;
         }
 
         void perform() {
