@@ -74,7 +74,7 @@ public class ServerBehaviourHeal extends ServerBehaviour {
         }
 
         // Unit1en in Umgebung suchen
-        List<Moveable> movables = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(MitteFP, 30);
+        List<Moveable> movables = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(MitteFP, 30, null);
 
         for (int i = 0; i < movables.size(); i++) {
             GameObject go = movables.get(i).getAttackable();
