@@ -82,19 +82,23 @@ public class UltimateDebug {
      * @return 
      */
     public synchronized boolean connect() {
-        System.out.println("[UDB]: Connecting client to server...");
-        while (server == null) {
-            try {
-                wait(1000);
-            } catch (InterruptedException ex) {
-                return false;
+        if (server != null) {
+            System.out.println("[UDB]: Connecting client to server...");
+            while (server == null) {
+                try {
+                    wait(1000);
+                } catch (InterruptedException ex) {
+                    return false;
+                }
             }
+            // Alles ok, los!
+            unlocked = true;
+            System.out.println("[UDB]: Client connected.");
+            System.out.println("[UDB]: UltimateDebug(TM) up and running!");
+            return true;
         }
-        // Alles ok, los!
-        unlocked = true;
-        System.out.println("[UDB]: Client connected.");
-        System.out.println("[UDB]: UltimateDebug(TM) up and running!");
-        return true;
+        // Nur eine Verbindung
+        return false;
     }
 
     public synchronized ServerCore.InnerServer getInnerServer() {
