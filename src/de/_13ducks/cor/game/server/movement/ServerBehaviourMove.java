@@ -199,7 +199,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             caster3.setCell(Server.getInnerServer().netmap.getFastFindGrid().getNewCell(caster3));
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (!stopUnit && !caster2.getMidLevelManager().reachedTarget(caster2)) {
+            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
@@ -223,6 +223,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             if (stopUnit) {
                 // Der Client muss das auch mitbekommen
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
+                System.out.println("MANUSTOP: " + caster2 + " at " + newpos);
                 caster2.setMainPosition(newpos);
                 target = null;
                 stopUnit = false;
@@ -399,6 +400,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Zurückgegangenes Stück analysieren
                 if (new Vector(nextnewpos.getfX() - fromv.x(), nextnewpos.getfY() - fromv.y()).isOpposite(dirVec)) {
                     // Ganz zurück setzen. Dann muss man nicht weiter suchen, die ganze Route ist hoffnungslos blockiert
+                    colliding = true;
+                    lastObstacle = t;
                     return from;
                 }
 
