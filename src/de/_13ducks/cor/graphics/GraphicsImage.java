@@ -28,7 +28,6 @@
 package de._13ducks.cor.graphics;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SpriteSheet;
 
 
 

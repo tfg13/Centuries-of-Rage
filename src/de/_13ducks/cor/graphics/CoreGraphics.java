@@ -706,8 +706,10 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
         });
         for (File bulletFile : bulletFiles) {
             try {
-                SpriteSheet tilemap = new SpriteSheet(bulletFile.getPath(), 40, 40);
+                Image tilemap = new Image(bulletFile.getPath());
                 GraphicsImage img = new GraphicsImage(tilemap);
+                img.setTileX(40);
+                img.setTileY(40);
                 String key = bulletFile.getPath();
                 imgMap.put(key.replaceAll("\\\\", "/"), img);
                 imgMap.put(key.replaceAll("/", "\\\\"), img);

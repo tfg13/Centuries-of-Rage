@@ -160,7 +160,7 @@ public class Renderer {
     public static void drawImage(String imgPath, double x, double y) {
         drawImage(imgPath, x, y, Color.white);
     }
-    
+
     /**
      * Zeichnet ein Sprite aus einem Sheet auf den Bildschrim
      * Wird gecached, mehrere Aufrufe auf das gleiche Spritesheet sind performant.
@@ -172,16 +172,18 @@ public class Renderer {
      */
     public static void drawSprite(int sheetX, int sheetY, String spriteSheet, double x, double y) {
         if (prepareImage(spriteSheet)) {
-            currentImage.draw((float) x, (float) y, 
-                    sheetX * currentGraphicsImage.getTileX(), 
-                    sheetY * currentGraphicsImage.getTileY(), 
-                    sheetX * (currentGraphicsImage.getTileX() + 1), 
-                    sheetY * (currentGraphicsImage.getTileY() + 1));
+            currentImage.draw((float) x, (float) y,
+                    (float) x + currentGraphicsImage.getTileX(),
+                    (float) y + currentGraphicsImage.getTileY(),
+                    sheetX * currentGraphicsImage.getTileX(),
+                    sheetY * currentGraphicsImage.getTileY(),
+                    (sheetX + 1) * currentGraphicsImage.getTileX(),
+                    (sheetY + 1) * currentGraphicsImage.getTileY());
         }
     }
-    
+
     public static void drawSpriteCentered(int sheetX, int sheetY, String spriteSheet, double x, double y) {
-        if (prepareImage(spriteSheet)) {
+        if (prepareImage(spriteSheet)) { // NICHT WEGMACHEN. Wird für die getTiles gebraucht
             drawSprite(sheetX, sheetY, spriteSheet, x - currentGraphicsImage.getTileX() / 2.0, y - currentGraphicsImage.getTileX() / 2.0);
         }
     }
