@@ -275,55 +275,59 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
 
     @Override
     public void command(int button, InteractableGameElement target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
-        GameObject realTarget = target.getTarget();
-
-        if (realTarget != null) { // Es ist angreiffbar!
-            int targetid = realTarget.netID;
-            // Hack, die netId negativ Übertragen, um Focus zu signalisieren
-            if (doubleKlick) {
-                targetid *= -1;
-            }
-
-            // Befehl abschicken:
-            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, targetid, 0, repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
-            // Hier sind unter umständen mehrere Packete nötig:
-            if (repeaters.size() == 2) {
-                // Nein, abbrechen
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, 0, 0, 0, 0));
-            } else if (repeaters.size() != 1) {
-                // Jetzt den Rest abhandeln
-                int[] ids = new int[4];
-                for (int i = 0; i < 4; i++) {
-                    ids[i] = 0;
+        if (target.isAttackableBy(getPlayerId())) {
+            
+            GameObject realTarget = target.getAttackable();
+            if (realTarget != null) {
+                int targetid = realTarget.netID;
+                // Hack, die netId negativ Übertragen, um Focus zu signalisieren
+                if (doubleKlick) {
+                    targetid *= -1;
                 }
-                int nextselindex = 2;
-                int nextidindex = 0;
-                // Solange noch was da ist:
-                while (nextselindex < repeaters.size()) {
-                    // Auffüllen
-                    ids[nextidindex] = repeaters.get(nextselindex).getAbilityCaster().netID;
-                    nextidindex++;
-                    nextselindex++;
-                    // Zu weit?
-                    if (nextidindex == 4) {
-                        // Einmal rausschicken & löschen
-                        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, ids[0], ids[1], ids[2], ids[3]));
-                        for (int i = 0; i < 4; i++) {
-                            ids[i] = 0;
-                        }
-                        nextidindex = 0;
+
+                // Befehl abschicken:
+                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, targetid, 0, repeaters.get(0).getAbilityCaster().netID, repeaters.size() > 1 ? repeaters.get(1).getAbilityCaster().netID : 0));
+                // Hier sind unter umständen mehrere Packete nötig:
+                if (repeaters.size() == 2) {
+                    // Nein, abbrechen
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, 0, 0, 0, 0));
+                } else if (repeaters.size() != 1) {
+                    // Jetzt den Rest abhandeln
+                    int[] ids = new int[4];
+                    for (int i = 0; i < 4; i++) {
+                        ids[i] = 0;
                     }
+                    int nextselindex = 2;
+                    int nextidindex = 0;
+                    // Solange noch was da ist:
+                    while (nextselindex < repeaters.size()) {
+                        // Auffüllen
+                        ids[nextidindex] = repeaters.get(nextselindex).getAbilityCaster().netID;
+                        nextidindex++;
+                        nextselindex++;
+                        // Zu weit?
+                        if (nextidindex == 4) {
+                            // Einmal rausschicken & löschen
+                            rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, ids[0], ids[1], ids[2], ids[3]));
+                            for (int i = 0; i < 4; i++) {
+                                ids[i] = 0;
+                            }
+                            nextidindex = 0;
+                        }
+                    }
+                    // Fertig, den Rest noch senden
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, ids[0], ids[1], ids[2], ids[3]));
                 }
-                // Fertig, den Rest noch senden
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 55, ids[0], ids[1], ids[2], ids[3]));
-            }
 
-            // Effekt an dieser Stelle anzeigen. Erstmal den alten abbrechen, falls noch da.
-            if (sendEffect != null) {
-                sendEffect.kill();
+                // Effekt an dieser Stelle anzeigen. Erstmal den alten abbrechen, falls noch da.
+                if (sendEffect != null) {
+                    sendEffect.kill();
+                }
+                sendEffect = new SendToEffect(realTarget.getCentralPosition().getX(), realTarget.getCentralPosition().getY(), doubleKlick ? SendToEffect.MODE_FOCUSATK : SendToEffect.MODE_ATK);
+                rgi.rogGraphics.content.skyEffects.add(sendEffect);
+            } else {
+                System.out.println("[ERROR]: Target claims to be attackable, but getter returns null");
             }
-            sendEffect = new SendToEffect(realTarget.getCentralPosition().getX(), realTarget.getCentralPosition().getY(), doubleKlick ? SendToEffect.MODE_FOCUSATK : SendToEffect.MODE_ATK);
-            rgi.rogGraphics.content.skyEffects.add(sendEffect);
         }
     }
 
@@ -503,23 +507,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
     public Position getCentralPosition() {
         return mainPosition;
     }
-
-    @Override
-    public boolean isAttackableBy(int playerID) {
-        // TODO: Auf globales Server-Objekt zugreiffen
-        return getPlayerId() != playerID;
-    }
-
-    @Override
-    public GameObject getAttackable() {
-        return this;
-    }
-
-    @Override
-    public GameObject getTarget() {
-        return this;
-    }
-
     @Override
     public void killS() {
         Server.getInnerServer().netmap.killUnit(this);

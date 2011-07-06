@@ -162,8 +162,13 @@ public class NeutralBuilding extends Building {
     }
 
     @Override
-    public GameObject getTarget() {
-        return null; // Man kann keine neutralen Gebäude angreiffen!
+    public boolean isAttackableBy(int playerID) {
+        return false; // Neutrale Gebäude sind natürlich nicht angreiffbar
+    }
+
+    @Override
+    public GameObject getAttackable() {
+        return null; // Neutrale Gebäude sind natürlich nicht angreiffbar.
     }
 }
 

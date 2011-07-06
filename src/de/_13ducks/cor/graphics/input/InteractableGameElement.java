@@ -148,9 +148,15 @@ public interface InteractableGameElement {
     public GameObject getAbilityCaster();
     
     /**
-     * Liefert das Objekt, das als Angriffsziel beim Rechtsklick auf dieses verwendet werden soll.
-     * Liefert null, wenn das Objekt nicht angegriffen werden kann.
-     * @return das Objekt, das als Angriffsziel verwendet werden soll.
+     * Findet heraus, ob dieses IGE von der gegebenen playerID angegriffen werden kann
+     * @param playerId die ID des Angreiffers
+     * @return true, wenn angreifbar
      */
-    public GameObject getTarget();
+    public boolean isAttackableBy(int playerID);
+    
+    /**
+     * Liefert das angreiffbare Ziel. IGE's, die nicht angreiffbar sind, liefern hier null.
+     * @return Das angreiffbare GameObject
+     */
+    public GameObject getAttackable();
 }

@@ -1269,4 +1269,15 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         hash = 61 * hash + this.netID;
         return hash;
     }
+    
+    @Override
+    public boolean isAttackableBy(int playerID) {
+        // TODO: Auf globales Server-Objekt zugreiffen
+        return playerId != playerID;
+    }
+
+    @Override
+    public GameObject getAttackable() {
+        return this;
+    }
 }
