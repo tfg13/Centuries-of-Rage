@@ -154,7 +154,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 }
             } else {
                 // Nichtmehr weiter warten - Bewegung wieder starten
-                System.out.println("GO! Weiter mit " + caster2 + " " + newpos);
+                System.out.println("GO! Weiter mit " + caster2 + " " + newpos + " nach " + target);
                 wait = false;
                 checkCollision = false;
             }
