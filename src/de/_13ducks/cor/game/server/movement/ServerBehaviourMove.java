@@ -192,7 +192,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
-        if (vec.isOpposite(nextVec) && !stopUnit) {
+        if ((vec.isOpposite(nextVec) || newpos.equals(target)) && !stopUnit) {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             caster2.setMainPosition(target.toFPP());
@@ -348,6 +348,13 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @return FloatingPointPosition bis wohin man laufen kann.
      */
     private FloatingPointPosition checkAndMaxMove(FloatingPointPosition from, FloatingPointPosition to) {
+        // Zuallererst: Wir dürfen nicht über das Ziel hinaus laufen:
+        Vector oldtargetVec = new Vector(target.x() - from.x(), target.y() - from.y());
+        Vector newtargetVec = new Vector(target.x() - to.x(), target.y() - to.y());
+        if (oldtargetVec.isOpposite(newtargetVec)) {
+            // Achtung, zu weit!
+            to = target.toFPP();
+        }
         // Zurücksetzen
         lastObstacle = null;
         colliding = false;
