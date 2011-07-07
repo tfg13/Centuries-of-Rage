@@ -75,10 +75,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private static final long waitTime = 3000000000l;
     /**
-     * Die Strecke, die wir nach einem Warten mindestens weiter laufen können müssen, damit es sich lohnt, die Bewegung neu zu starten.
-     */
-    private static final double minMoveDistForStopWait = 0.5;
-    /**
      * Eine minimale Distanz, die Einheiten beim Aufstellen wegen einer Kollision berücksichtigen. 
      * Damit wird verhindert, dass aufgrund von Rundungsfehlern Kolision auf ursprünlich als frei
      * eingestuften Flächen berechnet wird.
@@ -137,7 +133,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Testen, ob wir schon weiterlaufen können:
             // Echtzeitkollision:
             newpos = checkAndMaxMove(oldPos, newpos);
-            if (newpos.getDistance(oldPos) < minMoveDistForStopWait) { // Können wir weiter laufen?
+            if (colliding) {
                 // Immer noch Kollision
                 if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
