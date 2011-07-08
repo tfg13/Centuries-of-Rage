@@ -25,9 +25,11 @@
  */
 package de._13ducks.cor.game;
 
+import de._13ducks.cor.game.client.Client;
 import java.util.ArrayList;
 import java.util.List;
 import de._13ducks.cor.game.client.ClientCore;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.input.SelectionMarker;
 
@@ -465,5 +467,27 @@ public abstract class Building extends GameObject {
         //return mainPosition;
         FloatingPointPosition Pos = new FloatingPointPosition(mainPosition.getX() + (z1 - 1), mainPosition.getY());
         return Pos;
+    }
+    
+    public double getCaptureProgress() {
+        return captureprogress;
+    }
+    
+    public void changeCaptureProgress(int amount, int player) {
+        double capturerate = Math.min(5, amount) * 1.0;
+        captureprogress += capturerate;
+        if (captureprogress > 100) {
+            // fertig übernommen, playerid wechseln
+            this.setPlayerId(player);
+            captureprogress = 0;
+            // an Client senden
+            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) capturerate, player));
+        } else {
+            // an Client senden
+            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits((float) captureprogress), (int) capturerate, player));
+        }
+        if (captureprogress < 0) {
+            captureprogress = 0;
+        }
     }
 }
