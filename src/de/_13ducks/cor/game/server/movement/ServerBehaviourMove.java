@@ -67,7 +67,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long waitStartTime;
     /**
      * Gibt an, ob gerade gewartet wird
-     * (z.B. wenn etwas im WEg steht und man wartet bis es den WEg freimacht)
+     * (z.B. wenn etwas im Weg steht und man wartet bis es den Weg freimacht)
      */
     private boolean wait;
     /**
