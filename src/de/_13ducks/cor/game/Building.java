@@ -72,8 +72,12 @@ public abstract class Building extends GameObject {
      */
     private double buildprogress;
     /**
+     * Der derzeitige Eroberungsfortschritt, in 0.Prozent
+     */    
+    private double captureprogress;
+    /**
      * Liste mit Units, die sich derzeit in diesem Gebäude befinden.
-     */
+     */    
     private List<Unit> intraUnits;
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
@@ -371,6 +375,30 @@ public abstract class Building extends GameObject {
         this.buildprogress = buildprogress;
         if (buildprogress >= 1) {
             this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
+        }
+    }
+    
+        /**
+     * Der derzeitige Baufortschritt, in 0.Prozent
+     * Nur relevant, wenn lifeStatus noch auf unborn steht.
+     * @return the buildprogress
+     */
+    public double getCaptureprogress() {
+        return captureprogress;
+    }
+
+    /**
+     * Der derzeitige Baufortschritt, in 0.Prozent
+     * Nur relevant, wenn lifeStatus noch auf unborn steht.
+     * @param buildprogress the buildprogress to set
+     */
+    public void setCaptureprogress(double capprogress) {
+        this.captureprogress = capprogress;
+        if (this.captureprogress < 0) {
+            this.captureprogress = 0;
+        }
+        if (captureprogress >= 1) {
+            //Gebäude erobert
         }
     }
 

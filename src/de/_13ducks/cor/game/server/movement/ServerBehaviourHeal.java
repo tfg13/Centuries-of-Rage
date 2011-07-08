@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.game.server.movement;
 
-// Heilende Gebäude
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -38,6 +37,10 @@ import de._13ducks.cor.map.fastfindgrid.Traceable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Wird von Gebäuden zum Heilen von Einheiten genutzt
+ */
 public class ServerBehaviourHeal extends ServerBehaviour {
 
     GameObject caster2;
@@ -65,27 +68,19 @@ public class ServerBehaviourHeal extends ServerBehaviour {
         Position Mitte1 = caster2.getCentralPosition();
         FloatingPointPosition MitteFP = new FloatingPointPosition(Mitte1);
 
-        int kreis = 2;
-        // Startfeld des Kreises:
-        Position kreismember = Mitte1;
-        if (Mitte1.getX() % 2 != Mitte1.getY() % 2) {
-            kreismember.setY(kreismember.getY() - 1);
-            kreis = 3;
-        }
-
         // Unit1en in Umgebung suchen
         List<Moveable> movables = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(MitteFP, 30, null);
 
+        // Für jede Einheit:
         for (int i = 0; i < movables.size(); i++) {
             GameObject go = movables.get(i).getAttackable();
             if (go instanceof Unit) {
                 Unit unit = (Unit) go;
-                double dx = unit.getPrecisePosition().getfX() - MitteFP.getfX();
-                double dy = unit.getPosition().getfY() - MitteFP.getfY();
                 // Eigener Spieler?
                 if (caster2.getPlayerId() == unit.getPlayerId()) {
                     // Überhaupt richtig existierend?
                     if (unit != null && unit.getLifeStatus() == GameObject.LIFESTATUS_ALIVE) {
+                        // Heilen.
                         if (unit.getHitpoints() + caster2.getHealRate() <= unit.getMaxhitpoints()) {
                             unit.healTo(unit.getHitpoints() + caster2.getHealRate());
                             rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 19, unit.netID, unit.getPlayerId(), unit.getHitpoints(), 0));
