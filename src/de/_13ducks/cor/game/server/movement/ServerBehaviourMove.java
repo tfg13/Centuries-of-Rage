@@ -433,4 +433,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Bis hierhin die Route also freigeben:
         return to;
     }
+
+    /**
+     * Hiermit lässt sich herausfinden, ob dieser mover gerade wartet, weil jemand im Weg steht.
+     * @return 
+     */
+    boolean isWaiting() {
+        return wait;
+    }
 }
