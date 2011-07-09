@@ -189,7 +189,19 @@ public class GroupManager {
      * @param obstacle - Das Obnjekt, mit dem der LowlevelManager kollidiert
      */
     public boolean collisionDetected(Moveable mover, Moveable obstacle) {
-        // TODO asuweichziel berechnen oder wartebefehl geben
+        ServerBehaviourMove obstMove = obstacle.getLowLevelManager();
+        if (obstMove.isMoving() && !obstMove.isWaiting()) {
+            // Wenn die andere Einheit läuft auf jeden Fall selber warten.
+            return true;
+        } else if (obstMove.isMoving() && obstMove.isWaiting()) {
+            // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
+            return true;
+        } else if (!obstMove.isMoving()) {
+            // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
+            //TODO: Ändern, sobald möglich
+            // return false;
+        }
+        
         return true;
     }
 
