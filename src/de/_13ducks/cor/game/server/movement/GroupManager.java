@@ -112,6 +112,7 @@ public class GroupManager {
                         }
 
                         // Weg setzen
+                        member.newWay();
                         for (SimplePosition node : optiPath) {
                             member.addWaypoint(node);
                         }
@@ -154,6 +155,7 @@ public class GroupManager {
                     }
 
                     // Weg setzen
+                    member.newWay();
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
                     }
@@ -242,6 +244,7 @@ public class GroupManager {
                 if (optiPath != null) {
 
                     // Weg setzen
+                    member.newWay();
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
                     }

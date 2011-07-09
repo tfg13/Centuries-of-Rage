@@ -33,19 +33,22 @@ import java.util.LinkedList;
  * Ein Member einer Gruppe.
  */
 public class GroupMember {
-    
+
     private Moveable mover;
     private LinkedList<SimplePosition> path;
-    
-    public GroupMember(Moveable mover) {
+    private LinkedList<SectorChangingEdge> sectorBorders;
+    private SimplePosition lastStart;
+
+    GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
+        sectorBorders = new LinkedList<SectorChangingEdge>();
     }
 
     /**
      * @return the mover
      */
-    public Moveable getMover() {
+    Moveable getMover() {
         return mover;
     }
 
@@ -55,7 +58,7 @@ public class GroupMember {
         hash = 89 * hash + (this.mover != null ? this.mover.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof GroupMember) {
@@ -64,33 +67,85 @@ public class GroupMember {
         }
         return false;
     }
-    
+
+    /**
+     * Setzt den Startpunkt für eine Bewegung. Muss für die Sektorgrenzenberechnung
+     * bekannt sein.
+     */
+    void newWay() {
+        lastStart = mover.getPrecisePosition();
+        System.out.println("NEW " + lastStart);
+    }
+
     /**
      * Fügt einen neuen Wegpunkt für diese Einheit ein.
      * Der Wegpunkt wird an das ende des geplanten Weges gesetzt.
      * Der Wegpunkt wird nur eingefügt, wenn er nicht schon am Ende ist.
      * @param waypoint 
      */
-    public void addWaypoint(SimplePosition waypoint) {
+    void addWaypoint(SimplePosition waypoint) {
+        System.out.println("ADD " + waypoint);
         if (path.isEmpty() || !path.getLast().equals(waypoint)) {
+            // Eventuell den Vorgänger löschen und stattdessen eine Sektorkante einsetzen
+            if (!path.isEmpty()) {
+                SimplePosition last = path.getLast();
+                SimplePosition preLast = path.size() > 1 ? path.get(path.size() - 2) : lastStart;
+                Vector lastVec = new Vector(last.x() - preLast.x(), last.y() - preLast.y()).normalize();
+                Vector nextVec = new Vector(waypoint.x() - last.x(), waypoint.y() - last.y()).normalize();
+                System.out.println("lw " + lastVec + " nv " + nextVec);
+                // Ersetzen, wenn Position last auf gerader Strecke liegt, also die Vektoren die gleiche Richtung haben
+                if (Math.abs(lastVec.x() - nextVec.x()) < 0.01 && Math.abs(lastVec.y() - nextVec.y()) < 0.01) { // Dies ist die normale equals mit mehr Toleranz gegen Rundungsfehler
+                    System.out.println("RM " + path.removeLast());
+                    //path.removeLast();
+                    // ADD CHANGINGEDGE
+                }
+            }
             path.add(waypoint);
         }
     }
-    
+
     /**
      * Löscht alle zukünftigen Wegpunkte.
      */
-    public void clearWaypoints() {
+    void clearWaypoints() {
         path.clear();
     }
-    
+
     /**
      * Holt den nächsten Wegpunkt dieser Einheit.
      * Lösch ihn anschließend aus der Route.
      * @return 
      */
-    public SimplePosition popWaypoint() {
+    SimplePosition popWaypoint() {
         return path.pollFirst();
     }
-    
+
+    /**
+     * Wird regelmäßig vom LowLevel aufgerufen, um die nächste Sektorgrenze zu suchen.
+     * @return 
+     */
+    Edge nextSectorBorder() {
+        return sectorBorders.element();
+    }
+
+    /**
+     * Wird vom LowLevel aufgerufen, um anzuzeigen, dass eine weitere Sektorgrenze überschritten wurde.
+     */
+    void borderCrossed() {
+        sectorBorders.pollFirst();
+    }
+
+    /**
+     * Findet einen Sektor, den beide Knoten gemeinsam haben
+     * @param n1 Knoten 1
+     * @param n2 Knoten 2
+     */
+    private FreePolygon commonSector(Node n1, Node n2) {
+        for (FreePolygon poly : n1.getPolygons()) {
+            if (n2.getPolygons().contains(poly)) {
+                return poly;
+            }
+        }
+        return null;
+    }
 }
