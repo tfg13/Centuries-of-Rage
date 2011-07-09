@@ -103,7 +103,7 @@ public abstract class ServerBehaviour implements Pauseable {
     public boolean isActive() {
         return active;
     }
-    
+
     /**
      * Lässt das Behaviour schnellsmöglich wieder drankommen.
      * Normalerweise im nächsten Tick, also praktisch sofort.
@@ -138,9 +138,25 @@ public abstract class ServerBehaviour implements Pauseable {
      * Führt das Behaviour aus. Sollte *nicht* direkt aufgerufen werden.
      * Wird automatisch aufgerufen, wenn der Cooldown abläuft.
      * Alles, was das Behaviour dann tun soll muss hier rein.
-     *
      */
     public abstract void execute();
+
+    /**
+     * Führt das Behaviour sofort aus.
+     * ACHTUNG! Es wird direkt im aufrufenden Thread ausgeführt, es gibt also
+     * möglicherweise dort Verzögerungen und oder Nebenläufigkeitsprobleme.
+     */
+    public synchronized void externalExecute() {
+        // Timer neu setzen
+        nextUse = System.currentTimeMillis() + delay;
+
+        // Ausführen
+        try {
+            this.execute();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     /**
      * Verarbeitet die Signale, die dieses Behaviour betreffend empfangen werden.

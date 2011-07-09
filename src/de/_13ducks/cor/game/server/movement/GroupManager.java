@@ -75,6 +75,7 @@ public class GroupManager {
     public synchronized void add(Moveable mover) {
         GroupMember tempmem = new GroupMember(mover);
         if (!myMovers.contains(tempmem)) {
+            mover.getLowLevelManager().setPathManager(tempmem);
             myMovers.add(tempmem);
         }
     }
@@ -112,6 +113,7 @@ public class GroupManager {
                         }
 
                         // Weg setzen
+                        member.newWay();
                         for (SimplePosition node : optiPath) {
                             member.addWaypoint(node);
                         }
@@ -154,6 +156,7 @@ public class GroupManager {
                     }
 
                     // Weg setzen
+                    member.newWay();
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
                     }
@@ -166,45 +169,26 @@ public class GroupManager {
     }
 
     /**
-     * Eine LowLevelManager hat sein Wegziel erreicht und will wissen, wie die Route weitergeht
-     * Gibt false zurück wenns nicht weitergeht und liefert true zurück, wenns weiter geht und das
-     * neue Ziel schon gesetzt wurde.
-     * @return true, wenn neues Ziel gesetzt sonst false
-     */
-    public boolean reachedTarget(Moveable mover) {
-        GroupMember member = memberForMover(mover);
-        SimplePosition nextPoint = member.popWaypoint();
-        if (nextPoint != null) {
-            mover.getLowLevelManager().setTargetVector(nextPoint);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Ein LowLevelManager hat ein Hindernis auf seinem Weg und will wissen, was er tun soll
      * Gibt true zurück, wenn der LowLevelManager warten soll, oder false wenn ein Ausweichziel gesetzt wurde
      * @param mover - der LowLevelManager, der die Kollision festgestellt hat
      * @param obstacle - Das Obnjekt, mit dem der LowlevelManager kollidiert
      */
     public boolean collisionDetected(Moveable mover, Moveable obstacle) {
-        // TODO asuweichziel berechnen oder wartebefehl geben
-        return true;
-    }
-
-    /**
-     * Sucht den GroupMember zu einem Mover raus
-     * @param mover
-     * @return 
-     */
-    private GroupMember memberForMover(Moveable mover) {
-        for (GroupMember member : myMovers) {
-            if (member.getMover().equals(mover)) {
-                return member;
-            }
+        ServerBehaviourMove obstMove = obstacle.getLowLevelManager();
+        if (obstMove.isMoving() && !obstMove.isWaiting()) {
+            // Wenn die andere Einheit läuft auf jeden Fall selber warten.
+            return true;
+        } else if (obstMove.isMoving() && obstMove.isWaiting()) {
+            // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
+            return true;
+        } else if (!obstMove.isMoving()) {
+            // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
+            //TODO: Ändern, sobald möglich
+            // return false;
         }
-        return null;
+        
+        return true;
     }
 
     private double lowestSpeed(ArrayList<GroupMember> myMovers) {
@@ -230,6 +214,7 @@ public class GroupManager {
                 if (optiPath != null) {
 
                     // Weg setzen
+                    member.newWay();
                     for (SimplePosition node : optiPath) {
                         member.addWaypoint(node);
                     }

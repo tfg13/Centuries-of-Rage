@@ -36,19 +36,22 @@ public class GroupMember {
     
     private Moveable mover;
     private LinkedList<SimplePosition> path;
+    private LinkedList<SectorChangingEdge> sectorBorders;
+    private Node lastStart;
     
-    public GroupMember(Moveable mover) {
+    GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
+        sectorBorders = new LinkedList<SectorChangingEdge>();
     }
 
     /**
      * @return the mover
      */
-    public Moveable getMover() {
+    Moveable getMover() {
         return mover;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -64,33 +67,105 @@ public class GroupMember {
         }
         return false;
     }
-    
+
+    /**
+     * Setzt den Startpunkt für eine Bewegung. Muss für die Sektorgrenzenberechnung
+     * bekannt sein.
+     */
+    void newWay() {
+        lastStart = mover.getPrecisePosition().toNode();
+        lastStart.addPolygon(mover.getMyPoly());
+    }
+
     /**
      * Fügt einen neuen Wegpunkt für diese Einheit ein.
      * Der Wegpunkt wird an das ende des geplanten Weges gesetzt.
      * Der Wegpunkt wird nur eingefügt, wenn er nicht schon am Ende ist.
      * @param waypoint 
      */
-    public void addWaypoint(SimplePosition waypoint) {
+    void addWaypoint(SimplePosition waypoint) {
         if (path.isEmpty() || !path.getLast().equals(waypoint)) {
+            // Eventuell den Vorgänger löschen
+            if (!path.isEmpty()) {
+                SimplePosition last = path.getLast();
+                SimplePosition preLast = path.size() > 1 ? path.get(path.size() - 2) : lastStart;
+                Vector lastVec = new Vector(last.x() - preLast.x(), last.y() - preLast.y()).normalize();
+                Vector nextVec = new Vector(waypoint.x() - last.x(), waypoint.y() - last.y()).normalize();
+                // Ersetzen, wenn Position last auf gerader Strecke liegt, also die Vektoren die gleiche Richtung haben
+                if (Math.abs(lastVec.x() - nextVec.x()) < 0.01 && Math.abs(lastVec.y() - nextVec.y()) < 0.01) { // Dies ist die normale equals mit mehr Toleranz gegen Rundungsfehler
+                    // lastStart muss auch geändert werden (wichtig für Fall size() == 1). Sonst funktioniert commonSector nicht.
+                    lastStart = (Node) path.removeLast();
+                }
+                Node n1 = (Node) preLast;
+                Node n2 = (Node) last;
+                Node n3 = (Node) waypoint;
+                Vector ortho1 = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
+                Vector ortho2 = new Vector(n3.y() - n2.y(), n2.x() - n3.x()).normalize();
+                Vector ortho = ortho1.add(ortho2);
+                sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), commonSector(n1, n2), commonSector(n2, n3)));
+            }
             path.add(waypoint);
         }
     }
-    
+
     /**
      * Löscht alle zukünftigen Wegpunkte.
      */
-    public void clearWaypoints() {
+    void clearWaypoints() {
         path.clear();
     }
-    
+
     /**
      * Holt den nächsten Wegpunkt dieser Einheit.
      * Lösch ihn anschließend aus der Route.
      * @return 
      */
-    public SimplePosition popWaypoint() {
+    SimplePosition popWaypoint() {
         return path.pollFirst();
     }
-    
+
+    /**
+     * Wird regelmäßig vom LowLevel aufgerufen, um die nächste Sektorgrenze zu suchen.
+     * @return 
+     */
+    SectorChangingEdge nextSectorBorder() {
+        return sectorBorders.peekFirst();
+    }
+
+    /**
+     * Wird vom LowLevel aufgerufen, um anzuzeigen, dass eine weitere Sektorgrenze überschritten wurde.
+     */
+    SectorChangingEdge borderCrossed() {
+        return sectorBorders.pollFirst();
+    }
+
+    /**
+     * Findet einen Sektor, den beide Knoten gemeinsam haben
+     * @param n1 Knoten 1
+     * @param n2 Knoten 2
+     */
+    private FreePolygon commonSector(Node n1, Node n2) {
+        for (FreePolygon poly : n1.getPolygons()) {
+            if (n2.getPolygons().contains(poly)) {
+                return poly;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Eine LowLevelManager hat sein Wegziel erreicht und will wissen, wie die Route weitergeht
+     * Gibt false zurück wenns nicht weitergeht und liefert true zurück, wenns weiter geht und das
+     * neue Ziel schon gesetzt wurde.
+     * @return true, wenn neues Ziel gesetzt sonst false
+     */
+    public boolean reachedTarget(Moveable mover) {
+        SimplePosition nextPoint = popWaypoint();
+        if (nextPoint != null) {
+            mover.getLowLevelManager().setTargetVector(nextPoint);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
