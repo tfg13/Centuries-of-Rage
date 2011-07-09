@@ -75,7 +75,6 @@ public class GroupMember {
     void newWay() {
         lastStart = mover.getPrecisePosition().toNode();
         lastStart.addPolygon(mover.getMyPoly());
-        System.out.println("NEW " + lastStart);
     }
 
     /**
@@ -85,26 +84,24 @@ public class GroupMember {
      * @param waypoint 
      */
     void addWaypoint(SimplePosition waypoint) {
-        System.out.println("ADD " + waypoint);
         if (path.isEmpty() || !path.getLast().equals(waypoint)) {
-            // Eventuell den Vorgänger löschen und stattdessen eine Sektorkante einsetzen
+            // Eventuell den Vorgänger löschen
             if (!path.isEmpty()) {
                 SimplePosition last = path.getLast();
                 SimplePosition preLast = path.size() > 1 ? path.get(path.size() - 2) : lastStart;
                 Vector lastVec = new Vector(last.x() - preLast.x(), last.y() - preLast.y()).normalize();
                 Vector nextVec = new Vector(waypoint.x() - last.x(), waypoint.y() - last.y()).normalize();
-                System.out.println("lw " + lastVec + " nv " + nextVec);
                 // Ersetzen, wenn Position last auf gerader Strecke liegt, also die Vektoren die gleiche Richtung haben
                 if (Math.abs(lastVec.x() - nextVec.x()) < 0.01 && Math.abs(lastVec.y() - nextVec.y()) < 0.01) { // Dies ist die normale equals mit mehr Toleranz gegen Rundungsfehler
-                    System.out.println("RM " + path.removeLast());
-                    //path.removeLast();
-                    // ADD CHANGINGEDGE
-                    Node n1 = (Node) preLast;
-                    Node n2 = (Node) last;
-                    Node n3 = (Node) waypoint;
-                    Vector ortho = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
-                    sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), commonSector(n1, n2), commonSector(n2, n3)));
+                    path.removeLast();
                 }
+                Node n1 = (Node) preLast;
+                Node n2 = (Node) last;
+                Node n3 = (Node) waypoint;
+                Vector ortho1 = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
+                Vector ortho2 = new Vector(n3.y() - n2.y(), n2.x() - n3.x()).normalize();
+                Vector ortho = ortho1.add(ortho2);
+                sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), commonSector(n1, n2), commonSector(n2, n3)));
             }
             path.add(waypoint);
         }
