@@ -37,7 +37,7 @@ public class GroupMember {
     private Moveable mover;
     private LinkedList<SimplePosition> path;
     private LinkedList<SectorChangingEdge> sectorBorders;
-    private SimplePosition lastStart;
+    private Node lastStart;
 
     GroupMember(Moveable mover) {
         this.mover = mover;
@@ -73,7 +73,8 @@ public class GroupMember {
      * bekannt sein.
      */
     void newWay() {
-        lastStart = mover.getPrecisePosition();
+        lastStart = mover.getPrecisePosition().toNode();
+        lastStart.addPolygon(mover.getMyPoly());
         System.out.println("NEW " + lastStart);
     }
 
@@ -98,6 +99,11 @@ public class GroupMember {
                     System.out.println("RM " + path.removeLast());
                     //path.removeLast();
                     // ADD CHANGINGEDGE
+                    Node n1 = (Node) preLast;
+                    Node n2 = (Node) last;
+                    Node n3 = (Node) waypoint;
+                    Vector ortho = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
+                    sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), commonSector(n1, n2), commonSector(n2, n3)));
                 }
             }
             path.add(waypoint);
