@@ -29,6 +29,7 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
+import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**
@@ -46,10 +47,14 @@ public class C057_CAPTURE extends ClientCommand {
        Building building = rgi.mapModule.getBuildingviaID(netid);
        if (building != null) {
            if (Float.isNaN(captureprogress)) {
-               // bedeutet fertig erobert
+               // bedeutet fertig erobert -> Gebäude kriegt neuen Besitzer
                Client.getInnerClient().mapModule.getBuildingviaID(netid).setPlayerId(playerid);
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureprogress(0.0);
+               ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
+               building.addClientBehaviour(prod);
            } else {
                // grafisch darstellen
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureprogress(captureprogress);
            }
        } else {
            System.out.println("Panik! C057_CAPTURE pfuscht");
