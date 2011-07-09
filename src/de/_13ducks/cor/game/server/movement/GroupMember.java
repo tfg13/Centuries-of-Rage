@@ -33,12 +33,12 @@ import java.util.LinkedList;
  * Ein Member einer Gruppe.
  */
 public class GroupMember {
-
+    
     private Moveable mover;
     private LinkedList<SimplePosition> path;
     private LinkedList<SectorChangingEdge> sectorBorders;
     private Node lastStart;
-
+    
     GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
@@ -51,14 +51,14 @@ public class GroupMember {
     Moveable getMover() {
         return mover;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 89 * hash + (this.mover != null ? this.mover.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (o instanceof GroupMember) {
@@ -93,7 +93,8 @@ public class GroupMember {
                 Vector nextVec = new Vector(waypoint.x() - last.x(), waypoint.y() - last.y()).normalize();
                 // Ersetzen, wenn Position last auf gerader Strecke liegt, also die Vektoren die gleiche Richtung haben
                 if (Math.abs(lastVec.x() - nextVec.x()) < 0.01 && Math.abs(lastVec.y() - nextVec.y()) < 0.01) { // Dies ist die normale equals mit mehr Toleranz gegen Rundungsfehler
-                    path.removeLast();
+                    // lastStart muss auch geändert werden (wichtig für Fall size() == 1). Sonst funktioniert commonSector nicht.
+                    lastStart = (Node) path.removeLast();
                 }
                 Node n1 = (Node) preLast;
                 Node n2 = (Node) last;
@@ -127,15 +128,15 @@ public class GroupMember {
      * Wird regelmäßig vom LowLevel aufgerufen, um die nächste Sektorgrenze zu suchen.
      * @return 
      */
-    Edge nextSectorBorder() {
-        return sectorBorders.element();
+    SectorChangingEdge nextSectorBorder() {
+        return sectorBorders.peekFirst();
     }
 
     /**
      * Wird vom LowLevel aufgerufen, um anzuzeigen, dass eine weitere Sektorgrenze überschritten wurde.
      */
-    void borderCrossed() {
-        sectorBorders.pollFirst();
+    SectorChangingEdge borderCrossed() {
+        return sectorBorders.pollFirst();
     }
 
     /**
@@ -150,5 +151,21 @@ public class GroupMember {
             }
         }
         return null;
+    }
+
+    /**
+     * Eine LowLevelManager hat sein Wegziel erreicht und will wissen, wie die Route weitergeht
+     * Gibt false zurück wenns nicht weitergeht und liefert true zurück, wenns weiter geht und das
+     * neue Ziel schon gesetzt wurde.
+     * @return true, wenn neues Ziel gesetzt sonst false
+     */
+    public boolean reachedTarget(Moveable mover) {
+        SimplePosition nextPoint = popWaypoint();
+        if (nextPoint != null) {
+            mover.getLowLevelManager().setTargetVector(nextPoint);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

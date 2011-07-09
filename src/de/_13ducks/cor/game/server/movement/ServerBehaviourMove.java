@@ -61,6 +61,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private long lastTick;
     private SimplePosition clientTarget;
     private MovementMap moveMap;
+    private GroupMember pathManager;
     /**
      * Die Systemzeit zu dem Zeitpunkt, an dem mit dem Warten begonnen wurde
      */
@@ -124,7 +125,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         long ticktime = System.nanoTime();
         vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
-        
+
         // Ob die Kollision später noch geprüft werden muss. Kann durch ein Weiterlaufen nach warten überschrieben werden.
         boolean checkCollision = true;
 
@@ -175,7 +176,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
                     // Der Client muss das auch mitbekommen
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
-                    caster2.setMainPosition(newpos);
+                    setMoveable(oldPos, newpos);
                     clientTarget = null;
                     System.out.println("WAIT-COLLISION " + caster2 + " with " + lastObstacle + " stop at " + newpos);
                     return; // Nicht weiter ausführen!
@@ -191,27 +192,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if ((vec.isOpposite(nextVec) || newpos.equals(target)) && !stopUnit) {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
-            caster2.setMainPosition(target.toFPP());
+            setMoveable(oldPos, target.toFPP());
             caster3.setCell(Server.getInnerServer().netmap.getFastFindGrid().getNewCell(caster3));
             SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
-            if (!caster2.getMidLevelManager().reachedTarget(caster2)) {
+            if (!pathManager.reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
                 target = null;
                 stopUnit = false; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
                 deactivate();
-            } else {
-                // Herausfinden, ob der Sektor gewechselt wurde (Movemap)
-
-                SimplePosition newTar = target;
-                if (newTar instanceof Node && oldTar instanceof Node) {
-                    // Nur in diesem Fall kommt ein Sektorwechsel in Frage
-                    FreePolygon sector = commonSector((Node) newTar, (Node) oldTar);
-                    // Sektor geändert?
-                    if (!sector.equals(caster2.getMyPoly())) {
-                        caster2.setMyPoly(sector);
-                    }
-                }
             }
 
         } else {
@@ -220,17 +209,27 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Der Client muss das auch mitbekommen
                 rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
                 System.out.println("MANUSTOP: " + caster2 + " at " + newpos);
-                caster2.setMainPosition(newpos);
+                setMoveable(oldPos, newpos);
                 target = null;
                 stopUnit = false;
                 deactivate();
             } else {
                 // Weiterlaufen
-                caster2.setMainPosition(newpos);
+                setMoveable(oldPos, newpos);
                 lastTick = System.nanoTime();
             }
         }
 
+    }
+
+    private void setMoveable(FloatingPointPosition from, FloatingPointPosition to) {
+        caster2.setMainPosition(to);
+        // Neuer Sektor?
+        while (pathManager.nextSectorBorder() != null && pathManager.nextSectorBorder().sidesDiffer(from, to)) {
+            // Ja, alten löschen und neuen setzen!
+            SectorChangingEdge edge = pathManager.borderCrossed();
+            caster2.setMyPoly(edge.getNext(caster2.getMyPoly()));
+        }
     }
 
     @Override
@@ -421,7 +420,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                 colliding = true;
                 lastObstacle = t;
-                
+
                 // Falls wir so weit zurück mussten, dass es gar netmehr weiter geht:
                 if (from.equals(to)) {
                     return from;
@@ -440,5 +439,19 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     boolean isWaiting() {
         return wait;
+    }
+
+    /**
+     * @return the pathManager
+     */
+    GroupMember getPathManager() {
+        return pathManager;
+    }
+
+    /**
+     * @param pathManager the pathManager to set
+     */
+    void setPathManager(GroupMember pathManager) {
+        this.pathManager = pathManager;
     }
 }
