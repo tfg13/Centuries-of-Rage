@@ -36,12 +36,12 @@ import org.apache.commons.collections.buffer.PriorityBuffer;
  * Pathfinders.
  * @author tfg
  */
-public final class ServerPathfinder {
+public final class SectorPathfinder {
 
     /**
      * Niemand kann einen Pathfinder erstellen, dies ist eine Utilityclass
      */
-    private ServerPathfinder() {
+    private SectorPathfinder() {
     }
 
     public static synchronized List<Node> findPath(SimplePosition start, SimplePosition target, FreePolygon startSector, MovementMap moveMap) {
