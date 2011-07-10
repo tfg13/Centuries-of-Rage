@@ -25,10 +25,35 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.Moveable;
+import java.util.List;
+
 /**
  * Dieser Pathfinder sucht Wege innerhalb von freien Flächen um (bewegliche)
  * Hindernisse herum.
  */
 public class SubSectorPathfinder {
+    
+    /**
+     * Sucht einen Weg auf Freiflächen (FreePolygon) um ein Hindernis herum.
+     * Beachtet weitere Hindernisse auf der "Umleitung".
+     * Sucht die Route nur bis zum nächsten Ziel.
+     * Der Mover darf sich nicht bereits auf einer Umleitung befinden,
+     * diese muss ggf vorher gelöscht worden sein.
+     * @param mover
+     * @param obstacle
+     * @return 
+     */
+    static List<Node> searchDiversion(Moveable mover, Moveable obstacle) {
+        /**
+         * Wegsuche in 2 Schritten:
+         * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
+         * 2. Suchen einer Route in diesem Graphen mittels A* (A-Star).
+         */
+        throw new UnsupportedOperationException("not yet implemented.");
+    }
+    
+    
+    
     
 }
