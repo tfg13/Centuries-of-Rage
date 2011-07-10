@@ -194,7 +194,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             setMoveable(oldPos, target.toFPP());
             caster3.setCell(Server.getInnerServer().netmap.getFastFindGrid().getNewCell(caster3));
-            SimplePosition oldTar = target;
             // Neuen Wegpunkt anfordern:
             if (!pathManager.reachedTarget(caster2)) {
                 // Wenn das false gibt, gibts keine weiteren, dann hier halten.
