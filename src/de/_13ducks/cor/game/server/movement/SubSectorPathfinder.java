@@ -26,6 +26,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.Moveable;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -50,10 +52,42 @@ public class SubSectorPathfinder {
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
          * 2. Suchen einer Route in diesem Graphen mittels A* (A-Star).
          */
+        // Aufbauen des Graphen:
+        ArrayList<SubSectorNode> graph = new ArrayList<SubSectorNode>(); // Der Graph selber
+        LinkedList<Moveable> openObstacles = new LinkedList<Moveable>(); // Die Liste mit noch zu untersuchenden Knoten
+        ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitetet Knoten
+        
+        openObstacles.add(obstacle); // Startpunkt des Graphen.
+        closedObstacles.add(mover); // Wird im Graphen nicht mitberücksichtigt.
+        double radius = mover.getRadius();
+        
+        while (!openObstacles.isEmpty()) {
+            // Neues Element aus der Liste holen und als bearbeitet markieren.
+            Moveable work = openObstacles.poll();
+            closedObstacles.add(work);
+            // Muss mit jedem Knoten verbunden werden, mit dem es sich schneidet.
+            for (int i = 0; i < graph.size(); i++) {
+                
+            }
+        }
+        
         throw new UnsupportedOperationException("not yet implemented.");
     }
     
     
+    /**
+     * Ein Knoten des Graphen
+     */
+    private class SubSectorNode {
+        
+    }
+    
+    /**
+     * Eine Kante des Graphen
+     */
+    private class SubSectorEdge {
+        
+    }
     
     
 }
