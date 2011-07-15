@@ -57,13 +57,15 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 	int spielerzahl = RandomMapBuilder.RandomRogMap.getPlayernumber();
 
 	double randompos = Math.random() * umfang;
+        
+        ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
 
 	for (int i = 1; i <= spielerzahl; i++) { //für jeden Spieler
 	    DescParamsBuilding param = new DescParamsBuilding();
 	    param.setDescTypeId(1);
 	    param.setDescName("Village Center");
-	    param.setHitpoints(2000);
-	    param.setMaxhitpoints(2000);
+	    param.setHitpoints(5000);
+	    param.setMaxhitpoints(5000);
 
 	    param.setZ1(12);
 	    param.setZ2(12);
@@ -100,20 +102,7 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
 	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 
-	    //Kollision nichtmehr nötig.
-	    for (int z1c = 0; z1c < 12; z1c++) {
-		for (int z2c = 0; z2c < 12; z2c++) {
-		    RandomMapBuilder.RandomRogMap.getVisMap()[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setGround_tex("img/ground/testground4.png");
-		}
-	    }
-
-	    StartG.add(Haus); //Startgebäude in Arraylist eintragen
-	}
-
-	ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
-
-	for (int i = 0; i < StartG.size(); i++) {
-	    buildingList.add(StartG.get(i)); //Startgebäude setzen
+	    buildingList.add(Haus); //Startgebäude in Arraylist eintragen
 	}
     }
 }

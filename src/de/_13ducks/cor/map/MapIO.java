@@ -105,7 +105,7 @@ public class MapIO {
             // DESC-Settings lesen:
             // Einglesen, normal weitermachen.
 
-	    GameDescParams descParameters = DescIO.readDesc(path, mapMode, rgi, serverrgi);
+            GameDescParams descParameters = DescIO.readDesc(path, mapMode, rgi, serverrgi);
 
 
             // Leere Map im Speicher anlegen
@@ -204,19 +204,16 @@ public class MapIO {
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     // Ok, das ist nur aus Kompatibilitätsgründen da
                 }
-                if (s == null || s.equals("p")) {
-                    // Players Building
-                    Building b = null;
-                    b = (Building) descParameters.getBuildings().get(desc).getCopy(netId);
-                    b.setPlayerId(playerId);
-                    b.setMainPosition(new Position(x, y));
-                    buildingList.add(b);
-                } else if (s.equals("n")) {
+
+                // Building
+                Building b = null;
+                b = (Building) descParameters.getBuildings().get(desc).getCopy(netId);
+                b.setPlayerId(playerId);
+                b.setMainPosition(new Position(x, y));
+                buildingList.add(b);
+                if (s.equals("n")) {
                     // Neutral Building!
-                    Building nb = new Building(netId, new Position(x, y), true);
-                    nb.setMainPosition(new Position(x, y));
-                    buildingList.add(nb);
-                    
+                    b.setNeutral(true);
                 }
             }
 

@@ -27,6 +27,7 @@ package de._13ducks.cor.tools.randommapbuilder;
 
 import java.util.ArrayList;
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.DescParamsBuilding;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.FloatingPointPosition;
 
@@ -173,17 +174,27 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    int x = wippos.get(i).getX();
 	    int y = wippos.get(i).getY();
 
-	    Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y), true);
 
-	    buildingList.add(Haus);
+	    DescParamsBuilding param = new DescParamsBuilding();
+	    param.setDescTypeId(1);
+	    param.setDescName("Village Center");
+	    param.setHitpoints(5000);
+	    param.setMaxhitpoints(5000);
+            param.setNeutral(true);
+	    param.setZ1(12);
+	    param.setZ2(12);
 
+	    Building tmp = new Building(param);
+            //Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y), true);
+	    Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
+            System.out.println("param.getDescId " + param.getDescTypeId());
+	    Haus.getGraphicsData().offsetY = 8;
+	    Haus.setPlayerId(0);
+	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e2.png";
             
-	    for (int z1c = 0; z1c < 12; z1c++) {
-		for (int z2c = 0; z2c < 12; z2c++) {
-		    RandomMapBuilder.RandomRogMap.getVisMap()[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setGround_tex("img/ground/testground1.png");
-		}
-	    }
+            Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
             
+	    buildingList.add(Haus);            
 	}
     }
 }

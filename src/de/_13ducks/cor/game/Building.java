@@ -142,6 +142,9 @@ public class Building extends GameObject {
         visPositions = new Position[4];
         this.neutral = neutral;
         setVisrange(7); // Default für Gebäude
+        z1 = 12;
+        z2 = 12;
+        positions = new Position[z1 * z2];
     }
 
     /**
@@ -481,9 +484,6 @@ public class Building extends GameObject {
         if (this.captureprogress < 0) {
             this.captureprogress = 0;
         }
-        if (captureprogress >= 1) {
-            //Gebäude erobert
-        }
     }
 
     /**
@@ -607,6 +607,7 @@ public class Building extends GameObject {
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         double progress = this.getCaptureProgress();
         if (progress > 0.01) {
+            g.setLineWidth(4);
             g.setColor(Color.black);
             g.fillRect(x + 90, y + 5, 70, 10);
             g.setColor(Color.red);

@@ -125,9 +125,9 @@ public class ServerGameController implements Runnable {
             if (b.getHealRate() != 0 && b.getPlayerId() != 0) {
                 ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, b);
                 b.addServerBehaviour(healb);
-                ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
-                b.addServerBehaviour(captureb);
             }
+            ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
+            b.addServerBehaviour(captureb);
         }
         this.startMainloop();
         Thread tr = new Thread(new Runnable() {
