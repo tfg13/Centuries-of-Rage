@@ -64,6 +64,8 @@ public class DescParamsBuilding extends DescParamsGO {
      * Gibt an, welche Einheiten akzeptiert werden.
      */
     private int accepts = Building.ACCEPTS_HARVESTERS_ONLY;
+    
+    private boolean neutral = false;
 
     /**
      * Größe dieses Gebäudes in Feldern Richtung rechts oben.
@@ -167,5 +169,19 @@ public class DescParamsBuilding extends DescParamsGO {
 
     public DescParamsBuilding() {
         super();
+    }
+
+    /**
+     * @return the neutral
+     */
+    public boolean isNeutral() {
+        return neutral;
+    }
+
+    /**
+     * @param neutral the neutral to set
+     */
+    public void setNeutral(boolean neutral) {
+        this.neutral = neutral;
     }
 }

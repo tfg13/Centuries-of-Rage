@@ -28,7 +28,6 @@ package de._13ducks.cor.tools.randommapbuilder;
 import java.util.ArrayList;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.DescParamsBuilding;
-import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 
@@ -58,19 +57,21 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 	int spielerzahl = RandomMapBuilder.RandomRogMap.getPlayernumber();
 
 	double randompos = Math.random() * umfang;
+        
+        ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
 
 	for (int i = 1; i <= spielerzahl; i++) { //für jeden Spieler
 	    DescParamsBuilding param = new DescParamsBuilding();
 	    param.setDescTypeId(1);
 	    param.setDescName("Village Center");
-	    param.setHitpoints(2000);
-	    param.setMaxhitpoints(2000);
+	    param.setHitpoints(5000);
+	    param.setMaxhitpoints(5000);
 
 	    param.setZ1(12);
 	    param.setZ2(12);
 
-	    PlayersBuilding tmp = new PlayersBuilding(param);
-	    PlayersBuilding Haus = new PlayersBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
+	    Building tmp = new Building(param);
+	    Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
 	    Haus.getGraphicsData().offsetY = 8;
 	    Haus.setPlayerId(i);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";
@@ -101,20 +102,7 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 
 	    Haus.setMainPosition(new Position(x, y).valid() ? new Position(x, y) : new Position(x - 1, y));
 
-	    //Kollision nichtmehr nötig.
-	    for (int z1c = 0; z1c < 12; z1c++) {
-		for (int z2c = 0; z2c < 12; z2c++) {
-		    RandomMapBuilder.RandomRogMap.getVisMap()[Haus.getMainPosition().getX() + z1c + z2c][Haus.getMainPosition().getY() - z1c + z2c].setGround_tex("img/ground/testground4.png");
-		}
-	    }
-
-	    StartG.add(Haus); //Startgebäude in Arraylist eintragen
-	}
-
-	ArrayList<Building> buildingList = (ArrayList<Building>) RandomMapBuilder.RandomRogMap.getMapPoperty("BUILDING_LIST");
-
-	for (int i = 0; i < StartG.size(); i++) {
-	    buildingList.add(StartG.get(i)); //Startgebäude setzen
+	    buildingList.add(Haus); //Startgebäude in Arraylist eintragen
 	}
     }
 }

@@ -37,6 +37,7 @@ import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.server.movement.ServerBehaviourCapture;
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
 
 /**
@@ -125,6 +126,8 @@ public class ServerGameController implements Runnable {
                 ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, b);
                 b.addServerBehaviour(healb);
             }
+            ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
+            b.addServerBehaviour(captureb);
         }
         this.startMainloop();
         Thread tr = new Thread(new Runnable() {
