@@ -26,12 +26,20 @@
 package de._13ducks.cor.game;
 
 import de._13ducks.cor.game.client.Client;
+import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
+import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import java.util.ArrayList;
 import java.util.List;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.graphics.GraphicsContent;
+import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.input.SelectionMarker;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 /**
  * Superklasse für Gebäude allgemein
@@ -48,7 +56,7 @@ import de._13ducks.cor.graphics.input.SelectionMarker;
  *
  * @author tfg
  */
-public abstract class Building extends GameObject {
+public class Building extends GameObject {
 
     /**
      * Gebäude akzeptiert alle Units
@@ -75,11 +83,11 @@ public abstract class Building extends GameObject {
     private double buildprogress;
     /**
      * Der derzeitige Eroberungsfortschritt, in 0.Prozent
-     */    
+     */
     private double captureprogress;
     /**
      * Liste mit Units, die sich derzeit in diesem Gebäude befinden.
-     */    
+     */
     private List<Unit> intraUnits;
     /**
      * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
@@ -116,6 +124,10 @@ public abstract class Building extends GameObject {
      * Muss in der Regel nur ein einiziges Mal geschehen
      */
     private boolean selectionSet = false;
+    /**
+     * Neutrales Gebäude?
+     */
+    private boolean neutral = false;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -123,11 +135,12 @@ public abstract class Building extends GameObject {
      * @param newNetId die netID für dieses Gebäude
      * @param mainPos die Zuordnungsposition
      */
-    protected Building(int newNetId, Position mainPos) {
+    public Building(int newNetId, Position mainPos, boolean neutral) {
         super(newNetId, mainPos);
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
         visPositions = new Position[4];
+        this.neutral = neutral;
         setVisrange(7); // Default für Gebäude
     }
 
@@ -135,7 +148,7 @@ public abstract class Building extends GameObject {
      * Erzeugt ein Platzhalter-Gebäude, das nicht direkt im Spiel verwendet werden kann, aber als Platzhalter für
      * Attribute und Fähigkeiten dient.
      */
-    protected Building(DescParamsBuilding params) {
+    public Building(DescParamsBuilding params) {
         super(params);
         applyBuildingParams(params);
     }
@@ -147,7 +160,7 @@ public abstract class Building extends GameObject {
      * @param newNetId Die netId des neuen Gebäudes
      * @param copyFrom Das Gebäude, dessen Parameter kopiert werden sollen
      */
-    protected Building(int newNetId, Building copyFrom) {
+    public Building(int newNetId, Building copyFrom) {
         super(newNetId, copyFrom);
         this.accepts = copyFrom.accepts;
         this.maxIntra = copyFrom.maxIntra;
@@ -155,6 +168,7 @@ public abstract class Building extends GameObject {
         this.z2 = copyFrom.z2;
         this.harvRate = copyFrom.harvRate;
         this.harvests = copyFrom.harvests;
+        this.neutral = copyFrom.neutral;
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
         visPositions = new Position[4];
@@ -171,6 +185,7 @@ public abstract class Building extends GameObject {
         this.maxIntra = par.getMaxIntra();
         this.z1 = par.getZ1();
         this.z2 = par.getZ2();
+        this.neutral = par.isNeutral();
     }
 
     /**
@@ -190,7 +205,7 @@ public abstract class Building extends GameObject {
     }
 
     public void addIntra(Unit unit, ServerCore.InnerServer inner) {
-       /* // Reinjumpen lassen
+        /* // Reinjumpen lassen
         intraUnits.add(unit);
         unit.isIntra = true;
         inner.netmap.setCollision(unit.position, collision.free);
@@ -207,10 +222,10 @@ public abstract class Building extends GameObject {
         inner.mapModule.setUnitRef(unit.position, null, unit.playerId);
         inner.mapModule.unitList.remove(unit);
         try {
-            inner.rogGraphics.content.allListLock.lock();
-            inner.mapModule.allList.remove(unit);
+        inner.rogGraphics.content.allListLock.lock();
+        inner.mapModule.allList.remove(unit);
         } finally {
-            inner.rogGraphics.content.allListLock.unlock();
+        inner.rogGraphics.content.allListLock.unlock();
         }
         
         inner.rogGraphics.triggerUpdateHud();
@@ -220,14 +235,14 @@ public abstract class Building extends GameObject {
     }
 
     public void removeUnit(ServerCore.InnerServer inner) {
-    /*    // Die Erstbeste nehmen
+        /*    // Die Erstbeste nehmen
         Unit jump = intraUnits.get(0);
         intraUnits.remove(0);
         jump.isIntra = false;
         // Wenns geht, dann an die alte Position
         Position newpos = jump.position;
         if (inner.netmap.isGroundColliding(jump.position)) {
-            newpos = this.getBestEdge(newpos, inner).aroundMe(0, inner);
+        newpos = this.getBestEdge(newpos, inner).aroundMe(0, inner);
         }
         jump.position = newpos;
         inner.netmap.setCollision(newpos, collision.occupied);
@@ -239,14 +254,14 @@ public abstract class Building extends GameObject {
     }
 
     public void removeAll(ServerCore.InnerServer inner) {
-      /*  while (!intraUnits.isEmpty()) {
-            this.removeUnit(inner);
+        /*  while (!intraUnits.isEmpty()) {
+        this.removeUnit(inner);
         } */
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void removeUnit(Unit unit, Position pos, ClientCore.InnerClient inner) {
-       /* // Unit löschen
+        /* // Unit löschen
         intraUnits.remove(unit);
         // Auf Map setzen
         unit.isIntra = false;
@@ -255,17 +270,84 @@ public abstract class Building extends GameObject {
         inner.mapModule.setUnitRef(pos, unit, unit.playerId);
         inner.mapModule.unitList.add(unit);
         try {
-            inner.rogGraphics.content.allListLock.lock();
-            inner.mapModule.allList.add(unit);
+        inner.rogGraphics.content.allListLock.lock();
+        inner.mapModule.allList.add(unit);
         } finally {
-            inner.rogGraphics.content.allListLock.unlock();
+        inner.rogGraphics.content.allListLock.unlock();
         }
         inner.rogGraphics.triggerUpdateHud();
         ((AbilityIntraManager) this.getAbility(-2)).updateIntra();
         if (intraUnits.isEmpty()) {
-            this.isWorking = false;
+        this.isWorking = false;
         } */
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public GameObject getCopy(int newNetId) {
+        return new Building(newNetId, this);
+    }
+
+    @Override
+    public boolean selectable() {
+        return true;
+    }
+
+    @Override
+    public boolean isSelectableByPlayer(int playerId) {
+        // Im Debugmode is es erlaubt selectAll=true zu setzen, dann darf man alle selektieren und steuern
+        if (Client.getInnerClient().isInDebugMode() && "true".equals(Client.getInnerClient().configs.get("selectAll"))) {
+            return true;
+        }
+        return playerId == this.getPlayerId();
+    }
+
+    @Override
+    public boolean isMultiSelectable() {
+        return false;
+    }
+
+    @Override
+    public boolean renderInFullFog() {
+        return false;
+    }
+
+    @Override
+    public boolean renderInHalfFog() {
+        //@TODO: Gebäude müssen sichtbar bleiben, wenn man sie einmal gesehen hat.
+        return false;
+    }
+
+    @Override
+    public boolean renderInNullFog() {
+        return true;
+    }
+
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        if (!neutral) {
+            x += GraphicsContent.BASIC_FIELD_OFFSET_X;
+            y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
+            // Linien ziehen
+            g.setLineWidth(4);
+            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g.setColor(isSelected() ? Color.white : spriteColor);
+            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
+            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.setLineWidth(4);
+        }
+    }
+
+    @Override
+    public int getColorId() {
+        return getPlayerId();
+    }
+
+    @Override
+    public void renderSprite(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        Renderer.drawImage(getGraphicsData().defaultTexture, x + GraphicsContent.BASIC_FIELD_OFFSET_X - getGraphicsData().offsetX, (int) (y - 7.5 - getGraphicsData().offsetY));
     }
 
     @Override
@@ -379,8 +461,8 @@ public abstract class Building extends GameObject {
             this.lifeStatus = GameObject.LIFESTATUS_ALIVE;
         }
     }
-    
-        /**
+
+    /**
      * Der derzeitige Baufortschritt, in 0.Prozent
      * Nur relevant, wenn lifeStatus noch auf unborn steht.
      * @return the buildprogress
@@ -437,19 +519,18 @@ public abstract class Building extends GameObject {
         int counter = 0;
         for (int z1c = 0; z1c < z1; z1c++) {
             for (int z2c = 0; z2c < z2; z2c++) {
-                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c,(int) mainPosition.getY() - z1c + z2c);
+                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c, (int) mainPosition.getY() - z1c + z2c);
             }
         }
         try {
-        visPositions[0] = mainPosition.clone();
-        visPositions[1] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() - z2 + 1);
-        visPositions[2] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() + z2 - 1);
-        visPositions[3] = new Position(mainPosition.getX() + (z1 - 1) * 2, mainPosition.getY());
+            visPositions[0] = mainPosition.clone();
+            visPositions[1] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() - z2 + 1);
+            visPositions[2] = new Position(mainPosition.getX() + z1 - 1, mainPosition.getY() + z2 - 1);
+            visPositions[3] = new Position(mainPosition.getX() + (z1 - 1) * 2, mainPosition.getY());
         } catch (CloneNotSupportedException ex) {
             // Passiert net.
         }
     }
-
 
     @Override
     public boolean selPosChanged() {
@@ -461,18 +542,18 @@ public abstract class Building extends GameObject {
         selectionSet = true;
         return new SelectionMarker(this, null, positions);
     }
-    
+
     @Override
     public Position getCentralPosition() {
         //return mainPosition;
         FloatingPointPosition Pos = new FloatingPointPosition(mainPosition.getX() + (z1 - 1), mainPosition.getY());
         return Pos;
     }
-    
+
     public double getCaptureProgress() {
         return captureprogress;
     }
-    
+
     public void changeCaptureProgress(int amount, int player) {
         double capturerate = Math.min(5, amount) * 1.0;
         captureprogress += capturerate;
@@ -489,5 +570,107 @@ public abstract class Building extends GameObject {
         if (captureprogress < 0) {
             captureprogress = 0;
         }
+    }
+
+    /**
+     * @return the neutral
+     */
+    public boolean isNeutral() {
+        return neutral;
+    }
+
+    /**
+     * @param neutral the neutral to set
+     */
+    public void setNeutral(boolean neutral) {
+        this.neutral = neutral;
+    }
+
+    @Override
+    public Position freeDirectAroundMe() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
+        if (neutral) {
+            g.setLineWidth(2);
+            g.setColor(Color.gray);
+            g.drawRect(x, y, 5, 5);
+        } else {
+            g.setColor(spriteColor);
+            g.fillRect(x, y, 8, 8);
+        }
+    }
+
+    @Override
+    public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        double progress = this.getCaptureProgress();
+        if (progress > 0.01) {
+            g.setColor(Color.black);
+            g.fillRect(x + 90, y + 5, 70, 10);
+            g.setColor(Color.red);
+            g.drawLine(x + 95, y + 10, (int) (x + 95 + 60 * progress / 100), y + 10);
+        }
+    }
+
+    @Override
+    public boolean isAttackableBy(int playerID) {
+        if (neutral) {
+            return false; // Neutrale Gebäude sind natürlich nicht angreiffbar
+        } else {
+            // TODO: Auf globales Server-Objekt zugreiffen
+            return this.getPlayerId() != playerID;
+        }
+    }
+
+    @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void unpause() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean gotClientBehaviours() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean gotServerBehaviours() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<ClientBehaviour> getClientBehaviours() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<ServerBehaviour> getServerBehaviours() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void mouseHovered() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void command(int button, InteractableGameElement target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void keyCommand(int key, char character) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

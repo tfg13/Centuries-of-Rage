@@ -52,8 +52,6 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.DescParamsBuilding;
 import de._13ducks.cor.game.DescParamsUnit;
 import de._13ducks.cor.game.GameObject;
-import de._13ducks.cor.game.NeutralBuilding;
-import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.Unit2x2;
@@ -215,7 +213,7 @@ public class MapIO {
                     buildingList.add(b);
                 } else if (s.equals("n")) {
                     // Neutral Building!
-                    NeutralBuilding nb = new NeutralBuilding(netId, new Position(x, y));
+                    Building nb = new Building(netId, new Position(x, y), true);
                     nb.setMainPosition(new Position(x, y));
                     buildingList.add(nb);
                     
@@ -344,7 +342,7 @@ public class MapIO {
                 }
                 // Gebäude
                 for (Building building : buildingList) {
-                    if (!(building instanceof NeutralBuilding)) {
+                    if (!building.isNeutral()) {
                         writer.write(building.getDescTypeId() + " " + building.getMainPosition() + " " + building.getPlayerId() + " " + building.netID + " p");
                     } else {
                         writer.write("1 " + building.getMainPosition() + " 0 " + building.netID + " n");

@@ -36,7 +36,6 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.DescParamsBuilding;
 import de._13ducks.cor.game.DescParamsUnit;
 import de._13ducks.cor.game.GameObject;
-import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.Unit2x2;
 import de._13ducks.cor.game.Unit3x3;
@@ -1051,7 +1050,7 @@ public class DescIO {
 				inDesc = false;
 			    } else if (mode.equals("B")) {
 				rB.setDescTypeId(id);
-				descTypeBuilding.put(id, new PlayersBuilding(rB));
+				descTypeBuilding.put(id, new Building(rB));
 				inDesc = false;
 			    }
 			}

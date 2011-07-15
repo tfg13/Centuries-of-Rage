@@ -27,7 +27,6 @@ package de._13ducks.cor.tools.randommapbuilder;
 
 import java.util.ArrayList;
 import de._13ducks.cor.game.Building;
-import de._13ducks.cor.game.NeutralBuilding;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.FloatingPointPosition;
 
@@ -174,7 +173,7 @@ public class RandomMapBuilderVillagesNeutral extends RandomMapBuilderJob {
 	    int x = wippos.get(i).getX();
 	    int y = wippos.get(i).getY();
 
-	    NeutralBuilding Haus = new NeutralBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y));
+	    Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), new Position(x - 12, y).valid() ? new Position(x - 12, y) : new Position(x - 13, y), true);
 
 	    buildingList.add(Haus);
 

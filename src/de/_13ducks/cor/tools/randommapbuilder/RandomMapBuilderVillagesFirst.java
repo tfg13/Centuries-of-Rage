@@ -28,7 +28,6 @@ package de._13ducks.cor.tools.randommapbuilder;
 import java.util.ArrayList;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.DescParamsBuilding;
-import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 
@@ -69,8 +68,8 @@ public class RandomMapBuilderVillagesFirst extends RandomMapBuilderJob {
 	    param.setZ1(12);
 	    param.setZ2(12);
 
-	    PlayersBuilding tmp = new PlayersBuilding(param);
-	    PlayersBuilding Haus = new PlayersBuilding(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
+	    Building tmp = new Building(param);
+	    Building Haus = new Building(RandomMapBuilder.RandomRogMap.getNewNetID(), tmp);
 	    Haus.getGraphicsData().offsetY = 8;
 	    Haus.setPlayerId(i);
 	    Haus.getGraphicsData().defaultTexture = "img/buildings/human_main_e1.png";

@@ -40,7 +40,6 @@ import de._13ducks.cor.game.DescParamsBuilding;
 import de._13ducks.cor.game.DescParamsUnit;
 import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import de._13ducks.cor.game.NetPlayer;
-import de._13ducks.cor.game.PlayersBuilding;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.ability.AbilityBuild;
 import de._13ducks.cor.game.ability.AbilityIntraManager;
@@ -850,7 +849,7 @@ public class ClientMapModule {
                             inDesc = false;
                         } else if (mode.equals("B")) {
                             rB.setDescTypeId(id);
-                            descBuilding.put(id, new PlayersBuilding(rB));
+                            descBuilding.put(id, new Building(rB));
                             inDesc = false;
                         }
                     }
