@@ -87,10 +87,15 @@ public class ClientBehaviourMove extends ClientBehaviour {
                 // Es ist was da, aber wir müssen noch etwas warten.
                 trigger();
             }
+        } else {
+            // Auto-Ende:
+            if (target == null || speed <= 0) {
+                deactivate();
+                return;
+            }
         }
-        // Auto-Ende:
+        // Es gibt nichts zu tun...
         if (target == null || speed <= 0) {
-            deactivate();
             return;
         }
         if (stopPos == null) {
@@ -118,7 +123,6 @@ public class ClientBehaviourMove extends ClientBehaviour {
                 caster2.setMainPosition(target);
                 target = null;
                 stopPos = null; // Es ist wohl besser auf dem Ziel zu stoppen als kurz dahinter!
-                deactivate();
             } else {
                 // Weiterlaufen
                 caster2.setMainPosition(newpos);
@@ -128,7 +132,6 @@ public class ClientBehaviourMove extends ClientBehaviour {
             caster2.setMainPosition(stopPos);
             target = null;
             stopPos = null;
-            deactivate();
         }
     }
 
