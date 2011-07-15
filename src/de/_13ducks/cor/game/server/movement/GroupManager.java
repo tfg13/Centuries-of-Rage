@@ -89,7 +89,7 @@ public class GroupManager {
      */
     public synchronized void goTo(FloatingPointPosition target) {
         // Route planen
-        List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
+        List<Node> tmpPath = SectorPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
         if (tmpPath != null) {
             FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP()); // Der vektor vom vorletzten Wegpunkt zum Ziel, entspricht der Richtung die die Formation haben soll
 
@@ -103,9 +103,9 @@ public class GroupManager {
 
             for (GroupMember member : myMovers) {
                 System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target.add(targetFormation[i]));
-                List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
+                List<Node> path = SectorPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
                 if (path != null) {
-                    List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                    List<SimplePosition> optiPath = SectorPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                     if (optiPath != null) {
                         // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
                         if (member.getMover().getAtkManager() != null) {
@@ -135,7 +135,7 @@ public class GroupManager {
      */
     public synchronized void runTo(FloatingPointPosition target) {
         // Route planen
-        List<Node> tmpPath = ServerPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
+        List<Node> tmpPath = SectorPathfinder.findPath(myMovers.get(0).getMover().getPrecisePosition(), target, myMovers.get(0).getMover().getMyPoly(), moveMap);
         FloatingPointPosition targetVector = target.subtract(tmpPath.get(tmpPath.size() - 2).toFPP());
 
         FloatingPointPosition targetFormation[] = Formation.createSquareFormation(myMovers.size(), target, targetVector, 5.0);
@@ -146,9 +146,9 @@ public class GroupManager {
 
         for (GroupMember member : myMovers) {
             System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target.add(targetFormation[i]));
-            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
+            List<Node> path = SectorPathfinder.findPath(member.getMover().getPrecisePosition(), target.add(targetFormation[i]), member.getMover().getMyPoly(), moveMap);
             if (path != null) {
-                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                List<SimplePosition> optiPath = SectorPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
                     // Einheite auf IDLE setzen (falls die Einheit kämpfen kann)
                     if (member.getMover().getAtkManager() != null) {
@@ -184,6 +184,11 @@ public class GroupManager {
             return true;
         } else if (!obstMove.isMoving()) {
             // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
+            // Das erfolgt in 2 Schritten:
+            // 1. Einen Graphen zum Suchen aufbauen.
+            // 2. A* einen Weg durch den Graphen suchen lassen.
+            List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle);
+            System.out.println("AddMe: Use calculated diversion");
             //TODO: Ändern, sobald möglich
             // return false;
         }
@@ -208,9 +213,9 @@ public class GroupManager {
 
         for (GroupMember member : myMovers) {
             System.out.println("Moving " + member.getMover() + " from " + member.getMover().getPrecisePosition() + " to " + target);
-            List<Node> path = ServerPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
+            List<Node> path = SectorPathfinder.findPath(member.getMover().getPrecisePosition(), target, member.getMover().getMyPoly(), moveMap);
             if (path != null) {
-                List<SimplePosition> optiPath = ServerPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
+                List<SimplePosition> optiPath = SectorPathfinder.optimizePath(path, member.getMover().getPrecisePosition(), target, moveMap);
                 if (optiPath != null) {
 
                     // Weg setzen
