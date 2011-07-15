@@ -55,7 +55,7 @@ public class SubSectorPathfinder {
         // Aufbauen des Graphen:
         ArrayList<SubSectorNode> graph = new ArrayList<SubSectorNode>(); // Der Graph selber
         LinkedList<Moveable> openObstacles = new LinkedList<Moveable>(); // Die Liste mit noch zu untersuchenden Knoten
-        ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitetet Knoten
+        ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitete Knoten
         
         openObstacles.add(obstacle); // Startpunkt des Graphen.
         closedObstacles.add(mover); // Wird im Graphen nicht mitberücksichtigt.
@@ -65,10 +65,7 @@ public class SubSectorPathfinder {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
-            // Muss mit jedem Knoten verbunden werden, mit dem es sich schneidet.
-            for (int i = 0; i < graph.size(); i++) {
-                
-            }
+            
         }
         
         throw new UnsupportedOperationException("not yet implemented.");
@@ -79,6 +76,48 @@ public class SubSectorPathfinder {
      * Ein Knoten des Graphen
      */
     private class SubSectorNode {
+        
+        /**
+         * Koordinaten
+         */
+        private double x;
+        /**
+         * Koordinaten
+         */
+        private double y;
+        
+        SubSectorNode(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        /**
+         * @return the x
+         */
+        double getX() {
+            return x;
+        }
+
+        /**
+         * @param x the x to set
+         */
+        void setX(double x) {
+            this.x = x;
+        }
+
+        /**
+         * @return the y
+         */
+        double getY() {
+            return y;
+        }
+
+        /**
+         * @param y the y to set
+         */
+        void setY(double y) {
+            this.y = y;
+        }
         
     }
     

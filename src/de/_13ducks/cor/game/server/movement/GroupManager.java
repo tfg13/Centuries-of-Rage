@@ -183,12 +183,13 @@ public class GroupManager {
             // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
             return true;
         } else if (!obstMove.isMoving()) {
+            return true;
             // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
             // Das erfolgt in 2 Schritten:
             // 1. Einen Graphen zum Suchen aufbauen.
             // 2. A* einen Weg durch den Graphen suchen lassen.
-            List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle);
-            System.out.println("AddMe: Use calculated diversion");
+          //  List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle);
+            //System.out.println("AddMe: Use calculated diversion");
             //TODO: Ändern, sobald möglich
             // return false;
         }
