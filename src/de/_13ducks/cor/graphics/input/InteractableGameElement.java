@@ -41,6 +41,8 @@ public interface InteractableGameElement {
 
     /**
      * Die Maus befindet sich über dem InteractableGameElement.
+     * Achtung: Schnittmenge mit dem Grafiksystem, wird unmittelbar vor jedem Frame aufgerufen.
+     * Muss sich also selbst wieder deaktiveren.
      */
     public void mouseHovered();
 
