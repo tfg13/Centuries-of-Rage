@@ -115,6 +115,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Die Zelle im Schnellsuchraster, in der die Einheit steht
      */
     private Cell myCell;
+    /**
+     * Derzeit gehovered?
+     */
+    protected boolean hovered = false;
 
     protected Unit(int newNetId, Position mainPos) {
         super(newNetId, mainPos);
@@ -543,5 +547,10 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     public void setCell(Cell theCell) {
         myCell = theCell;
+    }
+
+    @Override
+    public void mouseHovered() {
+        hovered = true;
     }
 }

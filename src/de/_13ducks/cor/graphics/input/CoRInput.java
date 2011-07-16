@@ -33,6 +33,7 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.graphics.Sprite;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1346,5 +1347,17 @@ public class CoRInput implements Pauseable {
      */
     public void removeGO(GameObject go) {
         iges.remove(go);
+    }
+
+    /**
+     * Ermittelt, über welchem IGE die Maus derzeit steht (falls überhaupt) und
+     * triggert dieses, damit Hover-Grafikeffekte funktionieren
+     */
+    public void triggerHovered() {
+        Position selField = graphics.content.translateCoordinatesToField(lastMouseX, lastMouseY);
+        List<InteractableGameElement> elems = selMap.getIGEsAt(selField.getX(), selField.getY());
+        if (elems != null && !elems.isEmpty()) {
+            elems.get(0).mouseHovered();
+        }
     }
 }

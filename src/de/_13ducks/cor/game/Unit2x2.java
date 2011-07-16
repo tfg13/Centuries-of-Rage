@@ -28,6 +28,7 @@ package de._13ducks.cor.game;
 import de._13ducks.cor.map.fastfindgrid.Cell;
 import java.util.Arrays;
 import java.util.List;
+import org.lwjgl.util.Dimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import de._13ducks.cor.graphics.GraphicsContent;
@@ -136,11 +137,6 @@ public class Unit2x2 extends Unit {
     }
 
     @Override
-    public void mouseHovered() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public boolean selPosChanged() {
         return (!Arrays.equals(positions, lastPositions));
     }
@@ -163,10 +159,17 @@ public class Unit2x2 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         //Einheit gehört zu / Selektiert
+
         if (isSelected()) {
+            if (hovered) {
+                Renderer.drawImage("img/game/sel_s2_fill.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            }
             // Weiße Bodenmarkierung
             Renderer.drawImage("img/game/sel_s2.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
+            if (hovered) {
+                Renderer.drawImage("img/game/sel_s2_fill.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            }
             // Spielerfarbe
             Renderer.drawImage("img/game/sel_s2.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
@@ -177,6 +180,7 @@ public class Unit2x2 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         Renderer.drawImage(getGraphicsData().defaultTexture, (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+        hovered = false;
     }
 
     @Override
@@ -207,6 +211,4 @@ public class Unit2x2 extends Unit {
             g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX), (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 10, 5, 5);
         }
     }
-
-    
 }

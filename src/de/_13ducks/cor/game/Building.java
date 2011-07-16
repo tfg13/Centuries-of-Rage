@@ -656,11 +656,6 @@ public class Building extends GameObject {
     }
 
     @Override
-    public void mouseHovered() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void command(int button, InteractableGameElement target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -1090,6 +1090,10 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         hitpoints = 0;
         lifeStatus = LIFESTATUS_DEAD;
     }
+    
+    @Override
+    public void mouseHovered() {
+    }
 
     /**
      * Sucht eine Fähigkeit anhand ihrer DescTypeId

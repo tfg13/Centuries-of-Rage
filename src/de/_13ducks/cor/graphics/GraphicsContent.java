@@ -241,6 +241,9 @@ public class GraphicsContent extends BasicGame {
 //                    lastHovMouseX = mouseX;
 //                    lastHovMouseY = mouseY;
 //                }
+                
+                // Das derzeit gehoverte Sprite bestimmen
+                parent.inputM.triggerHovered();
 
                 renderSpriteGroundEffects(g);
 

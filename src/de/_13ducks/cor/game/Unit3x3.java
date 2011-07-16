@@ -117,6 +117,7 @@ public class Unit3x3 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         Renderer.drawImage(getGraphicsData().defaultTexture, (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+        hovered = false;
     }
 
     @Override
@@ -126,9 +127,15 @@ public class Unit3x3 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         if (isSelected()) {
+            if (hovered) {
+                Renderer.drawImage("img/game/sel_s3_fill.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            }
             // Weiße Bodenmarkierung
             Renderer.drawImage("img/game/sel_s3.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         } else {
+            if (hovered) {
+                Renderer.drawImage("img/game/sel_s3_fill.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            }
             // Spielerfarbe
             Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X+ GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }

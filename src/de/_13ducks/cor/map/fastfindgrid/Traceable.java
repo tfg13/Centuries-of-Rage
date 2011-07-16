@@ -59,4 +59,6 @@ public interface Traceable {
      * @return - die zugehörige Einheit
      */
     public abstract Unit getUnit();
+
+    void mouseHovered();
 }

@@ -160,6 +160,12 @@ public class Renderer {
     public static void drawImage(String imgPath, double x, double y) {
         drawImage(imgPath, x, y, Color.white);
     }
+    
+    public static void drawFlash(String imgPath, double x, double y, double width, double height, Color color) {
+        if (prepareImage(imgPath)) {
+            currentImage.drawFlash((float) x, (float) y, (float) width, (float) height, color);
+        }
+    }
 
     /**
      * Zeichnet ein Sprite aus einem Sheet auf den Bildschrim
