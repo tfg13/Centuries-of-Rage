@@ -136,6 +136,10 @@ public class Building extends GameObject {
      * Neutrales Gebäude?
      */
     private boolean neutral = false;
+    /**
+     * Welche CaptureRate hat ServerBehaviourCapture im letzten Tick übergeben?
+     */
+    private double lastcapturerate = 0;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -538,17 +542,25 @@ public class Building extends GameObject {
     }
 
     public void changeCaptureProgress(int amount, int player) {
-        double captureratenow = Math.min(5, amount) * 1.0;
-        captureprogress += captureratenow;
+        capturerate = Math.min(5, amount) * 1.0;
+        captureprogress += capturerate;
         if (captureprogress > 100) {
             // fertig übernommen, playerid wechseln
             this.setPlayerId(player);
             captureprogress = 0;
             // an Client senden
-            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) captureratenow, player));
+            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) capturerate, player));
+        } else if (captureprogress <= 0) {
+            capturerate = 0;
+            // capturerate kleiner 0 muss gesendet werden, damit client balken ausblendet
+            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(0.0f), (int) capturerate, player));
+            lastcapturerate = capturerate;
         } else {
-            // an Client senden
-            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits((float) captureprogress), (int) capturerate, player));
+            if (lastcapturerate != capturerate) {
+                // hat sich capturerate geändert? wenn ja, senden
+                Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits((float) captureprogress), (int) capturerate, player));
+                lastcapturerate = capturerate;
+            }
         }
         if (captureprogress < 0) {
             captureprogress = 0;
@@ -597,11 +609,10 @@ public class Building extends GameObject {
             final int xlength = 60; //60
 
             double capprediction = capturerate * timediff / 1000.0;
-            g.setLineWidth(4);
             g.setColor(Color.black);
             g.fillRect(x + xposition - 5, y + 5, xlength + 10, 10);
             g.setColor(Color.red);
-            g.drawLine(x + xposition, y + 10, (float) (x + xposition + xlength * (progress + capprediction) / 100.0), y + 10);
+            g.fillRect(x + xposition, y + 8, (float) (xlength * (progress / 100.0 + capprediction / 100.0)), 4);
         }
 
         g.setLineWidth(1);
@@ -621,10 +632,10 @@ public class Building extends GameObject {
             g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
             g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
         }
-        
+
         double progress = this.getCaptureProgress();
-        
-        if (progress > 0.01) {            
+
+        if (progress > 0.01) {
             g.setLineWidth(3);
 
             float axisX = GraphicsContent.FIELD_HALF_X * 60;
@@ -635,7 +646,7 @@ public class Building extends GameObject {
 
             g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
         }
-        
+
         g.setLineWidth(1);
     }
 
