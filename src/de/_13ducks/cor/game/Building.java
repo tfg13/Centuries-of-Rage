@@ -621,16 +621,22 @@ public class Building extends GameObject {
             g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
             g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
         }
+        
+        double progress = this.getCaptureProgress();
+        
+        if (progress > 0.01) {            
+            g.setLineWidth(3);
 
+            float axisX = GraphicsContent.FIELD_HALF_X * 60;
+            float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 60);
+
+            float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
+            float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
+
+            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
+        }
+        
         g.setLineWidth(1);
-
-        float axisX = GraphicsContent.FIELD_HALF_X * 60;
-        float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 60);
-
-        float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
-        float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
-
-        g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
     }
 
     @Override
