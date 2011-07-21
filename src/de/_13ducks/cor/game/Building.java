@@ -526,8 +526,8 @@ public class Building extends GameObject {
     }
 
     @Override
-    public Position getCentralPosition() {
-        double x = this.getMainPosition().getX() + (getZ1() * 10) + (getZ2() * 10);
+    public FloatingPointPosition getCentralPosition() {
+        double x = this.getMainPosition().getX() + ((getZ1() + getZ2() + 0.0) / 2) - 1;
         double y = this.getMainPosition().getY();        
         FloatingPointPosition Pos = new FloatingPointPosition(x, y);
         return Pos;
