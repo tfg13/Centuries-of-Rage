@@ -528,7 +528,7 @@ public class Building extends GameObject {
     @Override
     public FloatingPointPosition getCentralPosition() {
         double x = this.getMainPosition().getX() + ((getZ1() + getZ2() + 0.0) / 2) - 1;
-        double y = this.getMainPosition().getY();        
+        double y = this.getMainPosition().getY();
         FloatingPointPosition Pos = new FloatingPointPosition(x, y);
         return Pos;
     }
@@ -623,16 +623,14 @@ public class Building extends GameObject {
         }
 
         g.setLineWidth(1);
-        
-        /* Tut nicht
-        float axisX = GraphicsContent.FIELD_HALF_X * 30;
-        float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 30);
 
-        float adjustX = (float) (this.getCentralPosition().getX());
-        float adjustY = (float) (this.getCentralPosition().getY());
+        float axisX = GraphicsContent.FIELD_HALF_X * 60;
+        float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 60);
 
-        g.drawOval(adjustX - axisX, adjustY - axisY, (float) (axisX * 2), (float) (axisY * 2));
-        */
+        float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
+        float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
+
+        g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
     }
 
     @Override
