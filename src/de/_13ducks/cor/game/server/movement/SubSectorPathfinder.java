@@ -65,7 +65,13 @@ public class SubSectorPathfinder {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
-            
+            SubSectorNode next = new SubSectorPathfinder.SubSectorNode(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
+            // Mit Graph vernetzen
+            for (SubSectorNode node : graph) {
+                if (node.inColRange(next, radius)) {
+                    
+                }
+            }
         }
         
         throw new UnsupportedOperationException("not yet implemented.");
@@ -75,7 +81,7 @@ public class SubSectorPathfinder {
     /**
      * Ein Knoten des Graphen
      */
-    private class SubSectorNode {
+    private static class SubSectorNode {
         
         /**
          * Koordinaten
@@ -85,10 +91,15 @@ public class SubSectorPathfinder {
          * Koordinaten
          */
         private double y;
+        /**
+         * Der Radius dieses Hindernisses selbst
+         */
+        private double radius;
         
-        SubSectorNode(double x, double y) {
+        SubSectorNode(double x, double y, double radius) {
             this.x = x;
             this.y = y;
+            this.radius = radius;
         }
 
         /**
@@ -117,6 +128,28 @@ public class SubSectorPathfinder {
          */
         void setY(double y) {
             this.y = y;
+        }
+
+        /**
+         * Findet heraus, ob sich die Lauflinie dieses Knoten des Graphen mit dem
+         * gegeben schneidet.
+         * @param next Der andere Knoten
+         * @param moveRadius Der Radius des Objektes, das dazwischen noch durch passen soll
+         * @return true, wenn sie sich schneiden
+         */
+        private boolean inColRange(SubSectorNode next, double moveRadius) {
+            double dist = Math.sqrt((x - next.x) * (x - next.x) + (y - next.y) * (y - next.y));
+            if (dist <= radius + next.radius + moveRadius + moveRadius) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @return the radius
+         */
+        double getRadius() {
+            return radius;
         }
         
     }
