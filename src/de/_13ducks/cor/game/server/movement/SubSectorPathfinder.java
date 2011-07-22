@@ -29,6 +29,8 @@ import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.server.Server;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -102,6 +104,11 @@ public class SubSectorPathfinder {
             }
         }
         
+        // Jetzt drüber laufen und Graph aufbauen:
+        for (SubSectorObstacle obst : graph) {
+            // Alle Knoten ihrem Bogenmaß nach sortieren.
+            obst.sortNodes();
+        }
         throw new UnsupportedOperationException("not yet implemented.");
     }
     
@@ -251,6 +258,28 @@ public class SubSectorPathfinder {
                     nodes.remove(i--);
                 }
             }
+        }
+
+        /**
+         * Alle Knoten ihrem Bogenmaß nach sortieren
+         */
+        private void sortNodes() {
+            Collections.sort(nodes, new Comparator<SubSectorNode>() {
+
+                @Override
+                public int compare(SubSectorNode o1, SubSectorNode o2) {
+                    double t1 = Math.atan2(y - o1.y, x - o1.x);
+                    double t2 = Math.atan2(y - o2.y, x - o2.x);
+                    if (t1 > t2) {
+                        return 1;
+                    } else if (t1 < t2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+                
+            });
         }
         
     }
