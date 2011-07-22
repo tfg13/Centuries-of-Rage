@@ -237,12 +237,5 @@ public class SubSectorPathfinder {
         
     }
     
-    /**
-     * Eine Kante des Graphen
-     */
-    private class SubSectorEdge {
-        
-    }
-    
     
 }
