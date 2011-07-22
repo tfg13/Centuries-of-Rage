@@ -1645,7 +1645,7 @@ public class CoreGraphics extends AppGameContainer implements Pauseable {
 
         rgi.logger("[Graphics]: Starting renderer...");
         // Kantenglättung
-        if ("true".equals(rgi.configs.get("antialising"))) {
+        if ("true".equals(rgi.configs.get("antialiasing"))) {
             content.enableAntialising();
             rgi.logger("[Graphics]: Antialising active.");
         }
