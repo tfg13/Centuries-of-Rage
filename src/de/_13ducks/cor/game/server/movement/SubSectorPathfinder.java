@@ -74,6 +74,18 @@ public class SubSectorPathfinder {
                 if (node.inColRange(next, radius)) {
                     // Schnittpunkte suchen
                     SubSectorNode[] intersections = node.calcIntersections(next, radius);
+                    for (SubSectorNode n2 : intersections) {
+                        boolean reachable = true;
+                        for (SubSectorObstacle o : graph) {
+                            if (o.moveCircleContains(n2, radius)) {
+                                reachable = false;
+                                break;
+                            }
+                        }
+                        if (reachable) {
+                            // Schnittpunkt einbauen
+                        }
+                    }
                 }
             }
             // Weitere Hindernisse suchen, die jetzt relevant sind.
@@ -184,6 +196,20 @@ public class SubSectorPathfinder {
             intersections[0] = new SubSectorNode(s1.x(), s1.y(), this, next);
             intersections[1] = new SubSectorNode(s2.x(), s2.y(), this, next);
             return intersections;
+        }
+
+        /**
+         * Findet heraus, ob der gegebene Punkt innerhalb des Laufkreises liegt,
+         * also zu nahe dran ist.
+         * @param n2 Der zu untersuchende Punkt
+         * @return true, wenn zu nahe dran
+         */
+        private boolean moveCircleContains(SubSectorNode n2, double radius) {
+            double dist = Math.sqrt((x - n2.x) * (x - n2.x) + (y - n2.y) * (y - n2.y));
+            if (dist < radius + this.radius) {
+                return true;
+            }
+            return false;
         }
         
     }
