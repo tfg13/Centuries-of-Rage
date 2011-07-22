@@ -68,7 +68,9 @@ public class SubSectorPathfinder {
             closedObstacles.add(work);
             SubSectorObstacle next = new SubSectorPathfinder.SubSectorObstacle(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
             // Zuerst alle Punkte des Graphen löschen, die jetzt nichtmehr erreichbar sind:
-            System.out.println("TODO: Del unreachable nodes");
+            for (SubSectorObstacle obst : graph) {
+                obst.removeNearNodes(next, radius);
+            }
             // Mit Graph vernetzen
             for (SubSectorObstacle node : graph) {
                 if (node.inColRange(next, radius)) {
@@ -229,6 +231,19 @@ public class SubSectorPathfinder {
                 System.out.println("ERROR: Adding same Node again!!");
             } else {
                 nodes.add(n2);
+            }
+        }
+
+        /**
+         * Löscht alle Knoten, die zu nahe an next dran sind.
+         * @param next 
+         */
+        private void removeNearNodes(SubSectorObstacle next, double radius) {
+            for (int i = 0; i < nodes.size(); i++) {
+                SubSectorNode node = nodes.get(i);
+                if (moveCircleContains(node, radius)) {
+                    nodes.remove(i--);
+                }
             }
         }
         
