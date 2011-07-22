@@ -66,6 +66,8 @@ public class SubSectorPathfinder {
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
             SubSectorNode next = new SubSectorPathfinder.SubSectorNode(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
+            // Zuerst alle Punkte des Graphen löschen, die jetzt nichtmehr erreichbar sind:
+            System.out.println("TODO: Del unreachable nodes");
             // Mit Graph vernetzen
             for (SubSectorNode node : graph) {
                 if (node.inColRange(next, radius)) {
