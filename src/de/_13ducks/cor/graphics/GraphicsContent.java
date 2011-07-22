@@ -1488,7 +1488,7 @@ public class GraphicsContent extends BasicGame {
             //ingamemenu = new IngameMenu(realPixX, realPixY);
             resourcecounter = new ResourceCounter();
             overlays.add(minimap);
-            overlays.add(ingamemenu);
+            //overlays.add(ingamemenu);
             overlays.add(resourcecounter);
             // Fertig - dem Server schicken
             rgi.rogGraphics.triggerStatusWaiting();
