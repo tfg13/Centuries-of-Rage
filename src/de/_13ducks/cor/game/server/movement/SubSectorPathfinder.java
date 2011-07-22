@@ -74,6 +74,8 @@ public class SubSectorPathfinder {
                     
                 }
             }
+            // Weitere Hindernisse suchen, die jetzt relevant sind.
+            System.out.println("TODO: Search new obstacles");
         }
         
         throw new UnsupportedOperationException("not yet implemented.");
