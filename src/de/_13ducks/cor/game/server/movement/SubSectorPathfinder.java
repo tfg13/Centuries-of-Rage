@@ -26,7 +26,11 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.server.Server;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,7 +57,7 @@ public class SubSectorPathfinder {
          * 2. Suchen einer Route in diesem Graphen mittels A* (A-Star).
          */
         // Aufbauen des Graphen:
-        ArrayList<SubSectorNode> graph = new ArrayList<SubSectorNode>(); // Der Graph selber
+        ArrayList<SubSectorObstacle> graph = new ArrayList<SubSectorObstacle>(); // Der Graph selber
         LinkedList<Moveable> openObstacles = new LinkedList<Moveable>(); // Die Liste mit noch zu untersuchenden Knoten
         ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitete Knoten
         
@@ -65,9 +69,52 @@ public class SubSectorPathfinder {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
-            
+            SubSectorObstacle next = new SubSectorPathfinder.SubSectorObstacle(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
+            // Zuerst alle Punkte des Graphen löschen, die jetzt nichtmehr erreichbar sind:
+            for (SubSectorObstacle obst : graph) {
+                obst.removeNearNodes(next, radius);
+            }
+            // Mit Graph vernetzen
+            for (SubSectorObstacle node : graph) {
+                if (node.inColRange(next, radius)) {
+                    // Schnittpunkte suchen
+                    SubSectorNode[] intersections = node.calcIntersections(next, radius);
+                    for (SubSectorNode n2 : intersections) {
+                        boolean reachable = true;
+                        for (SubSectorObstacle o : graph) {
+                            if (o.moveCircleContains(n2, radius)) {
+                                reachable = false;
+                                break;
+                            }
+                        }
+                        if (reachable) {
+                            // Schnittpunkt einbauen
+                            next.addNode(n2);
+                            node.addNode(n2);
+                        }
+                    }
+                }
+            }
+            // Weitere Hindernisse suchen, die jetzt relevant sind.
+            List<Moveable> moversAround = Server.getInnerServer().moveMan.moveMap.moversAround(work, (work.getRadius() + radius) * 2);
+            for (Moveable pmove : moversAround) {
+                if (!closedObstacles.contains(pmove) && !openObstacles.contains(pmove)) {
+                    openObstacles.add(pmove);
+                }
+            }
         }
         
+        // Jetzt drüber laufen und Graph aufbauen:
+        for (SubSectorObstacle obst : graph) {
+            // Alle Knoten ihrem Bogenmaß nach sortieren.
+            obst.sortNodes();
+            // Vorgensweise:
+            // In jedem Hinderniss die Linie entlanglaufen und Knoten mit Kanten verbinden.
+            // Ein Knoten darf auf einem Kreis immer nur in eine Richtung gehen.
+            // (das sollte mithilfe seiner beiden, bekannten hindernisse recht einfach sein)
+            // Die Länge des Kreissegments lässt sich einfach mithilfe des winkels ausrechnen (Math.atan2(y,x)
+            // Dann darf der A*.
+        }
         throw new UnsupportedOperationException("not yet implemented.");
     }
     
@@ -75,7 +122,7 @@ public class SubSectorPathfinder {
     /**
      * Ein Knoten des Graphen
      */
-    private class SubSectorNode {
+    private static class SubSectorObstacle {
         
         /**
          * Koordinaten
@@ -85,10 +132,21 @@ public class SubSectorPathfinder {
          * Koordinaten
          */
         private double y;
+        /**
+         * Der Radius dieses Hindernisses selbst
+         */
+        private double radius;
+        /**
+         * Die Knoten dieses SubSectorObstacles
+         */
+        private LinkedList<SubSectorNode> nodes;
         
-        SubSectorNode(double x, double y) {
+        
+        SubSectorObstacle(double x, double y, double radius) {
             this.x = x;
             this.y = y;
+            this.radius = radius;
+            nodes = new LinkedList<SubSectorNode>();
         }
 
         /**
@@ -118,13 +176,159 @@ public class SubSectorPathfinder {
         void setY(double y) {
             this.y = y;
         }
+
+        /**
+         * Findet heraus, ob sich die Lauflinie dieses Knoten des Graphen mit dem
+         * gegebenen schneidet.
+         * @param next Der andere Knoten
+         * @param moveRadius Der Radius des Objektes, das dazwischen noch durch passen soll
+         * @return true, wenn sie sich schneiden
+         */
+        private boolean inColRange(SubSectorObstacle next, double moveRadius) {
+            double dist = Math.sqrt((x - next.x) * (x - next.x) + (y - next.y) * (y - next.y));
+            if (dist < radius + next.radius + moveRadius + moveRadius) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @return the radius
+         */
+        double getRadius() {
+            return radius;
+        }
+
+        /**
+         * Berechnet die Schnittpunkte der Lauflinien dieses und des gegebenen
+         * Hindernisses
+         * Setzt voraus, dass es zwei Schnittpunkte gibt. Das Verhalten dieser
+         * Methode ist in anderen Fällen nicht definiert.
+         * @param next Das andere Hinderniss
+         * @param radius Der Radius (die Größe) des Movers, der noch zwischendurch passen muss.
+         * @return SubSectorNode[] mit 2 Einträgen
+         */
+        private SubSectorNode[] calcIntersections(SubSectorObstacle next, double radius) {
+            // Zuerst Mittelpunkt der Linie durch beide Schnittpunkte berechnen:
+            Vector direct = new Vector(next.x - x, next.y - y);
+            Vector z1 = direct.normalize().multiply(this.radius + radius);
+            Vector z2 = direct.normalize().multiply(direct.length() - (next.radius + radius));
+            Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
+            // Senkrechten Vektor und seine Länge berechnen:
+            Vector ortho = new Vector(direct.y(), -direct.x());
+            ortho.normalize().multiply(Math.sqrt(((this.radius + radius) * (this.radius + radius)) - (mid.length() * mid.length())));
+            // Schnittpunkte ausrechnen:
+            SubSectorNode[] intersections = new SubSectorNode[2];
+            Vector posMid = new Vector(x + mid.x(), y + mid.y()); // Positionsvektor des Mittelpunkts
+            Vector s1 = posMid.add(ortho);
+            Vector s2 = posMid.add(ortho.getInverted());
+            intersections[0] = new SubSectorNode(s1.x(), s1.y(), this, next);
+            intersections[1] = new SubSectorNode(s2.x(), s2.y(), this, next);
+            return intersections;
+        }
+
+        /**
+         * Findet heraus, ob der gegebene Punkt innerhalb des Laufkreises liegt,
+         * also zu nahe dran ist.
+         * @param n2 Der zu untersuchende Punkt
+         * @return true, wenn zu nahe dran
+         */
+        private boolean moveCircleContains(SubSectorNode n2, double radius) {
+            double dist = Math.sqrt((x - n2.x) * (x - n2.x) + (y - n2.y) * (y - n2.y));
+            if (dist < radius + this.radius) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Fügt einen Knoten in die Kreislinie dieses Obstacles ein
+         * @param n2 
+         */
+        private void addNode(SubSectorNode n2) {
+            if (nodes.contains(n2)) {
+                System.out.println("ERROR: Adding same Node again!!");
+            } else {
+                nodes.add(n2);
+            }
+        }
+
+        /**
+         * Löscht alle Knoten, die zu nahe an next dran sind.
+         * @param next 
+         */
+        private void removeNearNodes(SubSectorObstacle next, double radius) {
+            for (int i = 0; i < nodes.size(); i++) {
+                SubSectorNode node = nodes.get(i);
+                if (moveCircleContains(node, radius)) {
+                    nodes.remove(i--);
+                }
+            }
+        }
+
+        /**
+         * Alle Knoten ihrem Bogenmaß nach sortieren
+         */
+        private void sortNodes() {
+            Collections.sort(nodes, new Comparator<SubSectorNode>() {
+
+                @Override
+                public int compare(SubSectorNode o1, SubSectorNode o2) {
+                    double t1 = Math.atan2(y - o1.y, x - o1.x);
+                    double t2 = Math.atan2(y - o2.y, x - o2.x);
+                    if (t1 > t2) {
+                        return 1;
+                    } else if (t1 < t2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+                
+            });
+        }
         
     }
     
-    /**
-     * Eine Kante des Graphen
-     */
-    private class SubSectorEdge {
+    private static class SubSectorNode {
+        /**
+         * Koordinaten
+         */
+        private double x;
+        /**
+         * Koordinaten
+         */
+        private double y;
+        /**
+         * Auf wessen Laufkreis liegt dieses Hinderniss?
+         */
+        private ArrayList<SubSectorObstacle> myObstacle;
+        
+        SubSectorNode(double x, double y, SubSectorObstacle... owner) {
+            this.x = x;
+            this.y = y;
+            myObstacle = new ArrayList<SubSectorObstacle>();
+            myObstacle.addAll(Arrays.asList(owner));
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 37 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+            hash = 37 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+            return hash;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof SubSectorNode) {
+                SubSectorNode node = (SubSectorNode) o;
+                if (Math.abs(x - node.x) < 0.001 && Math.abs(y - node.y) < 0.001) {
+                    return true;
+                }
+            }
+            return false;
+        }
         
     }
     
