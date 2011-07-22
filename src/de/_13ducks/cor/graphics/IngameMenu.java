@@ -14,7 +14,7 @@ import org.newdawn.slick.Graphics;
  */
 public class IngameMenu extends Overlay {
 
-    private static final int DURATION = 1000;
+    private static final int DURATION = 500;
     private int x1, y1, x2, y2;
     private long startTime;
     private boolean out = false;
@@ -25,18 +25,20 @@ public class IngameMenu extends Overlay {
         double k = 0.1 * fullResX / 128;
         int x = (int) ((fullResX / 2) - (207 * k));
         int y = (int) (-(512 - 55) * k);
+        if (passedTime < DURATION) {
+            double progress = 1 - ((Math.cos(passedTime * Math.PI / DURATION) + 1) / 2);
+            y = (int) (-(512 - 55) * k * (1 - progress));
+        } else if (passedTime >= DURATION) {
+            y = 0;
+        }
+        Renderer.drawImage("img/hud/tilemap_hud_classical_era.png", x, y, x + (k * 350), y + (k * 512), 0, 0, 350, 511);
+    }
+
+    public IngameMenu(int fullResX, int fullResY) {
         x1 = (int) (fullResX * 0.45);
         x2 = (int) (fullResX * 0.55);
         y1 = 0;
         y2 = (int) (fullResX * 0.1 * 55 / 128);
-        if (passedTime < DURATION) {
-            double progress = 1 - ((Math.cos(passedTime * Math.PI / DURATION) + 1) / 2);
-           y = (int) (-(512 - 55) * k * (1 - progress));
-        }
-        Renderer.drawImage("img/hud/tilemap_hud_stoneage.png", x, y, x + (k * 350), y + (k * 512), 0, 0, 350, 511);
-    }
-
-    public IngameMenu() {
         Client.getInnerClient().rogGraphics.inputM.addOverlayMouseListener(new OverlayMouseListener() {
 
             @Override
