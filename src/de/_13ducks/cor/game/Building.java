@@ -610,9 +610,9 @@ public class Building extends GameObject {
 
             double capprediction = capturerate * timediff / 1000.0;
             g.setColor(Color.black);
-            g.fillRect(x + xposition - 5, y + 5, xlength + 10, 10);
+            g.fillRect(x + xposition - 3, y + 5, xlength + 6, 10);
             g.setColor(Color.red);
-            g.fillRect(x + xposition, y + 8, (float) (xlength * (progress / 100.0 + capprediction / 100.0)), 4);
+            g.fillRect(x + xposition, y + 8, (float) (xlength * Math.min(1 , progress / 100.0 + capprediction / 100.0)), 4);
         }
 
         g.setLineWidth(1);
