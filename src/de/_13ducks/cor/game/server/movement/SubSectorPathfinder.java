@@ -53,7 +53,7 @@ public class SubSectorPathfinder {
          * 2. Suchen einer Route in diesem Graphen mittels A* (A-Star).
          */
         // Aufbauen des Graphen:
-        ArrayList<SubSectorNode> graph = new ArrayList<SubSectorNode>(); // Der Graph selber
+        ArrayList<SubSectorObstacle> graph = new ArrayList<SubSectorObstacle>(); // Der Graph selber
         LinkedList<Moveable> openObstacles = new LinkedList<Moveable>(); // Die Liste mit noch zu untersuchenden Knoten
         ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitete Knoten
         
@@ -65,11 +65,11 @@ public class SubSectorPathfinder {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
-            SubSectorNode next = new SubSectorPathfinder.SubSectorNode(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
+            SubSectorObstacle next = new SubSectorPathfinder.SubSectorObstacle(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
             // Zuerst alle Punkte des Graphen löschen, die jetzt nichtmehr erreichbar sind:
             System.out.println("TODO: Del unreachable nodes");
             // Mit Graph vernetzen
-            for (SubSectorNode node : graph) {
+            for (SubSectorObstacle node : graph) {
                 if (node.inColRange(next, radius)) {
                     
                 }
@@ -83,7 +83,7 @@ public class SubSectorPathfinder {
     /**
      * Ein Knoten des Graphen
      */
-    private static class SubSectorNode {
+    private static class SubSectorObstacle {
         
         /**
          * Koordinaten
@@ -98,7 +98,7 @@ public class SubSectorPathfinder {
          */
         private double radius;
         
-        SubSectorNode(double x, double y, double radius) {
+        SubSectorObstacle(double x, double y, double radius) {
             this.x = x;
             this.y = y;
             this.radius = radius;
@@ -139,7 +139,7 @@ public class SubSectorPathfinder {
          * @param moveRadius Der Radius des Objektes, das dazwischen noch durch passen soll
          * @return true, wenn sie sich schneiden
          */
-        private boolean inColRange(SubSectorNode next, double moveRadius) {
+        private boolean inColRange(SubSectorObstacle next, double moveRadius) {
             double dist = Math.sqrt((x - next.x) * (x - next.x) + (y - next.y) * (y - next.y));
             if (dist <= radius + next.radius + moveRadius + moveRadius) {
                 return true;
