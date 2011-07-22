@@ -21,7 +21,7 @@ ability=410 #Catapult (testing)
 ability=411 #(testing)
 ability=412 #(testing)
 ability=413 #(testing)
-harvRate=10
+harvRate=10 
 harvests=1
 healrate=2
 }

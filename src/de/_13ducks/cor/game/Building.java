@@ -86,6 +86,14 @@ public class Building extends GameObject {
      */
     private double captureprogress;
     /**
+     * Die derzeitige Eroberungsrate
+     */
+    private double capturerate;
+    /**
+     * Zeitpunkt der letzten Änderung des Capturing, die vom Server gesendet wurde
+     */
+    private long lastcapturetime;
+    /**
      * Liste mit Units, die sich derzeit in diesem Gebäude befinden.
      */
     private List<Unit> intraUnits;
@@ -128,6 +136,10 @@ public class Building extends GameObject {
      * Neutrales Gebäude?
      */
     private boolean neutral = false;
+    /**
+     * Welche CaptureRate hat ServerBehaviourCapture im letzten Tick übergeben?
+     */
+    private double lastcapturerate = 0;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -327,23 +339,6 @@ public class Building extends GameObject {
     }
 
     @Override
-    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
-        if (!neutral) {
-            x += GraphicsContent.BASIC_FIELD_OFFSET_X;
-            y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
-            // Linien ziehen
-            g.setLineWidth(4);
-            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g.setColor(isSelected() ? Color.white : spriteColor);
-            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
-            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
-            g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
-            g.setLineWidth(4);
-        }
-    }
-
-    @Override
     public int getColorId() {
         return getPlayerId();
     }
@@ -468,18 +463,9 @@ public class Building extends GameObject {
     /**
      * Der derzeitige Baufortschritt, in 0.Prozent
      * Nur relevant, wenn lifeStatus noch auf unborn steht.
-     * @return the buildprogress
-     */
-    public double getCaptureprogress() {
-        return captureprogress;
-    }
-
-    /**
-     * Der derzeitige Baufortschritt, in 0.Prozent
-     * Nur relevant, wenn lifeStatus noch auf unborn steht.
      * @param buildprogress the buildprogress to set
      */
-    public void setCaptureprogress(double capprogress) {
+    public void setCaptureProgress(double capprogress) {
         this.captureprogress = capprogress;
         if (this.captureprogress < 0) {
             this.captureprogress = 0;
@@ -544,9 +530,10 @@ public class Building extends GameObject {
     }
 
     @Override
-    public Position getCentralPosition() {
-        //return mainPosition;
-        FloatingPointPosition Pos = new FloatingPointPosition(mainPosition.getX() + (z1 - 1), mainPosition.getY());
+    public FloatingPointPosition getCentralPosition() {
+        double x = this.getMainPosition().getX() + ((getZ1() + getZ2() + 0.0) / 2) - 1;
+        double y = this.getMainPosition().getY();
+        FloatingPointPosition Pos = new FloatingPointPosition(x, y);
         return Pos;
     }
 
@@ -555,7 +542,7 @@ public class Building extends GameObject {
     }
 
     public void changeCaptureProgress(int amount, int player) {
-        double capturerate = Math.min(5, amount) * 1.0;
+        capturerate = Math.min(5, amount) * 1.0;
         captureprogress += capturerate;
         if (captureprogress > 100) {
             // fertig übernommen, playerid wechseln
@@ -563,9 +550,17 @@ public class Building extends GameObject {
             captureprogress = 0;
             // an Client senden
             Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) capturerate, player));
+        } else if (captureprogress <= 0) {
+            capturerate = 0;
+            // capturerate kleiner 0 muss gesendet werden, damit client balken ausblendet
+            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(0.0f), (int) capturerate, player));
+            lastcapturerate = capturerate;
         } else {
-            // an Client senden
-            Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits((float) captureprogress), (int) capturerate, player));
+            if (lastcapturerate != capturerate) {
+                // hat sich capturerate geändert? wenn ja, senden
+                Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits((float) captureprogress), (int) capturerate, player));
+                lastcapturerate = capturerate;
+            }
         }
         if (captureprogress < 0) {
             captureprogress = 0;
@@ -607,12 +602,52 @@ public class Building extends GameObject {
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         double progress = this.getCaptureProgress();
         if (progress > 0.01) {
-            g.setLineWidth(4);
+            long timenow = System.currentTimeMillis();
+            long timediff = timenow - lastcapturetime;
+
+            final int xposition = 95; //95
+            final int xlength = 60; //60
+
+            double capprediction = capturerate * timediff / 1000.0;
             g.setColor(Color.black);
-            g.fillRect(x + 90, y + 5, 70, 10);
+            g.fillRect(x + xposition - 3, y + 5, xlength + 6, 10);
             g.setColor(Color.red);
-            g.drawLine(x + 95, y + 10, (int) (x + 95 + 60 * progress / 100), y + 10);
+            g.fillRect(x + xposition, y + 8, (float) (xlength * Math.min(1 , progress / 100.0 + capprediction / 100.0)), 4);
         }
+
+        g.setLineWidth(1);
+    }
+
+    @Override
+    public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
+        if (!neutral) {
+            x += GraphicsContent.BASIC_FIELD_OFFSET_X;
+            y += GraphicsContent.BASIC_FIELD_OFFSET_Y;
+            // Linien ziehen
+            g.setLineWidth(4);
+            //g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g.setColor(isSelected() ? Color.white : spriteColor);
+            g.drawLine(x, y, x + (getZ1() * 10), (int) (y - (getZ1() * 7.5)));
+            g.drawLine(x, y, x + (getZ2() * 10), (int) (y + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ1() * 10)), (int) (y - (getZ1() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+            g.drawLine((x + (getZ2() * 10)), (int) (y + (getZ2() * 7.5)), (x + (getZ1() * 10) + (getZ2() * 10)), (int) (y - (getZ1() * 7.5) + (getZ2() * 7.5)));
+        }
+
+        double progress = this.getCaptureProgress();
+
+        if (progress > 0.01) {
+            g.setLineWidth(3);
+
+            float axisX = GraphicsContent.FIELD_HALF_X * 60;
+            float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 60);
+
+            float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
+            float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
+
+            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
+        }
+
+        g.setLineWidth(1);
     }
 
     @Override
@@ -668,5 +703,33 @@ public class Building extends GameObject {
     @Override
     public void keyCommand(int key, char character) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * @return the capturerate
+     */
+    public double getCaptureRate() {
+        return capturerate;
+    }
+
+    /**
+     * @param capturerate the capturerate to set
+     */
+    public void setCaptureRate(double capturerate) {
+        this.capturerate = capturerate;
+    }
+
+    /**
+     * @return the lastcapturetick
+     */
+    public long getLastCaptureTime() {
+        return lastcapturetime;
+    }
+
+    /**
+     * @param lastcapturetick the lastcapturetick to set
+     */
+    public void setLastCaptureTime(long lastcapturetime) {
+        this.lastcapturetime = lastcapturetime;
     }
 }

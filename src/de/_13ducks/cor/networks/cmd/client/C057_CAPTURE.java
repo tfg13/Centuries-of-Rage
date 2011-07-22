@@ -50,12 +50,14 @@ public class C057_CAPTURE extends ClientCommand {
                // bedeutet fertig erobert -> Gebäude kriegt neuen Besitzer
                Client.getInnerClient().mapModule.getBuildingviaID(netid).setPlayerId(playerid);
                Client.getInnerClient().mapModule.getBuildingviaID(netid).setNeutral(false);
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureprogress(0.0);
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureProgress(0.0);
                ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
                building.addClientBehaviour(prod);
            } else {
                // grafisch darstellen
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureprogress(captureprogress);
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureProgress(captureprogress);
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureRate(capturerate);
+               Client.getInnerClient().mapModule.getBuildingviaID(netid).setLastCaptureTime(System.currentTimeMillis());
            }
        } else {
            System.out.println("Panik! C057_CAPTURE pfuscht");
