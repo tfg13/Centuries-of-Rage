@@ -108,6 +108,12 @@ public class SubSectorPathfinder {
         for (SubSectorObstacle obst : graph) {
             // Alle Knoten ihrem Bogenmaß nach sortieren.
             obst.sortNodes();
+            // Vorgensweise:
+            // In jedem Hinderniss die Linie entlanglaufen und Knoten mit Kanten verbinden.
+            // Ein Knoten darf auf einem Kreis immer nur in eine Richtung gehen.
+            // (das sollte mithilfe seiner beiden, bekannten hindernisse recht einfach sein)
+            // Die Länge des Kreissegments lässt sich einfach mithilfe des winkels ausrechnen (Math.atan2(y,x)
+            // Dann darf der A*.
         }
         throw new UnsupportedOperationException("not yet implemented.");
     }
