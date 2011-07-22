@@ -1485,7 +1485,7 @@ public class GraphicsContent extends BasicGame {
             parent.finalPrepare();
             minimap = Minimap.createMinimap(visMap, imgMap, realPixX, realPixY, rgi);
             minimap.setAllList(allList);
-            ingamemenu = new IngameMenu(realPixX, realPixY);
+            //ingamemenu = new IngameMenu(realPixX, realPixY);
             resourcecounter = new ResourceCounter();
             overlays.add(minimap);
             overlays.add(ingamemenu);
