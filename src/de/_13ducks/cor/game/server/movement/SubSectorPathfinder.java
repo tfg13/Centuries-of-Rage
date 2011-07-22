@@ -26,6 +26,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.server.Server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -93,7 +94,12 @@ public class SubSectorPathfinder {
                 }
             }
             // Weitere Hindernisse suchen, die jetzt relevant sind.
-            System.out.println("TODO: Search new obstacles");
+            List<Moveable> moversAround = Server.getInnerServer().moveMan.moveMap.moversAround(work, (work.getRadius() + radius) * 2);
+            for (Moveable pmove : moversAround) {
+                if (!closedObstacles.contains(pmove) && !openObstacles.contains(pmove)) {
+                    openObstacles.add(pmove);
+                }
+            }
         }
         
         throw new UnsupportedOperationException("not yet implemented.");
