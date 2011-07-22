@@ -84,6 +84,8 @@ public class SubSectorPathfinder {
                         }
                         if (reachable) {
                             // Schnittpunkt einbauen
+                            next.addNode(n2);
+                            node.addNode(n2);
                         }
                     }
                 }
@@ -113,11 +115,17 @@ public class SubSectorPathfinder {
          * Der Radius dieses Hindernisses selbst
          */
         private double radius;
+        /**
+         * Die Knoten dieses SubSectorObstacles
+         */
+        private LinkedList<SubSectorNode> nodes;
+        
         
         SubSectorObstacle(double x, double y, double radius) {
             this.x = x;
             this.y = y;
             this.radius = radius;
+            nodes = new LinkedList<SubSectorNode>();
         }
 
         /**
@@ -211,6 +219,18 @@ public class SubSectorPathfinder {
             }
             return false;
         }
+
+        /**
+         * Fügt einen Knoten in die Kreislinie dieses Obstacles ein
+         * @param n2 
+         */
+        private void addNode(SubSectorNode n2) {
+            if (nodes.contains(n2)) {
+                System.out.println("ERROR: Adding same Node again!!");
+            } else {
+                nodes.add(n2);
+            }
+        }
         
     }
     
@@ -233,6 +253,25 @@ public class SubSectorPathfinder {
             this.y = y;
             myObstacle = new ArrayList<SubSectorObstacle>();
             myObstacle.addAll(Arrays.asList(owner));
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 37 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+            hash = 37 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+            return hash;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof SubSectorNode) {
+                SubSectorNode node = (SubSectorNode) o;
+                if (Math.abs(x - node.x) < 0.001 && Math.abs(y - node.y) < 0.001) {
+                    return true;
+                }
+            }
+            return false;
         }
         
     }
