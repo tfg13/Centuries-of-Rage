@@ -140,6 +140,10 @@ public class Building extends GameObject {
      * Welche CaptureRate hat ServerBehaviourCapture im letzten Tick übergeben?
      */
     private double lastcapturerate = 0;
+    /**
+     * Derzeit gehovered?
+     */
+    private boolean hovered = false;
 
     /**
      * Erzeugt ein neues Gebäude mit den gegebenen Parametern.
@@ -616,6 +620,7 @@ public class Building extends GameObject {
         }
 
         g.setLineWidth(1);
+        hovered = false;
     }
 
     @Override
@@ -635,8 +640,9 @@ public class Building extends GameObject {
 
         double progress = this.getCaptureProgress();
 
-        if (progress > 0.01) {
-            g.setLineWidth(3);
+        if (progress > 0.01 || hovered) {
+            g.setColor(spriteColor.multiply(new Color(1f, 1f, 1f, .5f)));
+            g.setLineWidth(1);
 
             float axisX = GraphicsContent.FIELD_HALF_X * 60;
             float axisY = (float) (GraphicsContent.FIELD_HALF_Y * 60);
@@ -731,5 +737,9 @@ public class Building extends GameObject {
      */
     public void setLastCaptureTime(long lastcapturetime) {
         this.lastcapturetime = lastcapturetime;
+    }
+    
+    public void mouseHovered() {
+        hovered = true;
     }
 }
