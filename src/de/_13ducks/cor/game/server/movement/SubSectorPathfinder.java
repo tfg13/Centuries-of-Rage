@@ -136,14 +136,14 @@ public class SubSectorPathfinder {
 
         /**
          * Findet heraus, ob sich die Lauflinie dieses Knoten des Graphen mit dem
-         * gegeben schneidet.
+         * gegebenen schneidet.
          * @param next Der andere Knoten
          * @param moveRadius Der Radius des Objektes, das dazwischen noch durch passen soll
          * @return true, wenn sie sich schneiden
          */
         private boolean inColRange(SubSectorObstacle next, double moveRadius) {
             double dist = Math.sqrt((x - next.x) * (x - next.x) + (y - next.y) * (y - next.y));
-            if (dist <= radius + next.radius + moveRadius + moveRadius) {
+            if (dist < radius + next.radius + moveRadius + moveRadius) {
                 return true;
             }
             return false;
