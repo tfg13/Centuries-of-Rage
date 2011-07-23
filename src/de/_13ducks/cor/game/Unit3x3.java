@@ -35,6 +35,8 @@ import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.input.SelectionMarker;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Eine echte Einheit mit 3 x 3 Feldern Grundfläche
@@ -84,11 +86,22 @@ public class Unit3x3 extends Unit {
     @Override
     public void setMainPosition(Position mainPosition) {
         super.setMainPosition(mainPosition);
-        int counter = 0;
-        for (int z1c = 0; z1c < 3; z1c++) {
-            for (int z2c = 0; z2c < 3; z2c++) {
-                positions[counter++] = new Position(mainPosition.getX() + z1c + z2c,mainPosition.getY() - z1c + z2c);
+        Position clickPosition;
+        try {
+            
+            clickPosition = mainPosition.clone();
+            if (clickPosition.getX() % 2 != clickPosition.getY() % 2) {
+                clickPosition.setX(clickPosition.getX() - 1);
             }
+            int counter = 0;
+            for (int z1c = 0; z1c < 3; z1c++) {
+                for (int z2c = 0; z2c < 3; z2c++) {
+                    positions[counter++] = new Position(clickPosition.getX() + z1c + z2c, clickPosition.getY() - z1c + z2c);
+                }
+            }
+            
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Unit3x3.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -137,7 +150,7 @@ public class Unit3x3 extends Unit {
                 Renderer.drawImage("img/game/sel_s3_fill.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
             }
             // Spielerfarbe
-            Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X+ GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
         }
     }
 
@@ -173,7 +186,7 @@ public class Unit3x3 extends Unit {
 
     @Override
     public void mouseHovered() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -195,10 +208,10 @@ public class Unit3x3 extends Unit {
 
     @Override
     public void renderMinimapMarker(Graphics g, int x, int y, Color spriteColor) {
-	g.setColor(spriteColor);
-	g.fillRect(x, y, 3, 3);
+        g.setColor(spriteColor);
+        g.fillRect(x, y, 3, 3);
     }
-    
+
     @Override
     public double getRadius() {
         return 3;
@@ -221,6 +234,4 @@ public class Unit3x3 extends Unit {
             g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX) - 5, (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 15, 5, 5);
         }
     }
-
-    
 }
