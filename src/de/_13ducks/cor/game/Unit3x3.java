@@ -137,20 +137,22 @@ public class Unit3x3 extends Unit {
     public void renderGroundEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
         clientManager.externalExecute();
         //Einheit gehört zu / Selektiert
-        float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
-        float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
+        float rx = (float) (((FloatingPointPosition) mainPosition).getfX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X);
+        float ry = (float) (((FloatingPointPosition) mainPosition).getfY() * GraphicsContent.FIELD_HALF_Y  + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y);
         if (isSelected()) {
             if (hovered) {
-                Renderer.drawImage("img/game/sel_s3_fill.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+                // Weißer gefüllter Kreis
+                Renderer.drawImage("img/game/sel_s3_fill.png0", rx, (float) (ry));
             }
-            // Weiße Bodenmarkierung
-            Renderer.drawImage("img/game/sel_s3.png0", (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            // Weißer Kreisrand
+            Renderer.drawImage("img/game/sel_s3.png0", rx, ry);
         } else {
             if (hovered) {
-                Renderer.drawImage("img/game/sel_s3_fill.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+                // gefüllter Kreis in Spielerfarbe
+                Renderer.drawImage("img/game/sel_s3_fill.png" + getPlayerId(), rx, ry);
             }
-            // Spielerfarbe
-            Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
+            // Kreisrand in Spielerfarbe
+            Renderer.drawImage("img/game/sel_s3.png" + getPlayerId(), rx, ry);
         }
     }
 
@@ -182,11 +184,6 @@ public class Unit3x3 extends Unit {
     @Override
     public List<ServerBehaviour> getServerBehaviours() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void mouseHovered() {
-        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
