@@ -91,12 +91,12 @@ public class Unit3x3 extends Unit {
             
             clickPosition = mainPosition.clone();
             if (clickPosition.getX() % 2 != clickPosition.getY() % 2) {
-                clickPosition.setX(clickPosition.getX() - 1);
+                clickPosition.setX(clickPosition.getX() + 1);
             }
             int counter = 0;
             for (int z1c = 0; z1c < 3; z1c++) {
                 for (int z2c = 0; z2c < 3; z2c++) {
-                    positions[counter++] = new Position(clickPosition.getX() + z1c + z2c, clickPosition.getY() - z1c + z2c);
+                    positions[counter++] = new Position(clickPosition.getX() + z1c + z2c - 2, clickPosition.getY() - z1c + z2c);
                 }
             }
             
