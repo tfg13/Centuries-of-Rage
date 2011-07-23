@@ -26,6 +26,7 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.server.Server;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class SubSectorPathfinder {
      * @param obstacle
      * @return 
      */
-    static List<Node> searchDiversion(Moveable mover, Moveable obstacle) {
+    static List<Node> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
         /**
          * Wegsuche in 2 Schritten:
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
@@ -117,6 +118,47 @@ public class SubSectorPathfinder {
             obst.sortNodes();
             obst.interConnectNodes(radius);
         }
+
+        // Start- und Zielknoten einbauen und mit dem Graph vernetzten.
+        SubSectorNode startNode = new SubSectorNode(mover.getPrecisePosition().x(), mover.getPrecisePosition().y());
+        SubSectorNode targetNode = new SubSectorNode(target.x(), target.y());
+        double min = Double.POSITIVE_INFINITY;
+        SubSectorNode minNode = null;
+        for (SubSectorObstacle obst : graph) {
+            for (SubSectorNode node : obst.nodes) {
+                double newdist = Math.sqrt((node.x - startNode.x) * (node.x - startNode.x) + (node.y - startNode.y) * (node.y - startNode.y));
+                if (newdist < min) {
+                    min = newdist;
+                    minNode = node;
+                }
+            }
+        }
+        SubSectorEdge startEdge = new SubSectorEdge(minNode, startNode, min);
+        double min2 = Double.POSITIVE_INFINITY;
+        SubSectorNode minNode2 = null;
+        for (SubSectorObstacle obst : graph) {
+            for (SubSectorNode node : obst.nodes) {
+                double newdist = Math.sqrt((node.x - startNode.x) * (node.x - startNode.x) + (node.y - startNode.y) * (node.y - startNode.y));
+                if (newdist < min2) {
+                    min = newdist;
+                    minNode2 = node;
+                }
+            }
+        }
+        SubSectorEdge targetEdge = new SubSectorEdge(minNode2, targetNode, min2);
+
+        startNode.addEdge(startEdge);
+        minNode.addEdge(startEdge);
+        targetNode.addEdge(targetEdge);
+        minNode2.addEdge(targetEdge);
+
+        /**
+         * Hier jetzt einen Weg suchen von startNode nach targetNode.
+         * Die Kanten sind in node.myEdges
+         * Die Ziele bekommt man mit edge.getOther(startNode)
+         * Die Länge (Wegkosten) stehen in edge.length (vorsicht: double-Wert!)
+         */
+
         throw new UnsupportedOperationException("not yet implemented.");
     }
 
@@ -457,6 +499,22 @@ public class SubSectorPathfinder {
             this.n1 = n1;
             this.n2 = n2;
             this.length = lenght;
+        }
+
+        /**
+         * Findet die Gegenseite der Linie. Zum Beispiel, wenn man entlanglaufen will,
+         * ruft man getOther(meinKnoten) auf, und bekommt das Ziel, wo man von
+         * meinKnoten mit dieser Kante hinkommt.
+         * ACHTUNG: Der übergebene Knoten muss Teil dieser Kante sein!!!
+         * @param thisOne
+         * @return
+         */
+        SubSectorNode getOther(SubSectorNode thisOne) {
+            if (n1.equals(thisOne)) {
+                return n2;
+            } else {
+                return n1;
+            }
         }
     }
 }
