@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import java.util.List;
  * Hindernisse herum.
  */
 public class SubSectorPathfinder {
-    
+
     /**
      * Sucht einen Weg auf Freiflächen (FreePolygon) um ein Hindernis herum.
      * Beachtet weitere Hindernisse auf der "Umleitung".
@@ -60,16 +61,16 @@ public class SubSectorPathfinder {
         ArrayList<SubSectorObstacle> graph = new ArrayList<SubSectorObstacle>(); // Der Graph selber
         LinkedList<Moveable> openObstacles = new LinkedList<Moveable>(); // Die Liste mit noch zu untersuchenden Knoten
         ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitete Knoten
-        
+
         openObstacles.add(obstacle); // Startpunkt des Graphen.
         closedObstacles.add(mover); // Wird im Graphen nicht mitberücksichtigt.
         double radius = mover.getRadius();
-        
+
         while (!openObstacles.isEmpty()) {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
             Moveable work = openObstacles.poll();
             closedObstacles.add(work);
-            SubSectorObstacle next = new SubSectorPathfinder.SubSectorObstacle(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius()); 
+            SubSectorObstacle next = new SubSectorPathfinder.SubSectorObstacle(work.getPrecisePosition().x(), work.getPrecisePosition().y(), work.getRadius());
             // Zuerst alle Punkte des Graphen löschen, die jetzt nichtmehr erreichbar sind:
             for (SubSectorObstacle obst : graph) {
                 obst.removeNearNodes(next, radius);
@@ -103,27 +104,27 @@ public class SubSectorPathfinder {
                 }
             }
         }
-        
+
         // Jetzt drüber laufen und Graph aufbauen:
         for (SubSectorObstacle obst : graph) {
-            // Alle Knoten ihrem Bogenmaß nach sortieren.
-            obst.sortNodes();
             // Vorgensweise:
             // In jedem Hinderniss die Linie entlanglaufen und Knoten mit Kanten verbinden.
             // Ein Knoten darf auf einem Kreis immer nur in eine Richtung gehen.
             // (das sollte mithilfe seiner beiden, bekannten hindernisse recht einfach sein)
             // Die Länge des Kreissegments lässt sich einfach mithilfe des winkels ausrechnen (Math.atan2(y,x)
-            // Dann darf der A*.
+            // Dann darf der A*. Bzw. Dijkstra, A* ist hier schon fast Overkill.
+            // Alle Knoten ihrem Bogenmaß nach sortieren.
+            obst.sortNodes();
+            obst.interConnectNodes(radius);
         }
         throw new UnsupportedOperationException("not yet implemented.");
     }
-    
-    
+
     /**
      * Ein Knoten des Graphen
      */
     private static class SubSectorObstacle {
-        
+
         /**
          * Koordinaten
          */
@@ -140,8 +141,7 @@ public class SubSectorPathfinder {
          * Die Knoten dieses SubSectorObstacles
          */
         private LinkedList<SubSectorNode> nodes;
-        
-        
+
         SubSectorObstacle(double x, double y, double radius) {
             this.x = x;
             this.y = y;
@@ -284,13 +284,94 @@ public class SubSectorPathfinder {
                         return 0;
                     }
                 }
-                
             });
         }
-        
+
+        /**
+         * Verbindet die Knoten intern.
+         * Setzt sortierte Knotenliste voraus.
+         */
+        private void interConnectNodes(double radius) {
+            SubSectorNode start = nodes.peekFirst();
+            Iterator<SubSectorNode> iter = nodes.iterator();
+            SubSectorNode current = start;
+            iter.next(); // Eines übersprigen
+            // Immer versuchen, mit dem nächsten zu verbinden.
+            while (iter.hasNext() && current != null) {
+                SubSectorNode work = iter.next();
+                // Versuche current mit work zu verbinden.
+                // Geht nur, wenn current in + und work in - Richtung verbunden werden dürfen.
+                // Richtungen bestimmen
+                boolean cDirection = calcDirection(current, radius);
+                boolean wDirection = calcDirection(work, radius);
+                // Verbinden, wenn c + und w - ist.
+                if (cDirection & !wDirection) {
+                    // Verbinden
+                    buildEdge(current, work);
+                }
+                current = work;
+            }
+            // Am Ende noch versuchen den letzen mit dem Start zu verbinden:
+            if (calcDirection(nodes.getLast(), radius) & !calcDirection(nodes.getFirst(), radius)) {
+                buildEdge(nodes.getLast(), nodes.getFirst());
+            }
+        }
+
+        /**
+         * Berechnet, ob ein Knoten in Plus (true) oder Minus-Richtung laufen darf.
+         * @param node Der Knoten
+         * @return true, wenn in Plus-Richtung.
+         */
+        private boolean calcDirection(SubSectorNode node, double radius) {
+            // "Anderes" Hinderniss finden
+            SubSectorObstacle other = node.otherObstacle(this);
+            // Abstand vom anderen zu Node berechnen:
+            double dist = Math.sqrt((node.x - other.x) * (node.x - other.x) + (node.y - other.y) * (node.y - other.y));
+            // Ein kleines Stück in plus-Richtung weiter gehen:
+            double tetha = Math.atan2(y - node.y, x - node.x);
+            tetha += 0.1;
+            if (tetha > 2 * Math.PI) {
+                tetha = 0.1;
+            }
+            // Punkt hier berechnen:
+            Vector newVec = new Vector(Math.cos(tetha), Math.sin(tetha));
+            newVec.normalize().multiply(other.radius + radius);
+            // Abstand hier berechnen:
+            double dist2 = Math.sqrt((newVec.x() - other.x) * (newVec.x() - other.x) + (newVec.y() - other.y) * (newVec.y() - other.y));
+            // Wenn Abstand größer geworden, dann darf man in Plus gehen
+            if (dist2 > dist) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof SubSectorObstacle) {
+                SubSectorObstacle obst = (SubSectorObstacle) o;
+                if (Math.abs(x - obst.x) < 0.001 && Math.abs(y - obst.y) < 0.001) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Verbindet current mit work.
+         * @param current
+         * @param work 
+         */
+        private void buildEdge(SubSectorNode current, SubSectorNode work) {
+            double length = Math.atan2(y - work.y, x - work.x) - Math.atan2(y - current.y, x - current.x);
+            SubSectorEdge edge = new SubSectorEdge(current, work, length);
+            current.addEdge(edge);
+            work.addEdge(edge);
+        }
     }
-    
+
     private static class SubSectorNode {
+
         /**
          * Koordinaten
          */
@@ -303,12 +384,28 @@ public class SubSectorPathfinder {
          * Auf wessen Laufkreis liegt dieses Hinderniss?
          */
         private ArrayList<SubSectorObstacle> myObstacle;
-        
+        /**
+         * Kanten zu anderen Knoten
+         */
+        private ArrayList<SubSectorEdge> myEdges;
+
         SubSectorNode(double x, double y, SubSectorObstacle... owner) {
             this.x = x;
             this.y = y;
             myObstacle = new ArrayList<SubSectorObstacle>();
             myObstacle.addAll(Arrays.asList(owner));
+            myEdges = new ArrayList<SubSectorEdge>();
+        }
+
+        /**
+         * Fügt die Kante zu diesem Knoten hinzu
+         * Fall sie schon bekannt ist passiert nichts.
+         * @param edge die neue Kante
+         */
+        private void addEdge(SubSectorEdge edge) {
+            if (!myEdges.contains(edge)) {
+                myEdges.add(edge);
+            }
         }
 
         @Override
@@ -318,7 +415,7 @@ public class SubSectorPathfinder {
             hash = 37 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
             return hash;
         }
-        
+
         @Override
         public boolean equals(Object o) {
             if (o instanceof SubSectorNode) {
@@ -329,8 +426,37 @@ public class SubSectorPathfinder {
             }
             return false;
         }
-        
+
+        /**
+         * Findet in einem Knoten mit 2 Hindernissen das andere heraus
+         * (also nicht das, das übergeben wurde)
+         * @param obst
+         * @return 
+         */
+        private SubSectorObstacle otherObstacle(SubSectorObstacle obst) {
+            if (myObstacle.get(0).equals(obst)) {
+                return myObstacle.get(1);
+            } else {
+                return myObstacle.get(0);
+            }
+        }
     }
-    
-    
+
+    private static class SubSectorEdge {
+
+        /**
+         * Die beiden Knoten.
+         */
+        private SubSectorNode n1, n2;
+        /**
+         * Die Länge dieser Kante ("das Kantengewicht")
+         */
+        private double length;
+
+        SubSectorEdge(SubSectorNode n1, SubSectorNode n2, double lenght) {
+            this.n1 = n1;
+            this.n2 = n2;
+            this.length = lenght;
+        }
+    }
 }
