@@ -33,8 +33,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.collections.buffer.PriorityBuffer;
 
 /**
  * Dieser Pathfinder sucht Wege innerhalb von freien Flächen um (bewegliche)
@@ -52,7 +54,7 @@ public class SubSectorPathfinder {
      * @param obstacle
      * @return 
      */
-    static List<Node> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+    static List<SubSectorNode> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
         /**
          * Wegsuche in 2 Schritten:
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
@@ -158,8 +160,79 @@ public class SubSectorPathfinder {
          * Die Ziele bekommt man mit edge.getOther(startNode)
          * Die Länge (Wegkosten) stehen in edge.length (vorsicht: double-Wert!)
          */
+        PriorityBuffer open = new PriorityBuffer();      // Liste für entdeckte Knoten
+        LinkedHashSet<SubSectorNode> containopen = new LinkedHashSet<SubSectorNode>();  // Auch für entdeckte Knoten, hiermit kann viel schneller festgestellt werden, ob ein bestimmter Knoten schon enthalten ist.
+        LinkedHashSet<SubSectorNode> closed = new LinkedHashSet<SubSectorNode>();    // Liste für fertig bearbeitete Knoten
 
-        throw new UnsupportedOperationException("not yet implemented.");
+        double cost_t = 0;    //Movement Kosten (gerade 5, diagonal 7, wird später festgelegt)
+
+        open.add(startNode);
+
+        while (open.size() > 0) {
+            SubSectorNode current = (SubSectorNode) open.remove();
+            containopen.remove(current);
+
+            if (current.equals(targetNode)) {	//Abbruch, weil Weg von Start nach Ziel gefunden wurde
+                //targetNode.setParent(current.getParent());   //"Vorgängerfeld" von Ziel bekannt
+                break;
+            }
+
+            // Aus der open wurde current bereits gelöscht, jetzt in die closed verschieben
+            closed.add(current);
+
+            ArrayList<SubSectorNode> neighbors = new ArrayList();
+            for (int j = 0; j < current.myEdges.size(); j++) {
+                neighbors.add(current.myEdges.get(j).getOther(current));
+            }
+
+            for (SubSectorNode node : neighbors) {
+
+                if (closed.contains(node)) {
+                    continue;
+                }
+
+                // Kosten dort hin berechnen
+                cost_t = current.movementCostTo(node);
+
+                if (containopen.contains(node)) {         //Wenn sich der Knoten in der openlist befindet, muss berechnet werden, ob es einen kürzeren Weg gibt
+
+                    if (current.cost + cost_t < node.cost) {		//kürzerer Weg gefunden?
+
+                        node.cost = current.cost + cost_t;         //-> Wegkosten neu berechnen
+                        //node.setValF(node.cost + node.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start + Luftlinie zum Ziel
+                        node.parent = current; //aktuelles Feld wird zum Vorgängerfeld
+                    }
+                } else {
+                    node.cost = current.cost + cost_t;
+                    //node.setHeuristic(Math.sqrt(Math.pow(Math.abs((targetNode.getX() - node.getX())), 2) + Math.pow(Math.abs((targetNode.getY() - node.getY())), 2)));	// geschätzte Distanz zum Ziel
+                    //Die Zahl am Ende der Berechnung ist der Aufwand der Wegsuche
+                    //5 ist schnell, 4 normal, 3 dauert lange
+
+                    node.parent = current;						// Parent ist die RogPosition, von dem der aktuelle entdeckt wurde
+                    //node.setValF(node.cost + node.getHeuristic());  //F-Wert, besteht aus Wegkosten vom Start aus + Luftlinie zum Ziel
+                    open.add(node);    // in openlist hinzufügen
+                    containopen.add(node);
+                }
+            }
+        }
+
+        if (targetNode.parent == null) {		//kein Weg gefunden
+            return null;
+        }
+
+        ArrayList<SubSectorNode> pathrev = new ArrayList<SubSectorNode>();   //Pfad aus parents erstellen, von Ziel nach Start
+        while (!targetNode.equals(startNode)) {
+            pathrev.add(targetNode);
+            targetNode = targetNode.parent;
+        }
+        pathrev.add(startNode);
+
+        ArrayList<SubSectorNode> path = new ArrayList<SubSectorNode>();	//Pfad umkehren, sodass er von Start nach Ziel ist
+        for (int k = pathrev.size() - 1; k >= 0; k--) {
+            path.add(pathrev.get(k));
+        }
+
+        return path;					//Pfad zurückgeben
     }
 
     /**
@@ -430,6 +503,14 @@ public class SubSectorPathfinder {
          * Kanten zu anderen Knoten
          */
         private ArrayList<SubSectorEdge> myEdges;
+        /**
+         * Die "Kosten" eines Weges. Siehe Pathfinder
+         */
+        private double cost;
+        /**
+         * Der "Vorgänger" dieses Knotens auf einem Weg. Siehe Pathfinder
+         */
+        private SubSectorNode parent;
 
         SubSectorNode(double x, double y, SubSectorObstacle... owner) {
             this.x = x;
@@ -481,6 +562,10 @@ public class SubSectorPathfinder {
             } else {
                 return myObstacle.get(0);
             }
+        }
+
+        public double movementCostTo(SubSectorNode node) {
+            return Math.sqrt((x - node.x) * (x - node.x) + (y - node.y) * (y - node.y));
         }
     }
 
