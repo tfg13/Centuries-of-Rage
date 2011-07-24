@@ -30,7 +30,7 @@ public class SubSectorObstacle {
      * Die Knoten dieses SubSectorObstacles
      */
     private LinkedList<SubSectorNode> nodes;
-
+    
     SubSectorObstacle(double x, double y, double radius) {
         this.x = x;
         this.y = y;
@@ -160,7 +160,7 @@ public class SubSectorObstacle {
      */
     void sortNodes() {
         Collections.sort(nodes, new Comparator<SubSectorNode>() {
-
+            
             @Override
             public int compare(SubSectorNode o1, SubSectorNode o2) {
                 double t1 = Math.atan2(y - o1.getY(), x - o1.getX());
@@ -181,28 +181,30 @@ public class SubSectorObstacle {
      * Setzt sortierte Knotenliste voraus.
      */
     void interConnectNodes(double radius) {
-        SubSectorNode start = nodes.peekFirst();
-        Iterator<SubSectorNode> iter = nodes.iterator();
-        SubSectorNode current = start;
-        iter.next(); // Eines übersprigen
-        // Immer versuchen, mit dem nächsten zu verbinden.
-        while (iter.hasNext() && current != null) {
-            SubSectorNode work = iter.next();
-            // Versuche current mit work zu verbinden.
-            // Geht nur, wenn current in + und work in - Richtung verbunden werden dürfen.
-            // Richtungen bestimmen
-            boolean cDirection = calcDirection(current, radius);
-            boolean wDirection = calcDirection(work, radius);
-            // Verbinden, wenn c + und w - ist.
-            if (cDirection & !wDirection) {
-                // Verbinden
-                buildEdge(current, work);
+        if (nodes.size() >= 2) {
+            SubSectorNode start = nodes.peekFirst();
+            Iterator<SubSectorNode> iter = nodes.iterator();
+            SubSectorNode current = start;
+            iter.next(); // Eines übersprigen
+            // Immer versuchen, mit dem nächsten zu verbinden.
+            while (iter.hasNext() && current != null) {
+                SubSectorNode work = iter.next();
+                // Versuche current mit work zu verbinden.
+                // Geht nur, wenn current in + und work in - Richtung verbunden werden dürfen.
+                // Richtungen bestimmen
+                boolean cDirection = calcDirection(current, radius);
+                boolean wDirection = calcDirection(work, radius);
+                // Verbinden, wenn c + und w - ist.
+                if (cDirection & !wDirection) {
+                    // Verbinden
+                    buildEdge(current, work);
+                }
+                current = work;
             }
-            current = work;
-        }
-        // Am Ende noch versuchen den letzen mit dem Start zu verbinden:
-        if (calcDirection(nodes.getLast(), radius) & !calcDirection(nodes.getFirst(), radius)) {
-            buildEdge(nodes.getLast(), nodes.getFirst());
+            // Am Ende noch versuchen den letzen mit dem Start zu verbinden:
+            if (calcDirection(nodes.getLast(), radius) & !calcDirection(nodes.getFirst(), radius)) {
+                buildEdge(nodes.getLast(), nodes.getFirst());
+            }
         }
     }
 
@@ -234,7 +236,7 @@ public class SubSectorObstacle {
             return false;
         }
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (o instanceof SubSectorObstacle) {
@@ -245,7 +247,7 @@ public class SubSectorObstacle {
         }
         return false;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 3;
