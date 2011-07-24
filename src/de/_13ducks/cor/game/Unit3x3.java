@@ -130,7 +130,6 @@ public class Unit3x3 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         Renderer.drawImage(getGraphicsData().defaultTexture, (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_3x3_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_3x3_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
-        hovered = false;
     }
 
     @Override
@@ -216,7 +215,7 @@ public class Unit3x3 extends Unit {
 
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
-        if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
+        if (hovered || isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
             SimplePosition pos = getPrecisePosition();
             // Billigen Balken rendern
             g.setColor(Color.black);
@@ -230,5 +229,6 @@ public class Unit3x3 extends Unit {
             }
             g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX) - 5, (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 15, 5, 5);
         }
+        hovered = false;
     }
 }
