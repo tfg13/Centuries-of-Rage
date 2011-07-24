@@ -274,4 +274,43 @@ public class SubSectorObstacle {
     LinkedList<SubSectorNode> getNodes() {
         return nodes;
     }
+
+    /**
+     * Fügt einen Knoten ein, nachdem der Graph eigentlich schon aufgebaut wurde.
+     * Setzt einen vollständig aufgebauten Graphen voraus.
+     * Der neue Knoten muss auf dem Laufkreis liegen UND
+     * eine derzeit vorhandene Kante teilen.
+     * Es können keine Knoten in leere Bereiche eingeteilt werden.
+     * Die derzeit bestehenden Kanten werden umgebogen.
+     * @param minNode der neue Knoten, auf dem Laufkreis auf einer Kante
+     */
+    void lateIntegrateNode(SubSectorNode minNode) {
+        // Kante suchen
+        double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
+        SubSectorNode current = null;
+        SubSectorNode next = null;
+        double currTetha = 0;
+        double nextTetha = 0;
+        for (int i = 0; i < nodes.size(); i++) {
+            current = nodes.get(i);
+            next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
+            currTetha = Math.atan2(current.getY() - y, current.getX() - x);
+            nextTetha = Math.atan2(next.getY() - y, next.getX() - x);
+            if (currTetha < newTetha && nextTetha > newTetha) {
+                // Genau hier einfügen
+                break;
+            }
+        }
+        // Hier einfügen
+        // Neue Kanten bauen:
+        SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha);
+        current.removeEdgeTo(next);
+        current.addEdge(newEdge1);
+        minNode.addEdge(newEdge1);
+        
+        SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha);
+        next.removeEdgeTo(current);
+        next.addEdge(newEdge2);
+        minNode.addEdge(newEdge2);
+    }
 }

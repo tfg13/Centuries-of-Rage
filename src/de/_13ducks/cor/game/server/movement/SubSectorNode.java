@@ -138,4 +138,17 @@ public class SubSectorNode {
     void setParent(SubSectorNode parent) {
         this.parent = parent;
     }
+
+    /**
+     * Sucht die Kante zu angegeben Ziel raus und löscht sie.
+     * @param next das Ziel
+     */
+    void removeEdgeTo(SubSectorNode next) {
+        for (SubSectorEdge edge : myEdges) {
+            if (edge.getOther(this).equals(next)) {
+                myEdges.remove(edge);
+                break;
+            }
+        }
+    }
 }

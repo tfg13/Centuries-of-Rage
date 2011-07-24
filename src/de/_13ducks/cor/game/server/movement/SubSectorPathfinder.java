@@ -123,32 +123,48 @@ public class SubSectorPathfinder {
         SubSectorNode startNode = new SubSectorNode(mover.getPrecisePosition().x(), mover.getPrecisePosition().y());
         SubSectorNode targetNode = new SubSectorNode(target.x(), target.y());
         double min = Double.POSITIVE_INFINITY;
-        SubSectorNode minNode = null;
+        SubSectorObstacle minObstacle = null;
         for (SubSectorObstacle obst : graph) {
-            for (SubSectorNode node : obst.getNodes()) {
-                double newdist = Math.sqrt((node.getX() - startNode.getX()) * (node.getX() - startNode.getX()) + (node.getY() - startNode.getY()) * (node.getY() - startNode.getY()));
-                if (newdist < min) {
-                    min = newdist;
-                    minNode = node;
-                }
+            double newdist = Math.sqrt((obst.getX() - startNode.getX()) * (obst.getX() - startNode.getX()) + (obst.getY() - startNode.getY()) * (obst.getY() - startNode.getY()));
+            newdist -= obst.getRadius() + radius; // Es interessiert uns der nächstmögliche Kreis, nicht das nächste Hinderniss
+            if (newdist < min) {
+                min = newdist;
+                minObstacle = obst;
             }
         }
+        // Punkt auf Laufkreis finden
+        Vector direct = new Vector(startNode.getX() - minObstacle.getX(), startNode.getY() - minObstacle.getY());
+        direct.normalize().multiply(minObstacle.getRadius() + radius);
+        
+        SubSectorNode minNode = new SubSectorNode(minObstacle.getX() + direct.getX(), minObstacle.getY() + direct.getY(), minObstacle);
+        
+        // In das Hinderniss integrieren:
+        minObstacle.lateIntegrateNode(minNode);
         SubSectorEdge startEdge = new SubSectorEdge(minNode, startNode, min);
+        
         double min2 = Double.POSITIVE_INFINITY;
-        SubSectorNode minNode2 = null;
+        SubSectorObstacle minObstacle2 = null;
         for (SubSectorObstacle obst : graph) {
-            for (SubSectorNode node : obst.getNodes()) {
-                double newdist = Math.sqrt((node.getX() - startNode.getX()) * (node.getX() - startNode.getX()) + (node.getY() - startNode.getY()) * (node.getY() - startNode.getY()));
-                if (newdist < min2) {
-                    min = newdist;
-                    minNode2 = node;
-                }
+            double newdist = Math.sqrt((obst.getX() - startNode.getX()) * (obst.getX() - startNode.getX()) + (obst.getY() - startNode.getY()) * (obst.getY() - startNode.getY()));
+            newdist -= obst.getRadius() + radius; // Es interessiert uns der nächstmögliche Kreis, nicht das nächste Hinderniss
+            if (newdist < min2) {
+                min2 = newdist;
+                minObstacle2 = obst;
             }
         }
-        SubSectorEdge targetEdge = new SubSectorEdge(minNode2, targetNode, min2);
+        // Punkt auf Laufkreis finden
+        Vector direct2 = new Vector(startNode.getX() - minObstacle2.getX(), startNode.getY() - minObstacle2.getY());
+        direct2.normalize().multiply(minObstacle2.getRadius() + radius);
+        
+        SubSectorNode minNode2 = new SubSectorNode(minObstacle2.getX() + direct2.getX(), minObstacle2.getY() + direct2.getY(), minObstacle2);
+        
+        // In das Hinderniss integrieren:
+        minObstacle2.lateIntegrateNode(minNode2);
+        SubSectorEdge targetEdge = new SubSectorEdge(minNode2, startNode, min2);
 
         startNode.addEdge(startEdge);
         minNode.addEdge(startEdge);
+        
         targetNode.addEdge(targetEdge);
         minNode2.addEdge(targetEdge);
 
