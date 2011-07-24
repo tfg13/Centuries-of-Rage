@@ -174,7 +174,7 @@ public class GroupManager {
      * @param mover - der LowLevelManager, der die Kollision festgestellt hat
      * @param obstacle - Das Obnjekt, mit dem der LowlevelManager kollidiert
      */
-    public boolean collisionDetected(Moveable mover, Moveable obstacle) {
+    public boolean collisionDetected(Moveable mover, Moveable obstacle, SimplePosition target) {
         ServerBehaviourMove obstMove = obstacle.getLowLevelManager();
         if (obstMove.isMoving() && !obstMove.isWaiting()) {
             // Wenn die andere Einheit läuft auf jeden Fall selber warten.
@@ -183,15 +183,19 @@ public class GroupManager {
             // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
             return true;
         } else if (!obstMove.isMoving()) {
-            return true;
             // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
             // Das erfolgt in 2 Schritten:
             // 1. Einen Graphen zum Suchen aufbauen.
             // 2. A* einen Weg durch den Graphen suchen lassen.
-          //  List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle);
+            List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
+            System.out.println("CALCULATED DIVERSION: BEGIN");
+            for (Node n : diversion) {
+                System.out.println(n);
+            }
+            System.out.println("END OF CALCULATED DIVERSION");
             //System.out.println("AddMe: Use calculated diversion");
             //TODO: Ändern, sobald möglich
-            // return false;
+            return true;
         }
         
         return true;

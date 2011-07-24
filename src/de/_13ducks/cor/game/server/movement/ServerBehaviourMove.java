@@ -169,7 +169,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
             if (!stopUnit && colliding) {
                 // Kollision. Gruppenmanager muss entscheiden, ob wir warten oder ne Alternativroute suchen.
-                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle);
+                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle, target);
 
                 if (wait) {
                     waitStartTime = System.nanoTime();
