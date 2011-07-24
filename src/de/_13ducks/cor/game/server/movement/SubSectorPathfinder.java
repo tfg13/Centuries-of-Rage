@@ -54,7 +54,7 @@ public class SubSectorPathfinder {
      * @param obstacle
      * @return 
      */
-    static List<SubSectorNode> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+    static List<Node> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
         /**
          * Wegsuche in 2 Schritten:
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
@@ -227,9 +227,10 @@ public class SubSectorPathfinder {
         }
         pathrev.add(startNode);
 
-        ArrayList<SubSectorNode> path = new ArrayList<SubSectorNode>();	//Pfad umkehren, sodass er von Start nach Ziel ist
+        ArrayList<Node> path = new ArrayList<Node>();	//Pfad umkehren, sodass er von Start nach Ziel ist
         for (int k = pathrev.size() - 1; k >= 0; k--) {
-            path.add(pathrev.get(k));
+            SubSectorNode n = pathrev.get(k);
+            path.add(new Node(n.x, n.y));
         }
 
         return path;					//Pfad zurückgeben
