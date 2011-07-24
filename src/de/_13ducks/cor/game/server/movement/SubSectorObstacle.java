@@ -30,7 +30,7 @@ public class SubSectorObstacle {
      * Die Knoten dieses SubSectorObstacles
      */
     private LinkedList<SubSectorNode> nodes;
-    
+
     SubSectorObstacle(double x, double y, double radius) {
         this.x = x;
         this.y = y;
@@ -160,7 +160,7 @@ public class SubSectorObstacle {
      */
     void sortNodes() {
         Collections.sort(nodes, new Comparator<SubSectorNode>() {
-            
+
             @Override
             public int compare(SubSectorNode o1, SubSectorNode o2) {
                 double t1 = Math.atan2(y - o1.getY(), x - o1.getX());
@@ -236,7 +236,7 @@ public class SubSectorObstacle {
             return false;
         }
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof SubSectorObstacle) {
@@ -247,7 +247,7 @@ public class SubSectorObstacle {
         }
         return false;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -285,32 +285,48 @@ public class SubSectorObstacle {
      * @param minNode der neue Knoten, auf dem Laufkreis auf einer Kante
      */
     void lateIntegrateNode(SubSectorNode minNode) {
-        // Kante suchen
-        double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
-        SubSectorNode current = null;
-        SubSectorNode next = null;
-        double currTetha = 0;
-        double nextTetha = 0;
-        for (int i = 0; i < nodes.size(); i++) {
-            current = nodes.get(i);
-            next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
-            currTetha = Math.atan2(current.getY() - y, current.getX() - x);
-            nextTetha = Math.atan2(next.getY() - y, next.getX() - x);
-            if (currTetha < newTetha && nextTetha > newTetha) {
-                // Genau hier einfügen
-                break;
+        if (nodes.size() >= 2) {
+            // Kante suchen
+            double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
+            SubSectorNode current = null;
+            SubSectorNode next = null;
+            double currTetha = 0;
+            double nextTetha = 0;
+            for (int i = 0; i < nodes.size(); i++) {
+                current = nodes.get(i);
+                next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
+                currTetha = Math.atan2(current.getY() - y, current.getX() - x);
+                nextTetha = Math.atan2(next.getY() - y, next.getX() - x);
+                if (currTetha < newTetha && nextTetha > newTetha) {
+                    // Genau hier einfügen
+                    break;
+                }
             }
+            // Hier einfügen
+            // Neue Kanten bauen:
+            SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha);
+            current.removeEdgeTo(next);
+            current.addEdge(newEdge1);
+            minNode.addEdge(newEdge1);
+
+            SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha);
+            next.removeEdgeTo(current);
+            next.addEdge(newEdge2);
+            minNode.addEdge(newEdge2);
+        } else if (nodes.size() == 1) {
+            SubSectorNode old = nodes.get(0); 
+            // Nur ein Knoten da. (Wegen eines einzelnen Hindernisses)
+            double oldTetha = Math.atan2(old.getY() - y, old.getX() - x);
+            double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
+            double maxL = Math.abs(newTetha - oldTetha);
+            SubSectorEdge e1 = new SubSectorEdge(old, minNode, maxL);
+            SubSectorEdge e2 = new SubSectorEdge(minNode, old, Math.PI * 2 - maxL);
+            minNode.addEdge(e1);
+            minNode.addEdge(e2);
+            old.addEdge(e1);
+            old.addEdge(e2);
         }
-        // Hier einfügen
-        // Neue Kanten bauen:
-        SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha);
-        current.removeEdgeTo(next);
-        current.addEdge(newEdge1);
-        minNode.addEdge(newEdge1);
-        
-        SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha);
-        next.removeEdgeTo(current);
-        next.addEdge(newEdge2);
-        minNode.addEdge(newEdge2);
+        nodes.add(minNode);
+        sortNodes();
     }
 }
