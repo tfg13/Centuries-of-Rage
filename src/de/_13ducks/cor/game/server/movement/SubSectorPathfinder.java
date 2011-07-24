@@ -95,6 +95,8 @@ public class SubSectorPathfinder {
                     }
                 }
             }
+            // Bearbeitetes selbst in Graph einfügen
+            graph.add(next);
             // Weitere Hindernisse suchen, die jetzt relevant sind.
             List<Moveable> moversAround = Server.getInnerServer().moveMan.moveMap.moversAround(work, (work.getRadius() + radius) * 2);
             for (Moveable pmove : moversAround) {
