@@ -157,7 +157,7 @@ public class SubSectorPathfinder {
         double min2 = Double.POSITIVE_INFINITY;
         SubSectorObstacle minObstacle2 = null;
         for (SubSectorObstacle obst : graph) {
-            double newdist = Math.sqrt((obst.getX() - startNode.getX()) * (obst.getX() - startNode.getX()) + (obst.getY() - startNode.getY()) * (obst.getY() - startNode.getY()));
+            double newdist = Math.sqrt((obst.getX() - targetNode.getX()) * (obst.getX() - targetNode.getX()) + (obst.getY() - targetNode.getY()) * (obst.getY() - targetNode.getY()));
             newdist -= obst.getRadius() + radius; // Es interessiert uns der nächstmögliche Kreis, nicht das nächste Hinderniss
             if (newdist < min2) {
                 min2 = newdist;
@@ -165,7 +165,7 @@ public class SubSectorPathfinder {
             }
         }
         // Punkt auf Laufkreis finden
-        Vector direct2 = new Vector(startNode.getX() - minObstacle2.getX(), startNode.getY() - minObstacle2.getY());
+        Vector direct2 = new Vector(targetNode.getX() - minObstacle2.getX(), targetNode.getY() - minObstacle2.getY());
         direct2.normalize().multiply(minObstacle2.getRadius() + radius);
 
         SubSectorNode minNode2 = new SubSectorNode(minObstacle2.getX() + direct2.getX(), minObstacle2.getY() + direct2.getY(), minObstacle2);
