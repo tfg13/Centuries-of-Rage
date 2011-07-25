@@ -149,10 +149,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
             double newTetha = ((tetha * rad) + delta) / rad; // Strahlensatz, u = 2*PI*r
             // Über-/Unterläufe behandeln:
             if (newTetha > Math.PI) {
-                newTetha = -2 * Math.PI + tetha;
+                newTetha = -2 * Math.PI + newTetha;
             } else if (newTetha < -Math.PI) {
-                newTetha = 2 * Math.PI + tetha;
+                newTetha = 2 * Math.PI + newTetha;
             }
+            System.out.println("rad " + rad + " tetha " + tetha + " delta " + delta + " nt " + newTetha);
             Vector newPvec = new Vector(Math.cos(newTetha), Math.sin(newTetha));
             newPvec = newPvec.multiply(rad);
             newpos = around.toVector().add(newPvec).toFPP();
