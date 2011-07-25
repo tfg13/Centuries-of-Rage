@@ -212,19 +212,18 @@ public class SubSectorPathfinder {
             // Aus der open wurde current bereits gelöscht, jetzt in die closed verschieben
             closed.add(current);
 
-            ArrayList<SubSectorNode> neighbors = new ArrayList<SubSectorNode>();
-            for (int j = 0; j < current.getMyEdges().size(); j++) {
-                neighbors.add(current.getMyEdges().get(j).getOther(current));
-            }
+            ArrayList<SubSectorEdge> neighbors = current.getMyEdges();
 
-            for (SubSectorNode node : neighbors) {
+            for (SubSectorEdge edge : neighbors) {
+                
+                SubSectorNode node = edge.getOther(current);
 
                 if (closed.contains(node)) {
                     continue;
                 }
 
                 // Kosten dort hin berechnen
-                cost_t = current.movementCostTo(node);
+                cost_t = edge.getLength();
 
                 if (containopen.contains(node)) {         //Wenn sich der Knoten in der openlist befindet, muss berechnet werden, ob es einen kürzeren Weg gibt
 

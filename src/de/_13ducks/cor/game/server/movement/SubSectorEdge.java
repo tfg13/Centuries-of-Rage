@@ -36,4 +36,12 @@ public class SubSectorEdge {
             return n1;
         }
     }
+
+    /**
+     * Liefert die Länge dieser Kante
+     * @return die Länge dieser Kante
+     */
+    double getLength() {
+        return length;
+    }
 }

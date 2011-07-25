@@ -86,10 +86,6 @@ public class SubSectorNode implements Comparable<SubSectorNode> {
         }
     }
 
-    public double movementCostTo(SubSectorNode node) {
-        return Math.sqrt((x - node.x) * (x - node.x) + (y - node.y) * (y - node.y));
-    }
-
     /**
      * @return the x
      */
