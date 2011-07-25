@@ -61,4 +61,9 @@ public class SubSectorEdge {
     double getLength() {
         return length;
     }
+    
+    @Override
+    public String toString() {
+        return n1 + " --> " + n2 + (arc ? " arc" : " direct");
+    }
 }
