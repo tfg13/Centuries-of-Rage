@@ -36,7 +36,7 @@ import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
 import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
 import java.util.List;
 
 /**

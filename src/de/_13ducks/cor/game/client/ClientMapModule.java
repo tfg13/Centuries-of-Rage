@@ -57,7 +57,7 @@ import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.MapIO;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
 
 /**
  * Das MapModul auf der Client-Seite

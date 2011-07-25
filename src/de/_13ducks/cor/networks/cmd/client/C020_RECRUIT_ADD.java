@@ -26,7 +26,7 @@
 package de._13ducks.cor.networks.cmd.client;
 
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourRecruit;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourRecruit;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
 import de._13ducks.cor.game.GameObject;

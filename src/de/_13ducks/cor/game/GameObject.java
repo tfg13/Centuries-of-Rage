@@ -44,7 +44,7 @@ import de._13ducks.cor.graphics.GOGraphicsData;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourUpgrade;
 
 /**
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.

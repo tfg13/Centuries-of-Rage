@@ -29,7 +29,7 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourProduce;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**

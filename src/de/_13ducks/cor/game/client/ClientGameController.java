@@ -44,7 +44,7 @@ import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourProduce;
 
 /**
  *
