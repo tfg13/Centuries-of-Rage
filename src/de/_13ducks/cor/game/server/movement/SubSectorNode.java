@@ -7,7 +7,7 @@ package de._13ducks.cor.game.server.movement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SubSectorNode {
+public class SubSectorNode implements Comparable<SubSectorNode> {
 
     /**
      * Koordinaten
@@ -149,6 +149,17 @@ public class SubSectorNode {
                 myEdges.remove(edge);
                 break;
             }
+        }
+    }
+
+    @Override
+    public int compareTo(SubSectorNode o) {
+        if (o.cost > cost) {
+            return -1;
+        } else if (o.cost < cost) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 }
