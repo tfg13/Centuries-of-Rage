@@ -134,7 +134,7 @@ public class SubSectorPathfinder {
         }
         // Punkt auf Laufkreis finden
         Vector direct = new Vector(startNode.getX() - minObstacle.getX(), startNode.getY() - minObstacle.getY());
-        direct.normalize().multiply(minObstacle.getRadius() + radius);
+        direct = direct.normalize().multiply(minObstacle.getRadius() + radius);
 
         SubSectorNode minNode = new SubSectorNode(minObstacle.getX() + direct.getX(), minObstacle.getY() + direct.getY(), minObstacle);
 
@@ -166,7 +166,7 @@ public class SubSectorPathfinder {
         }
         // Punkt auf Laufkreis finden
         Vector direct2 = new Vector(targetNode.getX() - minObstacle2.getX(), targetNode.getY() - minObstacle2.getY());
-        direct2.normalize().multiply(minObstacle2.getRadius() + radius);
+        direct2 = direct2.normalize().multiply(minObstacle2.getRadius() + radius);
 
         SubSectorNode minNode2 = new SubSectorNode(minObstacle2.getX() + direct2.getX(), minObstacle2.getY() + direct2.getY(), minObstacle2);
 
@@ -175,13 +175,14 @@ public class SubSectorPathfinder {
         SubSectorEdge targetEdge = new SubSectorEdge(minNode2, targetNode, min2);
 
         if (!targetNode.equals(minNode2)) {
-        
-        targetNode.addEdge(targetEdge);
-        minNode2.addEdge(targetEdge);
-        
+
+            targetNode.addEdge(targetEdge);
+            minNode2.addEdge(targetEdge);
+
         } else {
             // Das Ziel ist schon auf dem Laufkreis.
             // Die Aussprungkante ist nicht nötig.
+            System.out.println("RREF");
             targetNode = minNode2;
         }
 

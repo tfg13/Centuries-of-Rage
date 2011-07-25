@@ -105,7 +105,7 @@ public class SubSectorObstacle {
         Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
         // Senkrechten Vektor und seine Länge berechnen:
         Vector ortho = new Vector(direct.y(), -direct.x());
-        ortho.normalize().multiply(Math.sqrt(((this.radius + radius) * (this.radius + radius)) - (mid.length() * mid.length())));
+        ortho = ortho.normalize().multiply(Math.sqrt(((this.radius + radius) * (this.radius + radius)) - (mid.length() * mid.length())));
         // Schnittpunkte ausrechnen:
         SubSectorNode[] intersections = new SubSectorNode[2];
         Vector posMid = new Vector(x + mid.x(), y + mid.y()); // Positionsvektor des Mittelpunkts
@@ -226,7 +226,7 @@ public class SubSectorObstacle {
         }
         // Punkt hier berechnen:
         Vector newVec = new Vector(Math.cos(tetha), Math.sin(tetha));
-        newVec.normalize().multiply(other.radius + radius);
+        newVec = newVec.normalize().multiply(other.radius + radius);
         // Abstand hier berechnen:
         double dist2 = Math.sqrt((newVec.x() - other.x) * (newVec.x() - other.x) + (newVec.y() - other.y) * (newVec.y() - other.y));
         // Wenn Abstand größer geworden, dann darf man in Plus gehen
