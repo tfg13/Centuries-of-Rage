@@ -68,6 +68,14 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Richtung der Kurve (true = Plus)
      */
     private boolean arcDirection;
+    /**
+     * Wie weit (im Bogenmaß) wir auf dem Kreis laufen müssen
+     */
+    private double tethaDist;
+    /**
+     * Wie weit wir (im Bogenmaß) auf dem Kreis schon gelaufen sind
+     */
+    private double movedTetha;
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
@@ -147,13 +155,13 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 delta *= -1;
             }
             double newTetha = ((tetha * rad) + delta) / rad; // Strahlensatz, u = 2*PI*r
+            movedTetha += Math.abs(newTetha - tetha);
             // Über-/Unterläufe behandeln:
             if (newTetha > Math.PI) {
                 newTetha = -2 * Math.PI + newTetha;
             } else if (newTetha < -Math.PI) {
                 newTetha = 2 * Math.PI + newTetha;
             }
-            System.out.println("rad " + rad + " tetha " + tetha + " delta " + delta + " nt " + newTetha);
             Vector newPvec = new Vector(Math.cos(newTetha), Math.sin(newTetha));
             newPvec = newPvec.multiply(rad);
             newpos = around.toVector().add(newPvec).toFPP();
@@ -222,7 +230,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         }
         // Ziel schon erreicht?
         Vector nextVec = target.toFPP().subtract(newpos).toVector();
-        if ((vec.isOpposite(nextVec) || newpos.equals(target)) && !stopUnit) {
+        boolean arcDone = false;
+        if (arc) {
+            arcDone = movedTetha >= tethaDist;
+        }
+        if (((!arc && vec.isOpposite(nextVec)) || arcDone || newpos.equals(target)) && !stopUnit) {
             // Zielvektor erreicht
             // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
             setMoveable(oldPos, target.toFPP());
@@ -303,6 +315,21 @@ public class ServerBehaviourMove extends ServerBehaviour {
         this.arc = arc;
         this.arcDirection = arcDirection;
         this.around = arcCenter;
+        this.movedTetha = 0;
+        if (arc) {
+            // Länge des Kreissegments berechnen
+            double startTetha = Math.atan2(caster2.getPrecisePosition().y() - around.y(), caster2.getPrecisePosition().x() - around.x());
+            double targetTetha = Math.atan2(target.y() - around.y(), target.x() - around.x());
+            if (arcDirection) {
+                tethaDist = targetTetha - startTetha;
+            } else {
+                tethaDist = startTetha - targetTetha;
+            }
+            if (tethaDist < 0) {
+                tethaDist = 2 * Math.PI + tethaDist;
+            }
+        }
+
         activate();
     }
 
