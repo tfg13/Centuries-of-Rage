@@ -14,11 +14,28 @@ public class SubSectorEdge {
      * Die Länge dieser Kante ("das Kantengewicht")
      */
     private double length;
+    /**
+     * Ist dieses Kante eine Kurve?
+     */
+    private boolean arc;
+    /**
+     * Welches Hinderniss mit dieser Kante umgangen wird.
+     */
+    private SubSectorObstacle obst;
 
+    SubSectorEdge(SubSectorNode n1, SubSectorNode n2, double lenght, SubSectorObstacle aroundObstacle) {
+        this.n1 = n1;
+        this.n2 = n2;
+        this.length = lenght;
+        arc = true;
+        obst = aroundObstacle;
+    }
+    
     SubSectorEdge(SubSectorNode n1, SubSectorNode n2, double lenght) {
         this.n1 = n1;
         this.n2 = n2;
         this.length = lenght;
+        arc = false;
     }
 
     /**

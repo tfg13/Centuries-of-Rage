@@ -263,7 +263,7 @@ public class SubSectorObstacle {
      */
     void buildEdge(SubSectorNode current, SubSectorNode work) {
         double length = Math.atan2(y - work.getY(), x - work.getX()) - Math.atan2(y - current.getY(), x - current.getX());
-        SubSectorEdge edge = new SubSectorEdge(current, work, length);
+        SubSectorEdge edge = new SubSectorEdge(current, work, length, this);
         current.addEdge(edge);
         work.addEdge(edge);
     }
@@ -304,12 +304,12 @@ public class SubSectorObstacle {
             }
             // Hier einfügen
             // Neue Kanten bauen:
-            SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha);
+            SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha, this);
             current.removeEdgeTo(next);
             current.addEdge(newEdge1);
             minNode.addEdge(newEdge1);
 
-            SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha);
+            SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha, this);
             next.removeEdgeTo(current);
             next.addEdge(newEdge2);
             minNode.addEdge(newEdge2);
@@ -319,8 +319,8 @@ public class SubSectorObstacle {
             double oldTetha = Math.atan2(old.getY() - y, old.getX() - x);
             double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
             double maxL = Math.abs(newTetha - oldTetha);
-            SubSectorEdge e1 = new SubSectorEdge(old, minNode, maxL);
-            SubSectorEdge e2 = new SubSectorEdge(minNode, old, Math.PI * 2 - maxL);
+            SubSectorEdge e1 = new SubSectorEdge(old, minNode, maxL, this);
+            SubSectorEdge e2 = new SubSectorEdge(minNode, old, Math.PI * 2 - maxL, this);
             minNode.addEdge(e1);
             minNode.addEdge(e2);
             old.addEdge(e1);

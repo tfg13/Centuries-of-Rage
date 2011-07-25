@@ -50,7 +50,7 @@ public class SubSectorPathfinder {
      * @param obstacle
      * @return 
      */
-    static List<Node> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+    static List<SubSectorEdge> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
         /**
          * Wegsuche in 2 Schritten:
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.
@@ -63,7 +63,7 @@ public class SubSectorPathfinder {
 
         openObstacles.add(obstacle); // Startpunkt des Graphen.
         closedObstacles.add(mover); // Wird im Graphen nicht mitberücksichtigt.
-        double radius = mover.getRadius();
+        double radius = mover.getRadius() + ServerBehaviourMove.MIN_DISTANCE;
 
         while (!openObstacles.isEmpty()) {
             // Neues Element aus der Liste holen und als bearbeitet markieren.
@@ -258,12 +258,32 @@ public class SubSectorPathfinder {
         }
         pathrev.add(startNode);
 
-        ArrayList<Node> path = new ArrayList<Node>();	//Pfad umkehren, sodass er von Start nach Ziel ist
+        ArrayList<SubSectorNode> path = new ArrayList<SubSectorNode>();	//Pfad umkehren, sodass er von Start nach Ziel ist
         for (int k = pathrev.size() - 1; k >= 0; k--) {
-            SubSectorNode n = pathrev.get(k);
-            path.add(new Node(n.getX(), n.getY()));
+            path.add(pathrev.get(k));
+        }
+        
+        // Nachbearbeitung:
+        // Wir brauchen eine Kanten-Liste mit arc/direct Informationen
+        
+        ArrayList<SubSectorEdge> finalPath = new ArrayList<SubSectorEdge>();
+        for (int i = 0; i < path.size() - 1; i++) {
+            SubSectorNode from = path.get(i);
+            SubSectorNode to = path.get(i + 1);
+            finalPath.add(commonEdge(from, to));
         }
 
-        return path;					//Pfad zurückgeben
+        return finalPath;					//Pfad zurückgeben
+    }
+
+    private static SubSectorEdge commonEdge(SubSectorNode from, SubSectorNode to) {
+        ArrayList<SubSectorEdge> toEdges = to.getMyEdges();
+        for (SubSectorEdge edge : from.getMyEdges()) {
+            if (toEdges.contains(edge)) {
+                return edge;
+            }
+        }
+        System.out.println("ERROR! Missing common edge!");
+        return null;
     }
 }
