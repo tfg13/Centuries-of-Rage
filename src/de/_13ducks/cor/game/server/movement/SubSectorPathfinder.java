@@ -135,13 +135,25 @@ public class SubSectorPathfinder {
         // Punkt auf Laufkreis finden
         Vector direct = new Vector(startNode.getX() - minObstacle.getX(), startNode.getY() - minObstacle.getY());
         direct.normalize().multiply(minObstacle.getRadius() + radius);
-        
+
         SubSectorNode minNode = new SubSectorNode(minObstacle.getX() + direct.getX(), minObstacle.getY() + direct.getY(), minObstacle);
-        
+
         // In das Hinderniss integrieren:
         minObstacle.lateIntegrateNode(minNode);
         SubSectorEdge startEdge = new SubSectorEdge(minNode, startNode, min);
-        
+
+        if (!startNode.equals(minNode)) {
+
+            startNode.addEdge(startEdge);
+            minNode.addEdge(startEdge);
+
+        } else {
+            // Wir stehen schon auf dem minNode.
+            // Die Einsprungkante ist nicht notwendig.
+            startNode = minNode;
+        }
+
+
         double min2 = Double.POSITIVE_INFINITY;
         SubSectorObstacle minObstacle2 = null;
         for (SubSectorObstacle obst : graph) {
@@ -155,18 +167,23 @@ public class SubSectorPathfinder {
         // Punkt auf Laufkreis finden
         Vector direct2 = new Vector(startNode.getX() - minObstacle2.getX(), startNode.getY() - minObstacle2.getY());
         direct2.normalize().multiply(minObstacle2.getRadius() + radius);
-        
+
         SubSectorNode minNode2 = new SubSectorNode(minObstacle2.getX() + direct2.getX(), minObstacle2.getY() + direct2.getY(), minObstacle2);
-        
+
         // In das Hinderniss integrieren:
         minObstacle2.lateIntegrateNode(minNode2);
         SubSectorEdge targetEdge = new SubSectorEdge(minNode2, targetNode, min2);
 
-        startNode.addEdge(startEdge);
-        minNode.addEdge(startEdge);
+        if (!targetNode.equals(minNode2)) {
         
         targetNode.addEdge(targetEdge);
         minNode2.addEdge(targetEdge);
+        
+        } else {
+            // Das Ziel ist schon auf dem Laufkreis.
+            // Die Aussprungkante ist nicht nötig.
+            targetNode = minNode2;
+        }
 
         /**
          * Hier jetzt einen Weg suchen von startNode nach targetNode.
