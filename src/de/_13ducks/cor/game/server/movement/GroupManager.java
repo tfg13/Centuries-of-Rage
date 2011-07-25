@@ -184,18 +184,14 @@ public class GroupManager {
             return true;
         } else if (!obstMove.isMoving()) {
             // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
-            // Das erfolgt in 2 Schritten:
-            // 1. Einen Graphen zum Suchen aufbauen.
-            // 2. A* einen Weg durch den Graphen suchen lassen.
             List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
             System.out.println("CALCULATED DIVERSION: BEGIN");
             for (SubSectorEdge n : diversion) {
                 System.out.println(n);
             }
             System.out.println("END OF CALCULATED DIVERSION");
-            //System.out.println("AddMe: Use calculated diversion");
-            //TODO: Ändern, sobald möglich
-            return true;
+            mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
+            return false;
         }
         
         return true;

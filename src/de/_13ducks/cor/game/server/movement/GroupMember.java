@@ -200,6 +200,8 @@ public class GroupMember {
             }
             current = target;
         }
+        // Loslaufen
+        reachedTarget(mover);
     }
 
     private class DiversionWaypoint {
