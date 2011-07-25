@@ -229,6 +229,7 @@ public class GroupMember {
 
         private DiversionWaypoint(SimplePosition pos, boolean arcDirection, SimplePosition arcCenter) {
             this(pos);
+            this.arc = true;
             this.arcDirection = arcDirection;
             this.arcCenter = arcCenter;
         }
