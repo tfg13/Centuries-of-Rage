@@ -213,9 +213,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     System.out.println("WAIT-COLLISION " + caster2 + " with " + lastObstacle + " stop at " + newpos);
                     return; // Nicht weiter ausführen!
                 } else {
-                    // Bricht die Bewegung vollständig ab.
-                    System.out.println("STOP-COLLISION " + caster2 + " with " + lastObstacle);
-                    stopUnit = true;
+                    // Nochmal laufen, wir haben ein neues Ziel!
+                    trigger();
+                    return;
                 }
             }
         }
