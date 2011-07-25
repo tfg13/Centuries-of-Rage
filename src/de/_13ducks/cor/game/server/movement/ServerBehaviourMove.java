@@ -412,7 +412,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
             float radius = (float) (t.getRadius() + MIN_DISTANCE / 2);
             Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), radius); //Das getUnit ist ugly!
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
-            if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
+            // Die ersten beiden Bedingungen gelten nur für nicht-arc-Bewegungen!
+            if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
                 // Kollision!
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
