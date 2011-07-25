@@ -165,6 +165,13 @@ public class SubSectorObstacle {
             public int compare(SubSectorNode o1, SubSectorNode o2) {
                 double t1 = Math.atan2(y - o1.getY(), x - o1.getX());
                 double t2 = Math.atan2(y - o2.getY(), x - o2.getX());
+                // IN 2PI-Bogenmaß umwandeln:
+                if (t1 < 0) {
+                    t1 = 2 * Math.PI + t1;
+                }
+                if (t2 < 0) {
+                    t2 = 2 * Math.PI + t2;
+                }
                 if (t1 > t2) {
                     return 1;
                 } else if (t1 < t2) {
@@ -221,8 +228,8 @@ public class SubSectorObstacle {
         // Ein kleines Stück in plus-Richtung weiter gehen:
         double tetha = Math.atan2(y - node.getY(), x - node.getX());
         tetha += 0.1;
-        if (tetha > 2 * Math.PI) {
-            tetha = 0.1;
+        if (tetha > Math.PI) {
+            tetha = -Math.PI + 0.1;
         }
         // Punkt hier berechnen:
         Vector newVec = new Vector(Math.cos(tetha), Math.sin(tetha));
@@ -262,7 +269,19 @@ public class SubSectorObstacle {
      * @param work 
      */
     void buildEdge(SubSectorNode current, SubSectorNode work) {
-        double length = Math.atan2(y - work.getY(), x - work.getX()) - Math.atan2(y - current.getY(), x - current.getX());
+        double tethaWork = Math.atan2(y - work.getY(), x - work.getX());
+        double tethaCurrent = Math.atan2(y - current.getY(), x - current.getX());
+        // Beide in 2PI-Darstellung umrechnen:
+        if (tethaWork < 0) {
+            tethaWork = 2 * Math.PI + tethaWork;
+        }
+        if (tethaCurrent < 0) {
+            tethaCurrent = 2 * Math.PI + tethaCurrent;
+        }
+        double length = tethaWork - tethaCurrent;
+        if (length < 0) {
+            length = 2 * Math.PI + length;
+        }
         SubSectorEdge edge = new SubSectorEdge(current, work, length, this);
         current.addEdge(edge);
         work.addEdge(edge);
@@ -288,28 +307,52 @@ public class SubSectorObstacle {
         if (nodes.size() >= 2) {
             // Kante suchen
             double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
+            if (newTetha < 0) {
+                newTetha = 2 * Math.PI + newTetha;
+            }
             SubSectorNode current = null;
             SubSectorNode next = null;
             double currTetha = 0;
             double nextTetha = 0;
+            boolean found = false;
             for (int i = 0; i < nodes.size(); i++) {
                 current = nodes.get(i);
                 next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
                 currTetha = Math.atan2(current.getY() - y, current.getX() - x);
+                if (currTetha < 0) {
+                    currTetha = 2 * Math.PI + currTetha;
+                }
                 nextTetha = Math.atan2(next.getY() - y, next.getX() - x);
+                if (nextTetha < 0) {
+                    nextTetha = 2 * Math.PI + nextTetha;
+                }
                 if (currTetha < newTetha && nextTetha > newTetha) {
                     // Genau hier einfügen
+                    found = true;
                     break;
                 }
             }
+            if (!found) {
+                // Dann ist es zwischen dem letzen und dem ersten
+                current = nodes.getLast();
+                next = nodes.getFirst();
+            }
             // Hier einfügen
             // Neue Kanten bauen:
-            SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, newTetha - currTetha, this);
+            double l1length = newTetha - currTetha;
+            if (l1length < 0) {
+                l1length = 2 * Math.PI + l1length;
+            }
+            SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, l1length, this);
             current.removeEdgeTo(next);
             current.addEdge(newEdge1);
             minNode.addEdge(newEdge1);
 
-            SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, nextTetha - newTetha, this);
+            double l2length = nextTetha - newTetha;
+            if (l2length < 0) {
+                l2length = 2 * Math.PI + l2length;
+            }
+            SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, l2length, this);
             next.removeEdgeTo(current);
             next.addEdge(newEdge2);
             minNode.addEdge(newEdge2);
@@ -317,8 +360,17 @@ public class SubSectorObstacle {
             SubSectorNode old = nodes.get(0); 
             // Nur ein Knoten da. (Wegen eines einzelnen Hindernisses)
             double oldTetha = Math.atan2(old.getY() - y, old.getX() - x);
+            if (oldTetha < 0) {
+                oldTetha = 2 * Math.PI + oldTetha;
+            }
             double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
-            double maxL = Math.abs(newTetha - oldTetha);
+            if (newTetha < 0) {
+                newTetha = 2 * Math.PI + oldTetha;
+            }
+            double maxL = newTetha - oldTetha;
+            if (maxL < 0) {
+                maxL = 2 * Math.PI + maxL;
+            }
             SubSectorEdge e1 = new SubSectorEdge(old, minNode, maxL, this);
             SubSectorEdge e2 = new SubSectorEdge(minNode, old, Math.PI * 2 - maxL, this);
             minNode.addEdge(e1);
