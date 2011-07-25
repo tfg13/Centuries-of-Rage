@@ -118,9 +118,14 @@ public class ServerGameController implements Runnable {
         }
         // Die die Gebäude haben auf "noch spielend" setzen
         for (Building b : rgi.netmap.buildingList) {
-            try {
-                playerList.get(b.getPlayerId()).setFinished(false);
-            } catch (Exception ex) {
+            // Startgebäude ohne Besitzer suchen und damit schwarzen Spielern, die kein Client sind, NetPlayer-Eintrag geben
+            if (b.getPlayerId() >= playerList.size()) {
+                rgi.game.addPlayer();         
+            } else {
+                try {
+                    playerList.get(b.getPlayerId()).setFinished(false);
+                } catch (Exception ex) {
+                }
             }
             if (b.getHealRate() != 0 && b.getPlayerId() != 0) {
                 ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, b);
