@@ -409,7 +409,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
         for (Moveable t : possibleCollisions) {
-            float radius = (float) (t.getRadius() + MIN_DISTANCE);
+            float radius = (float) (t.getRadius() + MIN_DISTANCE / 2);
             Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), radius); //Das getUnit ist ugly!
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
             if (poly.intersects(c) || poly.includes(c.getCenterX(), c.getCenterY()) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
@@ -417,7 +417,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
                 // Notwendiger Abstand zur gefundenen Kollision t
-                float distanceToObstacle = (float) (this.caster2.getRadius() + radius + MIN_DISTANCE);
+                float distanceToObstacle = (float) (this.caster2.getRadius() + radius + MIN_DISTANCE / 2);
                 // Vector, der vom start zum Ziel der Bewegung zeigt.
                 Vector dirVec = new Vector(to.getfX() - from.getfX(), to.getfY() - from.getfY());
                 // 90 Grad dazu
