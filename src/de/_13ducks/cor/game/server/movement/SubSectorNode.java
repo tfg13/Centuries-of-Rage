@@ -158,4 +158,9 @@ public class SubSectorNode implements Comparable<SubSectorNode> {
             return 0;
         }
     }
+    
+    @Override
+    public String toString() {
+        return x + "|" + y;
+    }
 }
