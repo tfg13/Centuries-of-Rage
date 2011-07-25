@@ -25,20 +25,23 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Ein Member einer Gruppe.
  */
 public class GroupMember {
-    
+
     private Moveable mover;
     private LinkedList<SimplePosition> path;
+    private LinkedList<DiversionWaypoint> diversion;
     private LinkedList<SectorChangingEdge> sectorBorders;
     private Node lastStart;
-    
+
     GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
@@ -51,14 +54,14 @@ public class GroupMember {
     Moveable getMover() {
         return mover;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 89 * hash + (this.mover != null ? this.mover.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof GroupMember) {
@@ -160,12 +163,72 @@ public class GroupMember {
      * @return true, wenn neues Ziel gesetzt sonst false
      */
     public boolean reachedTarget(Moveable mover) {
-        SimplePosition nextPoint = popWaypoint();
-        if (nextPoint != null) {
-            mover.getLowLevelManager().setTargetVector(nextPoint);
+        if (diversion != null && !diversion.isEmpty()) {
+            DiversionWaypoint nextPoint = diversion.pollFirst();
+            mover.getLowLevelManager().setTargetVector(nextPoint.pos, nextPoint.arc, nextPoint.arcDirection, nextPoint.arcCenter);
             return true;
         } else {
-            return false;
+            SimplePosition nextPoint = popWaypoint();
+            if (nextPoint != null) {
+                mover.getLowLevelManager().setTargetVector(nextPoint, false, false, null);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * Setzt eine Umleitung.
+     * Löscht eine alte Umleitung, falls vorhanden.
+     * Wird dem Mover befehlen, sofort zur ersten Position der Umleitung zu laufen.
+     * Der Mover muss sich zurzeit auf dem Startpunkt der Route befinden!
+     * @param edges 
+     */
+    void setDiversion(List<SubSectorEdge> edges, Moveable mover) {
+        diversion = new LinkedList<DiversionWaypoint>();
+        SubSectorNode current = new SubSectorNode(mover.getPrecisePosition().x(), mover.getPrecisePosition().y()); 
+        // Startpunkt muss nicht in Liste!
+        for (SubSectorEdge edge : edges) {
+            SubSectorNode target = edge.getOther(current);
+            if (edge.isArc()) {
+                diversion.add(new DiversionWaypoint(new Vector(target.getX(), target.getY()),
+                        edge.isFrom(current),
+                        new Vector(edge.getObst().getX(), edge.getObst().getY())));
+            } else {
+                diversion.add(new DiversionWaypoint(new Vector(target.getX(), target.getY())));
+            }
+            current = target;
+        }
+    }
+
+    private class DiversionWaypoint {
+
+        /**
+         * Die eigentliche Position dieses Wegpunkts
+         */
+        private SimplePosition pos;
+        /**
+         * Soll diese Position auf einer Kurve angesteuert werden?
+         */
+        private boolean arc;
+        /**
+         * Die Richtung der Kreisbewegung
+         */
+        private boolean arcDirection;
+        /**
+         * Das Zentrum der Kreisbewegung
+         */
+        private SimplePosition arcCenter;
+
+        private DiversionWaypoint(SimplePosition pos) {
+            this.pos = pos;
+        }
+
+        private DiversionWaypoint(SimplePosition pos, boolean arcDirection, SimplePosition arcCenter) {
+            this(pos);
+            this.arcDirection = arcDirection;
+            this.arcCenter = arcCenter;
         }
     }
 }

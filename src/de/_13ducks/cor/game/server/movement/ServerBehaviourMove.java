@@ -56,6 +56,18 @@ public class ServerBehaviourMove extends ServerBehaviour {
     private Moveable caster2;
     private Traceable caster3;
     private SimplePosition target;
+    /**
+     * Mittelpunkt für arc-Bewegungen
+     */
+    private SimplePosition around;
+    /**
+     * Aktuelle Bewegung eine Kurve?
+     */
+    private boolean arc;
+    /**
+     * Richtung der Kurve (true = Plus)
+     */
+    private boolean arcDirection;
     private double speed;
     private boolean stopUnit = false;
     private long lastTick;
@@ -119,12 +131,32 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         // Wir laufen also.
         // Aktuelle Position berechnen:
+        // Erstmal default-Berechnung für gerades laufen
         FloatingPointPosition oldPos = caster2.getPrecisePosition();
+        long ticktime = System.nanoTime();
         Vector vec = target.toFPP().subtract(oldPos).toVector();
         vec.normalizeMe();
-        long ticktime = System.nanoTime();
         vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
         FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+        if (arc) {
+            // Kreisbewegung berechnen:
+            double rad = Math.sqrt((oldPos.x() - around.x()) * (oldPos.x() - around.x()) + (oldPos.y() - around.y()) * (oldPos.y() - around.y()));
+            double tetha = Math.atan2(oldPos.y() - around.y(), oldPos.x() - around.x());
+            double delta = vec.length(); // Wie weit wir auf diesem Kreis laufen
+            if (!arcDirection) { // Falls Richtung negativ delta invertieren
+                delta *= -1;
+            }
+            double newTetha = ((tetha * rad) + delta) / rad; // Strahlensatz, u = 2*PI*r
+            // Über-/Unterläufe behandeln:
+            if (newTetha > Math.PI) {
+                newTetha = -2 * Math.PI + tetha;
+            } else if (newTetha < -Math.PI) {
+                newTetha = 2 * Math.PI + tetha;
+            }
+            Vector newPvec = new Vector(Math.cos(newTetha), Math.sin(newTetha));
+            newPvec = newPvec.multiply(rad);
+            newpos = around.toVector().add(newPvec).toFPP();
+        }
 
         // Ob die Kollision später noch geprüft werden muss. Kann durch ein Weiterlaufen nach warten überschrieben werden.
         boolean checkCollision = true;
@@ -251,18 +283,25 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Es wird nicht untersucht, ob das Ziel in irgendeiner Weise ok ist, die Einheit beginnt sofort loszulaufen.
      * In der Regel sollte noch eine Geschwindigkeit angegeben werden.
      * Wehrt sich gegen nicht existente Ziele.
-     * @param pos die Zielposition, wird auf direktem Weg angesteuert.
+     * Falls arc true ist, werden arcDirection und arcCenter ausgewertet, sonst nicht.
+     * @param pos die Zielposition
+     * @param arc ob das Ziel auf einer Kurve angesteuert werden soll (true)
+     * @param arcDirection Richtung der Kurve (true - Bogenmaß-Plusrichtung)
+     * @param arcCenter um welchen Punkt gedreht werden soll.
      */
-    public synchronized void setTargetVector(SimplePosition pos) {
+    public synchronized void setTargetVector(SimplePosition pos, boolean arc, boolean arcDirection, SimplePosition arcCenter) {
         if (pos == null) {
-            throw new IllegalArgumentException("Cannot send " + caster2 + " to null");
+            throw new IllegalArgumentException("Cannot send " + caster2 + " to null (" + arc + ")");
         }
         if (!pos.toVector().isValid()) {
-            throw new IllegalArgumentException("Cannot send " + caster2 + " to invalid position");
+            throw new IllegalArgumentException("Cannot send " + caster2 + " to invalid position (" + arc + ")");
         }
         target = pos;
         lastTick = System.nanoTime();
         clientTarget = Vector.ZERO;
+        this.arc = arc;
+        this.arcDirection = arcDirection;
+        this.around = arcCenter;
         activate();
     }
 
@@ -271,9 +310,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * @param pos die Zielposition
      * @param speed die Geschwindigkeit
      */
-    public synchronized void setTargetVector(SimplePosition pos, double speed) {
+    public synchronized void setTargetVector(SimplePosition pos, double speed, boolean arc, boolean arcDirection, SimplePosition arcCenter) {
         changeSpeed(speed);
-        setTargetVector(pos);
+        setTargetVector(pos, arc, arcDirection, arcCenter);
     }
 
     /**

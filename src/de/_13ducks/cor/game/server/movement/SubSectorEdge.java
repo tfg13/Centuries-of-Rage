@@ -66,4 +66,31 @@ public class SubSectorEdge {
     public String toString() {
         return n1 + " --> " + n2 + (arc ? " arc" : " direct");
     }
+
+    /**
+     * @return the arc
+     */
+    boolean isArc() {
+        return arc;
+    }
+
+    /**
+     * @return the obst
+     */
+    SubSectorObstacle getObst() {
+        return obst;
+    }
+
+    /**
+     * Findet heraus, ob diese Kante bei von current ausgeht.
+     * (Kann zur Richtungsbestimmung verwendet werden, weil Kanten immer in Plus-Richtung verlaufen)
+     * @param current der Knoten, der untersucht wird.
+     * @return true, wenn von current ausgehen.
+     */
+    boolean isFrom(SubSectorNode current) {
+        if (n1.equals(current)) {
+            return true;
+        }
+        return false;
+    }
 }

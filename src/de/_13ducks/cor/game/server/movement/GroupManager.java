@@ -118,7 +118,7 @@ public class GroupManager {
                             member.addWaypoint(node);
                         }
                         // Loslaufen lassen
-                        member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed);
+                        member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), commonSpeed, false, false, null);
                     }
                 }
                 i++;
@@ -161,7 +161,7 @@ public class GroupManager {
                         member.addWaypoint(node);
                     }
                     // Loslaufen lassen
-                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed());
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), member.getMover().getSpeed(), false, false, null);
                 }
             }
             i++;
@@ -229,7 +229,7 @@ public class GroupManager {
                         member.addWaypoint(node);
                     }
                     // Loslaufen lassen
-                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint());
+                    member.getMover().getLowLevelManager().setTargetVector(member.popWaypoint(), false, false, null);
                 }
             }
             i++;
