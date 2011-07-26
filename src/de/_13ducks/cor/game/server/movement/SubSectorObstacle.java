@@ -365,7 +365,7 @@ public class SubSectorObstacle {
             }
             double newTetha = Math.atan2(minNode.getY() - y, minNode.getX() - x);
             if (newTetha < 0) {
-                newTetha = 2 * Math.PI + oldTetha;
+                newTetha = 2 * Math.PI + newTetha;
             }
             double maxL = newTetha - oldTetha;
             if (maxL < 0) {
