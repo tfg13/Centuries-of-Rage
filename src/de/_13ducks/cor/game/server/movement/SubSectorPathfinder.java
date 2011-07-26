@@ -140,7 +140,7 @@ public class SubSectorPathfinder {
 
         // In das Hinderniss integrieren:
         minObstacle.lateIntegrateNode(minNode);
-        SubSectorEdge startEdge = new SubSectorEdge(minNode, startNode, min);
+        SubSectorEdge startEdge = new SubSectorEdge(startNode, minNode, min);
 
         if (!startNode.equals(minNode)) {
 
