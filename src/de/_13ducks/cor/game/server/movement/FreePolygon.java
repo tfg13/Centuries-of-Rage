@@ -375,7 +375,7 @@ public class FreePolygon {
         for (Node node : myNodes) {
             poly.addPoint((float) node.getX(), (float) node.getY());
         }
-        poly.addPoint((float) myNodes.get(0).getX(), (float) myNodes.get(0).getX());
+        poly.addPoint((float) myNodes.get(0).getX(), (float) myNodes.get(0).getY());
         return poly;
     }
 
