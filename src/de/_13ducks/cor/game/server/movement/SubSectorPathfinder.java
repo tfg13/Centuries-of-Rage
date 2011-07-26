@@ -270,20 +270,24 @@ public class SubSectorPathfinder {
         for (int i = 0; i < path.size() - 1; i++) {
             SubSectorNode from = path.get(i);
             SubSectorNode to = path.get(i + 1);
-            finalPath.add(commonEdge(from, to));
+            finalPath.add(shortestCommonEdge(from, to));
         }
 
         return finalPath;					//Pfad zurückgeben
     }
 
-    private static SubSectorEdge commonEdge(SubSectorNode from, SubSectorNode to) {
+    private static SubSectorEdge shortestCommonEdge(SubSectorNode from, SubSectorNode to) {
         ArrayList<SubSectorEdge> toEdges = to.getMyEdges();
+        SubSectorEdge shortesCommon = null;
+        double minLength = Double.POSITIVE_INFINITY;
         for (SubSectorEdge edge : from.getMyEdges()) {
             if (toEdges.contains(edge)) {
-                return edge;
+                if (edge.getLength() < minLength) {
+                    shortesCommon = edge;
+                    minLength = edge.getLength();
+                }
             }
         }
-        System.out.println("ERROR! Missing common edge!");
-        return null;
+        return shortesCommon;
     }
 }
