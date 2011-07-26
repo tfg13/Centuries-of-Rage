@@ -82,6 +82,9 @@ public class SubSectorPathfinder {
                     for (SubSectorNode n2 : intersections) {
                         boolean reachable = true;
                         for (SubSectorObstacle o : graph) {
+                            if (o.equals(node)) {
+                                continue; // Um den gehts jetzt ja gerade, natürlich liegen wir auf diesem Kreis
+                            }
                             if (o.moveCircleContains(n2, radius)) {
                                 reachable = false;
                                 break;
