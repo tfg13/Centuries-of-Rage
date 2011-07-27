@@ -113,7 +113,6 @@ public class SubSectorObstacle {
         Vector s2 = posMid.add(ortho.getInverted());
         intersections[0] = new SubSectorNode(s1.x(), s1.y(), this, next);
         intersections[1] = new SubSectorNode(s2.x(), s2.y(), this, next);
-        System.out.println("Calced intersections: " + s1 + " and " + s2);
         return intersections;
     }
 
