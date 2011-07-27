@@ -273,7 +273,12 @@ public class SubSectorPathfinder {
         for (int i = 0; i < path.size() - 1; i++) {
             SubSectorNode from = path.get(i);
             SubSectorNode to = path.get(i + 1);
-            finalPath.add(shortestCommonEdge(from, to));
+            SubSectorEdge edge = shortestCommonEdge(from, to);
+            if (edge != null) {
+            finalPath.add(edge);
+            } else {
+                throw new RuntimeException("ERROR Cannot find edge from " + from + " to " + to + " but it is part of the calculated path!!!");
+            }
         }
 
         return finalPath;					//Pfad zurückgeben
