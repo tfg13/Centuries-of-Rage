@@ -185,6 +185,7 @@ public class GroupManager {
         } else if (!obstMove.isMoving()) {
             // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
             List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
+            if (diversion != null) {
             System.out.println("CALCULATED DIVERSION: BEGIN");
             for (SubSectorEdge n : diversion) {
                 System.out.println(n);
@@ -192,6 +193,10 @@ public class GroupManager {
             System.out.println("END OF CALCULATED DIVERSION");
             mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
             return false;
+            } else {
+                System.out.println(" NO DIVERSION FOUND");
+                return true; // Warten, es gibt keine Umleitung
+            }
         }
         
         return true;
