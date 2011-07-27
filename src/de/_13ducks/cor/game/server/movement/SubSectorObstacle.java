@@ -149,7 +149,7 @@ public class SubSectorObstacle {
     void removeNearNodes(SubSectorObstacle next, double radius) {
         for (int i = 0; i < nodes.size(); i++) {
             SubSectorNode node = nodes.get(i);
-            if (moveCircleContains(node, radius)) {
+            if (next.moveCircleContains(node, radius)) {
                 nodes.remove(i--);
             }
         }
