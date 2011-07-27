@@ -411,11 +411,18 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     private FloatingPointPosition checkAndMaxMove(FloatingPointPosition from, FloatingPointPosition to) {
         // Zuallererst: Wir dürfen nicht über das Ziel hinaus laufen:
-        Vector oldtargetVec = new Vector(target.x() - from.x(), target.y() - from.y());
-        Vector newtargetVec = new Vector(target.x() - to.x(), target.y() - to.y());
-        if (oldtargetVec.isOpposite(newtargetVec)) {
-            // Achtung, zu weit!
-            to = target.toFPP();
+        if (!arc) {
+            Vector oldtargetVec = new Vector(target.x() - from.x(), target.y() - from.y());
+            Vector newtargetVec = new Vector(target.x() - to.x(), target.y() - to.y());
+            if (oldtargetVec.isOpposite(newtargetVec)) {
+                // Achtung, zu weit!
+                to = target.toFPP();
+            }
+        } else {
+            // Arc-Bewegung begrenzen:
+            if (movedTetha >= tethaDist) {
+                to = target.toFPP();
+            }
         }
         // Zurücksetzen
         lastObstacle = null;
@@ -442,6 +449,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
             // Die ersten beiden Bedingungen gelten nur für nicht-arc-Bewegungen!
             if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
+                System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
                 // Kollision!
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
