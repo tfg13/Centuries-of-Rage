@@ -226,7 +226,7 @@ public class SubSectorObstacle {
         // Abstand vom anderen zu Node berechnen:
         double dist = Math.sqrt((node.getX() - other.x) * (node.getX() - other.x) + (node.getY() - other.y) * (node.getY() - other.y));
         // Ein kleines Stück in plus-Richtung weiter gehen:
-        double tetha = Math.atan2(y - node.getY(), x - node.getX());
+        double tetha = Math.atan2(node.getY() - y, node.getX() - x);
         tetha += 0.1;
         if (tetha > Math.PI) {
             tetha = -Math.PI + 0.1;
@@ -234,6 +234,7 @@ public class SubSectorObstacle {
         // Punkt hier berechnen:
         Vector newVec = new Vector(Math.cos(tetha), Math.sin(tetha));
         newVec = newVec.normalize().multiply(other.radius + radius);
+        newVec = newVec.add(new Vector(x, y)); 
         // Abstand hier berechnen:
         double dist2 = Math.sqrt((newVec.x() - other.x) * (newVec.x() - other.x) + (newVec.y() - other.y) * (newVec.y() - other.y));
         // Wenn Abstand größer geworden, dann darf man in Plus gehen
