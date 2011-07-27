@@ -159,7 +159,7 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Default-Wegpunkt.
      * Derzeit verwendet für das erste Laufziel neu erzeugter Einheiten
      */
-    private Position waypoint;
+    protected Position waypoint;
     /**
      * Der derzeitige Lebens-Zustand dieses Objekts.
      * Kann soetwas wie "am Leben" oder "schon gestorben" sein.

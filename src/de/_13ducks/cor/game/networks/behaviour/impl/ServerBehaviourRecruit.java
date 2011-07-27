@@ -29,6 +29,7 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
@@ -105,7 +106,9 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                     } */
                     rgi.netmap.addUnit(unit);
                     if (caster.getWaypoint() != null) {
-                        System.out.println("Try move GO to waypoint!");
+                        ArrayList<Unit> movers = new ArrayList<Unit>();
+                        movers.add(unit);
+                        rgi.moveMan.moveRequest(rgi.netmap.getMoveMap().aroundMe(new FloatingPointPosition(caster.getWaypoint()), unit.getRadius()), movers, false);
                     }
                     /*  if (caster.waypoint != null) {
                     // Ham wir was besseres zu tun als auf ein leeres Feld rennen (z.B. Ressource oder Gebäude)?

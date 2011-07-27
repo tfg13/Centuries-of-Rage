@@ -703,7 +703,8 @@ public class Building extends GameObject {
 
     @Override
     public void command(int button, FloatingPointPosition target, List<InteractableGameElement> repeaters, boolean doubleKlick, InnerClient rgi) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        waypoint = target;
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 27, netID, 0, waypoint.getX(), waypoint.getY()));
     }
 
     @Override
