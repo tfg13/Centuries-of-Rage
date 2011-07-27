@@ -139,11 +139,14 @@ public class SubSectorNode implements Comparable<SubSectorNode> {
      * Sucht die Kante zu angegeben Ziel raus und löscht sie.
      * @param next das Ziel
      */
-    void removeEdgeTo(SubSectorNode next) {
+    void removeEdgeTo(SubSectorNode next, SubSectorObstacle around) {
         for (SubSectorEdge edge : myEdges) {
             if (edge.getOther(this).equals(next)) {
-                myEdges.remove(edge);
-                break;
+                // Es kann mehrere Kanten zum gleichen Ziel geben
+                if (edge.getObst().equals(around)) {
+                    myEdges.remove(edge);
+                    break;
+                }
             }
         }
     }
@@ -158,7 +161,7 @@ public class SubSectorNode implements Comparable<SubSectorNode> {
             return 0;
         }
     }
-    
+
     @Override
     public String toString() {
         return x + "|" + y;

@@ -113,6 +113,7 @@ public class SubSectorObstacle {
         Vector s2 = posMid.add(ortho.getInverted());
         intersections[0] = new SubSectorNode(s1.x(), s1.y(), this, next);
         intersections[1] = new SubSectorNode(s2.x(), s2.y(), this, next);
+        System.out.println("Calced intersections: " + s1 + " and " + s2);
         return intersections;
     }
 
@@ -315,7 +316,6 @@ public class SubSectorObstacle {
             SubSectorNode next = null;
             double currTetha = 0;
             double nextTetha = 0;
-            boolean found = false;
             for (int i = 0; i < nodes.size(); i++) {
                 current = nodes.get(i);
                 next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
@@ -327,25 +327,36 @@ public class SubSectorObstacle {
                 if (nextTetha < 0) {
                     nextTetha = 2 * Math.PI + nextTetha;
                 }
+                // Zusätzliche Umläufe beachten:
+                if (currTetha > nextTetha) {
+                    nextTetha += 2 * Math.PI;
+                }
+                if (currTetha > newTetha) {
+                    newTetha += 2 * Math.PI;
+                }
                 if (currTetha < newTetha && nextTetha > newTetha) {
                     // Genau hier einfügen
-                    found = true;
                     break;
                 }
             }
-            if (!found) {
-                // Dann ist es zwischen dem letzen und dem ersten
-                current = nodes.getLast();
-                next = nodes.getFirst();
-            }
             // Hier einfügen
             // Neue Kanten bauen:
+            // Hier die zusätzlichen Umläufe wieder rausnehmen:
+            if (newTetha > 2 * Math.PI) {
+                newTetha -= 2 * Math.PI;
+            }
+            if (currTetha > 2 * Math.PI) {
+                currTetha -= 2 * Math.PI;
+            }
+            if (nextTetha > 2 * Math.PI) {
+                nextTetha -= 2 * Math.PI;
+            }
             double l1length = newTetha - currTetha;
             if (l1length < 0) {
                 l1length = 2 * Math.PI + l1length;
             }
             SubSectorEdge newEdge1 = new SubSectorEdge(current, minNode, l1length, this);
-            current.removeEdgeTo(next);
+            current.removeEdgeTo(next, this);
             current.addEdge(newEdge1);
             minNode.addEdge(newEdge1);
 
@@ -354,7 +365,7 @@ public class SubSectorObstacle {
                 l2length = 2 * Math.PI + l2length;
             }
             SubSectorEdge newEdge2 = new SubSectorEdge(minNode, next, l2length, this);
-            next.removeEdgeTo(current);
+            next.removeEdgeTo(current, this);
             next.addEdge(newEdge2);
             minNode.addEdge(newEdge2);
         } else if (nodes.size() == 1) {
