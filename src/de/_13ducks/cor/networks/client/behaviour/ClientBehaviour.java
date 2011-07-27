@@ -121,7 +121,7 @@ public abstract class ClientBehaviour implements Pauseable {
         }
 
         // Timer neu setzen
-        nextUse = System.currentTimeMillis() + delay;
+        nextUse += delay;
 
         // Ausführen
         try {

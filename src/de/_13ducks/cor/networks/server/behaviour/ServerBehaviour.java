@@ -123,7 +123,7 @@ public abstract class ServerBehaviour implements Pauseable {
         }
 
         // Timer neu setzen
-        nextUse = System.currentTimeMillis() + delay;
+        nextUse += delay;
 
         // Ausführen
         try {
