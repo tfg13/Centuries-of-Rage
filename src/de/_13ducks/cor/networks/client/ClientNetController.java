@@ -180,7 +180,7 @@ public class ClientNetController {
             //ackmanager = new ServerACKManager(rgi);
 
             temp06 = new ArrayList<Position>();
-            cmdMap = new ClientCommand[58];
+            cmdMap = new ClientCommand[59];
 
             initCmdArr();
         }
@@ -241,6 +241,7 @@ public class ClientNetController {
             cmdMap[53] = new de._13ducks.cor.networks.cmd.client.C053_DEBUG_SERVER_COLLISION();
             cmdMap[56] = new de._13ducks.cor.networks.cmd.client.C056_DEBUG_SERVER_RES();
             cmdMap[57] = new de._13ducks.cor.networks.cmd.client.C057_CAPTURE();
+            cmdMap[58] = new de._13ducks.cor.networks.cmd.client.C058_PRODUCE();
         }
 
         void sendDATA(byte[] b) {

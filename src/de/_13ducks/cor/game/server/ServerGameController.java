@@ -39,6 +39,7 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.ServerBehaviourCapture;
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
+import de._13ducks.cor.networks.server.behaviour.ServerBehaviourProduce;
 
 /**
  * Die Server-Mainloop und GameLogic
@@ -130,6 +131,10 @@ public class ServerGameController implements Runnable {
             if (b.getHealRate() != 0 && b.getPlayerId() != 0) {
                 ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, b);
                 b.addServerBehaviour(healb);
+            }
+            if (b.getHarvRate() != 0 && b.getPlayerId() != 0) {
+                ServerBehaviourProduce prodb = new ServerBehaviourProduce(rgi, b);
+                b.addServerBehaviour(prodb);  
             }
             ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
             b.addServerBehaviour(captureb);

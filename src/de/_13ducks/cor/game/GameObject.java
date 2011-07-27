@@ -229,6 +229,14 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+    /**
+     * Zeigt an, welche Ressource dieses GameObject produziert, solange es Arbeiter beherbergt.
+     */
+    private int harvests = 0;
+    /**
+     * Gibt die  Ernterate pro interner Einheit an
+     */
+    private double harvRate = 0.0;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
@@ -290,6 +298,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.playerId = copyFrom.playerId;
         this.range = copyFrom.range;
         this.visrange = copyFrom.visrange;
+        this.harvRate = copyFrom.harvRate;
+        this.harvests = copyFrom.harvests;
     }
 
     /**
@@ -297,6 +307,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @param par
      */
     private void applyParams(DescParamsGO par) {
+        this.harvRate = par.getHarvRate();
+        this.harvests = par.getHarvests();
         this.armorType = par.getArmorType();
         this.atkdelay = par.getAtkdelay();
         this.bulletspeed = par.getBulletspeed();
@@ -1283,5 +1295,19 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     @Override
     public GameObject getAttackable() {
         return this;
+    }
+    
+    /**
+     * @return the harvests
+     */
+    public int getHarvests() {
+        return harvests;
+    }
+
+    /**
+     * @return the harvRate
+     */
+    public double getHarvRate() {
+        return harvRate;
     }
 }
