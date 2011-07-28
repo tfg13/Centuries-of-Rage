@@ -40,22 +40,6 @@ import de._13ducks.cor.graphics.input.OverlayMouseListener;
 public class AbilityHud extends Overlay {
 
     /**
-     * Die Fähigkeitenanzeige ist derzeit oben rechts.
-     */
-    public static final int EDGE_TOP_RIGHT = 0;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit oben links.
-     */
-    public static final int EDGE_TOP_LEFT = 1;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit unten rechts.
-     */
-    public static final int EDGE_BOTTOM_RIGHT = 2;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit unten links.
-     */
-    public static final int EDGE_BOTTOM_LEFT = 3;
-    /**
      * Die größe der (quadratischen) Fähigkeiten-Icons
      */
     public static final int ICON_SIZE_XY = 40;
@@ -77,10 +61,6 @@ public class AbilityHud extends Overlay {
      * Die letzen Zeichenkoordinaten, für den MouseInput
      */
     private int[] coords;
-    /**
-     * In welcher Ecke es derzeit angezeigt wird.
-     */
-    private int edge = EDGE_BOTTOM_LEFT;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -121,20 +101,7 @@ public class AbilityHud extends Overlay {
                                     break;
                                 }
                             }
-                            switch (edge) {
-                                case EDGE_TOP_LEFT:
-                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_TOP_RIGHT:
-                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_BOTTOM_LEFT:
-                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_BOTTOM_RIGHT:
-                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                            }
+                            Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                         }
                     }
                 }
@@ -153,32 +120,10 @@ public class AbilityHud extends Overlay {
      * Nicht wirklich schön.
      */
     private synchronized void updateCoords(int resX, int resY, List<Ability> abList) {
-        switch (edge) {
-            case EDGE_TOP_LEFT:
-                coords[0] = 0;
-                coords[1] = 0;
-                coords[2] = abList.size() * ICON_SIZE_XY;
-                coords[3] = ICON_SIZE_XY;
-                break;
-            case EDGE_TOP_RIGHT:
-                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
-                coords[1] = 0;
-                coords[2] = resX;
-                coords[3] = ICON_SIZE_XY;
-                break;
-            case EDGE_BOTTOM_LEFT:
-                coords[0] = 0;
-                coords[1] = resY - ICON_SIZE_XY;
-                coords[2] = abList.size() * ICON_SIZE_XY;
-                coords[3] = resY;
-                break;
-            case EDGE_BOTTOM_RIGHT:
-                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
-                coords[1] = resY - ICON_SIZE_XY;
-                coords[2] = resX;
-                coords[3] = resY;
-                break;
-        }
+        coords[0] = 0;
+        coords[1] = resY - ICON_SIZE_XY;
+        coords[2] = abList.size() * ICON_SIZE_XY;
+        coords[3] = resY;
     }
 
     public synchronized void setActiveObjects(List<InteractableGameElement> elems) {
