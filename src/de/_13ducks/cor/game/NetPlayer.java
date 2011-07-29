@@ -28,6 +28,7 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.networks.server.behaviour.GlobalBehaviourProduce;
 import org.newdawn.slick.Color;
 import java.util.List;
 import java.util.ArrayList;
@@ -75,6 +76,8 @@ public class NetPlayer {
     public ArrayList<NetPlayer> invitations; // Einladungen
 
     private boolean finished = false; // Spielt der noch?
+    
+    private GlobalBehaviourProduce producebehaviour;
 
     public interface colours {
 
@@ -204,5 +207,13 @@ public class NetPlayer {
         }
         String[] rlist = new String[list.size()];
         return list.toArray(rlist);
+    }
+    
+    public void setProduceBehaviour(GlobalBehaviourProduce producebehav) {
+        this.producebehaviour = producebehav;
+    }
+    
+    public GlobalBehaviourProduce getProduceBehaviour() {
+        return producebehaviour;
     }
 }

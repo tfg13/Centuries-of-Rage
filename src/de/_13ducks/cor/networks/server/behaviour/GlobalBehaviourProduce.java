@@ -33,12 +33,11 @@ import de._13ducks.cor.game.server.ServerCore;
  * @author 2nd
  */
 public class GlobalBehaviourProduce extends GlobalBehaviour {
-    double prodrate = 1.0;
+    double prodrate = 0.0;
     long lastupdate = -1;
 
     public GlobalBehaviourProduce (ServerCore.InnerServer newinner, NetPlayer player, int callsPerSecond) {
         super(newinner, player, callsPerSecond, true);
-        
     }
     
     @Override
@@ -51,7 +50,7 @@ public class GlobalBehaviourProduce extends GlobalBehaviour {
         long timediff = timenow - lastupdate;
         lastupdate = timenow;
         player.res1 += prodrate * timediff / 1000;
-        //System.out.println("GloBhvPro " + player.playerId + " " + player.res1);
+        System.out.println("GloBhvPro " + player.playerId + " " + player.res1);
     }
 
     @Override

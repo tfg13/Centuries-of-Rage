@@ -87,8 +87,8 @@ public class ServerGameController implements Runnable {
 
             // Global Behaviours
             for (int i = 0; i < globalList.size(); i++) {
-                GlobalBehaviour processor = globalList.get(i);
-                processor.tryexecute();
+                GlobalBehaviour behav = globalList.get(i);
+                behav.tryexecute();
             }
 
             try {
@@ -134,18 +134,29 @@ public class ServerGameController implements Runnable {
                 } catch (Exception ex) {
                 }
             }
+        }
+
+        for (int i = 1; i < playerList.size(); i++) {
+            // Jedem echten Spieler (nicht Spieler 0) ein GlobalBehaviourHarvest geben
+            GlobalBehaviourProduce producebehav = new GlobalBehaviourProduce(rgi, playerList.get(i), 1);
+            globalList.add(producebehav);
+            playerList.get(i).setProduceBehaviour(producebehav);
+        }
+        
+        // Gebäuden Behaviours geben
+        for (Building b : rgi.netmap.buildingList) {
             if (b.getHealRate() != 0 && b.getPlayerId() != 0) {
                 ServerBehaviourHeal healb = new ServerBehaviourHeal(rgi, b);
                 b.addServerBehaviour(healb);
             }
             ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
             b.addServerBehaviour(captureb);
-        }
-
-        for (int i = 1; i < playerList.size(); i++) {
-            // Jedem echten Spieler (nicht Spieler 0) ein GlobalBehaviourHarvest geben
-            GlobalBehaviourProduce wtf = new GlobalBehaviourProduce(rgi, playerList.get(i), 1);
-            globalList.add(wtf);
+            
+            NetPlayer asdf = playerList.get(b.getPlayerId());
+            // Dem Spieler die Ressourcen-Sammelrate seines Gebäudes geben
+            if (b.getPlayerId() != 0) {
+                asdf.getProduceBehaviour().incrementProdrate(b.getHarvRate());
+            }
         }
         
         for (int i = 0; i < playerList.size(); i++) {
