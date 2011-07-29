@@ -199,7 +199,6 @@ public class AbilityHud implements Overlay, SlideInController {
 
             @Override
             public void mouseMoved(int x, int y) {
-                System.out.println(Math.random());
             }
 
             @Override
