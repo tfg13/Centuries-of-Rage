@@ -1308,4 +1308,9 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     public double getHarvRate() {
         return harvRate;
     }
+    
+    @Override
+    public String getSelectionTexture() {
+        return getGraphicsData().getTexture();
+    }
 }

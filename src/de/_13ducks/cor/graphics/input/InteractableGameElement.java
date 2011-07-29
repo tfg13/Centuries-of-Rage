@@ -161,4 +161,6 @@ public interface InteractableGameElement {
      * @return Das angreiffbare GameObject
      */
     public GameObject getAttackable();
+
+    public String getSelectionTexture();
 }

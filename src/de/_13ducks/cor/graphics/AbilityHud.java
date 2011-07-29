@@ -71,7 +71,7 @@ public class AbilityHud implements Overlay, SlideInController {
     /**
      * Abstand vom linken Bildrand
      */
-    private int leftSpace = 30;
+    private int leftSpace = 110;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {

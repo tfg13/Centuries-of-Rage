@@ -485,7 +485,7 @@ public class Building extends GameObject {
         int counter = 0;
         for (int z1c = 0; z1c < z1; z1c++) {
             for (int z2c = 0; z2c < z2; z2c++) {
-                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c, (int) mainPosition.getY() - z1c + z2c);
+                positions[counter++] = new Position(mainPosition.getX() + z1c + z2c, mainPosition.getY() - z1c + z2c);
             }
         }
         try {
@@ -626,7 +626,7 @@ public class Building extends GameObject {
             float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
             float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
 
-            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
+            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, axisX, axisY);
         }
 
         g.setLineWidth(1);
@@ -715,6 +715,7 @@ public class Building extends GameObject {
         this.lastcapturetime = lastcapturetime;
     }
     
+    @Override
     public void mouseHovered() {
         hovered = true;
     }

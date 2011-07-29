@@ -33,7 +33,6 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Unit;
-import de._13ducks.cor.graphics.Sprite;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +43,7 @@ import org.newdawn.slick.*;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.Pauseable;
 import de._13ducks.cor.graphics.AbilityHud;
+import de._13ducks.cor.graphics.SelectionHud;
 import de._13ducks.cor.graphics.SlideInOverlay;
 
 /**
@@ -146,6 +146,10 @@ public class CoRInput implements Pauseable {
      */
     private int lastMouseY;
     /**
+     * Zeigt selektierte Einheiten an.
+     */
+    private SelectionHud selHud;
+    /**
      * Die Fähigkeitenanzeige des Huds.
      */
     private AbilityHud abHud;
@@ -157,7 +161,9 @@ public class CoRInput implements Pauseable {
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
         selMap = new SelectionMap(mapX, mapY);
+        selHud = new SelectionHud();
         abHud = AbilityHud.createAbilityHud(rgi);
+        graphics.content.overlays.add(new SlideInOverlay(selHud, -70, 0, 250));
         graphics.content.overlays.add(new SlideInOverlay(abHud, 0, 90, 250));
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
@@ -401,6 +407,7 @@ public class CoRInput implements Pauseable {
                                 if (button == 1 && (!rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200))) {
                                     mouseKlickedRight(button, x, y, false);
                                 }
+                                selHud.setActiveObjects(selected);
                                 abHud.setActiveObjects(selected);
                             }
                         });
@@ -742,6 +749,7 @@ public class CoRInput implements Pauseable {
                         }
                     }
                 }
+                selHud.setActiveObjects(selected);
                 abHud.setActiveObjects(selected);
             }
             lastSavedRead = number;
@@ -827,7 +835,8 @@ public class CoRInput implements Pauseable {
             selected.add(elem);
             System.out.println("Selected: " + elem.toString());
         }
-        abHud.setActiveObjects(elems);
+        selHud.setActiveObjects(selected);
+        abHud.setActiveObjects(selected);
     }
 
     /**
