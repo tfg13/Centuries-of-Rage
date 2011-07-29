@@ -47,11 +47,11 @@ public class NetPlayer {
     public List<Integer> uList;
     public List<Integer> aList;
     public Core.CoreInner rgi;
-    public int res1 = 0;
-    public int res2 = 0;
-    public int res3 = 0;
-    public int res4 = 0;
-    public int res5 = 0;
+    public double res1 = 0;
+    public double res2 = 0;
+    public double res3 = 0;
+    public double res4 = 0;
+    public double res5 = 0;
     public int[] harvspeeds;
     // Die Verfügbaren Einheiten, Gebäude und Abilities:
     // Werden jetzt hier gespeichert, damit individuelle Upgrades berücksichtigt werden können:

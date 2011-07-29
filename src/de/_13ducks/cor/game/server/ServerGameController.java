@@ -39,6 +39,8 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.ServerBehaviourCapture;
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
+import de._13ducks.cor.networks.server.behaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.server.behaviour.GlobalBehaviourProduce;
 
 /**
  * Die Server-Mainloop und GameLogic
@@ -52,6 +54,7 @@ public class ServerGameController implements Runnable {
      * Eine Liste mit allen Objekten, die Behaviours ausführen können.
      */
     private List<BehaviourProcessor> allList;
+    private List<GlobalBehaviour> globalList;
     List<NetPlayer> playerList;         // Die Liste mit den Spielern VORSICHT- ES DARF NIEMALS JEMAND GELÖSCHT WERDEN!!!
     ServerCore.InnerServer rgi;         // Die Referenz auf logger und alle anderen Module
     Thread t;
@@ -76,9 +79,16 @@ public class ServerGameController implements Runnable {
                 }
             }
 
+            // GameObject-Behaviours
             for (int i = 0; i < allList.size(); i++) {
                 BehaviourProcessor processor = allList.get(i);
                 processor.process();
+            }
+
+            // Global Behaviours
+            for (int i = 0; i < globalList.size(); i++) {
+                GlobalBehaviour processor = globalList.get(i);
+                processor.tryexecute();
             }
 
             try {
@@ -112,15 +122,12 @@ public class ServerGameController implements Runnable {
             // Einheit im Schnellsuchraster eintragen:
             rgi.netmap.getFastFindGrid().addObject(unit);
         }
-        // Alle auf fertig setzen
-        for (NetPlayer player : playerList) {
-            player.setFinished(true);
-        }
+
         // Die die Gebäude haben auf "noch spielend" setzen
         for (Building b : rgi.netmap.buildingList) {
             // Startgebäude ohne Besitzer suchen und damit schwarzen Spielern, die kein Client sind, NetPlayer-Eintrag geben
             if (b.getPlayerId() >= playerList.size()) {
-                rgi.game.addPlayer();         
+                rgi.game.addPlayer();
             } else {
                 try {
                     playerList.get(b.getPlayerId()).setFinished(false);
@@ -134,6 +141,18 @@ public class ServerGameController implements Runnable {
             ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
             b.addServerBehaviour(captureb);
         }
+
+        for (int i = 1; i < playerList.size(); i++) {
+            // Jedem echten Spieler (nicht Spieler 0) ein GlobalBehaviourHarvest geben
+            GlobalBehaviourProduce wtf = new GlobalBehaviourProduce(rgi, playerList.get(i), 1);
+            globalList.add(wtf);
+        }
+        
+        for (int i = 0; i < playerList.size(); i++) {
+            // Alle (auch Spieler 0) auf fertig setzen
+            playerList.get(i).setFinished(true);
+        }
+
         this.startMainloop();
         Thread tr = new Thread(new Runnable() {
 
@@ -158,6 +177,7 @@ public class ServerGameController implements Runnable {
         // Den 0-Player adden
         playerList.add(new NetPlayer(rgi));
         playerList.get(0).playerId = 0;
+        globalList = new ArrayList<GlobalBehaviour>();
     }
 
     public void registerUnitList(List<Unit> uL) {
