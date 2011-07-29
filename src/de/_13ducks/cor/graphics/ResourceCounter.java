@@ -13,7 +13,7 @@ import org.newdawn.slick.Graphics;
  *
  * @author Johannes
  */
-public class ResourceCounter extends Overlay {
+public class ResourceCounter implements Overlay {
 
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {

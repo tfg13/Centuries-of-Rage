@@ -32,7 +32,6 @@ import java.util.List;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.ability.AbilityBuild;
-import de._13ducks.cor.game.ability.AbilityIntraManager;
 import de._13ducks.cor.game.ability.AbilityRecruit;
 import de._13ducks.cor.game.ability.AbilityUpgrade;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
@@ -526,7 +525,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
                 return;
             }
             copyPropertiesFrom(building);
-            this.abilitys.add(new AbilityIntraManager((Building) this, rgi));
             /*   BuildingAnimator rgba = rgi.game.getPlayer(this.playerId).descBuilding.get(toDesc).anim;
             if (rgba != null) {
             rgba = rgba.clone();

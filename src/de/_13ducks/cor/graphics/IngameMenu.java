@@ -12,7 +12,7 @@ import org.newdawn.slick.Graphics;
  *
  * @author Johannes
  */
-public class IngameMenu extends Overlay {
+public class IngameMenu implements Overlay {
 
     private static final int DURATION = 500;
     private int x1, y1, x2, y2;
