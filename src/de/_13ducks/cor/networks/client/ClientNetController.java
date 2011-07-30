@@ -241,7 +241,7 @@ public class ClientNetController {
             cmdMap[53] = new de._13ducks.cor.networks.cmd.client.C053_DEBUG_SERVER_COLLISION();
             cmdMap[56] = new de._13ducks.cor.networks.cmd.client.C056_DEBUG_SERVER_RES();
             cmdMap[57] = new de._13ducks.cor.networks.cmd.client.C057_CAPTURE();
-            cmdMap[58] = new de._13ducks.cor.networks.cmd.client.C058_PRODUCE();
+            cmdMap[58] = new de._13ducks.cor.networks.cmd.client.C058_CHANGE_RESOURCE();
         }
 
         void sendDATA(byte[] b) {
@@ -312,6 +312,7 @@ public class ClientNetController {
                         cmdMap[cmd].process(data, cdh, rgi);
 
                     } catch (NullPointerException ex) {
+                        ex.printStackTrace();
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ")");
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ") (ArrayOutOfBounds)");

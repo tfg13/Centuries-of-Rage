@@ -38,6 +38,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.input.SelectionMarker;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceServer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -521,13 +522,15 @@ public class Building extends GameObject {
         return captureprogress;
     }
 
-    public void changeCaptureProgress(int amount, int player) {
-        capturerate = Math.min(5, amount) * 1.0;
+    public void changeCaptureProgress(int capturerate, int player) {
         captureprogress += capturerate;
         if (captureprogress > 100) {
             // fertig übernommen, playerid wechseln
             this.setPlayerId(player);
             captureprogress = 0;
+            // Globalproducebehaviour des Spielers die neue Ressourcenrate mitteilen
+            GlobalBehaviourProduceServer gloBhvProSrv = (GlobalBehaviourProduceServer) Server.getInnerServer().game.getPlayer(player).getProduceBehaviour();
+            gloBhvProSrv.incrementProdrate(this.getHarvRate());
             // an Client senden
             Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) capturerate, player));
         } else if (captureprogress <= 0) {

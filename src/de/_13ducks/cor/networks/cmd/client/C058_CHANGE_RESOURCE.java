@@ -26,35 +26,35 @@
 package de._13ducks.cor.networks.cmd.client;
 
 import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceClient;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceServer;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviourProduce;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**
- * Rohstoffe sammeln
+ * Ressourcensammelrate des Spielers ändern
  */
-public class C058_PRODUCE extends ClientCommand {
+public class C058_CHANGE_RESOURCE extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
-        int netid = rgi.readInt(data, 1); // Das Gebäude, das Ressourcen sammelt
-        int harvests = rgi.readInt(data, 2); // Ressourcen-Art
-        float harvrate = Float.intBitsToFloat(rgi.readInt(data, 3)); // Sammelrate dieser Ressource
-        int rescount = rgi.readInt(data, 4); // Ressourcen-Zahl
 
-        Building building = rgi.mapModule.getBuildingviaID(netid);
-        if (building != null) {
+        int playerid = rgi.readInt(data, 3); // Der Spieler, den es betrifft
 
-            // grafisch darstellen
-            //Client.getInnerClient().mapModule.getBuildingviaID(netid).setHarvests(harvests);
-            //Client.getInnerClient().mapModule.getBuildingviaID(netid).setHarvRate(capturerate);
-            //Client.getInnerClient().mapModule.getBuildingviaID(netid).get(System.currentTimeMillis());
-
-        } else {
-            System.out.println("Panik! C057_CAPTURE pfuscht");
+        // Ist der Befehl überhaupt für diesen Client?
+        if (playerid == rgi.game.getOwnPlayer().playerId) {
+            
+            float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
+            float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
+            
+            GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
+            prodClient.setProdrate(prodrate);
+            
+            rgi.game.getOwnPlayer().res1 = res1;
         }
-
     }
 }

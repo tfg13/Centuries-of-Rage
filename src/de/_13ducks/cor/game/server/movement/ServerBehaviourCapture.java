@@ -84,7 +84,7 @@ public class ServerBehaviourCapture extends ServerBehaviour {
                 }
             } else {
                 // Gebäude wird erobert
-                building.changeCaptureProgress(capturenumber, cappingplayerid);
+                building.changeCaptureProgress(Math.min(5, capturenumber), cappingplayerid);
             }
         }
     }
