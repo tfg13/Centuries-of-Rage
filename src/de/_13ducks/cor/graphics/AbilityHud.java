@@ -96,7 +96,9 @@ public class AbilityHud implements Overlay, SlideInController {
             drawList = computeDraw(abList);
             if (!drawList.isEmpty()) {
                 // Balken links
-                Renderer.drawImage(tilemap, leftSpace - 18, fullResY - 57, leftSpace + 1, fullResY, 363, 0, 377, 45);
+                Renderer.drawImage(tilemap, leftSpace - 15, fullResY - 60, leftSpace, fullResY, 417, 0, 432, 60);
+                //Renderer.draw
+                //Renderer.draw
                 int i = 0;
                 for (; i < drawList.size(); i++) {
                     Ability ab = drawList.get(i);
@@ -116,26 +118,26 @@ public class AbilityHud implements Overlay, SlideInController {
                         }
                         if (i != 0) {
                             // Vor sich selbst, also beim ersten nicht
-                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) - 14, fullResY - 80, leftSpace + i * (ICON_SIZE_XY + 14) + 2, fullResY, 285, 0, 297, 63);
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) - 15, fullResY - 77, leftSpace + i * (ICON_SIZE_XY + 14), fullResY, 497, 0, 512, 77);
                         }
-                        Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + ICON_SIZE_XY, 385, 15, 432, 62);
+                        Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 0, 337, 60);
                         // Kachelbarer Oben eventuell mit Endstücken ersetzen
                         if (i == 0) {
-                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 16, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 383, 0, 431, 13);
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 15, 417, 30);
                         } else if (i == drawList.size() - 1) {
-                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 16, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 383, 62, 431, 75);
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 30, 417, 45);
                         } else {
-                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 16, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 300, 0, 347, 13);
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 0, 417, 15);
                         }
                         Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                     }
                 }
                 i--;
                 // Balken rechts
-                Renderer.drawImage(tilemap, leftSpace - 1 + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - 57, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 18, fullResY, 363, 46, 377, 90);
+                Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - 60, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 15, fullResY, 432, 0, 447, 60);
                 // Die beiden Schrägen
-                Renderer.drawImage(tilemap, leftSpace - 30, fullResY - 90, leftSpace + 27, fullResY - 32, 300, 18, 345, 64);
-                Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY - 28, fullResY - 90, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 29, fullResY - 32, 300, 65, 345, 111);
+                Renderer.drawImage(tilemap, leftSpace - 23, fullResY - 83, leftSpace + 27, fullResY - 32, 447, 50, 497, 100);
+                Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY - 26, fullResY - 83, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 24, fullResY - 32, 447, 0, 497, 50);
             }
             updateCoords(fullResX, fullResY, drawList);
         }
