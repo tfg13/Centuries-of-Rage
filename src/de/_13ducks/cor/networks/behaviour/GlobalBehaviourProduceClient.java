@@ -23,21 +23,21 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.networks.server.behaviour;
+package de._13ducks.cor.networks.behaviour;
 
 import de._13ducks.cor.game.NetPlayer;
-import de._13ducks.cor.game.server.ServerCore;
+import de._13ducks.cor.game.client.ClientCore;
 
 /**
  * Berechnet Ressourcen-Sammelrate fpr einen bestimmten Spieler
  * @author 2nd
  */
-public class GlobalBehaviourProduce extends GlobalBehaviour {
+public class GlobalBehaviourProduceClient extends GlobalBehaviour {
     double prodrate = 0.0;
     long lastupdate = -1;
 
-    public GlobalBehaviourProduce (ServerCore.InnerServer newinner, NetPlayer player, int callsPerSecond) {
-        super(newinner, player, callsPerSecond, true);
+    public GlobalBehaviourProduceClient (ClientCore.InnerClient newinner,  int callsPerSecond) {
+        super(newinner.game.getOwnPlayer(), callsPerSecond, false);
     }
     
     @Override
@@ -50,7 +50,7 @@ public class GlobalBehaviourProduce extends GlobalBehaviour {
         long timediff = timenow - lastupdate;
         lastupdate = timenow;
         player.res1 += prodrate * timediff / 1000;
-        System.out.println("GloBhvPro " + player.playerId + " " + player.res1);
+        //System.out.println("GloBhvPro " + player.playerId + " " + player.res1);
     }
 
     @Override
@@ -69,6 +69,11 @@ public class GlobalBehaviourProduce extends GlobalBehaviour {
     }
     
     public void incrementProdrate(double bla) {
+        // erstmal Ressourcen aktualisieren
+        this.externalExecute();
+        // Sammelrate erhöhen
         prodrate += bla;
+        // an Client senden
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 58, Float.floatToIntBits((float) prodrate), Float.floatToIntBits((float) player.res1), 0, 0));
     }
 }

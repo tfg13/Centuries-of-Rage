@@ -28,7 +28,8 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
-import de._13ducks.cor.networks.server.behaviour.GlobalBehaviourProduce;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceServer;
 import org.newdawn.slick.Color;
 import java.util.List;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class NetPlayer {
 
     private boolean finished = false; // Spielt der noch?
     
-    private GlobalBehaviourProduce producebehaviour;
+    private GlobalBehaviour producebehaviour;
 
     public interface colours {
 
@@ -209,11 +210,11 @@ public class NetPlayer {
         return list.toArray(rlist);
     }
     
-    public void setProduceBehaviour(GlobalBehaviourProduce producebehav) {
+    public void setProduceBehaviour(GlobalBehaviour producebehav, boolean server) {
         this.producebehaviour = producebehav;
     }
     
-    public GlobalBehaviourProduce getProduceBehaviour() {
+    public GlobalBehaviour getProduceBehaviour() {
         return producebehaviour;
     }
 }

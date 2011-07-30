@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.networks.server.behaviour;
+package de._13ducks.cor.networks.behaviour;
 
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.server.ServerCore;
@@ -46,18 +46,14 @@ public abstract class GlobalBehaviour {
      * Konstruktor, muss implementiert werden
      * @param newinner
      */
-    public GlobalBehaviour(ServerCore.InnerServer newinner, NetPlayer player, int callsPerSecond, boolean createAsActive) {
-        rgi = newinner;
-        //id = ID;
+    public GlobalBehaviour(NetPlayer player, int callsPerSecond, boolean createAsActive) {
         delay = 1000 / callsPerSecond;
         nextUse = System.currentTimeMillis() + delay;
         active = createAsActive;
         this.player = player;
     }
 
-    public GlobalBehaviour(ServerCore.InnerServer newinner, NetPlayer player, double callsPerSecond, boolean createAsActive) {
-        rgi = newinner;
-        //id = ID;
+    public GlobalBehaviour(NetPlayer player, double callsPerSecond, boolean createAsActive) {
         delay = (int) (1000 / callsPerSecond);
         nextUse = System.currentTimeMillis() + delay;
         active = createAsActive;

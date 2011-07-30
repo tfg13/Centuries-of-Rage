@@ -39,8 +39,8 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.ServerBehaviourCapture;
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
-import de._13ducks.cor.networks.server.behaviour.GlobalBehaviour;
-import de._13ducks.cor.networks.server.behaviour.GlobalBehaviourProduce;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceServer;
 
 /**
  * Die Server-Mainloop und GameLogic
@@ -138,11 +138,11 @@ public class ServerGameController implements Runnable {
 
         for (int i = 1; i < playerList.size(); i++) {
             // Jedem echten Spieler (nicht Spieler 0) ein GlobalBehaviourHarvest geben
-            GlobalBehaviourProduce producebehav = new GlobalBehaviourProduce(rgi, playerList.get(i), 1);
+            GlobalBehaviourProduceServer producebehav = new GlobalBehaviourProduceServer(rgi, playerList.get(i), 1);
             globalList.add(producebehav);
-            playerList.get(i).setProduceBehaviour(producebehav);
+            playerList.get(i).setProduceBehaviour((GlobalBehaviour) producebehav, true);
         }
-        
+
         // Gebäuden Behaviours geben
         for (Building b : rgi.netmap.buildingList) {
             if (b.getHealRate() != 0 && b.getPlayerId() != 0) {
@@ -151,14 +151,8 @@ public class ServerGameController implements Runnable {
             }
             ServerBehaviourCapture captureb = new ServerBehaviourCapture(rgi, b);
             b.addServerBehaviour(captureb);
-            
-            NetPlayer asdf = playerList.get(b.getPlayerId());
-            // Dem Spieler die Ressourcen-Sammelrate seines Gebäudes geben
-            if (b.getPlayerId() != 0) {
-                asdf.getProduceBehaviour().incrementProdrate(b.getHarvRate());
-            }
         }
-        
+
         for (int i = 0; i < playerList.size(); i++) {
             // Alle (auch Spieler 0) auf fertig setzen
             playerList.get(i).setFinished(true);
@@ -179,6 +173,18 @@ public class ServerGameController implements Runnable {
             }
         });
         tr.start();
+    }
+
+    public void startGame() {
+        // Dem Spieler die Ressourcen-Sammelrate seines Gebäudes geben
+        for (Building b : rgi.netmap.buildingList) {
+            NetPlayer player = playerList.get(b.getPlayerId());
+            if (b.getPlayerId() != 0) {
+                System.out.println("playerid " + b.getPlayerId());
+                GlobalBehaviourProduceServer neu = (GlobalBehaviourProduceServer) player.getProduceBehaviour();
+                neu.incrementProdrate(b.getHarvRate());
+            }
+        }
     }
 
     public ServerGameController(ServerCore.InnerServer inner) {

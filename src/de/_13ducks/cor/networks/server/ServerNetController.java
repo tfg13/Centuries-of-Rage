@@ -151,8 +151,9 @@ public class ServerNetController implements Runnable {
      * Muss NACH loadMap und NACH initGame aufgerufen werden!!!
      */
     public void startGame() {
-        // Jetzt das GO! schicken
-        broadcastDATA(rgi.packetFactory((byte) 4, 0, 0, 0, 0));
+        // Jetzt das GO! schicken        
+        broadcastDATA(rgi.packetFactory((byte) 4, 0, 0, 0, 0));       
+        rgi.game.startGame();
     }
 
     /**
