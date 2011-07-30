@@ -42,36 +42,15 @@ public class C058_CHANGE_RESOURCE extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
-       System.out.println("blabla");
-       /*int netid = rgi.readInt(data, 1); // Das Gebäude, das erobert wird
-       float captureprogress = Float.intBitsToFloat(rgi.readInt(data, 2)); // aktueller Fortschritt
-       int capturerate = rgi.readInt(data, 3); // Fortschritt pro Sekunde
-       int playerid = rgi.readInt(data, 4); // Der Spieler, der erobert
-       
-       Building building = rgi.mapModule.getBuildingviaID(netid);
-       if (building != null) {
-           if (Float.isNaN(captureprogress)) {
-               // bedeutet fertig erobert -> Gebäude kriegt neuen Besitzer
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setPlayerId(playerid);
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setNeutral(false);
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureProgress(0.0);
-               ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
-               building.addClientBehaviour(prod);
-           } else {
-               // grafisch darstellen
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureProgress(captureprogress);
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setCaptureRate(capturerate);
-               Client.getInnerClient().mapModule.getBuildingviaID(netid).setLastCaptureTime(System.currentTimeMillis());
-           }
-       } else {
-           System.out.println("Panik! C058_CHANGE_PRODUCE pfuscht");
-       }*/
-       
-       float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
-       float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
-       
-       GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
-       rgi.game.getOwnPlayer().res1 = res1;
-       
+
+        float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
+        float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
+        int playerid = rgi.readInt(data, 3); // Der Spieler, den es betrifft
+        
+        if (playerid == rgi.game.getOwnPlayer().playerId) {
+            GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
+            prodClient.incrementProdrate(prodrate);
+            rgi.game.getOwnPlayer().res1 = res1;
+        }
     }
 }

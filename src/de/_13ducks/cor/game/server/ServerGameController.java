@@ -180,7 +180,6 @@ public class ServerGameController implements Runnable {
         for (Building b : rgi.netmap.buildingList) {
             NetPlayer player = playerList.get(b.getPlayerId());
             if (b.getPlayerId() != 0) {
-                System.out.println("playerid " + b.getPlayerId());
                 GlobalBehaviourProduceServer neu = (GlobalBehaviourProduceServer) player.getProduceBehaviour();
                 neu.incrementProdrate(b.getHarvRate());
             }

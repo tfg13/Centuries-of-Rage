@@ -75,6 +75,6 @@ public class GlobalBehaviourProduceServer extends GlobalBehaviour {
         // Sammelrate erhöhen
         prodrate += increase;
         // an Client sendens
-        Server.getInnerServer().netctrl.broadcastDATA(Server.getInnerServer().packetFactory((byte) 58, Float.floatToIntBits((float) prodrate), Float.floatToIntBits((float) player.res1), 0, 0));
+        Server.getInnerServer().netctrl.broadcastDATA(Server.getInnerServer().packetFactory((byte) 58, Float.floatToIntBits((float) prodrate), Float.floatToIntBits((float) player.res1), player.playerId, 0));
     }
 }

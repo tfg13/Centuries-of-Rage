@@ -312,6 +312,7 @@ public class ClientNetController {
                         cmdMap[cmd].process(data, cdh, rgi);
 
                     } catch (NullPointerException ex) {
+                        ex.printStackTrace();
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ")");
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ") (ArrayOutOfBounds)");

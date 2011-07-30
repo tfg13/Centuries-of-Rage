@@ -50,7 +50,6 @@ public class GlobalBehaviourProduceClient extends GlobalBehaviour {
         long timediff = timenow - lastupdate;
         lastupdate = timenow;
         player.res1 += prodrate * timediff / 1000;
-        //System.out.println("GloBhvPro " + player.playerId + " " + player.res1);
     }
 
     @Override
@@ -68,12 +67,10 @@ public class GlobalBehaviourProduceClient extends GlobalBehaviour {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void incrementProdrate(double bla) {
+    public void incrementProdrate(double addrate) {
         // erstmal Ressourcen aktualisieren
         this.externalExecute();
         // Sammelrate erhöhen
-        prodrate += bla;
-        // an Client senden
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 58, Float.floatToIntBits((float) prodrate), Float.floatToIntBits((float) player.res1), 0, 0));
+        prodrate += addrate;
     }
 }
