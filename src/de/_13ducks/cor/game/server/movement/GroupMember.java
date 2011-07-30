@@ -41,7 +41,8 @@ public class GroupMember {
     private LinkedList<DiversionWaypoint> diversion;
     private LinkedList<SectorChangingEdge> sectorBorders;
     private Node lastStart;
-
+    private FreePolygon lastPoly;
+    
     GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
@@ -78,6 +79,7 @@ public class GroupMember {
     void newWay() {
         lastStart = mover.getPrecisePosition().toNode();
         lastStart.addPolygon(mover.getMyPoly());
+        lastPoly = null;
     }
 
     /**
@@ -105,7 +107,11 @@ public class GroupMember {
                 Vector ortho1 = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
                 Vector ortho2 = new Vector(n3.y() - n2.y(), n2.x() - n3.x()).normalize();
                 Vector ortho = ortho1.add(ortho2);
-                sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), commonSector(n1, n2), commonSector(n2, n3)));
+                FreePolygon nextPoly = commonSector(n2, n3);
+                sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), lastPoly, nextPoly));
+                lastPoly = nextPoly;
+            } else {
+                lastPoly = commonSector(lastStart, (Node) waypoint);
             }
             path.add(waypoint);
         }
