@@ -72,6 +72,10 @@ public class AbilityHud implements Overlay, SlideInController {
      * Abstand vom linken Bildrand
      */
     private int leftSpace = 110;
+    /**
+     * Über was die Maus schwebt
+     */
+    private int hoverIndex;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -128,6 +132,9 @@ public class AbilityHud implements Overlay, SlideInController {
                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 30, 417, 45);
                         } else {
                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 0, 417, 15);
+                        }
+                        if (hoverIndex == i) {
+                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 134, 337, 194);
                         }
                         Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                     }
@@ -201,6 +208,7 @@ public class AbilityHud implements Overlay, SlideInController {
 
             @Override
             public void mouseMoved(int x, int y) {
+                hoverIndex = findIndex(x);
             }
 
             @Override
@@ -217,22 +225,34 @@ public class AbilityHud implements Overlay, SlideInController {
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                // Ability finden
-                i1 -= leftSpace;
-                int index = i1 / (ICON_SIZE_XY + 14);
-                Ability ab = drawList.get(index);
-                for (InteractableGameElement ige : iges) {
-                    // Die zu dem Behaviour gehörende
-                    ab = ige.getAbilitys().get(ige.getAbilitys().indexOf(ab));
-                    // Diese hier!
-                    if (i == 0) {
-                        ab.perform(ige.getAbilityCaster());
-                    } else {
-                        ab.antiperform(ige.getAbilityCaster());
+                int index = findIndex(i1);
+                if (index != -1) {
+                    Ability ab = drawList.get(index);
+                    for (InteractableGameElement ige : iges) {
+                        // Die zu dem Behaviour gehörende
+                        ab = ige.getAbilitys().get(ige.getAbilitys().indexOf(ab));
+                        // Diese hier!
+                        if (i == 0) {
+                            ab.perform(ige.getAbilityCaster());
+                        } else {
+                            ab.antiperform(ige.getAbilityCaster());
+                        }
                     }
                 }
             }
         });
+    }
+
+    private int findIndex(int x) {
+        // Ability finden
+        double index = 1.0 * x / (ICON_SIZE_XY + 15);
+        int intIndex = (int) index;
+        index -= intIndex;
+        if (index <= .8) {
+            return intIndex;
+        } else {
+            return -1;
+        }
     }
 
     public static AbilityHud createAbilityHud(ClientCore.InnerClient rgi) {
