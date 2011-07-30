@@ -521,8 +521,7 @@ public class Building extends GameObject {
         return captureprogress;
     }
 
-    public void changeCaptureProgress(int amount, int player) {
-        capturerate = Math.min(5, amount) * 1.0;
+    public void changeCaptureProgress(int capturerate, int player) {
         captureprogress += capturerate;
         if (captureprogress > 100) {
             // fertig übernommen, playerid wechseln

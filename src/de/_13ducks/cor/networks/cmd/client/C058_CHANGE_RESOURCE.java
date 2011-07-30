@@ -43,13 +43,17 @@ public class C058_CHANGE_RESOURCE extends ClientCommand {
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
 
-        float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
-        float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
         int playerid = rgi.readInt(data, 3); // Der Spieler, den es betrifft
-        
+
+        // Ist der Befehl überhaupt für diesen Client?
         if (playerid == rgi.game.getOwnPlayer().playerId) {
+            
+            float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
+            float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
+            
             GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
             prodClient.incrementProdrate(prodrate);
+            
             rgi.game.getOwnPlayer().res1 = res1;
         }
     }
