@@ -33,7 +33,7 @@ import de._13ducks.cor.game.client.ClientCore;
  * @author 2nd
  */
 public class GlobalBehaviourProduceClient extends GlobalBehaviour {
-    double prodrate = 0.0;
+    private double prodrate = 0.0;
     long lastupdate = -1;
 
     public GlobalBehaviourProduceClient (ClientCore.InnerClient newinner,  int callsPerSecond) {
@@ -49,7 +49,7 @@ public class GlobalBehaviourProduceClient extends GlobalBehaviour {
         }
         long timediff = timenow - lastupdate;
         lastupdate = timenow;
-        player.res1 += prodrate * timediff / 1000;
+        player.res1 += getProdrate() * timediff / 1000;
     }
 
     @Override
@@ -67,10 +67,14 @@ public class GlobalBehaviourProduceClient extends GlobalBehaviour {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void incrementProdrate(double addrate) {
+    public void setProdrate(double addrate) {
         // erstmal Ressourcen aktualisieren
         this.externalExecute();
-        // Sammelrate erhöhen
-        prodrate += addrate;
+        // Sammelrate ändern
+        prodrate = addrate;
+    }
+
+    public double getProdrate() {
+        return prodrate;
     }
 }

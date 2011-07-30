@@ -52,7 +52,7 @@ public class C058_CHANGE_RESOURCE extends ClientCommand {
             float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
             
             GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
-            prodClient.incrementProdrate(prodrate);
+            prodClient.setProdrate(prodrate);
             
             rgi.game.getOwnPlayer().res1 = res1;
         }
