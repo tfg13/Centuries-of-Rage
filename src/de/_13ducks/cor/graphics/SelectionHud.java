@@ -126,16 +126,26 @@ public class SelectionHud implements Overlay, SlideInController {
 
             String img = drawList.get(0).elems.get(0).getSelectionTexture();
             if (img != null) {
-                Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 385, 15, 432, 62);
+                Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 0, 347, 70);
                 Renderer.drawImage(img, 0, fullResY - singleSize, singleSize, singleSize);
+                Renderer.drawImage(tilemap, 70, fullResY - 84, 82, fullResY, 416, 60, 428, 144);
+                Renderer.drawImage(tilemap, 0, fullResY - 82, 84, fullResY - 70, 277, 122, 361, 134);
             }
 
             for (int i = 1; i < drawList.size(); i++) {
 
                 String img2 = drawList.get(i).elems.get(0).getSelectionTexture();
                 if (img2 != null) {
-                    Renderer.drawImage(tilemap, 0, fullResY - singleSize - (i * otherSize), otherSize, fullResY - singleSize - (i * otherSize) + otherSize, 385, 15, 432, 62);
-                    Renderer.drawImage(img2, 0, fullResY - singleSize - (i * otherSize), otherSize, otherSize);
+                    Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 0, 327, 50);
+                    Renderer.drawImage(img2, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, otherSize);
+                    if (i != drawList.size() - 1) {
+                        Renderer.drawImage(tilemap, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize + 12, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 70, 289, 120);
+                        Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)), 65, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, 351, 70, 416, 82);
+                    } else {
+                        Renderer.drawImage(tilemap, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize + 12, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 289, 70, 301, 120);
+                        Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)), otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, 301, 70, 351, 82);
+                        Renderer.drawImage(tilemap, 29, fullResY - 12 - singleSize - (i * (otherSize + 12)) - 8, 69, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 31, 301, 82, 341, 122);
+                    }
                 }
             }
         }

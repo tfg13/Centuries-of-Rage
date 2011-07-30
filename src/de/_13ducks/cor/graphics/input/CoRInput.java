@@ -163,7 +163,7 @@ public class CoRInput implements Pauseable {
         selMap = new SelectionMap(mapX, mapY);
         selHud = new SelectionHud();
         abHud = AbilityHud.createAbilityHud(rgi);
-        graphics.content.overlays.add(new SlideInOverlay(selHud, -70, 0, 250));
+        graphics.content.overlays.add(new SlideInOverlay(selHud, -84, 0, 250));
         graphics.content.overlays.add(new SlideInOverlay(abHud, 0, 90, 250));
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
