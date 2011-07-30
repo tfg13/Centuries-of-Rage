@@ -42,7 +42,6 @@ import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.ability.AbilityBuild;
-import de._13ducks.cor.game.ability.AbilityIntraManager;
 import de._13ducks.cor.game.ability.AbilityRecruit;
 import de._13ducks.cor.game.ability.AbilityUpgrade;
 import de._13ducks.cor.graphics.BuildingAnimator;
@@ -57,7 +56,6 @@ import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.MapIO;
-import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
 
 /**
  * Das MapModul auf der Client-Seite
@@ -1230,8 +1228,6 @@ public class ClientMapModule {
             throw new java.lang.UnknownError("Critical ID mismatch, overwriting netID-Entry");
         }
         this.netIDList.put(b.netID, b);
-
-        b.addAbility(new AbilityIntraManager(b, rgi));
 
         // In Abhängigkeitsliste einfügen
         if (b.getLifeStatus() == GameObject.LIFESTATUS_ALIVE && b.getPlayerId() == rgi.game.getOwnPlayer().playerId) {

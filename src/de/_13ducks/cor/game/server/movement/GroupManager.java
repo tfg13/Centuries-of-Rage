@@ -187,12 +187,12 @@ public class GroupManager {
             // Das erfolgt in 2 Schritten:
             // 1. Einen Graphen zum Suchen aufbauen.
             // 2. A* einen Weg durch den Graphen suchen lassen.
-            List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
+          /*  List<Node> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
             System.out.println("CALCULATED DIVERSION: BEGIN");
             for (Node n : diversion) {
                 System.out.println(n);
             }
-            System.out.println("END OF CALCULATED DIVERSION");
+            System.out.println("END OF CALCULATED DIVERSION"); */
             //System.out.println("AddMe: Use calculated diversion");
             //TODO: Ändern, sobald möglich
             return true;

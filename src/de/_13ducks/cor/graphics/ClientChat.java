@@ -36,7 +36,7 @@ import org.newdawn.slick.*;
  *
  * @author tfg
  */
-public class ClientChat  extends Overlay {
+public class ClientChat implements Overlay {
 
     /**
      * Der normale, nicht aktivierte Modus. Nur die aktiven Nachrichten werden angezeigt.

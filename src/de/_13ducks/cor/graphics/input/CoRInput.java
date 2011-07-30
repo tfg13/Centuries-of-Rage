@@ -44,6 +44,7 @@ import org.newdawn.slick.*;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.Pauseable;
 import de._13ducks.cor.graphics.AbilityHud;
+import de._13ducks.cor.graphics.SlideInOverlay;
 
 /**
  *
@@ -157,7 +158,7 @@ public class CoRInput implements Pauseable {
         graphics = rg;
         selMap = new SelectionMap(mapX, mapY);
         abHud = AbilityHud.createAbilityHud(rgi);
-        graphics.content.overlays.add(abHud);
+        graphics.content.overlays.add(new SlideInOverlay(abHud, 0, 90, 250));
         rgi.logger("[RogInput][Init]: Adding Listeners to Gui...");
         initListeners();
         rgi.logger("[RogInput] RogInput is ready to rock! (init completed)");
@@ -354,7 +355,7 @@ public class CoRInput implements Pauseable {
                 OverlayMouseListener listener = findOverlay();
                 if (listener != null) {
                     try {
-                    listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
+                        listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
                     } catch (Exception ex) {
                         System.out.println("[Graphics][Error]: Overlay " + listener + " crashed on Mouse-Input. Ignoring.");
                     }
@@ -380,7 +381,6 @@ public class CoRInput implements Pauseable {
                                                     selected.get(i).setSelected(false);
                                                 }
                                                 selected.clear();
-                                                abHud.setActiveObjects(null);
                                             }
                                             List<InteractableGameElement> selectedIGE = getBoxSelected(x, y);
                                             if (selectedIGE != null) {
@@ -388,7 +388,6 @@ public class CoRInput implements Pauseable {
                                                     ige.setSelected(true);
                                                     selected.add(ige);
                                                 }
-                                                abHud.setActiveObjects(selectedIGE);
                                             }
 
                                         }
@@ -402,6 +401,7 @@ public class CoRInput implements Pauseable {
                                 if (button == 1 && (!rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200))) {
                                     mouseKlickedRight(button, x, y, false);
                                 }
+                                abHud.setActiveObjects(selected);
                             }
                         });
                         t.setDaemon(true);
@@ -742,6 +742,7 @@ public class CoRInput implements Pauseable {
                         }
                     }
                 }
+                abHud.setActiveObjects(selected);
             }
             lastSavedRead = number;
             lastSavedKlick = System.currentTimeMillis();
@@ -818,7 +819,6 @@ public class CoRInput implements Pauseable {
                 System.out.println("Deselected: " + selected.get(i).toString());
             }
             selected.clear();
-            abHud.setActiveObjects(null);
         }
 
         // Alles, was noch da ist anwählen:
@@ -840,12 +840,12 @@ public class CoRInput implements Pauseable {
             doubleKlick = true;
         }
         lastRightKlick = System.currentTimeMillis();
-	Position selField = null;
-	if (!notranslation) { // Umrechnen ins Feldsystem notwendig?
-	    selField = graphics.content.translateCoordinatesToField(x, y);
-	} else {
-	    selField = new Position(x, y);
-	}
+        Position selField = null;
+        if (!notranslation) { // Umrechnen ins Feldsystem notwendig?
+            selField = graphics.content.translateCoordinatesToField(x, y);
+        } else {
+            selField = new Position(x, y);
+        }
         // Überhaupt was selektiert?
         if (!selected.isEmpty()) {
             // Ziele finden:
@@ -864,36 +864,36 @@ public class CoRInput implements Pauseable {
     // Überhaupt was selektiert?
 
     /*      if (!selected.isEmpty()) {
-
+    
     // Was wurde angeklickt?
-
+    
     final Dimension selField = graphics.content.getGameSelectedField(x, y);
     final Unit selUnit = graphics.content.identifyUnit(x, y);
     final Building selBuilding = graphics.content.identifyBuilding(selField.width, selField.height);
-
+    
     final int playerId = selected.get(0).getPlayerId();
-
+    
     // Ganz unbekannt:
     final boolean clickedInBlack = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 1);
     // Grob bekannt:
     final boolean clickedInKnown = (rgi.rogGraphics.content.fowmap[(int) selField.getWidth()][(int) selField.getHeight()] < 2);
-
+    
     // Ab jetzt multithreaden, sonst wird die Grafik überlastet
-
+    
     Thread t = new Thread(new Runnable() {
-
+    
     @Override
     public void run() {
     if (!clickedInBlack) { //Weiß der Spieler, was er anklickt?
-
+    
     // Was ist zurzeit selektiert
-
+    
     if (selected.get(0).getClass().equals(Unit.class)) {
-
+    
     // Unit selektiert
-
+    
     if (selUnit != null && selUnit.getPlayerId() != playerId && !rgi.game.areAllies(selUnit, rgi.game.getPlayer(playerId)) && !clickedInKnown) { // Man kann Feinde im erkundeten nicht angereifen
-
+    
     // Angreifen - Einzeln?
     if (selected.size() == 1) {
     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 29, selected.get(0).netID, selUnit.netID, 2, 0));
@@ -973,7 +973,7 @@ public class CoRInput implements Pauseable {
     }
     }
     }
-
+    
     } else if (selBuilding != null && selBuilding.playerId != playerId && !rgi.game.areAllies(selBuilding, rgi.game.getPlayer(playerId)) && selBuilding.wasSeen) { // Man kann Gebäude im erkundeten angreiffen, aber nur wenn sie bereits entdeckt wurden
     // Gebäude - fremder Spieler : Gebäudeangriff
     // Gruppenangriff?
@@ -1014,7 +1014,7 @@ public class CoRInput implements Pauseable {
     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 32, ids[0], ids[1], ids[2], ids[3]));
     }
     }
-
+    
     } else if (selRessource != null) { // Man kann Ressourcen im grauen anklicken
     // Ernten
     if (selRessource.getType() < 5) {
@@ -1074,7 +1074,7 @@ public class CoRInput implements Pauseable {
     }
     }
     }
-
+    
     } else if (selected.get(0).getClass().equals(Building.class)) {
     // Building selektiert
     // Nur Gebäude die auch was rekrutieren, dürfen Sammelpunkte setzen
@@ -1160,7 +1160,7 @@ public class CoRInput implements Pauseable {
     for (int a = 0; a < selected.size(); a++) {
     rgi.mapModule.setCollision(selected.get(a).position, collision.free);
     }
-
+    
     for (int i = 0; i < selected.size(); i++) {
     Unit tmpUnit = (Unit) selected.get(i);
     Position target = new Position(selField.width, selField.height).aroundMe(i, rgi, 10000);
@@ -1168,15 +1168,15 @@ public class CoRInput implements Pauseable {
     }
     }
     }
-
+    
     }
     });
-
+    
     t.setDaemon(true);
     t.setName("InputHandler: RightClick");
     t.start();
     }
-
+    
     return;
     } */
     public CoRInput(ClientCore.InnerClient inner, org.newdawn.slick.Input inp) {

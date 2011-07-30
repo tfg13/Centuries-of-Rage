@@ -52,7 +52,7 @@ import org.newdawn.slick.Graphics;
  *
  * @author tfg
  */
-public abstract class Overlay {
+public interface Overlay {
 
     /**
      * Zeichnet das Overlay in den Grafikkontext g.

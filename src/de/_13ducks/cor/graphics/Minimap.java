@@ -37,7 +37,7 @@ import de._13ducks.cor.map.AbstractMapElement;
 /**
  * Die Minimap.
  */
-public class Minimap extends Overlay {
+public class Minimap implements Overlay {
 
     /**
      * Die Map ist derzeit oben rechts.
