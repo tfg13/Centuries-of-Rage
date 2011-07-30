@@ -97,18 +97,12 @@ public class Building extends GameObject {
      * Liste mit Units, die sich derzeit in diesem Gebäude befinden.
      */
     private List<Unit> intraUnits;
-    /**
-     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     */
-    private int harvests = 0;
+
     /**
      * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
      */
     protected int maxIntra = 0;
-    /**
-     * Gibt die  Ernterate pro interner Einheit an
-     */
-    private double harvRate = 0.0;
+
     /**
      * Gibt an, welche Einheiten akzeptiert werden.
      */
@@ -185,8 +179,6 @@ public class Building extends GameObject {
         this.maxIntra = copyFrom.maxIntra;
         this.z1 = copyFrom.z1;
         this.z2 = copyFrom.z2;
-        this.harvRate = copyFrom.harvRate;
-        this.harvests = copyFrom.harvests;
         this.neutral = copyFrom.neutral;
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
@@ -199,8 +191,6 @@ public class Building extends GameObject {
      */
     private void applyBuildingParams(DescParamsBuilding par) {
         this.accepts = par.getAccepts();
-        this.harvRate = par.getHarvRate();
-        this.harvests = par.getHarvests();
         this.maxIntra = par.getMaxIntra();
         this.z1 = par.getZ1();
         this.z2 = par.getZ2();
@@ -427,20 +417,6 @@ public class Building extends GameObject {
         if (getLifeStatus() == GameObject.LIFESTATUS_UNBORN) {
             this.damageWhileContruction += damage;
         }
-    }
-
-    /**
-     * @return the harvests
-     */
-    public int getHarvests() {
-        return harvests;
-    }
-
-    /**
-     * @return the harvRate
-     */
-    public double getHarvRate() {
-        return harvRate;
     }
 
     /**

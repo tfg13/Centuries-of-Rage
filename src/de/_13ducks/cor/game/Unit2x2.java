@@ -28,6 +28,8 @@ package de._13ducks.cor.game;
 import de._13ducks.cor.map.fastfindgrid.Cell;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.util.Dimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -85,10 +87,21 @@ public class Unit2x2 extends Unit {
     @Override
     public void setMainPosition(Position mainPosition) {
         super.setMainPosition(mainPosition);
-        positions[0] = mainPosition;
-        positions[1] = new Position(mainPosition.getX() + 1, mainPosition.getY() - 1);
-        positions[2] = new Position(mainPosition.getX() + 1, mainPosition.getY() + 1);
-        positions[3] = new Position(mainPosition.getX() + 2, mainPosition.getY());
+        Position clickPosition;
+        try {
+            
+            clickPosition = mainPosition.clone();            
+            if (clickPosition.getX() % 2 != clickPosition.getY() % 2) {
+                clickPosition.setX(clickPosition.getX() - 1);
+            }
+            positions[0] = clickPosition;
+            positions[1] = new Position(clickPosition.getX() + 1, clickPosition.getY() - 1);
+            positions[2] = new Position(clickPosition.getX() + 1, clickPosition.getY() + 1);
+            positions[3] = new Position(clickPosition.getX() + 2, clickPosition.getY());
+            
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Unit2x2.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -180,7 +193,6 @@ public class Unit2x2 extends Unit {
         float rx = (float) ((FloatingPointPosition) mainPosition).getfX();
         float ry = (float) ((FloatingPointPosition) mainPosition).getfY();
         Renderer.drawImage(getGraphicsData().defaultTexture, (float) (rx * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_2x2_X - scrollX + GraphicsContent.OFFSET_PRECISE_X), (float) (ry * GraphicsContent.FIELD_HALF_Y + GraphicsContent.OFFSET_2x2_Y - scrollY + GraphicsContent.OFFSET_PRECISE_Y));
-        hovered = false;
     }
 
     @Override
@@ -196,7 +208,7 @@ public class Unit2x2 extends Unit {
 
     @Override
     public void renderSkyEffect(Graphics g, int x, int y, double scrollX, double scrollY, Color spriteColor) {
-        if (isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
+        if (hovered || isSelected() || (GraphicsContent.alwaysshowenergybars && getLifeStatus() != GameObject.LIFESTATUS_DEAD)) {
             SimplePosition pos = getPrecisePosition();
             // Billigen Balken rendern
             g.setColor(Color.black);
@@ -210,5 +222,6 @@ public class Unit2x2 extends Unit {
             }
             g.fillRect((float) (pos.x() * GraphicsContent.FIELD_HALF_X - scrollX), (float) (pos.y() * GraphicsContent.FIELD_HALF_Y - scrollY) - 10, 5, 5);
         }
+        hovered = false;
     }
 }
