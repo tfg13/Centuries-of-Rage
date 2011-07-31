@@ -75,7 +75,7 @@ public class AbilityHud implements Overlay, SlideInController {
     /**
      * Über was die Maus schwebt
      */
-    private int hoverIndex;
+    private int hoverIndex = -1;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -239,6 +239,11 @@ public class AbilityHud implements Overlay, SlideInController {
                         }
                     }
                 }
+            }
+
+            @Override
+            public void mouseRemoved() {
+                hoverIndex = -1;
             }
         });
     }

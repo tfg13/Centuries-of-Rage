@@ -81,6 +81,10 @@ public class IngameMenu implements Overlay {
             public void mouseReleased(int button, int x, int y) {
                 startTime = System.currentTimeMillis();
             }
+
+            @Override
+            public void mouseRemoved() {
+            }
         });
     }
 }

@@ -112,6 +112,10 @@ public class SelectionHud implements Overlay, SlideInController {
             public void mouseReleased(int i, int i1, int i2) {
                 System.out.println("AddMe: Gotklick!");
             }
+
+            @Override
+            public void mouseRemoved() {
+            }
         });
     }
 

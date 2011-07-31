@@ -268,6 +268,10 @@ public class Minimap implements Overlay {
 	    public int getCatch2Y() {
 		return pos[3];
 	    }
+
+            @Override
+            public void mouseRemoved() {
+            }
 	});
     }
 

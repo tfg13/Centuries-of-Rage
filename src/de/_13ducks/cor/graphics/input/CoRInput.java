@@ -43,6 +43,7 @@ import org.newdawn.slick.*;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.Pauseable;
 import de._13ducks.cor.graphics.AbilityHud;
+import de._13ducks.cor.graphics.Overlay;
 import de._13ducks.cor.graphics.SelectionHud;
 import de._13ducks.cor.graphics.SlideInOverlay;
 
@@ -157,6 +158,10 @@ public class CoRInput implements Pauseable {
      * Der Zeitpunkt des letzten Doppelklicks
      */
     private long lastRightKlick;
+    /**
+     * Das zuletzt verwendete Overlay, muss es mitbekommen, wenn die Maus runter bewegt wird.
+     */
+    private OverlayMouseListener lastOverlay;
 
     public void initAsSub(CoreGraphics rg, int mapX, int mapY) {
         graphics = rg;
@@ -310,6 +315,7 @@ public class CoRInput implements Pauseable {
             @Override
             public void mouseWheelMoved(int change) {
                 OverlayMouseListener listener = findOverlay();
+                notifyOldOverlay(listener);
                 if (listener != null) {
                     listener.mouseWheelMoved(change);
                 }
@@ -323,6 +329,7 @@ public class CoRInput implements Pauseable {
             @Override
             public void mousePressed(int button, int x, int y) {
                 OverlayMouseListener listener = findOverlay();
+                notifyOldOverlay(listener);
                 if (listener != null) {
                     listener.mousePressed(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
                 } else {
@@ -359,10 +366,12 @@ public class CoRInput implements Pauseable {
             @Override
             public void mouseReleased(final int button, final int x, final int y) {
                 OverlayMouseListener listener = findOverlay();
+                notifyOldOverlay(listener);
                 if (listener != null) {
                     try {
                         listener.mouseReleased(button, x - listener.getCatch1X(), y - listener.getCatch1Y());
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                         System.out.println("[Graphics][Error]: Overlay " + listener + " crashed on Mouse-Input. Ignoring.");
                     }
                 } else {
@@ -426,6 +435,7 @@ public class CoRInput implements Pauseable {
                 lastMouseX = newx;
                 lastMouseY = newy;
                 OverlayMouseListener listener = findOverlay();
+                notifyOldOverlay(listener);
                 if (listener != null) {
                     listener.mouseMoved(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
                 }
@@ -448,6 +458,7 @@ public class CoRInput implements Pauseable {
                 lastMouseX = newx;
                 lastMouseY = newy;
                 OverlayMouseListener listener = findOverlay();
+                notifyOldOverlay(listener);
                 if (listener != null) {
                     listener.mouseDragged(newx - listener.getCatch1X(), newy - listener.getCatch1Y());
                 }
@@ -1368,5 +1379,12 @@ public class CoRInput implements Pauseable {
         if (elems != null && !elems.isEmpty()) {
             elems.get(0).mouseHovered();
         }
+    }
+    
+    private void notifyOldOverlay(OverlayMouseListener newOverlay) {
+        if ((newOverlay == null || newOverlay != lastOverlay) && lastOverlay != null) { // Jaja, hässlicher Referenz-Vergleich
+            lastOverlay.mouseRemoved();
+        }
+        lastOverlay = newOverlay;
     }
 }

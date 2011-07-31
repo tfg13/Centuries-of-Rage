@@ -74,6 +74,10 @@ public abstract class OverlayMouseListener implements MouseListener {
      * @param y
      */
     public abstract void mouseDragged(int x, int y);
+    /**
+     * Die Maus wurde vom Overlay runter bewegt.
+     */
+    public abstract void mouseRemoved();
 
 
     @Override
