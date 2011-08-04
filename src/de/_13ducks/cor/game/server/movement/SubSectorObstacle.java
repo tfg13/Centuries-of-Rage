@@ -316,6 +316,7 @@ public class SubSectorObstacle {
             double currTetha = 0;
             double nextTetha = 0;
             for (int i = 0; i < nodes.size(); i++) {
+                double workNewTetha = newTetha;
                 current = nodes.get(i);
                 next = i < nodes.size() - 1 ? nodes.get(i + 1) : nodes.get(0);
                 currTetha = Math.atan2(current.getY() - y, current.getX() - x);
@@ -330,10 +331,10 @@ public class SubSectorObstacle {
                 if (currTetha > nextTetha) {
                     nextTetha += 2 * Math.PI;
                 }
-                if (currTetha > newTetha) {
-                    newTetha += 2 * Math.PI;
+                if (currTetha > workNewTetha) {
+                    workNewTetha += 2 * Math.PI;
                 }
-                if (currTetha < newTetha && nextTetha > newTetha) {
+                if (currTetha < workNewTetha && nextTetha > workNewTetha) {
                     // Genau hier einfügen
                     break;
                 }

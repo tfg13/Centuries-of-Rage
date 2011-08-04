@@ -188,7 +188,7 @@ public class SubSectorPathfinder {
             System.out.println("RREF");
             targetNode = minNode2;
         }
-
+        
         /**
          * Hier jetzt einen Weg suchen von startNode nach targetNode.
          * Die Kanten sind in node.myEdges
@@ -218,7 +218,7 @@ public class SubSectorPathfinder {
             ArrayList<SubSectorEdge> neighbors = current.getMyEdges();
 
             for (SubSectorEdge edge : neighbors) {
-                
+
                 SubSectorNode node = edge.getOther(current);
 
                 if (closed.contains(node)) {
@@ -265,17 +265,17 @@ public class SubSectorPathfinder {
         for (int k = pathrev.size() - 1; k >= 0; k--) {
             path.add(pathrev.get(k));
         }
-        
+
         // Nachbearbeitung:
         // Wir brauchen eine Kanten-Liste mit arc/direct Informationen
-        
+
         ArrayList<SubSectorEdge> finalPath = new ArrayList<SubSectorEdge>();
         for (int i = 0; i < path.size() - 1; i++) {
             SubSectorNode from = path.get(i);
             SubSectorNode to = path.get(i + 1);
             SubSectorEdge edge = shortestCommonEdge(from, to);
             if (edge != null) {
-            finalPath.add(edge);
+                finalPath.add(edge);
             } else {
                 throw new RuntimeException("ERROR Cannot find edge from " + from + " to " + to + " but it is part of the calculated path!!!");
             }
