@@ -46,6 +46,7 @@ public class AbilityHud implements Overlay, SlideInController {
      */
     public static final int ICON_SIZE_XY = 60;
     private static final String tilemap = "img/hud/hud_tilemap_bronze.png";
+    private static final Color green = new Color(0, 160, 0);
     /**
      * Die IGE'S deren Fähigkeiten derzeit angezeigt werden.
      */
@@ -134,7 +135,7 @@ public class AbilityHud implements Overlay, SlideInController {
                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 0, 417, 15);
                         }
                         if (hoverIndex == i) {
-                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 134, 337, 194);
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 134, 337, 194, ab.isAvailable() ? green : Color.darkGray);
                         }
                         Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                     }
