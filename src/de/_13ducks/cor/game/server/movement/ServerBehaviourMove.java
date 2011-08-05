@@ -453,6 +453,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius || (arc && arcCol)) {
                 System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
                 // Kollision!
+                if (!arc) {
                 // Jetzt muss poly verkleinert werden.
                 // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
                 // Notwendiger Abstand zur gefundenen Kollision t
@@ -496,6 +497,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
                 poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
+                
+                } else {
+                    // to auf den Laufkreis nach hinten verschieben.
+                    
+                }
                 colliding = true;
                 lastObstacle = t;
 
