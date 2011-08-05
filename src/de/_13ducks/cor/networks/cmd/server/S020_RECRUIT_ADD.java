@@ -52,6 +52,7 @@ public class S020_RECRUIT_ADD extends ServerCommand {
             be.gotSignal(data);
         } catch (Exception ex) {
             System.out.println("FixMe: Object ID mismatch (cmd20)");
+            ex.printStackTrace();
         }
     }
 }

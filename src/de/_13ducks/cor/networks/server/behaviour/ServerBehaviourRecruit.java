@@ -29,8 +29,11 @@ import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.game.ability.AbilityRecruit;
+import de._13ducks.cor.game.server.Server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -146,16 +149,23 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
         byte cmd = packet[0];
         switch (cmd) {
             case 20:
-                // Neuen Job adden:
+                // ressourcen überprüfen
                 int descid = rgi.readInt(packet, 2);
-                int duration = rgi.readInt(packet, 3);
-                loop.add(descid);
-                durations.add(duration);
-                rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 20, caster.netID, descid, duration, 0));
-                if (loop.size() == 1) {
-                    start = System.currentTimeMillis();
+                int abilitynumber = rgi.readInt(packet, 3);
+                System.out.println("abnumber " + abilitynumber);
+                AbilityRecruit abrecruit = (AbilityRecruit) caster.getAbility(abilitynumber);
+                NetPlayer player = Server.getInnerServer().game.getPlayer(caster.getPlayerId());
+                if (player.res1 > abrecruit.costs[0]) {
+                    player.res1 -= abrecruit.costs[0];
+                    // Neuen Job adden:
+                    loop.add(descid);
+                    durations.add(abrecruit.duration);
+                    rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 20, caster.netID, descid, abrecruit.duration, 0));
+                    if (loop.size() == 1) {
+                        start = System.currentTimeMillis();
+                    }
+                    this.activate();
                 }
-                this.activate();
                 break;
             case 22:
                 // Job löschen
