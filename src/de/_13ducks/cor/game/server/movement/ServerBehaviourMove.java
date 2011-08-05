@@ -446,9 +446,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
         for (Moveable t : possibleCollisions) {
             float radius = (float) (t.getRadius() + MIN_DISTANCE / 2);
             Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), radius); //Das getUnit ist ugly!
-            // Die drei Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
+            boolean arcCol = collidesOnArc(t, around, radius, from, to);
+            // Die Kollisionsbedingungen: Schnitt mit Begrenzungslinien, liegt innerhalb des Testpolygons, liegt zu nah am Ziel
             // Die ersten beiden Bedingungen gelten nur für nicht-arc-Bewegungen!
-            if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius) {
+            // Die letzte gilt dafür nur für arc-Bewegungen
+            if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius || (arc && arcCol)) {
                 System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
                 // Kollision!
                 // Jetzt muss poly verkleinert werden.
@@ -529,5 +531,81 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     void setPathManager(GroupMember pathManager) {
         this.pathManager = pathManager;
+    }
+
+    /**
+     * Findet heraus, ob das gegebenen Moveable auf dem gegebenen zu laufenden Abschnitt liegt,
+     * also eine Kollision darstellt.
+     * @param t
+     * @return true, wenn Kollision
+     */
+    private boolean collidesOnArc(Moveable t, SimplePosition around, double colRadius, SimplePosition from, SimplePosition to) {
+        if (!arc) {
+            return false;
+        }
+        // Muss in +arc-Richtung erfolgen, notfalls start und Ziel tauschen
+        if (!arcDirection) {
+            SimplePosition back = from;
+            from = to;
+            to = back;
+        }
+        
+        // Zuerst auf Nähe des gesamten Kreissegments testen
+        double dist = t.getPrecisePosition().getDistance(around.toFPP());
+        double moveRad = from.toFPP().getDistance(around.toFPP());
+        double minCol = moveRad - colRadius - t.getRadius();
+        double maxCol = moveRad + colRadius + t.getRadius();
+        if (dist >= minCol && dist <= maxCol) {
+            // Mögliche Kollision!
+            // Winkeltest
+            double fromTetha = Math.atan2(around.y() - from.y(), around.x() - from.x());
+            if (fromTetha < 0) {
+                fromTetha += 2 * Math.PI;
+            }
+            double toTetha = Math.atan2(around.y() - to.y(), around.x() - to.x());
+            if (toTetha < 0) {
+                toTetha += 2 * Math.PI;
+            }
+            double colTetha = Math.atan2(around.y() - t.getPrecisePosition().y(), around.x() - t.getPrecisePosition().x());
+            if (colTetha < 0) {
+                colTetha += 2 * Math.PI;
+            }
+            // Zusätzlichen Umlauf beachten
+            if (toTetha < fromTetha) {
+                if (colTetha < toTetha) {
+                    colTetha += 2 * Math.PI;
+                }
+                toTetha += 2 * Math.PI;
+            }
+            if (colTetha >= fromTetha && colTetha <= toTetha) {
+                // Dann auf jeden Fall
+                return true;
+            }
+            
+            // Sonst weitertesten: Der 6-Punkte-Test
+            Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), (float) t.getRadius());
+            Vector fromOrtho = new Vector(from.x() - around.x(), from.y() - around.y());
+            fromOrtho = fromOrtho.normalize().multiply(colRadius);
+            Vector toOrtho = new Vector(to.x() - around.x(), to.y() - around.y());
+            toOrtho = toOrtho.normalize().multiply(colRadius);
+            
+            SimplePosition t1 = from.toVector().add(fromOrtho);
+            SimplePosition t2 = from.toVector();
+            SimplePosition t3 = from.toVector().add(fromOrtho.getInverted());
+            SimplePosition t4 = to.toVector().add(toOrtho);
+            SimplePosition t5 = to.toVector();
+            SimplePosition t6 = to.toVector().add(toOrtho.normalize());
+            
+            if (c.contains((float) t1.x(), (float) t1.y()) ||
+                    c.contains((float) t2.x(), (float) t2.y()) ||
+                    c.contains((float) t3.x(), (float) t3.y()) ||
+                    c.contains((float) t4.x(), (float) t4.y()) ||
+                    c.contains((float) t5.x(), (float) t5.y()) ||
+                    c.contains((float) t6.x(), (float) t6.y())) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
