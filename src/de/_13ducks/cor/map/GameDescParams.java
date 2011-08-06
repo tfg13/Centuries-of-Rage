@@ -54,6 +54,8 @@ public class GameDescParams {
     private HashMap<Integer, Building> buildings;
     private HashMap<Integer, Ability> abilities;
     private HashMap<Integer, ServerAbilityUpgrade> serverabilities;
+    private byte[] abBuffer;
+    private byte[] descBuffer;
 
     /**
      * @return the units
@@ -109,6 +111,34 @@ public class GameDescParams {
      */
     public void setServerabilities(HashMap<Integer, ServerAbilityUpgrade> serverabilities) {
 	this.serverabilities = serverabilities;
+    }
+
+    /**
+     * @return the abBuffer
+     */
+    public byte[] getAbBuffer() {
+        return abBuffer;
+    }
+
+    /**
+     * @param abBuffer the abBuffer to set
+     */
+    public void setAbBuffer(byte[] abBuffer) {
+        this.abBuffer = abBuffer;
+    }
+
+    /**
+     * @return the descBuffer
+     */
+    public byte[] getDescBuffer() {
+        return descBuffer;
+    }
+
+    /**
+     * @param descBuffer the descBuffer to set
+     */
+    public void setDescBuffer(byte[] descBuffer) {
+        this.descBuffer = descBuffer;
     }
 
     

@@ -153,9 +153,7 @@ public class ServerBehaviourRecruit extends ServerBehaviour {
                 // ressourcen überprüfen
                 int descid = rgi.readInt(packet, 2);
                 int abilitynumber = rgi.readInt(packet, 3);
-                Ability abil = caster.getAbility(abilitynumber);
-                System.out.println("abnumber " + abilitynumber + " ab " + abil + " list " + caster.getAbilitys().size());
-                AbilityRecruit abrecruit = (AbilityRecruit) abil;
+                AbilityRecruit abrecruit = (AbilityRecruit) caster.getAbility(abilitynumber);
                 NetPlayer player = Server.getInnerServer().game.getPlayer(caster.getPlayerId());
                 if (player.res1 > abrecruit.costs[0]) {
                     player.res1 -= abrecruit.costs[0];
