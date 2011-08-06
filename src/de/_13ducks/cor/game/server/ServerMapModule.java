@@ -86,9 +86,6 @@ public class ServerMapModule {
     }
 
     void initModule() {
-
-        //descTypeAbilities = new HashMap<Integer, ServerAbilityUpgrade>();
-
         GameDescParams dparams = DescIO.readDesc("Path ist hardcoded, die nächste Variable intressiert auch niemanden", 616, null, rgi);
 
         descTypeAbilities = dparams.getServerabilities();
