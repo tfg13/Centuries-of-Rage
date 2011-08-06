@@ -49,7 +49,7 @@ public class NetPlayer {
     public List<Integer> uList;
     public List<Integer> aList;
     public Core.CoreInner rgi;
-    public double res1 = 300;
+    public double res1 = 12345;
     public double res2 = 0;
     public double res3 = 0;
     public double res4 = 0;

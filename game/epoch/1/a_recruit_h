@@ -13,7 +13,7 @@ type=recruit
 shownname=Recruit Warrior
 reference=U402
 cooldown=0.0
-duration=5000
+duration=1000
 e0tex=img/creeps/testhuman1.png
 cost1=120
 }
