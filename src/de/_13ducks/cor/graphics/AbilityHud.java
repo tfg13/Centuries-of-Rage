@@ -77,6 +77,10 @@ public class AbilityHud implements Overlay, SlideInController {
      * Über was die Maus schwebt
      */
     private int hoverIndex = -1;
+    /**
+     * Wenn man die Maus über einer Schaltfläche gefrückt hält
+     */
+    private int pressedIndex = -1;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -137,7 +141,11 @@ public class AbilityHud implements Overlay, SlideInController {
                         if (hoverIndex == i) {
                             Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 134, 337, 194, ab.isAvailable() ? green : Color.darkGray);
                         }
-                        Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                        if (pressedIndex != i) {
+                            Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                        } else {
+                            Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14) + 2, fullResY - ICON_SIZE_XY + 2, ICON_SIZE_XY - 4, ICON_SIZE_XY - 4, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                        }
                     }
                 }
                 i--;
@@ -214,6 +222,8 @@ public class AbilityHud implements Overlay, SlideInController {
 
             @Override
             public void mouseDragged(int x, int y) {
+                pressedIndex = findIndex(x);
+                hoverIndex = findIndex(x);
             }
 
             @Override
@@ -222,10 +232,12 @@ public class AbilityHud implements Overlay, SlideInController {
 
             @Override
             public void mousePressed(int i, int i1, int i2) {
+                pressedIndex = findIndex(i1);
             }
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
+                pressedIndex = -1;
                 int index = findIndex(i1);
                 if (index != -1) {
                     Ability ab = drawList.get(index);
@@ -245,6 +257,7 @@ public class AbilityHud implements Overlay, SlideInController {
             @Override
             public void mouseRemoved() {
                 hoverIndex = -1;
+                pressedIndex = -1;
             }
         });
     }
