@@ -451,7 +451,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Die ersten beiden Bedingungen gelten nur für nicht-arc-Bewegungen!
             // Die letzte gilt dafür nur für arc-Bewegungen
             if (!arc && (poly.intersects(c)) || (!arc && poly.includes(c.getCenterX(), c.getCenterY())) || to.getDistance(t.getPrecisePosition()) < caster2.getRadius() + radius || (arc && arcCol)) {
-                System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
+                //System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
                 // Kollision!
                 if (!arc) {
                     // Jetzt muss poly verkleinert werden.
