@@ -267,7 +267,24 @@ public class GroupManager {
                 return !tryDiversion(mover, obstacle, target);
             }
             
+            // Rekursiv die "Hindernisskette" entlanggehen und ursprüngliches Problem finden
+            // Liste für Schleifenerkennung:
+            ArrayList<Moveable> obstacles = new ArrayList<Moveable>();
+            Moveable next = obstacle;
+            while (next != null && !obstacles.contains(next)) {
+                obstacles.add(next);
+                // Next verarbeiten. Wartet das selber auf jemanden?
+                if (next.getLowLevelManager().isWaiting()) {
+                   next = next.getLowLevelManager().getWaitFor();
+                }
+                // Im Else-fall next nicht umstellen, dann endet die while
+            }
             
+            // Next ist jetzt das Hinderniss, das den ganzen Stau verursacht.
+            // Wir warten nur weiter, wenn das läuft. (und NICHT wartet)
+            if (!next.getLowLevelManager().isMoving() || next.getLowLevelManager().isWaiting()) {
+                return !tryDiversion(mover, obstacle, target);
+            }
         }
         
         return true;
