@@ -500,7 +500,59 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                 } else {
                     // to auf den Laufkreis nach hinten verschieben.
+                    Vector obst = t.getPrecisePosition().toVector();
+                    // Als erstes die Schnittpunkte der beiden Kreise bestimmmen
+                    // Zuerst Mittelpunkt der Linie durch beide Schnittpunkte berechnen:
+                    Vector direct = new Vector(around.x() - obst.x(), around.y() - obst.y());
+                    double moveRad = from.toFPP().getDistance(around.toFPP());
+                    Vector z1 = direct.normalize().multiply(caster2.getRadius() + radius);
+                    Vector z2 = direct.normalize().multiply(moveRad);
+                    Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
+                    // Senkrechten Vektor und seine Länge berechnen:
+                    Vector ortho2 = new Vector(direct.y(), -direct.x());
+                    ortho2 = ortho2.normalize().multiply(Math.sqrt(((caster2.getRadius() + radius) * (caster2.getRadius() + radius)) - (mid.length() * mid.length())));
+                    // Schnittpunkte ausrechnen:
+                    Vector posMid = new Vector(obst.x() + mid.x(), obst.y() + mid.y()); // Positionsvektor des Mittelpunkts
+                    Vector s1 = posMid.add(ortho2);
+                    Vector s2 = posMid.add(ortho2.getInverted());
+                    // Ausbrüten, ob s1 oder s2 der richtige ist:
+                    Vector newPosVec = null;
+                    double fromTetha = Math.atan2(around.y() - from.y(), around.x() - from.x());
+                    if (fromTetha < 0) {
+                        fromTetha += 2 * Math.PI;
+                    }
+                    double s1tetha = Math.atan2(around.y() - s1.y(), around.x() - s1.x());
+                    if (s1tetha < 0) {
+                        s1tetha += 2 * Math.PI;
+                    }
+                    double s2tetha = Math.atan2(around.y() - s2.y(), around.x() - s2.x());
+                    if (s2tetha < 0) {
+                        s2tetha += 2 * Math.PI;
+                    }
+                    if (s1tetha < fromTetha) {
+                        s1tetha += 2 * Math.PI;
+                    }
+                    if (s2tetha < fromTetha) {
+                        s2tetha += 2 * Math.PI;
+                    }
+                    if (s1tetha < s2tetha) {
+                        if (arcDirection) {
+                            newPosVec = s1;
+                        } else {
+                            newPosVec = s2;
+                        }
+                    } else {
+                        if (arcDirection) {
+                            newPosVec = s2;
+                        } else {
+                            newPosVec = s1;
+                        }
+                    }
+
+                    to = around.toVector().add(newPosVec).toFPP();
+                    tov = to.toVector();
                     
+                
                 }
                 colliding = true;
                 lastObstacle = t;
