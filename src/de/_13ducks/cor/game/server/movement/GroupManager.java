@@ -183,23 +183,30 @@ public class GroupManager {
             // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
             return true;
         } else if (!obstMove.isMoving()) {
-            // Andere Einheit steht. Wir müssen einen Weg drumrum suchen!
-            List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
-            if (diversion != null) {
-            System.out.println("CALCULATED DIVERSION: BEGIN");
-            for (SubSectorEdge n : diversion) {
-                System.out.println(n);
-            }
-            System.out.println("END OF CALCULATED DIVERSION");
-            mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
-            return false;
-            } else {
-                System.out.println(" NO DIVERSION FOUND");
-                return true; // Warten, es gibt keine Umleitung
-            }
+            return !tryDiversion(mover, obstacle, target);
         }
-        
+
         return true;
+    }
+    
+    /**
+     * Versucht, den Mover auf einer Umleitung zum Ziel gelangen zu lassen, wenn der ursürungliche
+     * Weg blockiert ist.
+     * @param mover Der Mover, der die Umleitung laufen soll
+     * @param obstacle Das Primärhinderniss des Movers
+     * @param target das Ursprüngliche Ziel
+     * @return true, wenn Umleitung gefunden, sonst false
+     */
+    private boolean tryDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+        List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
+            if (diversion != null) {
+                System.out.println(mover + " calced a diversion");
+                mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
+                return true;
+            } else {
+                System.out.println(mover + ": no diversion.");
+                return false;
+            }
     }
 
     private double lowestSpeed(ArrayList<GroupMember> myMovers) {
@@ -235,5 +242,34 @@ public class GroupManager {
             }
             i++;
         }
+    }
+
+    /**
+     * Rufen mover auf, wenn sie immernoch warten. (Also SEHR oft).
+     * Antwortet ihnen, ob sie weiter warten sollen, oder lieber eine
+     * Umleitung versuchen sollen.
+     * 
+     * Diese Methode hat die Verantwortung, Verklemmungen zu Erkennen und aufzulösen.
+     * z.B:
+     * U1 läuft in Sackgasse, berechnet Umleitung.
+     * U2 ist direkt dahinter, stößt dagegen, wartet.
+     * U1 kann jetzt aber auch nichtmehr weiter, wartet.
+     * -- An dieser Stelle muss für U2 eine Umleitung berechnet werden.
+     * @param mover Der Mover, der (noch) wartet
+     * @param obstacle Das derzeitige Primär-Hinderniss
+     * @return true, wenn der Mover weiter warten soll.
+     */
+    boolean stayWaiting(Moveable mover, Moveable obstacle, SimplePosition target) {
+        // Simples Erkennen: Wartet das Hinderniss auch auf mich?
+        if (obstacle.getLowLevelManager().isWaiting()) {
+            if (obstacle.getLowLevelManager().getWaitFor().equals(mover)) {
+                // Umleitung versuchen
+                return !tryDiversion(mover, obstacle, target);
+            }
+            
+            
+        }
+        
+        return true;
     }
 }

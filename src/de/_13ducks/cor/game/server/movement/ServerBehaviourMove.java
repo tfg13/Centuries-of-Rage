@@ -181,18 +181,26 @@ public class ServerBehaviourMove extends ServerBehaviour {
             newpos = checkAndMaxMove(oldPos, newpos);
             if (colliding) {
                 waitFor = lastObstacle;
-                // Immer noch Kollision
-                if (System.nanoTime() - waitStartTime < waitTime) {
-                    // Das ist ok, einfach weiter warten
-                    lastTick = System.nanoTime();
-                    return;
+                if (caster2.getMidLevelManager().stayWaiting(caster2, waitFor, target)) {
+
+                    // Immer noch Kollision
+                    if (System.nanoTime() - waitStartTime < waitTime) {
+                        // Das ist ok, einfach weiter warten
+                        lastTick = System.nanoTime();
+                        return;
+                    } else {
+                        // Wartezeit abgelaufen
+                        wait = false;
+                        // Wir stehen schon, der Client auch --> nichts weiter zu tun.
+                        target = null;
+                        deactivate();
+                        System.out.println("STOP waiting: " + caster2);
+                        return;
+                    }
                 } else {
-                    // Wartezeit abgelaufen
+                    // Es wurde eine Umleitung eingestellt
                     wait = false;
-                    // Wir stehen schon, der Client auch --> nichts weiter zu tun.
-                    target = null;
-                    deactivate();
-                    System.out.println("STOP waiting: " + caster2);
+                    trigger();
                     return;
                 }
             } else {
@@ -557,8 +565,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                     to = newPosVec.toFPP();
                     tov = to.toVector();
-                    
-                
+
+
                 }
                 colliding = true;
                 lastObstacle = t;
@@ -582,7 +590,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
     boolean isWaiting() {
         return wait;
     }
-    
+
     /**
      * Hiermit lässt siche herausfinden, wer momentan primär einem Weiterlaufen
      * im Weg steht.
