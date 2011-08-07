@@ -506,7 +506,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     Vector direct = new Vector(around.x() - obst.x(), around.y() - obst.y());
                     double moveRad = from.toFPP().getDistance(around.toFPP());
                     Vector z1 = direct.normalize().multiply(caster2.getRadius() + radius);
-                    Vector z2 = direct.normalize().multiply(moveRad);
+                    Vector z2 = direct.normalize().multiply(direct.length() - moveRad);
                     Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
                     // Senkrechten Vektor und seine Länge berechnen:
                     Vector ortho2 = new Vector(direct.y(), -direct.x());
