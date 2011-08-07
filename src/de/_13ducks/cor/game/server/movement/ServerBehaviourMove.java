@@ -109,6 +109,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
      * Zeigt nach dem Kollisionstest auf das letzte (kollidierende) Objekt.
      */
     private Moveable lastObstacle;
+    /**
+     * Wegen wem wir zuletzt warten mussten.
+     */
+    private Moveable waitFor;
 
     public ServerBehaviourMove(ServerCore.InnerServer newinner, GameObject caster1, Moveable caster2, Traceable caster3, MovementMap moveMap) {
         super(newinner, caster1, 1, 20, true);
@@ -176,6 +180,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Echtzeitkollision:
             newpos = checkAndMaxMove(oldPos, newpos);
             if (colliding) {
+                waitFor = lastObstacle;
                 // Immer noch Kollision
                 if (System.nanoTime() - waitStartTime < waitTime) {
                     // Das ist ok, einfach weiter warten
@@ -214,6 +219,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
                 if (wait) {
                     waitStartTime = System.nanoTime();
+                    waitFor = lastObstacle;
                     // Spezielle Stopfunktion: (hält den Client in einem Pseudozustand)
                     // Der Client muss das auch mitbekommen
                     rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 24, caster2.getNetID(), 0, Float.floatToIntBits((float) newpos.getfX()), Float.floatToIntBits((float) newpos.getfY())));
@@ -575,6 +581,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     boolean isWaiting() {
         return wait;
+    }
+    
+    /**
+     * Hiermit lässt siche herausfinden, wer momentan primär einem Weiterlaufen
+     * im Weg steht.
+     * @return Das derzeitige, primäre Hinderniss
+     */
+    Moveable getWaitFor() {
+        return waitFor;
     }
 
     /**
