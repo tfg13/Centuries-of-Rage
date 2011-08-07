@@ -454,50 +454,50 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 System.out.println("COL! with: " + t + " at " + t.getPrecisePosition() + " (dist: " + to.getDistance(t.getPrecisePosition()) + ") on route to " + target + " critical point is " + to);
                 // Kollision!
                 if (!arc) {
-                // Jetzt muss poly verkleinert werden.
-                // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
-                // Notwendiger Abstand zur gefundenen Kollision t
-                float distanceToObstacle = (float) (this.caster2.getRadius() + radius + MIN_DISTANCE / 2);
-                // Vector, der vom start zum Ziel der Bewegung zeigt.
-                Vector dirVec = new Vector(to.getfX() - from.getfX(), to.getfY() - from.getfY());
-                // 90 Grad dazu
-                Vector origin = new Vector(-dirVec.getY(), dirVec.getX());
-                // Strecke vom Hinderniss in 90-Grad-Richtung
-                Edge edge = new Edge(t.getPrecisePosition().toNode(), t.getPrecisePosition().add(origin.toFPP()).toNode());
-                // Strecke zwischen start und ziel
-                Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(dirVec.toFPP()).toNode());
-                // Schnittpunkt
-                SimplePosition p = edge.endlessIntersection(edge2);
-                if (p == null) {
-                    System.out.println("ERROR: " + caster2 + " " + edge + " " + edge2 + " " + t.getPrecisePosition() + " " + origin + " " + dirVec + " " + distanceToObstacle);
-                }
-                // Abstand vom Hinderniss zur Strecke edge2
-                double distance = t.getPrecisePosition().getDistance(p.toFPP());
-                // Abstand vom Punkt auf edge2 zu freigegebenem Punkt
-                double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
-                // Auf der Strecke weit genug zurück gehen:
-                FloatingPointPosition nextnewpos = p.toVector().add(dirVec.getInverted().normalize().multiply(b)).toFPP();
+                    // Jetzt muss poly verkleinert werden.
+                    // Dazu muss die Zielposition to auf der Strecke von from nach to so weit wie notwendig nach hinten verschoben werden.
+                    // Notwendiger Abstand zur gefundenen Kollision t
+                    float distanceToObstacle = (float) (this.caster2.getRadius() + radius + MIN_DISTANCE / 2);
+                    // Vector, der vom start zum Ziel der Bewegung zeigt.
+                    Vector dirVec = new Vector(to.getfX() - from.getfX(), to.getfY() - from.getfY());
+                    // 90 Grad dazu
+                    Vector origin = new Vector(-dirVec.getY(), dirVec.getX());
+                    // Strecke vom Hinderniss in 90-Grad-Richtung
+                    Edge edge = new Edge(t.getPrecisePosition().toNode(), t.getPrecisePosition().add(origin.toFPP()).toNode());
+                    // Strecke zwischen start und ziel
+                    Edge edge2 = new Edge(caster2.getPrecisePosition().toNode(), caster2.getPrecisePosition().add(dirVec.toFPP()).toNode());
+                    // Schnittpunkt
+                    SimplePosition p = edge.endlessIntersection(edge2);
+                    if (p == null) {
+                        System.out.println("ERROR: " + caster2 + " " + edge + " " + edge2 + " " + t.getPrecisePosition() + " " + origin + " " + dirVec + " " + distanceToObstacle);
+                    }
+                    // Abstand vom Hinderniss zur Strecke edge2
+                    double distance = t.getPrecisePosition().getDistance(p.toFPP());
+                    // Abstand vom Punkt auf edge2 zu freigegebenem Punkt
+                    double b = Math.sqrt((distanceToObstacle * distanceToObstacle) - (distance * distance));
+                    // Auf der Strecke weit genug zurück gehen:
+                    FloatingPointPosition nextnewpos = p.toVector().add(dirVec.getInverted().normalize().multiply(b)).toFPP();
 
-                // Zurückgegangenes Stück analysieren
-                if (new Vector(nextnewpos.getfX() - fromv.x(), nextnewpos.getfY() - fromv.y()).isOpposite(dirVec)) {
-                    // Ganz zurück setzen. Dann muss man nicht weiter suchen, die ganze Route ist hoffnungslos blockiert
-                    colliding = true;
-                    lastObstacle = t;
-                    return from;
-                }
+                    // Zurückgegangenes Stück analysieren
+                    if (new Vector(nextnewpos.getfX() - fromv.x(), nextnewpos.getfY() - fromv.y()).isOpposite(dirVec)) {
+                        // Ganz zurück setzen. Dann muss man nicht weiter suchen, die ganze Route ist hoffnungslos blockiert
+                        colliding = true;
+                        lastObstacle = t;
+                        return from;
+                    }
 
-                // Hier gibt es keine Kollision mehr.
-                // poly neu bauen:
-                to = nextnewpos;
-                tov = nextnewpos.toVector();
-                poly = new Polygon();
-                poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
-                poly.addPoint((float) fromv.add(ortho.getInverted()).x(), (float) fromv.add(ortho.getInverted()).y());
-                poly.addPoint((float) tov.add(ortho.getInverted()).x(), (float) tov.add(ortho.getInverted()).y());
-                poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
-                poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+                    // Hier gibt es keine Kollision mehr.
+                    // poly neu bauen:
+                    to = nextnewpos;
+                    tov = nextnewpos.toVector();
+                    poly = new Polygon();
+                    poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
+                    poly.addPoint((float) fromv.add(ortho.getInverted()).x(), (float) fromv.add(ortho.getInverted()).y());
+                    poly.addPoint((float) tov.add(ortho.getInverted()).x(), (float) tov.add(ortho.getInverted()).y());
+                    poly.addPoint((float) tov.add(ortho).x(), (float) tov.add(ortho).y());
+                    poly.addPoint((float) fromv.add(ortho).x(), (float) fromv.add(ortho).y());
 
-                
+
                 } else {
                     // to auf den Laufkreis nach hinten verschieben.
                     
@@ -555,7 +555,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             from = to;
             to = back;
         }
-        
+
         // Zuerst auf Nähe des gesamten Kreissegments testen
         double dist = t.getPrecisePosition().getDistance(around.toFPP());
         double moveRad = from.toFPP().getDistance(around.toFPP());
@@ -587,31 +587,31 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Dann auf jeden Fall
                 return true;
             }
-            
+
             // Sonst weitertesten: Der 6-Punkte-Test
             Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), (float) t.getRadius());
             Vector fromOrtho = new Vector(from.x() - around.x(), from.y() - around.y());
             fromOrtho = fromOrtho.normalize().multiply(colRadius);
             Vector toOrtho = new Vector(to.x() - around.x(), to.y() - around.y());
             toOrtho = toOrtho.normalize().multiply(colRadius);
-            
+
             SimplePosition t1 = from.toVector().add(fromOrtho);
             SimplePosition t2 = from.toVector();
             SimplePosition t3 = from.toVector().add(fromOrtho.getInverted());
             SimplePosition t4 = to.toVector().add(toOrtho);
             SimplePosition t5 = to.toVector();
             SimplePosition t6 = to.toVector().add(toOrtho.normalize());
-            
-            if (c.contains((float) t1.x(), (float) t1.y()) ||
-                    c.contains((float) t2.x(), (float) t2.y()) ||
-                    c.contains((float) t3.x(), (float) t3.y()) ||
-                    c.contains((float) t4.x(), (float) t4.y()) ||
-                    c.contains((float) t5.x(), (float) t5.y()) ||
-                    c.contains((float) t6.x(), (float) t6.y())) {
+
+            if (c.contains((float) t1.x(), (float) t1.y())
+                    || c.contains((float) t2.x(), (float) t2.y())
+                    || c.contains((float) t3.x(), (float) t3.y())
+                    || c.contains((float) t4.x(), (float) t4.y())
+                    || c.contains((float) t5.x(), (float) t5.y())
+                    || c.contains((float) t6.x(), (float) t6.y())) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }
