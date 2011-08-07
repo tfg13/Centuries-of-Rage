@@ -549,7 +549,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         }
                     }
 
-                    to = around.toVector().add(newPosVec).toFPP();
+                    to = newPosVec.toFPP();
                     tov = to.toVector();
                     
                 
