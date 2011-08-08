@@ -185,7 +185,6 @@ public class SubSectorPathfinder {
         } else {
             // Das Ziel ist schon auf dem Laufkreis.
             // Die Aussprungkante ist nicht nötig.
-            System.out.println("RREF");
             targetNode = minNode2;
         }
         
