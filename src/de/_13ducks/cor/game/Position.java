@@ -76,19 +76,6 @@ public class Position implements Comparable<Position>, Serializable, Cloneable {
         return new Position(this.X + pos.X, this.Y + pos.Y);
     }
 
-    public boolean equals(Position p2) {
-        if (p2 == null) {
-            return false;
-        }
-        if (X != p2.X) {
-            return false;
-        }
-        if (Y != p2.Y) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public boolean equals(Object p2) {
         if (p2.getClass().equals(this.getClass())) {
