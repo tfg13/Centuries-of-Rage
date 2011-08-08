@@ -513,7 +513,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
 
                 } else {
-                    // to auf den Laufkreis nach hinten verschieben.
+                    // to auf dem Laufkreis nach hinten verschieben.
                     Vector obst = t.getPrecisePosition().toVector();
                     // Als erstes die Schnittpunkte der beiden Kreise bestimmmen
                     // Zuerst Mittelpunkt der Linie durch beide Schnittpunkte berechnen:
@@ -531,15 +531,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     Vector s2 = posMid.add(ortho2.getInverted());
                     // Ausbrüten, ob s1 oder s2 der richtige ist:
                     Vector newPosVec = null;
-                    double fromTetha = Math.atan2(around.y() - from.y(), around.x() - from.x());
+                    double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
                     if (fromTetha < 0) {
                         fromTetha += 2 * Math.PI;
                     }
-                    double s1tetha = Math.atan2(around.y() - s1.y(), around.x() - s1.x());
+                    double s1tetha = Math.atan2(s1.y() - around.y(), s1.x() - around.x());
                     if (s1tetha < 0) {
                         s1tetha += 2 * Math.PI;
                     }
-                    double s2tetha = Math.atan2(around.y() - s2.y(), around.x() - s2.x());
+                    double s2tetha = Math.atan2(s2.y() - around.y(), s2.x() - around.x());
                     if (s2tetha < 0) {
                         s2tetha += 2 * Math.PI;
                     }
@@ -639,15 +639,15 @@ public class ServerBehaviourMove extends ServerBehaviour {
         if (dist >= minCol && dist <= maxCol) {
             // Mögliche Kollision!
             // Winkeltest
-            double fromTetha = Math.atan2(around.y() - from.y(), around.x() - from.x());
+            double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
             if (fromTetha < 0) {
                 fromTetha += 2 * Math.PI;
             }
-            double toTetha = Math.atan2(around.y() - to.y(), around.x() - to.x());
+            double toTetha = Math.atan2(to.y() - around.y(), to.x() - around.x());
             if (toTetha < 0) {
                 toTetha += 2 * Math.PI;
             }
-            double colTetha = Math.atan2(around.y() - t.getPrecisePosition().y(), around.x() - t.getPrecisePosition().x());
+            double colTetha = Math.atan2(t.getPrecisePosition().y() - around.y(), t.getPrecisePosition().x() - around.x());
             if (colTetha < 0) {
                 colTetha += 2 * Math.PI;
             }
