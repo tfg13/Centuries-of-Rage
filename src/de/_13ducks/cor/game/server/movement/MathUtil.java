@@ -5,6 +5,8 @@
 package de._13ducks.cor.game.server.movement;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.SimplePosition;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -122,11 +124,41 @@ public class MathUtil {
         return new FloatingPointPosition(intersect.x, intersect.y);
 
     }
+
+    /**
+     * Findet die Schnittpunkte zweier Kreise.
+     * Verhalten ist nur definiert, wenn auch 2 Schnittpunkte existieren.
+     * @param c1 Kreis 1
+     * @param c2 Kreis 2
+     * @return ein Array mit genau zwei Positionen
+     */
+    public static SimplePosition[] circleCircleIntersection(Circle c1, Circle c2) {
+        /*
+         * Verwendet ein kompliziertes Verfahren, bestehend aus:
+         * 
+         * - Formel von Heron
+         * - Pythagoras
+         * - Scharfem Nachdenken
+         * 
+         * 
+         */
+
+        double xa = c1.getCenterX();
+        double ya = c1.getCenterY();
+        double ra = c1.getRadius();
+        double xb = c2.getCenterX();
+        double yb = c2.getCenterY();
+        double rb = c2.getRadius();
+
+        double dSquare = (xb - xa) * (xb - xa) + (yb - ya) * (yb - ya);
+        double k = Math.sqrt(((ra + rb) * (ra + rb) - dSquare) * (dSquare - (ra - rb) * (ra - rb))) / 4;
+
+        double x1 = (xa + xb) / 2 + ((xb - xa) * (ra * ra - rb * rb)) / (2 * dSquare) + 2 * (yb - ya) * k / dSquare;
+        double y1 = (ya + yb) / 2 + ((yb - ya) * (ra * ra - rb * rb)) / (2 * dSquare) + 2 * (xb - xa) * k / dSquare;
+
+        double x2 = (xa + xb) / 2 + ((xb - xa) * (ra * ra - rb * rb)) / (2 * dSquare) - 2 * (yb - ya) * k / dSquare;
+        double y2 = (ya + yb) / 2 + ((yb - ya) * (ra * ra - rb * rb)) / (2 * dSquare) - 2 * (xb - xa) * k / dSquare;
+
+        return new SimplePosition[]{new Vector(x1, y2), new Vector(x2, y1)}; // DAS VERTAUSCHEN IST HIER KEIN FEHLER!!!
+    }
 }
-
-
-
-
-
-
-
