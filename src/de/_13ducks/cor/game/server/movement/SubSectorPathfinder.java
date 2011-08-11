@@ -51,6 +51,16 @@ public class SubSectorPathfinder {
      * @return 
      */
     static List<SubSectorEdge> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+        // Vorüberprüfung: Ist das Ziel überhaupt noch frei?
+        List<Moveable> moversAroundTarget = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(target.toFPP(), mover.getRadius() + 5);
+        moversAroundTarget.remove(mover); // Falls drin
+        for (Moveable m : moversAroundTarget) {
+            if (m.getPrecisePosition().getDistance(target.toFPP()) < m.getRadius() + mover.getRadius() + ServerBehaviourMove.MIN_DISTANCE) {
+                System.out.println("No div, target blocked!");
+                return null;
+            }
+        }
+        
         /**
          * Wegsuche in 2 Schritten:
          * 1. Aufbauen eines geeigneten Graphen, der das gesamte Problem enthält.

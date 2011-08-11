@@ -25,7 +25,6 @@
  */
 package de._13ducks.cor.game.server.movement;
 
-import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
 import java.util.LinkedList;
@@ -42,6 +41,7 @@ public class GroupMember {
     private LinkedList<SectorChangingEdge> sectorBorders;
     private Node lastStart;
     private FreePolygon lastPoly;
+    private SimplePosition lastTarget;
     
     GroupMember(Moveable mover) {
         this.mover = mover;
@@ -130,7 +130,8 @@ public class GroupMember {
      * @return 
      */
     SimplePosition popWaypoint() {
-        return path.pollFirst();
+        lastTarget = path.pollFirst();
+        return lastTarget;
     }
 
     /**
@@ -208,6 +209,14 @@ public class GroupMember {
         }
         // Loslaufen
         reachedTarget(mover);
+    }
+
+    /**
+     * Liefert das zuletzt eingestellte Ziel, das nicht Teil einer Umleitung war.
+     * @return das zuletzt eingestellte Ziel, das nicht Teil einer Umleitung war.
+     */
+    SimplePosition lastRealWaypoint() {
+        return lastTarget;
     }
 
     private class DiversionWaypoint {

@@ -174,7 +174,7 @@ public class GroupManager {
      * @param mover - der LowLevelManager, der die Kollision festgestellt hat
      * @param obstacle - Das Obnjekt, mit dem der LowlevelManager kollidiert
      */
-    public boolean collisionDetected(Moveable mover, Moveable obstacle, SimplePosition target) {
+    public boolean collisionDetected(Moveable mover, Moveable obstacle) {
         ServerBehaviourMove obstMove = obstacle.getLowLevelManager();
         if (obstMove.isMoving() && !obstMove.isWaiting()) {
             // Wenn die andere Einheit läuft auf jeden Fall selber warten.
@@ -183,7 +183,7 @@ public class GroupManager {
             // Andere Einheit wartet selbst. Dann sollten wir auch warten, es geht gleich weiter.
             return true;
         } else if (!obstMove.isMoving()) {
-            return !tryDiversion(mover, obstacle, target);
+            return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
         }
 
         return true;
@@ -259,12 +259,12 @@ public class GroupManager {
      * @param obstacle Das derzeitige Primär-Hinderniss
      * @return true, wenn der Mover weiter warten soll.
      */
-    boolean stayWaiting(Moveable mover, Moveable obstacle, SimplePosition target) {
+    boolean stayWaiting(Moveable mover, Moveable obstacle) {
         // Simples Erkennen: Wartet das Hinderniss auch auf mich?
         if (obstacle.getLowLevelManager().isWaiting()) {
             if (obstacle.getLowLevelManager().getWaitFor().equals(mover)) {
                 // Umleitung versuchen
-                return !tryDiversion(mover, obstacle, target);
+                return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
             }
             
             // Rekursiv die "Hindernisskette" entlanggehen und ursprüngliches Problem finden
@@ -283,7 +283,7 @@ public class GroupManager {
             // Next ist jetzt das Hinderniss, das den ganzen Stau verursacht.
             // Wir warten nur weiter, wenn das läuft. (und NICHT wartet)
             if (!next.getLowLevelManager().isMoving() || next.getLowLevelManager().isWaiting()) {
-                return !tryDiversion(mover, obstacle, target);
+                return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
             }
         }
         

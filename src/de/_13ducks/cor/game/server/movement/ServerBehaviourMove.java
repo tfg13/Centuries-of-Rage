@@ -181,7 +181,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
             newpos = checkAndMaxMove(oldPos, newpos);
             if (colliding) {
                 waitFor = lastObstacle;
-                if (caster2.getMidLevelManager().stayWaiting(caster2, waitFor, target)) {
+                if (caster2.getMidLevelManager().stayWaiting(caster2, waitFor)) {
 
                     // Immer noch Kollision
                     if (System.nanoTime() - waitStartTime < waitTime) {
@@ -223,7 +223,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
             if (!stopUnit && colliding) {
                 // Kollision. Gruppenmanager muss entscheiden, ob wir warten oder ne Alternativroute suchen.
-                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle, target);
+                wait = this.caster2.getMidLevelManager().collisionDetected(this.caster2, lastObstacle);
 
                 if (wait) {
                     waitStartTime = System.nanoTime();
