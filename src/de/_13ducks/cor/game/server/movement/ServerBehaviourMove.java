@@ -516,21 +516,12 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     // to auf dem Laufkreis nach hinten verschieben.
                     Vector obst = t.getPrecisePosition().toVector();
                     // Als erstes die Schnittpunkte der beiden Kreise bestimmmen
-                    // Zuerst Mittelpunkt der Linie durch beide Schnittpunkte berechnen:
-                    Vector direct = new Vector(around.x() - obst.x(), around.y() - obst.y());
                     double moveRad = from.toFPP().getDistance(around.toFPP());
-                    Vector z1 = direct.normalize().multiply(caster2.getRadius() + radius);
-                    Vector z2 = direct.normalize().multiply(direct.length() - moveRad);
-                    Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
-                    // Senkrechten Vektor und seine Länge berechnen:
-                    Vector ortho2 = new Vector(direct.y(), -direct.x());
-                    ortho2 = ortho2.normalize().multiply(Math.sqrt(((caster2.getRadius() + radius) * (caster2.getRadius() + radius)) - (mid.length() * mid.length())));
-                    // Schnittpunkte ausrechnen:
-                    Vector posMid = new Vector(obst.x() + mid.x(), obst.y() + mid.y()); // Positionsvektor des Mittelpunkts
-                    Vector s1 = posMid.add(ortho2);
-                    Vector s2 = posMid.add(ortho2.getInverted());
+                    SimplePosition[] intersections = MathUtil.circleCircleIntersection(new Circle((float) obst.getX(), (float) obst.getY(), (float) (radius + caster2.getRadius())), new Circle((float) around.x(), (float) around.y(), (float) moveRad));
+                    SimplePosition s1 = intersections[0];
+                    SimplePosition s2 = intersections[0];
                     // Ausbrüten, ob s1 oder s2 der richtige ist:
-                    Vector newPosVec = null;
+                    SimplePosition newPosVec = null;
                     double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
                     if (fromTetha < 0) {
                         fromTetha += 2 * Math.PI;
