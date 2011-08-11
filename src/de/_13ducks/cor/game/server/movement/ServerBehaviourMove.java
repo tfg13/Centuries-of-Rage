@@ -554,6 +554,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
                         }
                     }
 
+                    if (!newPosVec.toVector().isValid()) {
+                        throw new RuntimeException();
+                    }
+
                     to = newPosVec.toFPP();
                     tov = to.toVector();
 
