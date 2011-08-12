@@ -215,7 +215,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
             MoveTask task = new MoveTask(1, pos, moveSpeed);
             queue.add(task);
         } else if (packet[0] == 25) {
-            // Achtung, das ist ein doppletes Datenpaket.
+            // Achtung, das ist ein doppeltes Datenpaket.
             float moveSpeed = Float.intBitsToFloat(rgi.readInt(packet, 2));
             FloatingPointPosition tpos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 3)), Float.intBitsToFloat(rgi.readInt(packet, 4)));
             FloatingPointPosition center = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 5)), Float.intBitsToFloat(rgi.readInt(packet, 6)));
@@ -225,7 +225,8 @@ public class ClientBehaviourMove extends ClientBehaviour {
                 tdist *= -1;
                 dir = false;
             }
-            MoveTask task = new MoveTask(2, tpos, speed, center, tethaDist, dir);
+            MoveTask task = new MoveTask(2, tpos, moveSpeed, center, tdist, dir);
+            queue.add(task);
         }
         // Schnell verarbeiten
         activate();
@@ -309,7 +310,7 @@ public class ClientBehaviourMove extends ClientBehaviour {
         }
 
         void perform() {
-            System.out.println("QUEUE-TASK: " + caster2 + " " + mode + " " + pos + " " + speed);
+            System.out.println("QUEUE-TASK: " + caster2 + " " + mode + " " + pos + " " + speed + " " + arc + " " + arcDirection + " " + around + " " + tethaDist);
             if (mode == 0) {
                 // STOP
                 stopAt(pos);

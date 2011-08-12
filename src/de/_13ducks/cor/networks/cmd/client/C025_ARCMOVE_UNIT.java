@@ -46,7 +46,7 @@ public class C025_ARCMOVE_UNIT extends ClientCommand {
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
         if (oldPacket == null) {
             oldUnit = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
-            oldPacket = data;
+            oldPacket = data.clone();
         } else {
             // Zusammenbacken:
             byte[] meta = new byte[data.length * 2 - 1];
