@@ -223,7 +223,18 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         if (checkCollision) {
             // Zu laufenden Weg auf Kollision prüfen
-            newpos = checkAndMaxMove(oldPos, newpos);
+            SimplePosition to = checkAndMaxMove(oldPos, newpos);
+
+            // Last check:
+            List<Moveable> mor = moveMap.moversAroundPoint(to.toFPP(), 10);
+            mor.remove(caster2);
+            for (Moveable m : mor) {
+                if (m.getPrecisePosition().getDistance(to.toFPP()) < caster2.getRadius() + m.getRadius()) {
+                    checkAndMaxMove(oldPos, newpos);
+                }
+            }
+
+            newpos = to.toFPP();
 
             if (!stopUnit && colliding) {
                 // Kollision. Gruppenmanager muss entscheiden, ob wir warten oder ne Alternativroute suchen.
