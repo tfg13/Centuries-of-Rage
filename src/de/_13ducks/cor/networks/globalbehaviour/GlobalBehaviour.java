@@ -23,68 +23,49 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.networks.server.behaviour;
+package de._13ducks.cor.networks.globalbehaviour;
 
-import de._13ducks.cor.game.Pauseable;
+import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.GameObject;
 
 /**
- * Ein Behaviour für Units und Gebäude
- *
- * Ids:
- *
- * 1 - Move - Einheitenbewegung
- * 2 - Attack - Grundsätzliche Angriffe
- * 3 - Follow - Bewegliches Ziel verfolgen
- * 4
- * 5 - Construct - Gebäude bauen
- * 6 - Recruit - Einheiten ausbilden
- * 7 - Heal
- *
- * @author tfg
+ * Ein Behaviour, das nicht zu einer Einheit oder einem Gebäude gehört, sondern global für den Spieler ist
+ * 
+ * @author 2nd
  */
-public abstract class ServerBehaviour implements Pauseable {
+public abstract class GlobalBehaviour {
 
-    private final int id;       // Nummer (Art) des Behaviours. Viel schneller als die alten Strings.
+    //private final int id;       // Nummer (Art) des Behaviours. Viel schneller als die alten Strings.
     protected long nextUse; // Wann das Behaviour das nächste mal Verwendet werden soll
     protected int delay;    // Der Abstand zwischen den Aufrufen
     public boolean active; // Nur aktive (true) behaviour werden ausgeführt
     public ServerCore.InnerServer rgi; // Referenz auf alles, damit können Bahaviours auch alles machen
-    public GameObject caster;
+    public NetPlayer player; // Der Spieler, dem das GlobalBehaviour gehört
 
     /**
      * Konstruktor, muss implementiert werden
      * @param newinner
      */
-    public ServerBehaviour(ServerCore.InnerServer newinner, GameObject caster, int ID, int callsPerSecond, boolean createAsActive) {
-        rgi = newinner;
-        id = ID;
+    public GlobalBehaviour(NetPlayer player, int callsPerSecond, boolean createAsActive) {
         delay = 1000 / callsPerSecond;
         nextUse = System.currentTimeMillis() + delay;
         active = createAsActive;
-        this.caster = caster;
+        this.player = player;
     }
 
-    /**
-     * Konstruktor, muss implementiert werden
-     * @param newinner
-     */
-    public ServerBehaviour(ServerCore.InnerServer newinner, GameObject caster, int ID, double callsPerSecond, boolean createAsActive) {
-        rgi = newinner;
-        id = ID;
+    public GlobalBehaviour(NetPlayer player, double callsPerSecond, boolean createAsActive) {
         delay = (int) (1000 / callsPerSecond);
         nextUse = System.currentTimeMillis() + delay;
         active = createAsActive;
-        this.caster = caster;
+        this.player = player;
     }
 
     /**
      * @return Int: Die id des Behaviours.
      */
-    public int getId() {
+    /*public int getId() {
         return id;
-    }
+    }*/
 
     /**
      * Startet die Ausführung des Behaviours.

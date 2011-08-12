@@ -23,7 +23,7 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package de._13ducks.cor.game.networks.behaviour.impl;
+package de._13ducks.cor.networks.server.behaviour;
 
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;

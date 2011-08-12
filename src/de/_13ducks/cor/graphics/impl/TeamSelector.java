@@ -41,7 +41,7 @@ import org.newdawn.slick.geom.Polygon;
  *
  * @author tfg
  */
-public class TeamSelector extends Overlay {
+public class TeamSelector implements Overlay {
 
     /**
      * Konfig-Parameter.

@@ -23,38 +23,38 @@
  *  along with Centuries of Rage.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package de._13ducks.cor.networks.cmd.client;
 
-import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
-import de._13ducks.cor.networks.client.behaviour.ClientBehaviourConstruct;
+import de._13ducks.cor.game.Building;
+import de._13ducks.cor.game.NetPlayer;
+import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.game.client.ClientCore.InnerClient;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceClient;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceServer;
 import de._13ducks.cor.networks.client.ClientNetController.ClientHandler;
-import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourProduce;
 import de._13ducks.cor.networks.cmd.ClientCommand;
 
 /**
- * Stoppt das "Arbeiten" an einer Baustelle
+ * Ressourcensammelrate des Spielers ändern
  */
-public class C016_CONSTRUCT_STOP extends ClientCommand {
+public class C058_CHANGE_RESOURCE extends ClientCommand {
 
     @Override
     public void process(byte[] data, ClientHandler handler, InnerClient rgi) {
-        // Gebäudebau - Signal weiterleiten
-        // Unit suchen - int1
-        try {
-            Unit unit = rgi.mapModule.getUnitviaID(rgi.readInt(data, 1));
-            // Behaviour ID 5
-            ClientBehaviour be = unit.getClientBehaviour(5);
-            if (be == null) {
-                // Neues Anlegen
-                be = new ClientBehaviourConstruct(rgi, unit, 50, false);
-                unit.addClientBehaviour(be);
-            }
-            be.gotSignal(data);
-        } catch (Exception ex) {
-            System.out.println("FixMe: Unit ID mismatch (cmd15,16)");
+
+        int playerid = rgi.readInt(data, 3); // Der Spieler, den es betrifft
+
+        // Ist der Befehl überhaupt für diesen Client?
+        if (playerid == rgi.game.getOwnPlayer().playerId) {
+            
+            float prodrate = Float.intBitsToFloat(rgi.readInt(data, 1));
+            float res1 = Float.intBitsToFloat(rgi.readInt(data, 2));
+            
+            GlobalBehaviourProduceClient prodClient = (GlobalBehaviourProduceClient) rgi.game.getOwnPlayer().getProduceBehaviour();
+            prodClient.setProdrate(prodrate);
+            
+            rgi.game.getOwnPlayer().res1 = res1;
         }
     }
-
 }

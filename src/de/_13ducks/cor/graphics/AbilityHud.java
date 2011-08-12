@@ -33,32 +33,20 @@ import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.graphics.input.OverlayMouseListener;
+import java.util.Iterator;
 
 /**
  * Die Fähigkeiten-Anzeige des Huds
  */
-public class AbilityHud extends Overlay {
+public class AbilityHud implements Overlay, SlideInController {
 
-    /**
-     * Die Fähigkeitenanzeige ist derzeit oben rechts.
-     */
-    public static final int EDGE_TOP_RIGHT = 0;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit oben links.
-     */
-    public static final int EDGE_TOP_LEFT = 1;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit unten rechts.
-     */
-    public static final int EDGE_BOTTOM_RIGHT = 2;
-    /**
-     * Die Fähigkeitenanzeige ist derzeit unten links.
-     */
-    public static final int EDGE_BOTTOM_LEFT = 3;
+    private SlideInOverlay slider;
     /**
      * Die größe der (quadratischen) Fähigkeiten-Icons
      */
-    public static final int ICON_SIZE_XY = 40;
+    public static final int ICON_SIZE_XY = 60;
+    private static final String tilemap = "img/hud/hud_tilemap_bronze.png";
+    private static final Color green = new Color(0, 160, 0);
     /**
      * Die IGE'S deren Fähigkeiten derzeit angezeigt werden.
      */
@@ -70,6 +58,10 @@ public class AbilityHud extends Overlay {
      */
     private List<Ability> abList;
     /**
+     * Die Liste mit Elementen, die gerade auf den Bildschrim gezeichnet sind.
+     */
+    private List<Ability> drawList;
+    /**
      * Änderungs-Indikator für iges-abList sync.
      */
     private boolean igesUpdated;
@@ -78,9 +70,17 @@ public class AbilityHud extends Overlay {
      */
     private int[] coords;
     /**
-     * In welcher Ecke es derzeit angezeigt wird.
+     * Abstand vom linken Bildrand
      */
-    private int edge = EDGE_BOTTOM_LEFT;
+    private int leftSpace = 110;
+    /**
+     * Über was die Maus schwebt
+     */
+    private int hoverIndex = -1;
+    /**
+     * Wenn man die Maus über einer Schaltfläche gefrückt hält
+     */
+    private int pressedIndex = -1;
 
     @Override
     public synchronized void renderOverlay(Graphics g, int fullResX, int fullResY) {
@@ -102,49 +102,60 @@ public class AbilityHud extends Overlay {
                     }
                 }
             }
-            if (abList != null) {
-                int visCounter = 0;
-                for (int i = 0; i < abList.size(); i++) {
-                    Ability ab = abList.get(i);
-                    if (ab.isVisible()) { // Ist global, muss nicht für jeden erfasst werden
-                        String tex = ab.symbols[0];
-                        if (tex == null) {
-                            tex = ab.symbols[1];
+            drawList = computeDraw(abList);
+            if (!drawList.isEmpty()) {
+                // Balken links
+                Renderer.drawImage(tilemap, leftSpace - 15, fullResY - 60, leftSpace, fullResY, 417, 0, 432, 60);
+                //Renderer.draw
+                //Renderer.draw
+                int i = 0;
+                for (; i < drawList.size(); i++) {
+                    Ability ab = drawList.get(i);
+                    String tex = ab.symbols[0];
+                    if (tex == null) {
+                        tex = ab.symbols[1];
+                    }
+                    if (tex != null) {
+                        boolean available = false;
+                        // Fähigkeit ist anklickbar, wenns nur bei einem einzigen Verfügbar ist.
+                        for (InteractableGameElement elem : iges) {
+                            List<Ability> avabilitys = elem.getAbilitys();
+                            if (avabilitys.get(avabilitys.indexOf(ab)).isAvailable()) {
+                                available = true;
+                                break;
+                            }
                         }
-                        if (tex != null) {
-                            boolean available = false;
-                            // Fähigkeit ist anklickbar, wenns nur bei einem einzigen Verfügbar ist.
-                            for (InteractableGameElement elem : iges) {
-                                List<Ability> avabilitys = elem.getAbilitys();
-                                if (avabilitys.get(avabilitys.indexOf(ab)).isAvailable()) {
-                                    available = true;
-                                    break;
-                                }
-                            }
-                            switch (edge) {
-                                case EDGE_TOP_LEFT:
-                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_TOP_RIGHT:
-                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), 0, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_BOTTOM_LEFT:
-                                    Renderer.drawImage(tex, visCounter++ * ICON_SIZE_XY, fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                                case EDGE_BOTTOM_RIGHT:
-                                    Renderer.drawImage(tex, fullResX - ((visCounter++ + 1) * ICON_SIZE_XY), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
-                                    break;
-                            }
+                        if (i != 0) {
+                            // Vor sich selbst, also beim ersten nicht
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) - 15, fullResY - 77, leftSpace + i * (ICON_SIZE_XY + 14), fullResY, 497, 0, 512, 77);
+                        }
+                        Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 0, 337, 60);
+                        // Kachelbarer Oben eventuell mit Endstücken ersetzen
+                        if (i == 0) {
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 15, 417, 30);
+                        } else if (i == drawList.size() - 1) {
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 30, 417, 45);
+                        } else {
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY - 14, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - ICON_SIZE_XY + 1, 357, 0, 417, 15);
+                        }
+                        if (hoverIndex == i) {
+                            Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY, 277, 134, 337, 194, ab.isAvailable() ? green : Color.darkGray);
+                        }
+                        if (pressedIndex != i) {
+                            Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14), fullResY - ICON_SIZE_XY, ICON_SIZE_XY, ICON_SIZE_XY, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
+                        } else {
+                            Renderer.drawImage(tex, leftSpace + i * (ICON_SIZE_XY + 14) + 2, fullResY - ICON_SIZE_XY + 2, ICON_SIZE_XY - 4, ICON_SIZE_XY - 4, available ? Color.white : new Color(1f, 1f, 1f, 0.3f));
                         }
                     }
                 }
-                updateCoords(fullResX, fullResY, abList);
-            } else {
-                coords[0] = 0;
-                coords[1] = 0;
-                coords[2] = 0;
-                coords[3] = 0;
+                i--;
+                // Balken rechts
+                Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY, fullResY - 60, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 15, fullResY, 432, 0, 447, 60);
+                // Die beiden Schrägen
+                Renderer.drawImage(tilemap, leftSpace - 23, fullResY - 83, leftSpace + 27, fullResY - 32, 447, 50, 497, 100);
+                Renderer.drawImage(tilemap, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY - 26, fullResY - 83, leftSpace + i * (ICON_SIZE_XY + 14) + ICON_SIZE_XY + 24, fullResY - 32, 447, 0, 497, 50);
             }
+            updateCoords(fullResX, fullResY, drawList);
         }
     }
 
@@ -153,37 +164,31 @@ public class AbilityHud extends Overlay {
      * Nicht wirklich schön.
      */
     private synchronized void updateCoords(int resX, int resY, List<Ability> abList) {
-        switch (edge) {
-            case EDGE_TOP_LEFT:
-                coords[0] = 0;
-                coords[1] = 0;
-                coords[2] = abList.size() * ICON_SIZE_XY;
-                coords[3] = ICON_SIZE_XY;
-                break;
-            case EDGE_TOP_RIGHT:
-                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
-                coords[1] = 0;
-                coords[2] = resX;
-                coords[3] = ICON_SIZE_XY;
-                break;
-            case EDGE_BOTTOM_LEFT:
-                coords[0] = 0;
-                coords[1] = resY - ICON_SIZE_XY;
-                coords[2] = abList.size() * ICON_SIZE_XY;
-                coords[3] = resY;
-                break;
-            case EDGE_BOTTOM_RIGHT:
-                coords[0] = resX - (abList.size() * ICON_SIZE_XY);
-                coords[1] = resY - ICON_SIZE_XY;
-                coords[2] = resX;
-                coords[3] = resY;
-                break;
+        if (!abList.isEmpty()) {
+            coords[0] = leftSpace;
+            coords[1] = resY - ICON_SIZE_XY;
+            coords[2] = leftSpace + abList.size() * (ICON_SIZE_XY + 14) - 14;
+            coords[3] = resY;
+        } else {
+            coords[0] = 0;
+            coords[1] = 0;
+            coords[2] = 0;
+            coords[3] = 0;
         }
     }
 
     public synchronized void setActiveObjects(List<InteractableGameElement> elems) {
-        this.iges = elems;
-        igesUpdated = true;
+        if (elems == null || elems.isEmpty()) {
+            if (slider.isOut()) {
+                slider.slideIn();
+            }
+        } else {
+            this.iges = new ArrayList<InteractableGameElement>(elems);
+            igesUpdated = true;
+            if (!slider.isOut()) {
+                slider.slideOut();
+            }
+        }
     }
 
     private AbilityHud(ClientCore.InnerClient rgi) {
@@ -212,10 +217,13 @@ public class AbilityHud extends Overlay {
 
             @Override
             public void mouseMoved(int x, int y) {
+                hoverIndex = findIndex(x);
             }
 
             @Override
             public void mouseDragged(int x, int y) {
+                pressedIndex = findIndex(x);
+                hoverIndex = findIndex(x);
             }
 
             @Override
@@ -224,37 +232,66 @@ public class AbilityHud extends Overlay {
 
             @Override
             public void mousePressed(int i, int i1, int i2) {
+                pressedIndex = findIndex(i1);
             }
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                // Ability finden
-                int index = i1 / ICON_SIZE_XY;
-                int counter = 0;
-                for (int o = 0; o < abList.size(); o++) {
-                    Ability ab = abList.get(o);
-                    if (ab.isVisible()) {
-                        if (counter++ == index) {
-                            for (InteractableGameElement ige : iges) {
-                                // Die zu dem Behaviour gehörende
-                                ab = ige.getAbilitys().get(ige.getAbilitys().indexOf(ab));
-                                // Diese hier!
-                                if (i == 0) {
-                                    ab.perform(ige.getAbilityCaster());
-                                } else {
-                                    ab.antiperform(ige.getAbilityCaster());
-                                }
-                            }
+                pressedIndex = -1;
+                int index = findIndex(i1);
+                if (index != -1) {
+                    Ability ab = drawList.get(index);
+                    for (InteractableGameElement ige : iges) {
+                        // Die zu dem Behaviour gehörende
+                        ab = ige.getAbilitys().get(ige.getAbilitys().indexOf(ab));
+                        // Diese hier!
+                        if (i == 0) {
+                            ab.perform(ige.getAbilityCaster());
+                        } else {
+                            ab.antiperform(ige.getAbilityCaster());
                         }
-
                     }
                 }
+            }
 
+            @Override
+            public void mouseRemoved() {
+                hoverIndex = -1;
+                pressedIndex = -1;
             }
         });
     }
 
+    private int findIndex(int x) {
+        // Ability finden
+        double index = 1.0 * x / (ICON_SIZE_XY + 15);
+        int intIndex = (int) index;
+        index -= intIndex;
+        if (index <= .8) {
+            return intIndex;
+        } else {
+            return -1;
+        }
+    }
+
     public static AbilityHud createAbilityHud(ClientCore.InnerClient rgi) {
         return new AbilityHud(rgi);
+    }
+
+    private ArrayList<Ability> computeDraw(List<Ability> abList) {
+        ArrayList<Ability> retList = new ArrayList<Ability>(abList);
+        Iterator<Ability> iter = retList.iterator();
+        while (iter.hasNext()) {
+            Ability ab = iter.next();
+            if (!ab.isVisible()) {
+                iter.remove();
+            }
+        }
+        return retList;
+    }
+
+    @Override
+    public void addSlideIn(SlideInOverlay slider) {
+        this.slider = slider;
     }
 }

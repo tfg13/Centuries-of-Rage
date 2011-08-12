@@ -49,17 +49,9 @@ public class DescParamsBuilding extends DescParamsGO {
      */
     private int z2 = 2;
     /**
-     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     */
-    private int harvests = 0;
-    /**
      * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
      */
     private int maxIntra = 0;
-    /**
-     * Gibt die  Ernterate pro interner Einheit an
-     */
-    private double harvRate = 0.0;
     /**
      * Gibt an, welche Einheiten akzeptiert werden.
      */
@@ -104,22 +96,6 @@ public class DescParamsBuilding extends DescParamsGO {
     }
 
     /**
-     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @return the harvests
-     */
-    public int getHarvests() {
-        return harvests;
-    }
-
-    /**
-     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     * @param harvests the harvests to set
-     */
-    public void setHarvests(int harvests) {
-        this.harvests = harvests;
-    }
-
-    /**
      * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
      * @return the maxIntra
      */
@@ -133,22 +109,6 @@ public class DescParamsBuilding extends DescParamsGO {
      */
     public void setMaxIntra(int maxIntra) {
         this.maxIntra = maxIntra;
-    }
-
-    /**
-     * Gibt die  Ernterate pro interner Einheit an
-     * @return the harvRate
-     */
-    public double getHarvRate() {
-        return harvRate;
-    }
-
-    /**
-     * Gibt die  Ernterate pro interner Einheit an
-     * @param harvRate the harvRate to set
-     */
-    public void setHarvRate(double harvRate) {
-        this.harvRate = harvRate;
     }
 
     /**

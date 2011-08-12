@@ -44,7 +44,9 @@ import de._13ducks.cor.game.BehaviourProcessor;
 import de._13ducks.cor.game.NetPlayer;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourProduce;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceClient;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourProduce;
 
 /**
  *
@@ -60,6 +62,7 @@ public class ClientGameController implements Runnable {
     private List<BehaviourProcessor> allList;
     public static ServerCore.InnerServer udbServer;
     public static boolean udbEnabled = false;
+    private List<GlobalBehaviour> globalList;
 
     public ClientGameController(ClientCore.InnerClient newinner) {
         rgi = newinner;
@@ -70,6 +73,7 @@ public class ClientGameController implements Runnable {
         playerList.add(new NetPlayer(rgi));
         playerList.get(0).playerId = 0;
         playerList.get(0).color = Color.white;
+        globalList = new ArrayList<GlobalBehaviour>();
     }
 
     public void startMainloop() {
@@ -85,7 +89,7 @@ public class ClientGameController implements Runnable {
      */
     public void prepareStart(int numberOfPlayers) {
         rgi.rogGraphics.setLoadStatus(9);
-        
+
         if ("true".equals(rgi.configs.get("ultimateDebug"))) {
             UltimateDebug udb = UltimateDebug.getInstance();
             if (udb.connect()) {
@@ -178,13 +182,13 @@ public class ClientGameController implements Runnable {
         building.addAbility(intram);
         }*/
 
-        for (Building building : this.rgi.mapModule.buildingList) {
-            ClientBehaviourProduce prod = new ClientBehaviourProduce(rgi, building);
-            building.addClientBehaviour(prod);
-        }
-
         // Dem Spieler Startressourcen geben
-        myself.res1 = 300;
+        //myself.res1 = 0;
+
+        // Jedem echten Spieler (nicht Spieler 0) ein GlobalBehaviourHarvest geben
+        GlobalBehaviourProduceClient behaviorProduceC = new GlobalBehaviourProduceClient(rgi, 10);
+        globalList.add(behaviorProduceC);
+        rgi.game.myself.setProduceBehaviour((GlobalBehaviour) behaviorProduceC, true);
 
         rgi.clientstats.createStatArrays(numberOfPlayers);
 
@@ -269,6 +273,12 @@ public class ClientGameController implements Runnable {
             for (int i = 0; i < allList.size(); i++) {
                 BehaviourProcessor proc = allList.get(i);
                 proc.process();
+            }
+            
+            // Global Behaviours
+            for (int i = 0; i < globalList.size(); i++) {
+                GlobalBehaviour behav = globalList.get(i);
+                behav.tryexecute();
             }
 
             try {

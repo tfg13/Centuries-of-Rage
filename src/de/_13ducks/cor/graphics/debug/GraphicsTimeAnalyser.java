@@ -12,7 +12,7 @@ import org.newdawn.slick.Graphics;
  *
  * @author tfg
  */
-public class GraphicsTimeAnalyser extends Overlay {
+public class GraphicsTimeAnalyser implements Overlay {
     
     private static final int entries = 300;
     private static final int targetLinePixel = 100;

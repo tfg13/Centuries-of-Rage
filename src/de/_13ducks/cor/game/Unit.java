@@ -44,8 +44,8 @@ import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.fastfindgrid.Cell;
 import de._13ducks.cor.map.fastfindgrid.Traceable;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourMove;
-import de._13ducks.cor.networks.client.behaviour.impl.UDBClientBehaviourMove;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
+import de._13ducks.cor.networks.client.behaviour.UDBClientBehaviourMove;
 
 /**
  * Superklasse für Einheiten

@@ -32,7 +32,6 @@ import java.util.List;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviour;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.ability.AbilityBuild;
-import de._13ducks.cor.game.ability.AbilityIntraManager;
 import de._13ducks.cor.game.ability.AbilityRecruit;
 import de._13ducks.cor.game.ability.AbilityUpgrade;
 import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
@@ -44,7 +43,7 @@ import de._13ducks.cor.graphics.GOGraphicsData;
 import de._13ducks.cor.graphics.Sprite;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourUpgrade;
 
 /**
  * Superklasse für "Spielobjekte". Das werden vor allem Einheiten und Gebäude sein.
@@ -229,6 +228,14 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+    /**
+     * Zeigt an, welche Ressource dieses GameObject produziert, solange es Arbeiter beherbergt.
+     */
+    private int harvests = 0;
+    /**
+     * Gibt die  Ernterate pro interner Einheit an
+     */
+    private double harvRate = 0.0;
 
     /**
      * Erzeugt ein neues GameObject mit der angegebenen ID an der Stelle mainPos
@@ -290,6 +297,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
         this.playerId = copyFrom.playerId;
         this.range = copyFrom.range;
         this.visrange = copyFrom.visrange;
+        this.harvRate = copyFrom.harvRate;
+        this.harvests = copyFrom.harvests;
     }
 
     /**
@@ -297,6 +306,8 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
      * @param par
      */
     private void applyParams(DescParamsGO par) {
+        this.harvRate = par.getHarvRate();
+        this.harvests = par.getHarvests();
         this.armorType = par.getArmorType();
         this.atkdelay = par.getAtkdelay();
         this.bulletspeed = par.getBulletspeed();
@@ -514,7 +525,6 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
                 return;
             }
             copyPropertiesFrom(building);
-            this.abilitys.add(new AbilityIntraManager((Building) this, rgi));
             /*   BuildingAnimator rgba = rgi.game.getPlayer(this.playerId).descBuilding.get(toDesc).anim;
             if (rgba != null) {
             rgba = rgba.clone();
@@ -1283,5 +1293,24 @@ public abstract class GameObject implements Serializable, Sprite, BehaviourProce
     @Override
     public GameObject getAttackable() {
         return this;
+    }
+    
+    /**
+     * @return the harvests
+     */
+    public int getHarvests() {
+        return harvests;
+    }
+
+    /**
+     * @return the harvRate
+     */
+    public double getHarvRate() {
+        return harvRate;
+    }
+    
+    @Override
+    public String getSelectionTexture() {
+        return getGraphicsData().getTexture();
     }
 }

@@ -28,6 +28,8 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.ability.Ability;
 import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.Unit;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceServer;
 import org.newdawn.slick.Color;
 import java.util.List;
 import java.util.ArrayList;
@@ -47,11 +49,11 @@ public class NetPlayer {
     public List<Integer> uList;
     public List<Integer> aList;
     public Core.CoreInner rgi;
-    public int res1 = 0;
-    public int res2 = 0;
-    public int res3 = 0;
-    public int res4 = 0;
-    public int res5 = 0;
+    public double res1 = 12345;
+    public double res2 = 0;
+    public double res3 = 0;
+    public double res4 = 0;
+    public double res5 = 0;
     public int[] harvspeeds;
     // Die Verfügbaren Einheiten, Gebäude und Abilities:
     // Werden jetzt hier gespeichert, damit individuelle Upgrades berücksichtigt werden können:
@@ -75,6 +77,8 @@ public class NetPlayer {
     public ArrayList<NetPlayer> invitations; // Einladungen
 
     private boolean finished = false; // Spielt der noch?
+    
+    private GlobalBehaviour producebehaviour;
 
     public interface colours {
 
@@ -204,5 +208,13 @@ public class NetPlayer {
         }
         String[] rlist = new String[list.size()];
         return list.toArray(rlist);
+    }
+    
+    public void setProduceBehaviour(GlobalBehaviour producebehav, boolean server) {
+        this.producebehaviour = producebehav;
+    }
+    
+    public GlobalBehaviour getProduceBehaviour() {
+        return producebehaviour;
     }
 }

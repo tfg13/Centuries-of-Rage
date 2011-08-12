@@ -38,6 +38,7 @@ import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.graphics.GraphicsContent;
 import de._13ducks.cor.graphics.Renderer;
 import de._13ducks.cor.graphics.input.SelectionMarker;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceServer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
@@ -97,18 +98,12 @@ public class Building extends GameObject {
      * Liste mit Units, die sich derzeit in diesem Gebäude befinden.
      */
     private List<Unit> intraUnits;
-    /**
-     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
-     */
-    private int harvests = 0;
+
     /**
      * Gibt die Anzahl freier Slots an (also wieviel Einheiten das Gebäude betreten können)
      */
     protected int maxIntra = 0;
-    /**
-     * Gibt die  Ernterate pro interner Einheit an
-     */
-    private double harvRate = 0.0;
+
     /**
      * Gibt an, welche Einheiten akzeptiert werden.
      */
@@ -185,8 +180,6 @@ public class Building extends GameObject {
         this.maxIntra = copyFrom.maxIntra;
         this.z1 = copyFrom.z1;
         this.z2 = copyFrom.z2;
-        this.harvRate = copyFrom.harvRate;
-        this.harvests = copyFrom.harvests;
         this.neutral = copyFrom.neutral;
         intraUnits = new ArrayList<Unit>();
         positions = new Position[z1 * z2];
@@ -199,8 +192,6 @@ public class Building extends GameObject {
      */
     private void applyBuildingParams(DescParamsBuilding par) {
         this.accepts = par.getAccepts();
-        this.harvRate = par.getHarvRate();
-        this.harvests = par.getHarvests();
         this.maxIntra = par.getMaxIntra();
         this.z1 = par.getZ1();
         this.z2 = par.getZ2();
@@ -430,20 +421,6 @@ public class Building extends GameObject {
     }
 
     /**
-     * @return the harvests
-     */
-    public int getHarvests() {
-        return harvests;
-    }
-
-    /**
-     * @return the harvRate
-     */
-    public double getHarvRate() {
-        return harvRate;
-    }
-
-    /**
      * Der derzeitige Baufortschritt, in 0.Prozent
      * Nur relevant, wenn lifeStatus noch auf unborn steht.
      * @return the buildprogress
@@ -509,7 +486,7 @@ public class Building extends GameObject {
         int counter = 0;
         for (int z1c = 0; z1c < z1; z1c++) {
             for (int z2c = 0; z2c < z2; z2c++) {
-                positions[counter++] = new Position((int) mainPosition.getX() + z1c + z2c, (int) mainPosition.getY() - z1c + z2c);
+                positions[counter++] = new Position(mainPosition.getX() + z1c + z2c, mainPosition.getY() - z1c + z2c);
             }
         }
         try {
@@ -545,13 +522,15 @@ public class Building extends GameObject {
         return captureprogress;
     }
 
-    public void changeCaptureProgress(int amount, int player) {
-        capturerate = Math.min(5, amount) * 1.0;
+    public void changeCaptureProgress(int capturerate, int player) {
         captureprogress += capturerate;
         if (captureprogress > 100) {
             // fertig übernommen, playerid wechseln
             this.setPlayerId(player);
             captureprogress = 0;
+            // Globalproducebehaviour des Spielers die neue Ressourcenrate mitteilen
+            GlobalBehaviourProduceServer gloBhvProSrv = (GlobalBehaviourProduceServer) Server.getInnerServer().game.getPlayer(player).getProduceBehaviour();
+            gloBhvProSrv.incrementProdrate(this.getHarvRate());
             // an Client senden
             Server.getInnerServer().netctrl.broadcastDATA(Client.getInnerClient().packetFactory((byte) 57, netID, Float.floatToIntBits(Float.NaN), (int) capturerate, player));
         } else if (captureprogress <= 0) {
@@ -650,7 +629,7 @@ public class Building extends GameObject {
             float CenterX = (float) (this.getCentralPosition().getX() * GraphicsContent.FIELD_HALF_X + GraphicsContent.OFFSET_PRECISE_X + GraphicsContent.BASIC_FIELD_OFFSET_X);
             float CenterY = (float) (this.getCentralPosition().getY() * GraphicsContent.FIELD_HALF_Y + GraphicsContent.BASIC_FIELD_OFFSET_Y);
 
-            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, (float) axisX, (float) axisY);
+            g.drawOval(CenterX - axisX / 2 - (float) scrollX, CenterY - axisY / 2 - (float) scrollY, axisX, axisY);
         }
 
         g.setLineWidth(1);
@@ -740,6 +719,7 @@ public class Building extends GameObject {
         this.lastcapturetime = lastcapturetime;
     }
     
+    @Override
     public void mouseHovered() {
         hovered = true;
     }

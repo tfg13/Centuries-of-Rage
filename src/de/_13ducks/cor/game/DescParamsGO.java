@@ -136,6 +136,14 @@ public class DescParamsGO {
      * Mit dieser Rate heilt es andere in seiner Nähe, nicht sich selbst(!)
      */
     private int healRate = 0;
+    /**
+     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
+     */
+    private int harvests = 0;
+    /**
+     * Gibt die  Ernterate pro interner Einheit an
+     */
+    private double harvRate = 0.0;
 
     public DescParamsGO() {
         damageFactors = new int[7];
@@ -481,6 +489,38 @@ public class DescParamsGO {
      */
     public void setHealRate(int healRate) {
         this.healRate = healRate;
+    }
+    
+        /**
+     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
+     * @return the harvests
+     */
+    public int getHarvests() {
+        return harvests;
+    }
+
+    /**
+     * Zeigt an, welche Ressource dieses Gebäude produziert, solange es Arbeiter beherbergt.
+     * @param harvests the harvests to set
+     */
+    public void setHarvests(int harvests) {
+        this.harvests = harvests;
+    }
+    
+        /**
+     * Gibt die  Ernterate pro interner Einheit an
+     * @return the harvRate
+     */
+    public double getHarvRate() {
+        return harvRate;
+    }
+
+    /**
+     * Gibt die  Ernterate pro interner Einheit an
+     * @param harvRate the harvRate to set
+     */
+    public void setHarvRate(double harvRate) {
+        this.harvRate = harvRate;
     }
 
 }

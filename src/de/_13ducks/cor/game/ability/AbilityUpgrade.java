@@ -29,7 +29,7 @@ import de._13ducks.cor.game.GameObject;
 import org.newdawn.slick.Color;
 import java.util.HashMap;
 import de._13ducks.cor.networks.client.behaviour.DeltaUpgradeParameter;
-import de._13ducks.cor.networks.client.behaviour.impl.ClientBehaviourUpgrade;
+import de._13ducks.cor.networks.client.behaviour.ClientBehaviourUpgrade;
 
 
 /**
