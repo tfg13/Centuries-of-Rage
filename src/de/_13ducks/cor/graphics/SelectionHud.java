@@ -133,7 +133,8 @@ public class SelectionHud implements Overlay, SlideInController {
                 Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 0, 347, 70);
                 Renderer.drawImage(img, 0, fullResY - singleSize, singleSize, singleSize);
                 
-                if (drawList.get(0).elems.get(0).getAbilityCaster().isMultiSelectable()) {
+                int selectioncount = drawList.get(0).elems.size();
+                if (selectioncount > 1) {
                     g.drawString("" + drawList.get(0).elems.size(), 0, fullResY - singleSize);
                 }
                 Renderer.drawImage(tilemap, 70, fullResY - 84, 82, fullResY, 416, 60, 428, 144);
@@ -146,7 +147,8 @@ public class SelectionHud implements Overlay, SlideInController {
                 if (img2 != null) {
                     Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 0, 327, 50);
                     Renderer.drawImage(img2, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, otherSize);
-                    if (drawList.get(i).elems.get(0).getAbilityCaster().isMultiSelectable()) {
+                    int selectioncount = drawList.get(0).elems.size();
+                    if (selectioncount > 1) {
                         g.drawString("" + drawList.get(i).elems.size(), 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12);
                     }
                     if (i != drawList.size() - 1) {
