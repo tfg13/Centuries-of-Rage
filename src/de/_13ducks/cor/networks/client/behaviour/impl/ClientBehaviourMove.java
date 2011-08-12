@@ -26,6 +26,7 @@
 package de._13ducks.cor.networks.client.behaviour.impl;
 
 import de._13ducks.cor.game.FloatingPointPosition;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.Vector;
@@ -64,7 +65,33 @@ public class ClientBehaviourMove extends ClientBehaviour {
      * Wann wurde die Bewegung zuletzt berechnet? (in nanosekunden)
      */
     private long lastTick;
+    /**
+     * Die Befehlswarteschlange
+     */
     private ConcurrentLinkedQueue<MoveTask> queue;
+    /**
+     * Kreisbewegung?
+     */
+    private boolean arc;
+    /**
+     * Richtung der Kreisbewegung.
+     * True ist positive Bogenmaßrichtung
+     */
+    private boolean arcDirection;
+    /**
+     * Zentrum der Kreisbewegung
+     */
+    private SimplePosition around;
+    /**
+     * Distanz auf Laufkreis, die zurückzulegen ist.
+     * (In Bogenmaß-Winkel)
+     */
+    private double tethaDist;
+    /**
+     * Bereits zurückgelegte Strecke auf der Kreisbahn.
+     * (In Bogenmaß-Winkel)
+     */
+    private double movedTetha;
 
     public ClientBehaviourMove(ClientCore.InnerClient rgi, Unit caster2) {
         super(rgi, caster2, 1, 5, false);
@@ -101,12 +128,34 @@ public class ClientBehaviourMove extends ClientBehaviour {
         if (stopPos == null) {
             // Wir laufen also.
             // Aktuelle Position berechnen:
+            // Erstmal default für gerades laufen:
             FloatingPointPosition oldPos = caster2.getPrecisePosition();
             Vector vec = target.subtract(oldPos).toVector();
             vec.normalizeMe();
             long ticktime = System.nanoTime();
             vec.multiplyMe((ticktime - lastTick) / 1000000000.0 * speed);
             FloatingPointPosition newpos = vec.toFPP().add(oldPos);
+            if (arc) {
+                // Umbiegen:
+                // Kreisbewegung berechnen:
+                double rad = Math.sqrt((oldPos.x() - around.x()) * (oldPos.x() - around.x()) + (oldPos.y() - around.y()) * (oldPos.y() - around.y()));
+                double tetha = Math.atan2(oldPos.y() - around.y(), oldPos.x() - around.x());
+                double delta = vec.length(); // Wie weit wir auf diesem Kreis laufen
+                if (!arcDirection) { // Falls Richtung negativ delta invertieren
+                    delta *= -1;
+                }
+                double newTetha = ((tetha * rad) + delta) / rad; // Strahlensatz, u = 2*PI*r
+                movedTetha += Math.abs(newTetha - tetha);
+                // Über-/Unterläufe behandeln:
+                if (newTetha > Math.PI) {
+                    newTetha = -2 * Math.PI + newTetha;
+                } else if (newTetha < -Math.PI) {
+                    newTetha = 2 * Math.PI + newTetha;
+                }
+                Vector newPvec = new Vector(Math.cos(newTetha), Math.sin(newTetha));
+                newPvec = newPvec.multiply(rad);
+                newpos = around.toVector().add(newPvec).toFPP();
+            }
 
             if (!newpos.toVector().isValid()) {
                 // Das geht so nicht, abbrechen und gleich nochmal!
@@ -117,7 +166,11 @@ public class ClientBehaviourMove extends ClientBehaviour {
 
             // Ziel schon erreicht?
             Vector nextVec = target.subtract(newpos).toVector();
-            if (vec.isOpposite(nextVec)) {
+            boolean arcDone = false;
+            if (arc) {
+                arcDone = movedTetha >= tethaDist;
+            }
+            if ((!arc && vec.isOpposite(nextVec)) || arcDone) {
                 // ZIEL!
                 // Wir sind warscheinlich drüber - egal einfach auf dem Ziel halten.
                 caster2.setMainPosition(target);
@@ -161,6 +214,18 @@ public class ClientBehaviourMove extends ClientBehaviour {
             FloatingPointPosition pos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 3)), Float.intBitsToFloat(rgi.readInt(packet, 4)));
             MoveTask task = new MoveTask(1, pos, moveSpeed);
             queue.add(task);
+        } else if (packet[0] == 25) {
+            // Achtung, das ist ein doppletes Datenpaket.
+            float moveSpeed = Float.intBitsToFloat(rgi.readInt(packet, 2));
+            FloatingPointPosition tpos = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 3)), Float.intBitsToFloat(rgi.readInt(packet, 4)));
+            FloatingPointPosition center = new FloatingPointPosition(Float.intBitsToFloat(rgi.readInt(packet, 5)), Float.intBitsToFloat(rgi.readInt(packet, 6)));
+            float tdist = Float.intBitsToFloat(rgi.readInt(packet, 7));
+            boolean dir = true;
+            if (tdist < 0) {
+                tdist *= -1;
+                dir = false;
+            }
+            MoveTask task = new MoveTask(2, tpos, speed, center, tethaDist, dir);
         }
         // Schnell verarbeiten
         activate();
@@ -177,7 +242,18 @@ public class ClientBehaviourMove extends ClientBehaviour {
     private synchronized void newMoveVec(double speed, FloatingPointPosition target) {
         this.speed = speed;
         this.target = target;
+        arc = false;
+        around = null;
+        movedTetha = 0;
         lastTick = System.nanoTime();
+    }
+    
+    private synchronized void newMoveVec(double speed, FloatingPointPosition target, boolean dir, FloatingPointPosition center, double tetha) {
+        newMoveVec(speed, target);
+        arc = true;
+        arcDirection = dir;
+        around = center;
+        tethaDist = tetha;
     }
 
     @Override
@@ -210,12 +286,26 @@ public class ClientBehaviourMove extends ClientBehaviour {
         FloatingPointPosition pos;
         double speed;
         long execTime;
+        boolean arc;
+        boolean arcDir;
+        FloatingPointPosition around;
+        double tethaDist;
 
         public MoveTask(int mode, FloatingPointPosition pos, double speed) {
             this.mode = mode;
             this.pos = pos;
             this.speed = speed;
+            this.arc = false;
+            this.around = null;
             execTime = System.currentTimeMillis() + CLIENT_DELAY;
+        }
+        
+        public MoveTask(int mode, FloatingPointPosition pos, double speed, FloatingPointPosition around, double tetha, boolean dir) {
+            this(mode, pos, speed);
+            this.arc = true;
+            this.around = around;
+            this.tethaDist = tetha;
+            this.arcDir = dir;
         }
 
         void perform() {
@@ -225,6 +315,8 @@ public class ClientBehaviourMove extends ClientBehaviour {
                 stopAt(pos);
             } else if (mode == 1) {
                 newMoveVec(speed, pos);
+            } else if (mode == 2) {
+                newMoveVec(speed, pos, arcDir, around, tethaDist);
             }
         }
     }

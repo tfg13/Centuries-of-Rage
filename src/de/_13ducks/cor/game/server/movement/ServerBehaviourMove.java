@@ -213,7 +213,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
         if (!target.equals(clientTarget) && !stopUnit) {
             // An Client senden
-            rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
+            if (!arc) {
+                rgi.netctrl.broadcastMoveVec(caster2.getNetID(), target.toFPP(), speed);
+            } else {
+                rgi.netctrl.broadcastArcMoveVec(caster2.getNetID(), target.toFPP(), speed, around, arcDirection, tethaDist);
+            }
             clientTarget = target.toFPP();
         }
 

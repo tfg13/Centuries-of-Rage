@@ -27,6 +27,7 @@ package de._13ducks.cor.networks.server;
 
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.Unit;
 import java.io.*;
 import java.net.*;
@@ -310,6 +311,25 @@ public class ServerNetController implements Runnable {
      */
     public void broadcastMoveVec(int netID, FloatingPointPosition target, double speed) {
         rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 23, netID, Float.floatToIntBits((float) speed), Float.floatToIntBits((float) target.getfX()), Float.floatToIntBits((float) target.getfY())));
+    }
+
+    /**
+     * Sendet allen Clients den neuen Arc-Bewegungsvektor der angegebenen Einheit.
+     * Lässt die Einheit sofort auf den Clients in Richtung des angegebenen Vektors loslaufen.
+     * Es wird die gegebene Geschwindigkeit verwendet.
+     * @param netID die NetID der Einheit
+     * @param target das Ziel der Kreisbewegung
+     * @param speed Die Geschwindigkeit
+     * @param around Das Zentrum der Kreisbewegung
+     * @param arcDirection die Richtung der Bewegung
+     * @param tethaDist Die zurückzulegende Distanz
+     */
+    public void broadcastArcMoveVec(int netID, FloatingPointPosition target, double speed, SimplePosition around, boolean arcDirection, double tethaDist) {
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 25, netID, Float.floatToIntBits((float) speed), Float.floatToIntBits((float) target.getfX()), Float.floatToIntBits((float) target.getfY())));
+        if (!arcDirection) {
+            tethaDist *= -1;
+        }
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 25, Float.floatToIntBits((float) around.x()), Float.floatToIntBits((float) around.y()), Float.floatToIntBits((float) tethaDist), 0));
     }
 
     public class ServerHandler implements Runnable {

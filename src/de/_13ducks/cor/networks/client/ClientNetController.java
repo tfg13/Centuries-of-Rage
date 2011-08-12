@@ -221,6 +221,7 @@ public class ClientNetController {
             cmdMap[22] = new de._13ducks.cor.networks.cmd.client.C022_RECRUIT_DEL();
             cmdMap[23] = new de._13ducks.cor.networks.cmd.client.C023_MOVE_UNIT();
             cmdMap[24] = new de._13ducks.cor.networks.cmd.client.C024_STOP_UNIT();
+            cmdMap[25] = new de._13ducks.cor.networks.cmd.client.C025_ARCMOVE_UNIT();
             cmdMap[27] = new de._13ducks.cor.networks.cmd.client.C027_SET_WAYPOINT();
             cmdMap[28] = new de._13ducks.cor.networks.cmd.client.C028_KILL_UNIT();
             cmdMap[30] = new de._13ducks.cor.networks.cmd.client.C030_KILL_BUILDING();
@@ -311,6 +312,7 @@ public class ClientNetController {
                         cmdMap[cmd].process(data, cdh, rgi);
 
                     } catch (NullPointerException ex) {
+                        ex.printStackTrace();
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ")");
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("C-NetCtrl: Got unknown command (" + cmd + ") (ArrayOutOfBounds)");
