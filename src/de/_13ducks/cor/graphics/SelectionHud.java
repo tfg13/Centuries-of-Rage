@@ -67,7 +67,7 @@ public class SelectionHud implements Overlay, SlideInController {
      * Die letzen Zeichenkoordinaten, für den MouseInput, oberer Teil
      */
     private int[] coords1;
-        /**
+    /**
      * Die letzen Zeichenkoordinaten, für den MouseInput, unterer Teil
      */
     private int[] coords2;
@@ -76,7 +76,7 @@ public class SelectionHud implements Overlay, SlideInController {
      */
     private int hoverIndex = -1;
     /**
-     * Wenn man die Maus über einer Schaltfläche gefrückt hält
+     * Wenn man die Maus über einer Schaltfläche gedrückt hält
      */
     private int pressedIndex = -1;
 
@@ -120,12 +120,12 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mousePressed(int i, int i1, int i2) {
-                fMousePressed(i, i1, i2);
+                fMousePressed(i, i1, i2, false);
             }
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                fMouseReleased(i, i1, i2);
+                fMouseReleased(i, i1, i2, false);
             }
 
             @Override
@@ -169,12 +169,12 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mousePressed(int i, int i1, int i2) {
-                fMousePressed(i, i1, i2);
+                fMousePressed(i, i1, i2, true);
             }
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                fMouseReleased(i, i1, i2);
+                fMouseReleased(i, i1, i2, true);
             }
 
             @Override
@@ -183,12 +183,14 @@ public class SelectionHud implements Overlay, SlideInController {
         });
     }
 
-    private void fMousePressed(int i, int i1, int i2) {
-        System.out.println("Mouse Pressed! " + i + " , " + i1 + " , " + i2);
+    private void fMousePressed(int i, int i1, int i2, boolean singleSizeSelected) {
+        int selection = findIndex(i2, singleSizeSelected);
+        System.out.println("Mouse Pressed! " + i + " , " + i1 + " , " + i2 + " Sel: " + selection);
     }
-    
-    private void fMouseReleased(int i, int i1, int i2) {
-        System.out.println("Mouse Released! " + i + " , " + i1 + " , " + i2);
+
+    private void fMouseReleased(int i, int i1, int i2, boolean singleSizeSelected) {
+        int selection = findIndex(i2, singleSizeSelected);
+        System.out.println("Mouse Released! " + i + " , " + i1 + " , " + i2 + " Sel: " + selection);
     }
 
     @Override
@@ -316,17 +318,23 @@ public class SelectionHud implements Overlay, SlideInController {
         }
     }
 
-    private int findIndex(int x) {
+    private int findIndex(int y, boolean singleSizeSelected) {
         // Ability finden
 
-        // zusammengeratene Berechnung
-        double index = 1.0 * x / (singleSize + 15);
-        int intIndex = (int) index;
-        index -= intIndex;
-        if (index <= .8) {
-            return intIndex;
+        if (singleSizeSelected) {
+            // Großer Knopf gedrückt
+            return 0;
         } else {
-            return -1;
+            // Berechnen, welcher kleine Knopf gedrückt wurde
+            double index = 1.0 * y / (otherSize + 12);
+            int intIndex = (int) index;
+            index -= intIndex;
+            if (index <= .8) {
+                int actualbutton = drawList.size() - intIndex - 1;
+                return actualbutton;
+            } else {
+                return -1;
+            }
         }
     }
 }
