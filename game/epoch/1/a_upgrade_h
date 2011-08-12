@@ -113,7 +113,7 @@ duration=2000
 affects=self
 transformTo=401
 epoche=0
-depends=B4
+#depends=B4
 cost1=30
 }
 
