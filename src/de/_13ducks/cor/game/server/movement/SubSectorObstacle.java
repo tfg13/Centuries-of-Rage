@@ -4,10 +4,12 @@
  */
 package de._13ducks.cor.game.server.movement;
 
+import de._13ducks.cor.game.SimplePosition;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.newdawn.slick.geom.Circle;
 
 /**
  * Ein Knoten des Graphen
@@ -98,21 +100,10 @@ public class SubSectorObstacle {
      * @return SubSectorNode[] mit 2 Einträgen
      */
     SubSectorNode[] calcIntersections(SubSectorObstacle next, double radius) {
-        // Zuerst Mittelpunkt der Linie durch beide Schnittpunkte berechnen:
-        Vector direct = new Vector(next.x - x, next.y - y);
-        Vector z1 = direct.normalize().multiply(this.radius + radius);
-        Vector z2 = direct.normalize().multiply(direct.length() - (next.radius + radius));
-        Vector mid = direct.normalize().multiply((z1.length() + z2.length()) / 2.0);
-        // Senkrechten Vektor und seine Länge berechnen:
-        Vector ortho = new Vector(direct.y(), -direct.x());
-        ortho = ortho.normalize().multiply(Math.sqrt(((this.radius + radius) * (this.radius + radius)) - (mid.length() * mid.length())));
-        // Schnittpunkte ausrechnen:
         SubSectorNode[] intersections = new SubSectorNode[2];
-        Vector posMid = new Vector(x + mid.x(), y + mid.y()); // Positionsvektor des Mittelpunkts
-        Vector s1 = posMid.add(ortho);
-        Vector s2 = posMid.add(ortho.getInverted());
-        intersections[0] = new SubSectorNode(s1.x(), s1.y(), this, next);
-        intersections[1] = new SubSectorNode(s2.x(), s2.y(), this, next);
+        SimplePosition[] c = MathUtil.circleCircleIntersection(new Circle((float) x, (float) y, (float) (this.radius + radius)), new Circle((float) next.x, (float) next.y, (float) (next.radius + radius)));
+        intersections[0] = new SubSectorNode(c[0].x(), c[0].y(), this, next);
+        intersections[1] = new SubSectorNode(c[1].x(), c[1].y(), this, next);
         return intersections;
     }
 
