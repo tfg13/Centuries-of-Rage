@@ -6,7 +6,7 @@
 package de._13ducks.cor.graphics;
 
 import de._13ducks.cor.game.client.Client;
-import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceClient;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceClient;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 

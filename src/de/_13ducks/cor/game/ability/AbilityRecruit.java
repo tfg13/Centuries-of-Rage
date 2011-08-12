@@ -46,7 +46,7 @@ public class AbilityRecruit extends Ability {
 
     @Override
     public void perform(final GameObject caster) {
-        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 20, caster.netID, descTypeId, duration, 0));
+        rgi.netctrl.broadcastDATA(rgi.packetFactory((byte) 20, caster.netID, descTypeId, this.myId, 0));
     }
 
     @Override

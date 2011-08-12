@@ -39,8 +39,8 @@ import de._13ducks.cor.game.ability.ServerAbilityUpgrade;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.movement.ServerBehaviourCapture;
 import de._13ducks.cor.game.server.movement.ServerBehaviourHeal;
-import de._13ducks.cor.networks.behaviour.GlobalBehaviour;
-import de._13ducks.cor.networks.behaviour.GlobalBehaviourProduceServer;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviour;
+import de._13ducks.cor.networks.globalbehaviour.GlobalBehaviourProduceServer;
 
 /**
  * Die Server-Mainloop und GameLogic
