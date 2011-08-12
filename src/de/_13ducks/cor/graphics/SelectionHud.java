@@ -30,6 +30,7 @@ import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.graphics.input.OverlayMouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -63,33 +64,46 @@ public class SelectionHud implements Overlay, SlideInController {
      */
     private boolean igesUpdated;
     /**
-     * Die letzen Zeichenkoordinaten, für den MouseInput
+     * Die letzen Zeichenkoordinaten, für den MouseInput, oberer Teil
      */
-    private int[] coords;
+    private int[] coords1;
+        /**
+     * Die letzen Zeichenkoordinaten, für den MouseInput, unterer Teil
+     */
+    private int[] coords2;
+    /**
+     * Über was die Maus schwebt
+     */
+    private int hoverIndex = -1;
+    /**
+     * Wenn man die Maus über einer Schaltfläche gefrückt hält
+     */
+    private int pressedIndex = -1;
 
     public SelectionHud() {
-        coords = new int[4];
+        coords1 = new int[4];
+        coords2 = new int[4];
         drawList = new ArrayList<SelectionClass>();
         Client.getInnerClient().rogGraphics.inputM.addOverlayMouseListener(new OverlayMouseListener() {
 
             @Override
             public int getCatch1X() {
-                return coords[0];
+                return coords1[0];
             }
 
             @Override
             public int getCatch1Y() {
-                return coords[1];
+                return coords1[1];
             }
 
             @Override
             public int getCatch2X() {
-                return coords[2];
+                return coords1[2];
             }
 
             @Override
             public int getCatch2Y() {
-                return coords[3];
+                return coords1[3];
             }
 
             @Override
@@ -106,11 +120,61 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mousePressed(int i, int i1, int i2) {
+                fMousePressed(i, i1, i2);
             }
 
             @Override
             public void mouseReleased(int i, int i1, int i2) {
-                System.out.println("AddMe: Gotklick!");
+                fMouseReleased(i, i1, i2);
+            }
+
+            @Override
+            public void mouseRemoved() {
+            }
+        });
+
+        Client.getInnerClient().rogGraphics.inputM.addOverlayMouseListener(new OverlayMouseListener() {
+
+            @Override
+            public int getCatch1X() {
+                return coords2[0];
+            }
+
+            @Override
+            public int getCatch1Y() {
+                return coords2[1];
+            }
+
+            @Override
+            public int getCatch2X() {
+                return coords2[2];
+            }
+
+            @Override
+            public int getCatch2Y() {
+                return coords2[3];
+            }
+
+            @Override
+            public void mouseMoved(int x, int y) {
+            }
+
+            @Override
+            public void mouseDragged(int x, int y) {
+            }
+
+            @Override
+            public void mouseWheelMoved(int i) {
+            }
+
+            @Override
+            public void mousePressed(int i, int i1, int i2) {
+                fMousePressed(i, i1, i2);
+            }
+
+            @Override
+            public void mouseReleased(int i, int i1, int i2) {
+                fMouseReleased(i, i1, i2);
             }
 
             @Override
@@ -119,20 +183,30 @@ public class SelectionHud implements Overlay, SlideInController {
         });
     }
 
+    private void fMousePressed(int i, int i1, int i2) {
+        System.out.println("Mouse Pressed! " + i + " , " + i1 + " , " + i2);
+    }
+    
+    private void fMouseReleased(int i, int i1, int i2) {
+        System.out.println("Mouse Released! " + i + " , " + i1 + " , " + i2);
+    }
+
     @Override
     public void renderOverlay(Graphics g, int fullResX, int fullResY) {
         if (igesUpdated) {
             igesUpdated = false;
             drawList = computeDrawList();
+            updateCoords(fullResX, fullResY);
         }
 
         if (!drawList.isEmpty()) {
 
             String img = drawList.get(0).elems.get(0).getSelectionTexture();
+            g.setColor(Color.black);
             if (img != null) {
                 Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 0, 347, 70);
                 Renderer.drawImage(img, 0, fullResY - singleSize, singleSize, singleSize);
-                
+
                 int selectioncount = drawList.get(0).elems.size();
                 if (selectioncount > 1) {
                     g.drawString("" + drawList.get(0).elems.size(), 0, fullResY - singleSize);
@@ -162,7 +236,6 @@ public class SelectionHud implements Overlay, SlideInController {
                 }
             }
         }
-        updateCoords(fullResX, fullResY);
     }
 
     @Override
@@ -190,21 +263,29 @@ public class SelectionHud implements Overlay, SlideInController {
      */
     private synchronized void updateCoords(int resX, int resY) {
         if (!drawList.isEmpty()) {
-            coords[0] = 0;
-            coords[1] = resY - singleSize + ((drawList.size() - 1) * otherSize);
-            coords[2] = singleSize;
-            coords[3] = 0;
+            coords1[0] = 0;
+            coords1[1] = resY - singleSize - ((drawList.size() - 1) * (otherSize + 12));
+            coords1[2] = otherSize;
+            coords1[3] = resY - singleSize;
+            coords2[0] = 0;
+            coords2[1] = resY - singleSize;
+            coords2[2] = singleSize;
+            coords2[3] = resY;
         } else {
-            coords[0] = 0;
-            coords[1] = 0;
-            coords[2] = 0;
-            coords[3] = 0;
+            coords1[0] = 0;
+            coords1[1] = 0;
+            coords1[2] = 0;
+            coords1[3] = 0;
+            coords2[0] = 0;
+            coords2[1] = 0;
+            coords2[2] = 0;
+            coords2[3] = 0;
         }
     }
 
     private List<SelectionClass> computeDrawList() {
         ArrayList<SelectionClass> retList = new ArrayList<SelectionClass>();
-        
+
         for (InteractableGameElement elem : iges) {
             // Haben wir das schon?
             SelectionClass selClass = null;
@@ -220,16 +301,32 @@ public class SelectionHud implements Overlay, SlideInController {
             }
             selClass.elems.add(elem);
         }
-        
+
         return retList;
+
+
     }
 
     private class SelectionClass {
 
         ArrayList<InteractableGameElement> elems;
-        
+
         private SelectionClass() {
             elems = new ArrayList<InteractableGameElement>();
+        }
+    }
+
+    private int findIndex(int x) {
+        // Ability finden
+
+        // zusammengeratene Berechnung
+        double index = 1.0 * x / (singleSize + 15);
+        int intIndex = (int) index;
+        index -= intIndex;
+        if (index <= .8) {
+            return intIndex;
+        } else {
+            return -1;
         }
     }
 }
