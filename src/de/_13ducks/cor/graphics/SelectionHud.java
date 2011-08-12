@@ -132,6 +132,10 @@ public class SelectionHud implements Overlay, SlideInController {
             if (img != null) {
                 Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 0, 347, 70);
                 Renderer.drawImage(img, 0, fullResY - singleSize, singleSize, singleSize);
+                
+                if (drawList.get(0).elems.get(0).getAbilityCaster().isMultiSelectable()) {
+                    g.drawString("" + drawList.get(0).elems.size(), 0, fullResY - singleSize);
+                }
                 Renderer.drawImage(tilemap, 70, fullResY - 84, 82, fullResY, 416, 60, 428, 144);
                 Renderer.drawImage(tilemap, 0, fullResY - 82, 84, fullResY - 70, 277, 122, 361, 134);
             }
@@ -142,6 +146,9 @@ public class SelectionHud implements Overlay, SlideInController {
                 if (img2 != null) {
                     Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 0, 327, 50);
                     Renderer.drawImage(img2, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, otherSize);
+                    if (drawList.get(i).elems.get(0).getAbilityCaster().isMultiSelectable()) {
+                        g.drawString("" + drawList.get(i).elems.size(), 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12);
+                    }
                     if (i != drawList.size() - 1) {
                         Renderer.drawImage(tilemap, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize + 12, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 70, 289, 120);
                         Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)), 65, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, 351, 70, 416, 82);
