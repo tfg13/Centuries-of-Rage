@@ -641,8 +641,8 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Zuerst auf Nähe des gesamten Kreissegments testen
         double dist = t.getPrecisePosition().getDistance(around.toFPP());
         double moveRad = from.toFPP().getDistance(around.toFPP());
-        double minCol = moveRad - colRadius - t.getRadius();
-        double maxCol = moveRad + colRadius + t.getRadius();
+        double minCol = moveRad - colRadius - caster2.getRadius();
+        double maxCol = moveRad + colRadius + caster2.getRadius();
         if (dist >= minCol && dist <= maxCol) {
             // Mögliche Kollision!
             // Winkeltest
@@ -673,9 +673,9 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Sonst weitertesten: Der 6-Punkte-Test
             Circle c = new Circle((float) t.getPrecisePosition().x(), (float) t.getPrecisePosition().y(), (float) t.getRadius());
             Vector fromOrtho = new Vector(from.x() - around.x(), from.y() - around.y());
-            fromOrtho = fromOrtho.normalize().multiply(colRadius);
+            fromOrtho = fromOrtho.normalize().multiply(caster2.getRadius());
             Vector toOrtho = new Vector(to.x() - around.x(), to.y() - around.y());
-            toOrtho = toOrtho.normalize().multiply(colRadius);
+            toOrtho = toOrtho.normalize().multiply(caster2.getRadius());
 
             SimplePosition t1 = from.toVector().add(fromOrtho);
             SimplePosition t2 = from.toVector();
