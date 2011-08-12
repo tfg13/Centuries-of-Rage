@@ -522,35 +522,43 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     SimplePosition s2 = intersections[1];
                     // Ausbrüten, ob s1 oder s2 der richtige ist:
                     SimplePosition newPosVec = null;
-                    double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
-                    if (fromTetha < 0) {
-                        fromTetha += 2 * Math.PI;
-                    }
-                    double s1tetha = Math.atan2(s1.y() - around.y(), s1.x() - around.x());
-                    if (s1tetha < 0) {
-                        s1tetha += 2 * Math.PI;
-                    }
-                    double s2tetha = Math.atan2(s2.y() - around.y(), s2.x() - around.x());
-                    if (s2tetha < 0) {
-                        s2tetha += 2 * Math.PI;
-                    }
-                    if (s1tetha < fromTetha) {
-                        s1tetha += 2 * Math.PI;
-                    }
-                    if (s2tetha < fromTetha) {
-                        s2tetha += 2 * Math.PI;
-                    }
-                    if (s1tetha < s2tetha) {
-                        if (arcDirection) {
-                            newPosVec = s1;
-                        } else {
-                            newPosVec = s2;
-                        }
+                    // Vortest: Falls s1 oder s2 extrem nah am Ausgangspunkt liegt, ist der richtig
+                    if (from.equals(s1)) {
+                        newPosVec = s1;
+                    } else if (from.equals(s2)) {
+                        newPosVec = s2;
                     } else {
-                        if (arcDirection) {
-                            newPosVec = s2;
+                        // "Normaler" Test mithilfe von Winkeln.
+                        double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
+                        if (fromTetha < 0) {
+                            fromTetha += 2 * Math.PI;
+                        }
+                        double s1tetha = Math.atan2(s1.y() - around.y(), s1.x() - around.x());
+                        if (s1tetha < 0) {
+                            s1tetha += 2 * Math.PI;
+                        }
+                        double s2tetha = Math.atan2(s2.y() - around.y(), s2.x() - around.x());
+                        if (s2tetha < 0) {
+                            s2tetha += 2 * Math.PI;
+                        }
+                        if (s1tetha < fromTetha) {
+                            s1tetha += 2 * Math.PI;
+                        }
+                        if (s2tetha < fromTetha) {
+                            s2tetha += 2 * Math.PI;
+                        }
+                        if (s1tetha < s2tetha) {
+                            if (arcDirection) {
+                                newPosVec = s1;
+                            } else {
+                                newPosVec = s2;
+                            }
                         } else {
-                            newPosVec = s1;
+                            if (arcDirection) {
+                                newPosVec = s2;
+                            } else {
+                                newPosVec = s1;
+                            }
                         }
                     }
 
