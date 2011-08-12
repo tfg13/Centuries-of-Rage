@@ -78,7 +78,7 @@ public abstract class Core {
         // Innere Klasse, damit die Module aufgaben zu den Warteschlangen hinzufügen können
         // Die Module müssen gegenseitig Zugriff haben, also hier her damit
 
-        public HashMap configs;
+        public HashMap<String, String> configs;
         private boolean debug;
 
         public boolean isInDebugMode() {
@@ -135,7 +135,7 @@ public abstract class Core {
             r[13] = (byte) (long3 >>> 24);
             r[14] = (byte) (long3 >>> 16);
             r[15] = (byte) (long3 >>> 8);
-            r[16] = (byte) (long3 >>> 0);
+            r[16] = (byte) (long3);
             return r;
         }
 
@@ -184,10 +184,6 @@ public abstract class Core {
         }
 
         public int readInt(byte[] b, int number) {
-            if (b.length != 17 || b[0] == 0) {
-                System.out.println("ERROR: Packetsyntax mismatch! (int)");
-                return 0;
-            }
             int retval = 0;
             for (int i = 0; i < 4; ++i) {
                 retval |= (b[(number * 4) - i] & 0xff) << (i << 3);
@@ -196,10 +192,6 @@ public abstract class Core {
         }
 
         public long readLong2(byte[] b) {
-            if (b.length != 17 || b[0] == 0) {
-                System.out.println("ERROR: Packetsyntax mismatch! (long)");
-                return 0;
-            }
             return (((long) b[9] << 56)
                     + ((long) (b[10] & 255) << 48)
                     + ((long) (b[11] & 255) << 40)
@@ -207,17 +199,10 @@ public abstract class Core {
                     + ((long) (b[13] & 255) << 24)
                     + ((b[14] & 255) << 16)
                     + ((b[15] & 255) << 8)
-                    + ((b[16] & 255) << 0));
+                    + ((b[16] & 255)));
         }
 
         public char readChar(byte[] b, int number) {
-            if (number < 1 || number > 8) {
-                System.out.println("FixMe: readChar-Aufruf mit unzulässiger Nummer (" + number + ")");
-            }
-            if (b.length != 17 || b[0] == 0) {
-                System.out.println("ERROR: Packetsyntax mismatch! (char" + number + ")");
-                return 0;
-            }
             char retval = 0;
             for (int i = 0; i < 2; ++i) {
                 retval |= (b[(number * 2) - i] & 0xff) << (i << 3);
@@ -269,10 +254,6 @@ public abstract class Core {
          * @return Das errechnete int
          */
         public int transInt(byte[] b, int endindex) {
-            if (b.length < (endindex - 1)) {
-                System.out.println("ERROR: Packetsyntax mismatch! (tint)");
-                return 0;
-            }
             int retval = 0;
             for (int i = 0; i < 4; ++i) {
                 retval |= (b[endindex - i] & 0xff) << (i << 3);
