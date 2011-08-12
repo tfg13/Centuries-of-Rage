@@ -79,6 +79,7 @@ public class SelectionHud implements Overlay, SlideInController {
      * Wenn man die Maus über einer Schaltfläche gedrückt hält
      */
     private int pressedIndex = -1;
+    private static final Color green = new Color(0, 160, 0);
 
     public SelectionHud() {
         coords1 = new int[4];
@@ -108,6 +109,7 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mouseMoved(int x, int y) {
+                fMouseMoved(x, y, false);
             }
 
             @Override
@@ -130,6 +132,8 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mouseRemoved() {
+                hoverIndex = -1;
+                pressedIndex = -1;
             }
         });
 
@@ -157,6 +161,7 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mouseMoved(int x, int y) {
+                fMouseMoved(x, y, true);
             }
 
             @Override
@@ -179,6 +184,8 @@ public class SelectionHud implements Overlay, SlideInController {
 
             @Override
             public void mouseRemoved() {
+                hoverIndex = -1;
+                pressedIndex = -1;
             }
         });
     }
@@ -191,6 +198,10 @@ public class SelectionHud implements Overlay, SlideInController {
     private void fMouseReleased(int i, int i1, int i2, boolean singleSizeSelected) {
         int selection = findIndex(i2, singleSizeSelected);
         System.out.println("Mouse Released! " + i + " , " + i1 + " , " + i2 + " Sel: " + selection);
+    }
+
+    private void fMouseMoved(int x, int y, boolean singleSizeSelected) {
+        hoverIndex = findIndex(y, singleSizeSelected);
     }
 
     @Override
@@ -207,6 +218,9 @@ public class SelectionHud implements Overlay, SlideInController {
             g.setColor(Color.black);
             if (img != null) {
                 Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 0, 347, 70);
+                if (hoverIndex == 0) {
+                    Renderer.drawImage(tilemap, 0, fullResY - singleSize, singleSize, fullResY, 277, 134, 337, 194, green);
+                }
                 Renderer.drawImage(img, 0, fullResY - singleSize, singleSize, singleSize);
 
                 int selectioncount = drawList.get(0).elems.size();
@@ -222,6 +236,9 @@ public class SelectionHud implements Overlay, SlideInController {
                 String img2 = drawList.get(i).elems.get(0).getSelectionTexture();
                 if (img2 != null) {
                     Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 0, 327, 50);
+                    if (hoverIndex == i) {
+                        Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 134, 337, 194, green);
+                    }
                     Renderer.drawImage(img2, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, otherSize);
                     int selectioncount = drawList.get(0).elems.size();
                     if (selectioncount > 1) {
