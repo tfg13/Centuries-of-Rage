@@ -519,7 +519,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
                     double moveRad = from.toFPP().getDistance(around.toFPP());
                     SimplePosition[] intersections = MathUtil.circleCircleIntersection(new Circle((float) obst.getX(), (float) obst.getY(), (float) (radius + caster2.getRadius())), new Circle((float) around.x(), (float) around.y(), (float) moveRad));
                     SimplePosition s1 = intersections[0];
-                    SimplePosition s2 = intersections[0];
+                    SimplePosition s2 = intersections[1];
                     // Ausbrüten, ob s1 oder s2 der richtige ist:
                     SimplePosition newPosVec = null;
                     double fromTetha = Math.atan2(from.y() - around.y(), from.x() - around.x());
