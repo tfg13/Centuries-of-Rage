@@ -412,12 +412,12 @@ public class CoRInput implements Pauseable {
                                     }
                                     // Das auf jeden Fall machen:
                                     stopSelectionBox();
+                                    selHud.setActiveObjects(selected);
+                                    abHud.setActiveObjects(selected);
                                 }
                                 if (button == 1 && (!rgi.rogGraphics.rightScrollingEnabled || (System.currentTimeMillis() - rgi.rogGraphics.rightScrollStart < 200))) {
                                     mouseKlickedRight(button, x, y, false);
                                 }
-                                selHud.setActiveObjects(selected);
-                                abHud.setActiveObjects(selected);
                             }
                         });
                         t.setDaemon(true);
@@ -1380,7 +1380,7 @@ public class CoRInput implements Pauseable {
             elems.get(0).mouseHovered();
         }
     }
-    
+
     private void notifyOldOverlay(OverlayMouseListener newOverlay) {
         if ((newOverlay == null || newOverlay != lastOverlay) && lastOverlay != null) { // Jaja, hässlicher Referenz-Vergleich
             lastOverlay.mouseRemoved();

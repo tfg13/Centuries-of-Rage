@@ -29,6 +29,8 @@ import de._13ducks.cor.game.client.Client;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.graphics.input.OverlayMouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -192,12 +194,15 @@ public class SelectionHud implements Overlay, SlideInController {
 
     private void fMousePressed(int i, int i1, int i2, boolean singleSizeSelected) {
         int selection = findIndex(i2, singleSizeSelected);
-        System.out.println("Mouse Pressed! " + i + " , " + i1 + " , " + i2 + " Sel: " + selection);
     }
 
     private void fMouseReleased(int i, int i1, int i2, boolean singleSizeSelected) {
+        //drawList = computeDrawList();
         int selection = findIndex(i2, singleSizeSelected);
-        System.out.println("Mouse Released! " + i + " , " + i1 + " , " + i2 + " Sel: " + selection);
+        if (selection > 0) {
+            switchActiveUnitType(selection);
+        }
+
     }
 
     private void fMouseMoved(int x, int y, boolean singleSizeSelected) {
@@ -321,8 +326,15 @@ public class SelectionHud implements Overlay, SlideInController {
             selClass.elems.add(elem);
         }
 
-        return retList;
+        Collections.sort(retList, new Comparator<SelectionClass>() {
 
+            @Override
+            public int compare(SelectionClass o1, SelectionClass o2) {
+                return o2.elems.get(0).getAbilityCaster().getDescTypeId() - o1.elems.get(0).getAbilityCaster().getDescTypeId();
+            }
+        });
+
+        return retList;
 
     }
 
@@ -333,11 +345,25 @@ public class SelectionHud implements Overlay, SlideInController {
         private SelectionClass() {
             elems = new ArrayList<InteractableGameElement>();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof SelectionClass) {
+                SelectionClass s = (SelectionClass) o;
+                if (s.elems.get(0).getAbilityCaster().getDescTypeId() == this.elems.get(0).getAbilityCaster().getDescTypeId()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        }
     }
-
+    
+    /*
+     * Liefert die Position des angeklickten Einheitentyps zurück
+     */
     private int findIndex(int y, boolean singleSizeSelected) {
-        // Ability finden
-
         if (singleSizeSelected) {
             // Großer Knopf gedrückt
             return 0;
@@ -353,5 +379,19 @@ public class SelectionHud implements Overlay, SlideInController {
                 return -1;
             }
         }
+    }
+
+    /*
+     * Macht den Einheitentyp an einer bestimmten Position zum aktiven Einheitentyp auf Position 0
+     */
+    private void switchActiveUnitType(int position) {
+        // angeklickte Einheit finden
+        SelectionClass selectedUnit = drawList.get(position);
+        // drawList zurücksetzen
+        drawList = computeDrawList();
+        // Einheit in neuer Liste suchen
+        int newselection = drawList.indexOf(selectedUnit);
+        // Einheit zum aktiven Einheitentyp machen
+        drawList.add(0, drawList.remove(newselection));
     }
 }
