@@ -49,7 +49,6 @@ public class FontManager {
         fonts = new ArrayList<UnicodeFont>();
         try {
             UnicodeFont ubuntu1 = new UnicodeFont("misc/Ubuntu-R.ttf", (int) (resX * 0.016), false, false);
-            ubuntu1.getEffects().add(new org.newdawn.slick.font.effects.ShadowEffect(java.awt.Color.BLACK, 1, 1, 1.0f));
             ubuntu1.getEffects().add(new org.newdawn.slick.font.effects.ColorEffect(new java.awt.Color(255, 255, 200)));
             ubuntu1.addAsciiGlyphs();
             ubuntu1.loadGlyphs();

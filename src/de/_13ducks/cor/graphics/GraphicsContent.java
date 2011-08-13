@@ -820,8 +820,8 @@ public class GraphicsContent extends BasicGame {
                 g3.setColor(Color.white);
                 g3.fillRect(0, 0, renderBackground.getWidth(), renderBackground.getHeight());
 
-                for (int x = 0; x < sizeX && x < viewX; x += 1) {
-                    for (int y = 0; y < sizeY && y < viewY; y += 1) {
+                for (int x = -2; x < sizeX && x < viewX; x += 1) {
+                    for (int y = -2; y < sizeY && y < viewY; y += 1) {
                         if ((x + y) % 2 == 1) {
                             continue;
                         }
