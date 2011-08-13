@@ -240,7 +240,7 @@ public class SelectionHud implements Overlay, SlideInController {
                         Renderer.drawImage(tilemap, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, fullResY - 12 - singleSize - (i * (otherSize + 12)) + otherSize + 12, 277, 134, 337, 194, green);
                     }
                     Renderer.drawImage(img2, 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12, otherSize, otherSize);
-                    int selectioncount = drawList.get(0).elems.size();
+                    int selectioncount = drawList.get(i).elems.size();
                     if (selectioncount > 1) {
                         g.drawString("" + drawList.get(i).elems.size(), 0, fullResY - 12 - singleSize - (i * (otherSize + 12)) + 12);
                     }
