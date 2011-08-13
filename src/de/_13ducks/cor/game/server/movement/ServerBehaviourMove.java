@@ -349,6 +349,13 @@ public class ServerBehaviourMove extends ServerBehaviour {
             // Länge des Kreissegments berechnen
             double startTetha = Math.atan2(caster2.getPrecisePosition().y() - around.y(), caster2.getPrecisePosition().x() - around.x());
             double targetTetha = Math.atan2(target.y() - around.y(), target.x() - around.x());
+            // 2-PI-Darstellung:
+            if (startTetha < 0) {
+                startTetha += 2 * Math.PI;
+            }
+            if (targetTetha < 0) {
+                targetTetha += 2 * Math.PI;
+            }
             if (arcDirection) {
                 tethaDist = targetTetha - startTetha;
             } else {
