@@ -37,12 +37,16 @@ import java.util.ArrayList;
  * @author Tulius <tobifleig@gmail.com>
  */
 public class ObstaclePattern {
-    
+   
     
     /**
      * Die derzeitige getrackten Einheiten
      */
     private ArrayList<FrozenUnit> trackedUnits;
+
+    public ObstaclePattern() {
+        trackedUnits = new ArrayList<FrozenUnit>();
+    }
     
     /**
      * Fügt eine neues Moveable hinzu und speichert sofort seine Position.

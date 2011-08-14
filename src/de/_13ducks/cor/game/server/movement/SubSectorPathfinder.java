@@ -50,7 +50,7 @@ public class SubSectorPathfinder {
      * @param obstacle
      * @return 
      */
-    static List<SubSectorEdge> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
+    static List<SubSectorEdge> searchDiversion(Moveable mover, Moveable obstacle, SimplePosition target, ObstaclePattern p) {
         // Vorüberprüfung: Ist das Ziel überhaupt noch frei?
         List<Moveable> moversAroundTarget = Server.getInnerServer().moveMan.moveMap.moversAroundPoint(target.toFPP(), mover.getRadius() + 5);
         moversAroundTarget.remove(mover); // Falls drin
@@ -72,6 +72,7 @@ public class SubSectorPathfinder {
         ArrayList<Moveable> closedObstacles = new ArrayList<Moveable>(); // Bearbeitete Knoten
 
         openObstacles.add(obstacle); // Startpunkt des Graphen.
+        p.freezeUnit(obstacle);
         closedObstacles.add(mover); // Wird im Graphen nicht mitberücksichtigt.
         double radius = mover.getRadius() + ServerBehaviourMove.MIN_DISTANCE;
 
@@ -115,6 +116,7 @@ public class SubSectorPathfinder {
             for (Moveable pmove : moversAround) {
                 if (!closedObstacles.contains(pmove) && !openObstacles.contains(pmove)) {
                     openObstacles.add(pmove);
+                    p.freezeUnit(pmove);
                 }
             }
         }

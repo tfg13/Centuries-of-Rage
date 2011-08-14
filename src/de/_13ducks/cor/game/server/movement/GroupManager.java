@@ -188,7 +188,7 @@ public class GroupManager {
 
         return true;
     }
-    
+
     /**
      * Versucht, den Mover auf einer Umleitung zum Ziel gelangen zu lassen, wenn der ursürungliche
      * Weg blockiert ist.
@@ -198,15 +198,17 @@ public class GroupManager {
      * @return true, wenn Umleitung gefunden, sonst false
      */
     private boolean tryDiversion(Moveable mover, Moveable obstacle, SimplePosition target) {
-        List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target);
-            if (diversion != null) {
-                System.out.println(mover + " calced a diversion");
-                mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
-                return true;
-            } else {
-                System.out.println(mover + ": no diversion.");
-                return false;
-            }
+        ObstaclePattern p = new ObstaclePattern();
+        List<SubSectorEdge> diversion = SubSectorPathfinder.searchDiversion(mover, obstacle, target, p);
+        mover.getLowLevelManager().getPathManager().saveDiversion(p, obstacle, diversion != null);
+        if (diversion != null) {
+            System.out.println(mover + " calced a diversion");
+            mover.getLowLevelManager().getPathManager().setDiversion(diversion, mover);
+            return true;
+        } else {
+            System.out.println(mover + ": no diversion.");
+            return false;
+        }
     }
 
     private double lowestSpeed(ArrayList<GroupMember> myMovers) {
@@ -260,13 +262,13 @@ public class GroupManager {
      * @return true, wenn der Mover weiter warten soll.
      */
     boolean stayWaiting(Moveable mover, Moveable obstacle) {
-        // Simples Erkennen: Wartet das Hinderniss auch auf mich?
+        // Simples Erkennen: Wartet das Hinderniss auch, und zwar auf mich?
         if (obstacle.getLowLevelManager().isWaiting()) {
             if (obstacle.getLowLevelManager().getWaitFor().equals(mover)) {
                 // Umleitung versuchen
                 return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
             }
-            
+
             // Rekursiv die "Hindernisskette" entlanggehen und ursprüngliches Problem finden
             // Liste für Schleifenerkennung:
             ArrayList<Moveable> obstacles = new ArrayList<Moveable>();
@@ -275,18 +277,22 @@ public class GroupManager {
                 obstacles.add(next);
                 // Next verarbeiten. Wartet das selber auf jemanden?
                 if (next.getLowLevelManager().isWaiting()) {
-                   next = next.getLowLevelManager().getWaitFor();
+                    next = next.getLowLevelManager().getWaitFor();
                 }
                 // Im Else-fall next nicht umstellen, dann endet die while
             }
-            
+
             // Next ist jetzt das Hinderniss, das den ganzen Stau verursacht.
             // Wir warten nur weiter, wenn das läuft. (und NICHT wartet)
             if (!next.getLowLevelManager().isMoving() || next.getLowLevelManager().isWaiting()) {
                 return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
             }
         }
-        
+
         return true;
+    }
+
+    boolean killDiversion(Moveable caster2) {
+        return caster2.getLowLevelManager().getPathManager().getLastObst().positionsChanged();
     }
 }

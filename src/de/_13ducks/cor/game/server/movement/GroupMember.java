@@ -42,6 +42,18 @@ public class GroupMember {
     private Node lastStart;
     private FreePolygon lastPoly;
     private SimplePosition lastTarget;
+    /**
+     * Der letzte Versuch eine Umleitung zu berechnen
+     */
+    private ObstaclePattern lastObstPattern;
+    /**
+     * Der was war beim gespeicherten Pattern das primärziel?
+     */
+    private Moveable lastPrimObstacle;
+    /**
+     * Hat es geklappt?
+     */
+    private boolean lastObstacleTry;
     
     GroupMember(Moveable mover) {
         this.mover = mover;
@@ -217,6 +229,30 @@ public class GroupMember {
      */
     SimplePosition lastRealWaypoint() {
         return lastTarget;
+    }
+
+    /**
+     * @return the lastObst
+     */
+    ObstaclePattern getLastObst() {
+        return lastObstPattern;
+    }
+
+    /**
+     * @param lastObst the lastObst to set
+     */
+    void saveDiversion(ObstaclePattern lastObst, Moveable primObstacle, boolean result) {
+        this.lastObstPattern = lastObst;
+        this.lastPrimObstacle = primObstacle;
+        this.lastObstacleTry = result;
+    }
+
+    /**
+     * Aufrufen, um die Umleitung abzubrechen und wieder den direkten Weg zu versuchen
+     */
+    void nextNonDiversion(Moveable mover) {
+        diversion = null;
+        reachedTarget(mover);
     }
 
     private class DiversionWaypoint {

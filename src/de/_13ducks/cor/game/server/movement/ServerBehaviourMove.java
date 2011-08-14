@@ -289,6 +289,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Weiterlaufen
                 setMoveable(oldPos, newpos);
                 lastTick = System.nanoTime();
+                if (pathManager.lastRealWaypoint() != null && !pathManager.lastRealWaypoint().equals(target)) {
+                    if (caster2.getMidLevelManager().killDiversion(caster2)) {
+                        pathManager.nextNonDiversion(caster2);
+                    }
+                }
             }
         }
 
@@ -637,6 +642,10 @@ public class ServerBehaviourMove extends ServerBehaviour {
      */
     void setPathManager(GroupMember pathManager) {
         this.pathManager = pathManager;
+    }
+    
+    SimplePosition getTarget() {
+        return target.toFPP(); // Kopiert die Position zur Sicherheit
     }
 
     /**
