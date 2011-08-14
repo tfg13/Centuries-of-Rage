@@ -266,7 +266,7 @@ public class SubSectorPathfinder {
         }
 
         ArrayList<SubSectorNode> pathrev = new ArrayList<SubSectorNode>();   //Pfad aus parents erstellen, von Ziel nach Start
-        while (!targetNode.equals(startNode)) {
+        while (targetNode != startNode) { // Dieser Referenz-Vergleich ist ABSICHT!!!
             pathrev.add(targetNode);
             targetNode = targetNode.getParent();
         }
