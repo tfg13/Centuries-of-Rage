@@ -262,7 +262,7 @@ public class GroupManager {
      * @return true, wenn der Mover weiter warten soll.
      */
     boolean stayWaiting(Moveable mover, Moveable obstacle) {
-        // Simples Erkennen: Wartet das Hinderniss auch, und zwar auf mich?
+      /*  // Simples Erkennen: Wartet das Hinderniss auch, und zwar auf mich?
         if (obstacle.getLowLevelManager().isWaiting()) {
             if (obstacle.getLowLevelManager().getWaitFor().equals(mover)) {
                 // Umleitung versuchen
@@ -287,7 +287,7 @@ public class GroupManager {
             if (!next.getLowLevelManager().isMoving() || next.getLowLevelManager().isWaiting()) {
                 return !tryDiversion(mover, obstacle, mover.getLowLevelManager().getPathManager().lastRealWaypoint());
             }
-        }
+        } */
 
         return true;
     }
