@@ -289,11 +289,11 @@ public class ServerBehaviourMove extends ServerBehaviour {
                 // Weiterlaufen
                 setMoveable(oldPos, newpos);
                 lastTick = System.nanoTime();
-                if (pathManager.lastRealWaypoint() != null && !pathManager.lastRealWaypoint().equals(target)) {
+                /*if (pathManager.lastRealWaypoint() != null && !pathManager.lastRealWaypoint().equals(target)) {
                     if (caster2.getMidLevelManager().killDiversion(caster2)) {
                         pathManager.nextNonDiversion(caster2);
                     }
-                }
+                } */
             }
         }
 
