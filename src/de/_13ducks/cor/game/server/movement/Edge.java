@@ -215,7 +215,7 @@ public class Edge {
         // Linie ziehen:
         Edge direct = new Edge(pos1.toNode(), pos2.toNode());
         // Schnittpunkt suchen
-        return intersectsWithEndsAllowed(direct);
+        return endlessIntersection(direct) != null;
     }
     
     /**
