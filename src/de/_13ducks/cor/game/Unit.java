@@ -34,7 +34,6 @@ import de._13ducks.cor.game.client.ClientGameController;
 import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
@@ -43,7 +42,6 @@ import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.effects.SendToEffect;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
 import de._13ducks.cor.map.fastfindgrid.Cell;
-import de._13ducks.cor.map.fastfindgrid.Traceable;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
 import de._13ducks.cor.networks.client.behaviour.UDBClientBehaviourMove;
 
@@ -60,7 +58,7 @@ import de._13ducks.cor.networks.client.behaviour.UDBClientBehaviourMove;
  * Einheiten dieser Implementierung spawnen sofort.
  * Unterklassen können Gebäude (Building) betreten (falls das Gebäude dies anbietet)
  */
-public abstract class Unit extends GameObject implements Serializable, Cloneable, Pauseable, Moveable, Traceable {
+public abstract class Unit extends GameObject implements Serializable, Cloneable, Pauseable, Moveable {
 
     /**
      * Die Geschwindigkeit der Einheit in Feldern pro Sekunde.

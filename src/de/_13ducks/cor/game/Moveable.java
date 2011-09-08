@@ -34,13 +34,14 @@ import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
 import de._13ducks.cor.game.server.movement.ServerBehaviourFollow;
 import de._13ducks.cor.game.server.movement.ServerMoveManager;
 import de._13ducks.cor.graphics.input.InteractableGameElement;
+import de._13ducks.cor.map.fastfindgrid.Traceable;
 import de._13ducks.cor.networks.client.behaviour.ClientBehaviourMove;
 import java.util.List;
 
 /**
  * Alles was Moveable ist, kann sich bewegen.
  */
-public interface Moveable extends InteractableGameElement, Pauseable {
+public interface Moveable extends InteractableGameElement, Pauseable, Traceable {
 
     /**
      * Stoppt die Einheit sofort - sofern genug Platz ist und die Einheit sich überhaupt bewegt.
