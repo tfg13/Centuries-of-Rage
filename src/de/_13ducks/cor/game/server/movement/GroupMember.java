@@ -38,9 +38,7 @@ public class GroupMember {
     private Moveable mover;
     private LinkedList<SimplePosition> path;
     private LinkedList<DiversionWaypoint> diversion;
-    private LinkedList<SectorChangingEdge> sectorBorders;
     private Node lastStart;
-    private FreePolygon lastPoly;
     private SimplePosition lastTarget;
     /**
      * Der letzte Versuch eine Umleitung zu berechnen
@@ -58,7 +56,6 @@ public class GroupMember {
     GroupMember(Moveable mover) {
         this.mover = mover;
         path = new LinkedList<SimplePosition>();
-        sectorBorders = new LinkedList<SectorChangingEdge>();
     }
 
     /**
@@ -90,8 +87,6 @@ public class GroupMember {
      */
     void newWay() {
         lastStart = mover.getPrecisePosition().toNode();
-        lastStart.addPolygon(mover.getMyPoly());
-        lastPoly = null;
     }
 
     /**
@@ -113,22 +108,6 @@ public class GroupMember {
                     // lastStart muss auch geändert werden (wichtig für Fall size() == 1). Sonst funktioniert commonSector nicht.
                     lastStart = (Node) path.removeLast();
                 }
-                Node n1 = (Node) preLast;
-                Node n2 = (Node) last;
-                Node n3 = (Node) waypoint;
-                Vector ortho1 = new Vector(n2.y() - n1.y(), n1.x() - n2.x()).normalize();
-                Vector ortho2 = new Vector(n3.y() - n2.y(), n2.x() - n3.x()).normalize();
-                Vector ortho = ortho1.add(ortho2);
-                FreePolygon nextPoly = commonSector(n2, n3);
-                sectorBorders.add(new SectorChangingEdge(n2.toVector().add(ortho).toNode(), n2.toVector().add(ortho.getInverted()).toNode(), lastPoly, nextPoly));
-                lastPoly = nextPoly;
-            } else {
-                lastPoly = commonSector(lastStart, (Node) waypoint);
-                if (lastPoly == null) {
-                    // Sonderbehandlung, kann passieren, wenn Einheiten ungünstig auf einer Kante startet
-                    // Erstmal nur eine Warnmeldung und kein Spezialfall, eventuell wird dieser Fehler durch das neue Cell-System verhindert.
-                    System.out.println("[WARN][MOVECALC]: Path calculation problem!");
-                }
             }
             path.add(waypoint);
         }
@@ -149,21 +128,6 @@ public class GroupMember {
     SimplePosition popWaypoint() {
         lastTarget = path.pollFirst();
         return lastTarget;
-    }
-
-    /**
-     * Wird regelmäßig vom LowLevel aufgerufen, um die nächste Sektorgrenze zu suchen.
-     * @return 
-     */
-    SectorChangingEdge nextSectorBorder() {
-        return sectorBorders.peekFirst();
-    }
-
-    /**
-     * Wird vom LowLevel aufgerufen, um anzuzeigen, dass eine weitere Sektorgrenze überschritten wurde.
-     */
-    SectorChangingEdge borderCrossed() {
-        return sectorBorders.pollFirst();
     }
 
     /**
