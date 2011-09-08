@@ -28,7 +28,6 @@ package de._13ducks.cor.game;
 import de._13ducks.cor.game.client.ClientCore;
 import de._13ducks.cor.game.server.movement.ServerBehaviourMove;
 import de._13ducks.cor.game.server.ServerCore;
-import de._13ducks.cor.game.server.movement.FreePolygon;
 import de._13ducks.cor.game.server.movement.GroupManager;
 import de._13ducks.cor.game.server.movement.MovementMap;
 import de._13ducks.cor.game.server.movement.ServerBehaviourAttack;
@@ -159,18 +158,6 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @return 
      */
     public List<Moveable> moversAroundMe(double radius);
-
-    /**
-     * Liefert den Polygon, in dem sich die Einheit derzeit aufhält
-     * @return the myPoly
-     */
-    public FreePolygon getMyPoly();
-
-    /**
-     * Setzt den Polygon, in dem sich die Einheit derzeit aufhält
-     * @param myPoly the myPoly to set
-     */
-    public void setMyPoly(FreePolygon myPoly);
 
     /**
      * Liefert den Kollisionsradius dieses Movers

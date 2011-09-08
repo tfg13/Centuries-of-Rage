@@ -104,10 +104,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      */
     private MovementMap moveMap;
     /**
-     * Der derzeitige Polygon dieser Einheit.
-     */
-    private FreePolygon myPoly;
-    /**
      * Der kleine Pfeil, der erscheint, wenn man die Einheit irgendwo hin schickt
      */
     private SendToEffect sendEffect;
@@ -473,30 +469,6 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
         return moveMap.moversAround(this, radius);
     }
 
-    /**
-     * @return the myPoly
-     */
-    @Override
-    public FreePolygon getMyPoly() {
-        return myPoly;
-    }
-
-    /**
-     * @param myPoly the myPoly to set
-     */
-    @Override
-    public void setMyPoly(FreePolygon myPoly) {
-        // Beim alten abmelden:
-        if (this.myPoly != null) {
-            this.myPoly.removeMoveable(this);
-        }
-        this.myPoly = myPoly;
-        // Beim neuen anmelden:
-        if (this.myPoly != null) {
-            this.myPoly.addMoveable(this);
-        }
-    }
-
     @Override
     public ServerBehaviourAttack getAtkManager() {
         return atkManager;
@@ -521,6 +493,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Gibt die Zelle zurück, in de die Einheit steht, für das Schnellsuchraster
      * @return
      */
+    @Override
     public Cell getCell() {
         return myCell;
     }
@@ -529,6 +502,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Gibt die eigene Position zurück, für das Schnellsuchraster
      * @return
      */
+    @Override
     public FloatingPointPosition getPosition() {
         return this.getPrecisePosition();
     }
@@ -537,6 +511,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Gibt diese Einheit zurück, damit man vom Traceable-Interface auch mit der einheit was machen kann
      * @return
      */
+    @Override
     public Unit getUnit() {
         return this;
     }
@@ -545,6 +520,7 @@ public abstract class Unit extends GameObject implements Serializable, Cloneable
      * Setzt die Zelle (Schnellsuchraster) dieser Einheit
      * @param theCell - die Zelle des Schnellsuchrasters, auf der die EInheit steht
      */
+    @Override
     public void setCell(Cell theCell) {
         myCell = theCell;
     }
