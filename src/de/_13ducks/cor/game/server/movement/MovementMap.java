@@ -265,15 +265,10 @@ public class MovementMap {
         if (!managedMovers.contains(moveable)) {
             FloatingPointPosition upos = moveable.getPrecisePosition();
             FreePolygon poly = containingPoly(upos.getfX(), upos.getfY());
-            if (poly != null) {
-                poly.addMoveable(moveable);
-                System.out.println(poly + " contains " + moveable);
-                managedMovers.add(moveable);
-                moveable.setMyPoly(poly);
-            }
+            managedMovers.add(moveable);
         }
     }
-    
+
     /**
      * Entfernt die Einheit aus dem Server-Bewegungssystem
      * @param moveable 
@@ -281,8 +276,6 @@ public class MovementMap {
     public void removeMoveable(Moveable moveable) {
         int index = managedMovers.indexOf(moveable);
         if (index != -1) { //contains==true
-            moveable.getMyPoly().removeMoveable(moveable);
-            moveable.setMyPoly(null);
             managedMovers.remove(index);
         }
     }
@@ -306,7 +299,7 @@ public class MovementMap {
         System.out.println("Noone contains " + x + " " + y);
         return null;
     }
-    
+
     /**
      * Sucht den Polygon, der diesen Punkt enthält.
      * Vorsicht: Das Polygonnetz deckt nicht alle Punkte ab!
@@ -327,18 +320,18 @@ public class MovementMap {
     public List<Moveable> moversAround(Moveable mover, double radius) {
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
         // Alle relevanten Sektoren herausfinden:
-        List<FreePolygon> relPolys = polysAround(mover.getPrecisePosition().getfX(), mover.getPrecisePosition().getfY(), mover.getMyPoly(), radius);
-        for (FreePolygon poly : relPolys) {
-            // Alle Einheiten dieses Sektors analysieren
-            List<Moveable> moversInSec = poly.getResidents();
-            for (Moveable moverS : moversInSec) {
-                if (moverS.getPrecisePosition().getDistance(mover.getPrecisePosition()) <= radius) {
-                    movers.add(moverS);
-                }
+        
+        throw new UnsupportedOperationException("Not yet implemented!");
+                
+        // Alle Einheiten dieses Sektors analysieren
+      /*  List<Moveable> moversInSec = poly.getResidents();
+        for (Moveable moverS : moversInSec) {
+            if (moverS.getPrecisePosition().getDistance(mover.getPrecisePosition()) <= radius) {
+                movers.add(moverS);
             }
         }
         movers.remove(mover); // Die Einheit ist selber nicht dabei!
-        return movers;
+        return movers;*/
     }
 
     /**
@@ -351,7 +344,7 @@ public class MovementMap {
     public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius) {
         return moversAroundPoint(position, radius, containingPoly(position.getfX(), position.getfY()));
     }
-    
+
     /**
      * Sucht alle Einheiten im Umkreis um einen Punkt heraus.
      * Sucht über Sektorgrenzen hinweg.
@@ -362,8 +355,11 @@ public class MovementMap {
      */
     public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius, FreePolygon startPoly) {
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
+        
+        throw new UnsupportedOperationException("Not yet implemented!");
+        
         // Alle relevanten Sektoren herausfinden:
-        List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), startPoly, radius);
+       /* List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), startPoly, radius);
         for (FreePolygon poly : relPolys) {
             // Alle Einheiten dieses Sektors analysieren
             List<Moveable> moversInSec = poly.getResidents();
@@ -373,7 +369,7 @@ public class MovementMap {
                 }
             }
         }
-        return movers;
+        return movers */
     }
 
     /**
@@ -420,7 +416,7 @@ public class MovementMap {
      * @return Der nächste Node
      */
     public Node nearestSectorNode(Moveable mover) {
-        return nearestNode(mover.getMyPoly(), mover.getPrecisePosition());
+        return nearestNode(containingPoly(mover.getPrecisePosition()), mover.getPrecisePosition());
     }
 
     /**
