@@ -28,6 +28,7 @@ package de._13ducks.cor.game.server.movement;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.GameObject;
 import de._13ducks.cor.game.Moveable;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.game.Unit;
 import de._13ducks.cor.game.server.ServerCore;
 import de._13ducks.cor.networks.server.behaviour.ServerBehaviour;
@@ -47,6 +48,7 @@ public class ServerBehaviourFollow extends ServerBehaviour {
     private Unit caster2;
     private FloatingPointPosition lastPosition;
     private FreePolygon lastPolygon;
+    private SimplePosition lastTarget;
     // Wird gespeichert - dient zum automatischen Abschalten
     private GameObject atkTarget;
 
@@ -68,7 +70,7 @@ public class ServerBehaviourFollow extends ServerBehaviour {
         atkTarget = caster2.getAtkManager().getCurrentTarget();
         // lastPosition setzten
         lastPosition = target.getPrecisePosition().toFPP();
-        lastPolygon = target.getMyPoly();
+        lastTarget = target.getLowLevelManager().getTarget();
         active = true;
     }
 
@@ -95,7 +97,7 @@ public class ServerBehaviourFollow extends ServerBehaviour {
             // Herausfinden, ob der Kurs geändert werden muss
             boolean refreshRoute = false;
 
-            if (!lastPolygon.equals(target.getMyPoly())) {
+            if (!lastTarget.equals(target.getLowLevelManager().getTarget())) {
                 // Polygon gewechselt --> neue Route
                 refreshRoute = true;
             } else {
@@ -113,7 +115,7 @@ public class ServerBehaviourFollow extends ServerBehaviour {
             if (refreshRoute) {
                 caster2.getTopLevelManager().followMove(target.getPrecisePosition(),  caster2);
                 lastPosition = target.getPrecisePosition().toFPP();
-                lastPolygon = target.getMyPoly();
+                lastTarget = target.getLowLevelManager().getTarget();
             }
 
         } else {
