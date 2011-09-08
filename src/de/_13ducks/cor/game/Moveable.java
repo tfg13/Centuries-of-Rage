@@ -170,11 +170,13 @@ public interface Moveable extends InteractableGameElement, Pauseable {
      * @param playerId die ID des Angreiffers
      * @return true, wenn angreifbar
      */
+    @Override
     public boolean isAttackableBy(int playerID);
     
     /**
      * Liefert das angreiffbare Ziel. Moveable, die nicht angreiffbar sind, liefern hier null.
      * @return Das angreiffbare GameObject
      */
+    @Override
     public GameObject getAttackable();
 }
