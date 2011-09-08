@@ -25,9 +25,7 @@
  */
 package de._13ducks.cor.game.server.movement;
 
-import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.SimplePosition;
-import de._13ducks.cor.game.Unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,11 +50,6 @@ public class FreePolygon {
      * Die bekannten Nachbarn dieses Polygons
      */
     private List<FreePolygon> neighbors;
-    /**
-     * Diese Liste enthält immer alle Einheiten,
-     * die sich gerade auf dem Feld befinden.
-     */
-    private List<Moveable> residents;
 
     /**
      * Erzeugt einen neues Vieleck mit den angegebenen Knoten als Eckpunkten.
@@ -72,7 +65,6 @@ public class FreePolygon {
         }
         myNodes = new LinkedList<Node>();
         neighbors = new ArrayList<FreePolygon>();
-        residents = new ArrayList<Moveable>();
         myNodes.addAll(Arrays.asList(nodes));
         if (registerNodes) {
             registerNodes();
@@ -342,34 +334,6 @@ public class FreePolygon {
         return rechts ^ links;
     }
 
-    /**
-     * Fügt einen Mover zu diesem Polygon hinzu.
-     * Es passiert nichts, wenn der Mover schon bekannt ist.
-     * @param unit 
-     */
-    public void addMoveable(Moveable mover) {
-        if (!residents.contains(mover)) {
-            residents.add(mover);
-        }
-    }
-    
-    /**
-     * Löscht ein Mover wieder aus diesem Polygon.
-     * Es passiert nichts, wenn der Mover gar nicht bekannt war.
-     * @param mover 
-     */
-    public void removeMoveable(Moveable mover) {
-        residents.remove(mover);
-    }
-
-    /**
-     * Liefert eine (unveränderliche) Liste aller derzeitiger Movers auf diesem Sektor zurück.
-     * @return eine Liste mit allen movers auf diesem sektor.
-     */
-    public List<Moveable> getResidents() {
-        return Collections.unmodifiableList(residents);
-    }
-
     public org.newdawn.slick.geom.Polygon toSlickPoly() {
         org.newdawn.slick.geom.Polygon poly = new org.newdawn.slick.geom.Polygon();
         for (Node node : myNodes) {
@@ -399,7 +363,7 @@ public class FreePolygon {
     }
 
     public List<Edge> calcEdges() {
-        LinkedList list = new LinkedList<Edge>();
+        LinkedList<Edge> list = new LinkedList<Edge>();
         for (int i = 0; i < myNodes.size(); i++) {
             list.add(new Edge(myNodes.get(i), myNodes.get(i + 1 < myNodes.size() ? i + 1 : 0)));
         }
