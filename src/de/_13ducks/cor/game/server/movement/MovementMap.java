@@ -37,6 +37,7 @@ import de._13ducks.cor.game.Building;
 import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Position;
+import de._13ducks.cor.game.SimplePosition;
 import de._13ducks.cor.map.CoRMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -304,6 +305,16 @@ public class MovementMap {
         }
         System.out.println("Noone contains " + x + " " + y);
         return null;
+    }
+    
+    /**
+     * Sucht den Polygon, der diesen Punkt enthält.
+     * Vorsicht: Das Polygonnetz deckt nicht alle Punkte ab!
+     * @param p Die relevante Position
+     * @return der gefundene Polygon oder null
+     */
+    public FreePolygon containingPoly(SimplePosition p) {
+        return containingPoly(p.x(), p.y());
     }
 
     /**
