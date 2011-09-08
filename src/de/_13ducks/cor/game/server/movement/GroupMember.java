@@ -124,6 +124,11 @@ public class GroupMember {
                 lastPoly = nextPoly;
             } else {
                 lastPoly = commonSector(lastStart, (Node) waypoint);
+                if (lastPoly == null) {
+                    // Sonderbehandlung, kann passieren, wenn Einheiten ungünstig auf einer Kante startet
+                    // Erstmal nur eine Warnmeldung und kein Spezialfall, eventuell wird dieser Fehler durch das neue Cell-System verhindert.
+                    System.out.println("[WARN][MOVECALC]: Path calculation problem!");
+                }
             }
             path.add(waypoint);
         }
