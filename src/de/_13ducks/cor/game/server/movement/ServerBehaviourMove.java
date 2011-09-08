@@ -301,12 +301,6 @@ public class ServerBehaviourMove extends ServerBehaviour {
 
     private void setMoveable(FloatingPointPosition from, FloatingPointPosition to) {
         caster2.setMainPosition(to);
-        // Neuer Sektor?
-        while (pathManager.nextSectorBorder() != null && pathManager.nextSectorBorder().sidesDiffer(from, to)) {
-            // Ja, alten löschen und neuen setzen!
-            SectorChangingEdge edge = pathManager.borderCrossed();
-            caster2.setMyPoly(edge.getNext(caster2.getMyPoly()));
-        }
         // Schnellsuchraster aktualisieren:
         caster3.setCell(Server.getInnerServer().netmap.getFastFindGrid().getNewCell(caster3));
     }
@@ -468,7 +462,7 @@ public class ServerBehaviourMove extends ServerBehaviour {
         // Zurücksetzen
         lastObstacle = null;
         colliding = false;
-        List<Moveable> possibleCollisions = moveMap.moversAroundPoint(caster2.getPrecisePosition(), caster2.getRadius() + 10, caster2.getMyPoly());
+        List<Moveable> possibleCollisions = moveMap.moversAroundPoint(caster2.getPrecisePosition(), caster2.getRadius() + 10);
         // Uns selber ignorieren
         possibleCollisions.remove(caster2);
         // Freies Gebiet markieren:
