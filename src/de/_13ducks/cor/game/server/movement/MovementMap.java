@@ -38,7 +38,9 @@ import de._13ducks.cor.game.FloatingPointPosition;
 import de._13ducks.cor.game.Moveable;
 import de._13ducks.cor.game.Position;
 import de._13ducks.cor.game.SimplePosition;
+import de._13ducks.cor.game.server.Server;
 import de._13ducks.cor.map.CoRMap;
+import de._13ducks.cor.map.fastfindgrid.Traceable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -318,20 +320,17 @@ public class MovementMap {
      * @return eine List mit allen gefundenen Einheiten
      */
     public List<Moveable> moversAround(Moveable mover, double radius) {
+        System.out.println("FixMe: Möglicherweise unzureichende Suche nach Nachbarn!");
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
-        // Alle relevanten Sektoren herausfinden:
-        
-        throw new UnsupportedOperationException("Not yet implemented!");
-                
-        // Alle Einheiten dieses Sektors analysieren
-      /*  List<Moveable> moversInSec = poly.getResidents();
-        for (Moveable moverS : moversInSec) {
+        List<Traceable> moversInSec = Server.getInnerServer().netmap.getFastFindGrid().getTraceablesAroundPoint(mover.getPrecisePosition());
+        for (Traceable moverTS : moversInSec) {
+            Moveable moverS = (Moveable) moverTS;
             if (moverS.getPrecisePosition().getDistance(mover.getPrecisePosition()) <= radius) {
                 movers.add(moverS);
             }
         }
         movers.remove(mover); // Die Einheit ist selber nicht dabei!
-        return movers;*/
+        return movers;
     }
 
     /**
@@ -354,22 +353,17 @@ public class MovementMap {
      * @return eine List mit allen gefundenen Einheiten
      */
     public List<Moveable> moversAroundPoint(FloatingPointPosition position, double radius, FreePolygon startPoly) {
+        System.out.println("FixMe: Möglicherweise unzureichende Suche nach Nachbarn!");
         LinkedList<Moveable> movers = new LinkedList<Moveable>();
         
-        throw new UnsupportedOperationException("Not yet implemented!");
-        
-        // Alle relevanten Sektoren herausfinden:
-       /* List<FreePolygon> relPolys = polysAround(position.getfX(), position.getfY(), startPoly, radius);
-        for (FreePolygon poly : relPolys) {
-            // Alle Einheiten dieses Sektors analysieren
-            List<Moveable> moversInSec = poly.getResidents();
-            for (Moveable moverS : moversInSec) {
-                if (moverS.getPrecisePosition().getDistance(position) <= radius) {
-                    movers.add(moverS);
-                }
+        List<Traceable> moversInSec = Server.getInnerServer().netmap.getFastFindGrid().getTraceablesAroundPoint(position);
+        for (Traceable moverTS : moversInSec) {
+            Moveable moverS = (Moveable) moverTS;
+            if (moverS.getPrecisePosition().getDistance(position) <= radius) {
+                movers.add(moverS);
             }
         }
-        return movers */
+        return movers;
     }
 
     /**
